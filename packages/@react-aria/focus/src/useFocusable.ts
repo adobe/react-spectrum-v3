@@ -11,6 +11,7 @@
  */
 
 import {FocusableDOMProps, FocusableProps} from '@react-types/shared';
+import {HTMLAttributes} from 'react';
 import {mergeProps} from '@react-aria/utils';
 import {RefObject, useEffect} from 'react';
 import {useFocus, useKeyboard} from '@react-aria/interactions';
@@ -20,12 +21,17 @@ interface FocusableOptions extends FocusableProps, FocusableDOMProps {
   isDisabled?: boolean
 }
 
+interface FocusableResult<T extends HTMLElement = HTMLElement> {
+  /** Props to spread onto the target element. */
+  focusableProps: HTMLAttributes<T>
+}
+
 /**
  * Used to make an element focusable and capable of auto focus.
  */
-export function useFocusable(props: FocusableOptions, domRef: RefObject<HTMLElement>) {
-  let {focusProps} = useFocus(props);
-  let {keyboardProps} = useKeyboard(props);
+export function useFocusable<T extends HTMLElement = HTMLElement>(props: FocusableOptions, domRef: RefObject<T>): FocusableResult<T> {
+  let {focusProps} = useFocus<T>(props);
+  let {keyboardProps} = useKeyboard<T>(props);
   let interactions = mergeProps(focusProps, keyboardProps);
 
   useEffect(() => {

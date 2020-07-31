@@ -23,23 +23,23 @@ interface FocusProps extends FocusEvents {
   isDisabled?: boolean
 }
 
-interface FocusResult {
+interface FocusResult<T extends HTMLElement = HTMLElement> {
   /** Props to spread onto the target element. */
-  focusProps: HTMLAttributes<HTMLElement>
+  focusProps: HTMLAttributes<T>
 }
 
 /**
  * Handles focus events for the immediate target.
  * Focus events on child elements will be ignored.
  */
-export function useFocus(props: FocusProps): FocusResult {
+export function useFocus<T extends HTMLElement = HTMLElement>(props: FocusProps): FocusResult<T> {
   if (props.isDisabled) {
     return {focusProps: {}};
   }
 
   let onFocus, onBlur;
   if (props.onFocus || props.onFocusChange) {
-    onFocus = (e: FocusEvent) => {
+    onFocus = (e: FocusEvent<T>) => {
       if (e.target === e.currentTarget) {
         if (props.onFocus) {
           props.onFocus(e);
@@ -53,7 +53,7 @@ export function useFocus(props: FocusProps): FocusResult {
   }
 
   if (props.onBlur || props.onFocusChange) {
-    onBlur = (e: FocusEvent) => {
+    onBlur = (e: FocusEvent<T>) => {
       if (e.target === e.currentTarget) {
         if (props.onBlur) {
           props.onBlur(e);

@@ -27,9 +27,9 @@ import {
 } from '@react-types/shared';
 import {ElementType, ReactElement} from 'react';
 
-export interface TextFieldProps extends InputBase, Validation, FocusableProps, TextInputBase, ValueBase<string>, LabelableProps {}
+export interface TextFieldProps<T extends HTMLInputElement | HTMLTextAreaElement = HTMLInputElement | HTMLTextAreaElement> extends InputBase, Validation, FocusableProps<T>, TextInputBase, ValueBase<string>, LabelableProps {}
 
-export interface AriaTextFieldProps extends TextFieldProps, AriaLabelingProps, FocusableDOMProps, TextInputDOMProps, AriaValidationProps {
+export interface AriaTextFieldProps<T extends HTMLInputElement | HTMLTextAreaElement = HTMLInputElement | HTMLTextAreaElement> extends TextFieldProps<T>, AriaLabelingProps, FocusableDOMProps, TextInputDOMProps, AriaValidationProps {
   // https://www.w3.org/TR/wai-aria-1.2/#textbox
   /** Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. */
   'aria-activedescendant'?: string,
@@ -50,7 +50,7 @@ export interface AriaTextFieldProps extends TextFieldProps, AriaLabelingProps, F
   inputElementType?: ElementType
 }
 
-export interface SpectrumTextFieldProps extends AriaTextFieldProps, SpectrumLabelableProps, StyleProps {
+export interface SpectrumTextFieldProps<T extends HTMLInputElement | HTMLTextAreaElement = HTMLInputElement | HTMLTextAreaElement> extends AriaTextFieldProps<T>, SpectrumLabelableProps, StyleProps {
   /** An icon to display at the start of the textfield. */
   icon?: ReactElement,
   /** Whether the textfield should be displayed with a quiet style. */

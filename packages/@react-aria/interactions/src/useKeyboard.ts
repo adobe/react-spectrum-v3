@@ -19,15 +19,15 @@ export interface KeyboardProps extends KeyboardEvents {
   isDisabled?: boolean
 }
 
-interface KeyboardResult {
+interface KeyboardResult<T extends HTMLElement = HTMLElement> {
   /** Props to spread onto the target element. */
-  keyboardProps: HTMLAttributes<HTMLElement>
+  keyboardProps: HTMLAttributes<T>
 }
 
 /**
  * Handles keyboard interactions for a focusable element.
  */
-export function useKeyboard(props: KeyboardProps): KeyboardResult {
+export function useKeyboard<T extends HTMLElement = HTMLElement>(props: KeyboardProps): KeyboardResult<T> {
   return {
     keyboardProps: props.isDisabled ? {} : {
       onKeyDown: createEventHandler(props.onKeyDown),

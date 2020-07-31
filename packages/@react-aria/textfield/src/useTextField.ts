@@ -16,9 +16,9 @@ import {filterDOMProps, mergeProps} from '@react-aria/utils';
 import {useFocusable} from '@react-aria/focus';
 import {useLabel} from '@react-aria/label';
 
-interface TextFieldAria {
+interface TextFieldAria<T extends HTMLInputElement | HTMLTextAreaElement = HTMLInputElement | HTMLTextAreaElement> {
   /** Props for the input element. */
-  inputProps: InputHTMLAttributes<HTMLInputElement & HTMLTextAreaElement>,
+  inputProps: InputHTMLAttributes<T>,
   /** Props for the text field's visible label element (if any). */
   labelProps: LabelHTMLAttributes<HTMLLabelElement>
 }
@@ -28,10 +28,10 @@ interface TextFieldAria {
  * @param props - Props for the text field.
  * @param ref - Ref to the HTML input element.
  */
-export function useTextField(
-  props: AriaTextFieldProps,
-  ref: RefObject<HTMLInputElement>
-): TextFieldAria {
+export function useTextField<T extends HTMLInputElement | HTMLTextAreaElement = HTMLInputElement | HTMLTextAreaElement>(
+  props: AriaTextFieldProps<T>,
+  ref: RefObject<T>
+): TextFieldAria<T> {
   let {
     inputElementType = 'input',
     isDisabled = false,
@@ -42,7 +42,7 @@ export function useTextField(
     onChange = () => {}
   } = props;
   let {focusableProps} = useFocusable(props, ref);
-  let {labelProps, fieldProps} = useLabel(props);
+  let {labelProps, fieldProps} = useLabel<T>(props);
   let domProps = filterDOMProps(props, {labelable: true});
 
   const inputOnlyProps = {
@@ -66,7 +66,7 @@ export function useTextField(
         'aria-haspopup': props['aria-haspopup'],
         value: props.value,
         defaultValue: props.value ? undefined : props.defaultValue,
-        onChange: (e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value),
+        onChange: (e: ChangeEvent<T>) => onChange(e.target.value),
         autoComplete: props.autoComplete,
         maxLength: props.maxLength,
         minLength: props.minLength,

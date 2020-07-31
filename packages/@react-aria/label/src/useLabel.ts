@@ -22,11 +22,11 @@ interface LabelAriaProps extends LabelableProps, DOMProps, AriaLabelingProps {
   labelElementType?: ElementType
 }
 
-interface LabelAria {
+interface LabelAria<T extends HTMLElement = HTMLElement> {
   /** Props to apply to the label container element. */
   labelProps: LabelHTMLAttributes<HTMLLabelElement>,
   /** Props to apply to the field container element being labeled. */
-  fieldProps: HTMLAttributes<HTMLElement>
+  fieldProps: HTMLAttributes<T>
 }
 
 /**
@@ -34,7 +34,7 @@ interface LabelAria {
  * Labels provide context for user inputs.
  * @param props - The props for labels and fields.
  */
-export function useLabel(props: LabelAriaProps): LabelAria {
+export function useLabel<T extends HTMLElement = HTMLElement>(props: LabelAriaProps): LabelAria<T> {
   let {
     id,
     label,
