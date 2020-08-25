@@ -10,8 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
+import {act, fireEvent, render} from '@testing-library/react';
 import {ActionButton, Button, ClearButton, LogicButton} from '../';
-import {fireEvent, render} from '@testing-library/react';
 import React from 'react';
 import {triggerPress} from '@react-spectrum/test-utils';
 import V2Button from '@react/react-spectrum/Button';
@@ -216,5 +216,34 @@ describe('Button', function () {
 
     let button = getByRole('button');
     expect(document.activeElement).toBe(button);
+  });
+
+  it.each`
+    Name                | Component | props
+    ${'Button'}         | ${Button} | ${{onPress: onPressSpy, isPending: true}}
+  `('$Name supports isPending', async function ({Component, props}) {
+    let {getByRole, rerender} = render(<Component {...props}>Click me</Component>);
+
+    let button = getByRole('button');
+
+    expect(button).toBeEnabled();
+    expect(button).toHaveAttribute('aria-disabled');
+
+    triggerPress(button);
+    expect(onPressSpy).toHaveBeenCalledTimes(0);
+
+    await act(async () => new Promise((c) => setTimeout(c, 1000))); // Enter intermediate state
+
+    // TODO: verify that label is visible only to screen readers
+    triggerPress(button);
+    expect(button.textContent).toEqual('Click me');
+    expect(onPressSpy).toHaveBeenCalledTimes(0);
+
+    rerender(<Component {...props} isPending={false} />);
+
+    expect(button).not.toHaveAttribute('aria-disabled');
+
+    triggerPress(button);
+    expect(onPressSpy).toHaveBeenCalledTimes(1);
   });
 });

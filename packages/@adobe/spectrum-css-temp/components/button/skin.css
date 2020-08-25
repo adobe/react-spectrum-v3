@@ -23,6 +23,9 @@ governing permissions and limitations under the License.
       box-shadow: 0 0 0 var(--spectrum-button-primary-focus-ring-size-key-focus) var(--spectrum-button-primary-focus-ring-color-key-focus);
     }
   }
+  &.is-pending {
+    pointer-events: none;
+  }
 }
 
 .spectrum-ClearButton {

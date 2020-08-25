@@ -63,7 +63,12 @@ export interface ProgressCircleProps extends ProgressBaseProps {
   isIndeterminate?: boolean
 }
 
-export interface AriaProgressCircleProps extends ProgressCircleProps, DOMProps, AriaLabelingProps {}
+export interface AriaProgressCircleProps extends ProgressCircleProps, DOMProps, AriaLabelingProps {
+  /**
+   * Whether the ProgressCircle should be hidden from assistive technology.
+   */
+  'aria-hidden'?: boolean
+}
 export interface SpectrumProgressCircleProps extends AriaProgressCircleProps, StyleProps {
   /**
    * What the ProgressCircle's diameter should be.

@@ -40,7 +40,7 @@ export function useProgressBar(props: AriaProgressBarProps): ProgressBarAria {
     }
   } = props;
 
-  let domProps = filterDOMProps(props, {labelable: true});
+  let domProps = filterDOMProps(props, {labelable: true, propNames: new Set(['aria-hidden'])});
   let {labelProps, fieldProps} = useLabel({
     ...props,
     // Progress bar is not an HTML input element so it

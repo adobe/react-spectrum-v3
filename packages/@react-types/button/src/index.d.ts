@@ -59,14 +59,19 @@ interface AriaBaseButtonProps extends FocusableDOMProps, AriaLabelingProps {
   type?: 'button' | 'submit' | 'reset'
 }
 
-export interface AriaButtonProps extends ButtonProps, LinkButtonProps, AriaBaseButtonProps {}
+export interface AriaButtonProps extends ButtonProps, LinkButtonProps, AriaBaseButtonProps {
+  /** Whether the button should have press events temporarily disabled. */
+  isPending?: boolean
+}
 export interface AriaToggleButtonProps extends ToggleButtonProps, AriaBaseButtonProps {}
 
 export interface SpectrumButtonProps extends AriaBaseButtonProps, ButtonProps, LinkButtonProps, StyleProps {
   /** The [visual style](https://spectrum.adobe.com/page/button/#Options) of the button. */
   variant: 'cta' | 'overBackground' | 'primary' | 'secondary' | 'negative',
   /** Whether the button should be displayed with a quiet style. */
-  isQuiet?: boolean
+  isQuiet?: boolean,
+  /** Whether the button should have press events temporarily disabled. */
+  isPending?: boolean
 }
 
 export interface SpectrumActionButtonProps extends AriaBaseButtonProps, ButtonProps, StyleProps {

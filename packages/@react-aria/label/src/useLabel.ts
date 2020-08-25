@@ -19,7 +19,8 @@ interface LabelAriaProps extends LabelableProps, DOMProps, AriaLabelingProps {
    * The HTML element used to render the label, e.g. 'label', or 'span'.
    * @default 'label'
    */
-  labelElementType?: ElementType
+  labelElementType?: ElementType,
+  'aria-hidden'?: boolean
 }
 
 interface LabelAria {
@@ -40,6 +41,7 @@ export function useLabel(props: LabelAriaProps): LabelAria {
     label,
     'aria-labelledby': ariaLabelledby,
     'aria-label': ariaLabel,
+    'aria-hidden': ariaHidden,
     labelElementType = 'label'
   } = props;
 
@@ -52,7 +54,7 @@ export function useLabel(props: LabelAriaProps): LabelAria {
       id: labelId,
       htmlFor: labelElementType === 'label' ? id : undefined
     };
-  } else if (!ariaLabelledby && !ariaLabel) {
+  } else if (!ariaLabelledby && !ariaLabel && !ariaHidden) {
     console.warn('If you do not provide a visible label, you must specify an aria-label or aria-labelledby attribute for accessibility');
   }
 

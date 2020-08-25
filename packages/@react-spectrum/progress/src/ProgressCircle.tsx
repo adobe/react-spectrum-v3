@@ -28,6 +28,7 @@ function ProgressCircle(props: SpectrumProgressCircleProps, ref: DOMRef<HTMLDivE
     isIndeterminate = false,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledby,
+    'aria-hidden': ariaHidden,
     ...otherProps
   } = props;
   let domRef = useDOMRef(ref);
@@ -52,7 +53,7 @@ function ProgressCircle(props: SpectrumProgressCircleProps, ref: DOMRef<HTMLDivE
     }
   }
 
-  if (!ariaLabel && !ariaLabelledby) {
+  if (!ariaLabel && !ariaLabelledby && !ariaHidden) {
     console.warn('ProgressCircle requires an aria-label or aria-labelledby attribute for accessibility');
   }
 

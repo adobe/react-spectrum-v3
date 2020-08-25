@@ -36,10 +36,13 @@
     "@react-aria/focus": "^3.2.0",
     "@react-aria/interactions": "^3.2.0",
     "@react-aria/utils": "^3.2.0",
+    "@react-aria/visually-hidden": "^3.2.0",
+    "@react-spectrum/progress": "^3.1.0",
     "@react-spectrum/text": "^3.1.0",
     "@react-spectrum/utils": "^3.2.0",
     "@react-stately/toggle": "^3.2.0",
     "@react-types/button": "^3.2.0",
+    "@react-types/progress": "^3.1.0",
     "@react-types/shared": "^3.2.0",
     "@spectrum-icons/ui": "^3.1.0"
   },
@@ -48,8 +51,8 @@
     "@react-spectrum/test-utils": "^3.0.0-alpha.1"
   },
   "peerDependencies": {
-    "react": "^16.8.0",
-    "@react-spectrum/provider": "^3.0.0-rc.1"
+    "@react-spectrum/provider": "^3.0.0-rc.1",
+    "react": "^16.8.0"
   },
   "publishConfig": {
     "access": "public"

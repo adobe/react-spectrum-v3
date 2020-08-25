@@ -14,9 +14,10 @@ import {action} from '@storybook/addon-actions';
 import Bell from '@spectrum-icons/workflow/Bell';
 import {Button} from '../';
 import {Flex} from '@react-spectrum/layout';
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {storiesOf} from '@storybook/react';
 import {Text} from '@react-spectrum/text';
+import {View} from '@react-spectrum/view';
 
 storiesOf('Button', module)
   .addParameters({providerSwitcher: {status: 'positive'}})
@@ -59,11 +60,7 @@ storiesOf('Button', module)
   )
   .add(
     'variant: overBackground',
-    () => (
-      <div style={{backgroundColor: 'rgb(15, 121, 125)', color: 'rgb(15, 121, 125)', padding: '15px 20px', display: 'inline-block'}}>
-        {render({variant: 'overBackground'})}
-      </div>
-    )
+    () => render({variant: 'overBackground'})
   )
   .add(
     'variant: primary',
@@ -88,36 +85,74 @@ storiesOf('Button', module)
   .add(
     'element: a, rel: \'noopener noreferrer\'',
     () => render({elementType: 'a', href: '//example.com', rel: 'noopener noreferrer', variant: 'primary'})
+  )
+  .add(
+    'is pending',
+    () => {
+      let timeout = useRef<ReturnType<typeof setTimeout>>();
+      let [isPending, setPending] = useState(false);
+      let handlePress = (e) => {
+        setPending(true);
+        action('press')(e);
+
+        timeout.current = setTimeout(() => {
+          setPending(false);
+        }, 3000);
+      };
+
+      useEffect(() => () => clearTimeout(timeout.current), []);
+
+      let variants = ['cta', 'primary', 'secondary', 'negative', 'overBackground'];
+
+      return (
+        <Flex direction="column">
+          {variants.map(variant =>
+            render({
+              onPress: handlePress,
+              variant,
+              isPending
+            }, {
+              key: variant,
+              padding: 'size-300'
+            })
+          )}
+        </Flex>
+      );
+    }
   );
 
-function render(props: any = {}) {
+function render(props: any = {}, viewProps: any = {}) {
+  let backgroundProps = {...props.variant === 'overBackground' && {backgroundColor: 'blue-700', padding: 'size-400'}};
+
   return (
-    <Flex gap="size-200">
-      <Button
-        onPress={action('press')}
-        onPressStart={action('pressstart')}
-        onPressEnd={action('pressend')}
-        {...props}>
-        Default
-      </Button>
-      <Button
-        onPress={action('press')}
-        onPressStart={action('pressstart')}
-        onPressEnd={action('pressend')}
-        isDisabled
-        {...props}>
-        Disabled
-      </Button>
-      {props.variant !== 'cta' && (
-      <Button
-        onPress={action('press')}
-        onPressStart={action('pressstart')}
-        onPressEnd={action('pressend')}
-        isQuiet
-        {...props}>
-        Quiet
-      </Button>
-      )}
-    </Flex>
+    <View {...backgroundProps} {...viewProps}>
+      <Flex gap="size-200">
+        <Button
+          onPress={action('press')}
+          onPressStart={action('pressstart')}
+          onPressEnd={action('pressend')}
+          {...props}>
+          Default
+        </Button>
+        <Button
+          onPress={action('press')}
+          onPressStart={action('pressstart')}
+          onPressEnd={action('pressend')}
+          isDisabled
+          {...props}>
+          Disabled
+        </Button>
+        {props.variant !== 'cta' && (
+        <Button
+          onPress={action('press')}
+          onPressStart={action('pressstart')}
+          onPressEnd={action('pressend')}
+          isQuiet
+          {...props}>
+          Quiet
+        </Button>
+        )}
+      </Flex>
+    </View>
   );
 }

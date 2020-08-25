@@ -10,17 +10,20 @@
  * governing permissions and limitations under the License.
  */
 
-import {classNames, SlotProvider, useFocusableRef, useSlotProps, useStyleProps} from '@react-spectrum/utils';
+import {classNames, SlotProvider, useFocusableRef, useIndeterminate, useSlotProps, useStyleProps} from '@react-spectrum/utils';
 import {FocusableRef} from '@react-types/shared';
 import {FocusRing} from '@react-aria/focus';
 import {mergeProps} from '@react-aria/utils';
+import {ProgressCircle} from '@react-spectrum/progress';
 import React from 'react';
 import {SpectrumButtonProps} from '@react-types/button';
+import {SpectrumProgressCircleProps} from '@react-types/progress';
 import styles from '@adobe/spectrum-css-temp/components/button/vars.css';
 import {Text} from '@react-spectrum/text';
 import {useButton} from '@react-aria/button';
 import {useHover} from '@react-aria/interactions';
 import {useProviderProps} from '@react-spectrum/provider';
+import {VisuallyHidden} from '@react-aria/visually-hidden';
 
 // todo: CSS hasn't caught up yet, map
 let VARIANT_MAPPING = {
@@ -35,6 +38,7 @@ function Button(props: SpectrumButtonProps, ref: FocusableRef) {
     children,
     variant,
     isQuiet,
+    isPending,
     isDisabled,
     autoFocus,
     ...otherProps
@@ -43,11 +47,21 @@ function Button(props: SpectrumButtonProps, ref: FocusableRef) {
   let {buttonProps, isPressed} = useButton(props, domRef);
   let {hoverProps, isHovered} = useHover({isDisabled});
   let {styleProps} = useStyleProps(otherProps);
+  let {isIndeterminate} = useIndeterminate({isPending});
+  let progressCircleProps: SpectrumProgressCircleProps = {
+    isIndeterminate: true,
+    size: 'S',
+    'aria-hidden': true,
+    ...variant === 'overBackground' && {variant: 'overBackground'}
+  };
 
   let buttonVariant = variant;
   if (VARIANT_MAPPING[variant]) {
     buttonVariant = VARIANT_MAPPING[variant];
   }
+
+  // TODO: preserve width of hidden children, append localized "loading"
+  children = isIndeterminate ? <VisuallyHidden>{children}</VisuallyHidden> : children;
 
   return (
     <FocusRing focusRingClass={classNames(styles, 'focus-ring')} autoFocus={autoFocus}>
@@ -62,8 +76,11 @@ function Button(props: SpectrumButtonProps, ref: FocusableRef) {
             `spectrum-Button--${buttonVariant}`,
             {
               'spectrum-Button--quiet': isQuiet,
-              'is-disabled': isDisabled,
+              'is-disabled': isDisabled || isIndeterminate,
               'is-active': isPressed,
+              'is-hovered': isHovered,
+              'is-active': isPressed,
+              'is-pending': isPending,
               'is-hovered': isHovered
             },
             styleProps.className
@@ -82,6 +99,7 @@ function Button(props: SpectrumButtonProps, ref: FocusableRef) {
           {typeof children === 'string'
             ? <Text>{children}</Text>
             : children}
+          {isIndeterminate && <ProgressCircle {...progressCircleProps} />}
         </SlotProvider>
       </ElementType>
     </FocusRing>
