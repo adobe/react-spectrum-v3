@@ -18,12 +18,16 @@ governing permissions and limitations under the License.
 
   /* Default Marker Style is 'incomplete' */
   .spectrum-Steplist-marker {
-    border-color: var(--spectrum-steplist-incomplete-marker-color)
+    border-color: var(--spectrum-steplist-incomplete-marker-color);
+    color: transparent;
+
   }
 
   /* Default Line Style is 'incomplete' */
   .spectrum-Steplist-segment {
-    border-bottom-color: var(--spectrum-steplist-incomplete-segment-color)
+    .spectrum-Steplist-chevron {
+      color: var(--spectrum-steplist-incomplete-marker-color);
+    }
   }
 
   .spectrum-Steplist-item {
@@ -49,8 +53,24 @@ governing permissions and limitations under the License.
 
     &.is-complete,
     &.is-selected {
-      .spectrum-Steplist-segment {
-        border-bottom-color: var(--spectrum-steplist-complete-segment-color)
+      .spectrum-Steplist-marker {
+        color: var(--spectrum-global-color-gray-50);
+      }
+    }
+    &.is-hovered {
+      &.is-navigable {
+        .spectrum-Steplist-marker {
+          color: var(--spectrum-global-color-gray-50);
+        }
+      }
+    }
+    /* Steplist emphasized*/
+    &.is-emphasized {
+      .spectrum-Steplist-label {
+        color: var(--spectrum-global-color-blue-500)
+      }
+      .spectrum-Steplist-marker {
+        background-color: var(--spectrum-global-color-blue-500)
       }
     }
   }
@@ -59,11 +79,27 @@ governing permissions and limitations under the License.
   &.spectrum-Steplist--interactive {
     .spectrum-Steplist-item {
       /* Step Focused */
-      &:focus,
-      &.is-focused,
-      *:focus {
-        .spectrum-Steplist-marker {
-          background-color: var(--spectrum-steplist-current-marker-color-key-focus)
+      &.is-keyboard-focused {
+        .spectrum-Steplist-marker-focus {
+          border-color: var(--spectrum-steplist-current-marker-color-key-focus)
+        }
+      }
+      &.is-hovered {
+        &.is-navigable {
+          .spectrum-Steplist-marker {
+            background-color: var(--spectrum-steplist-current-marker-color)
+          }
+        }      
+      }
+      /* Steplist emphasized*/
+      &.is-emphasized {
+        &.is-navigable {
+          .spectrum-Steplist-label {
+            color: var(--spectrum-global-color-blue-500)
+          }
+          .spectrum-Steplist-marker {
+            background-color: var(--spectrum-global-color-blue-500)
+          }
         }
       }
     }

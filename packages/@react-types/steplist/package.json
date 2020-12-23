@@ -1,0 +1,19 @@
+{
+  "name": "@react-types/steplist",
+  "version": "3.0.0-alpha.1",
+  "description": "Spectrum UI components in React",
+  "license": "Apache-2.0",
+  "private": true,
+  "types": "src/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adobe/react-spectrum"
+  },
+  "dependencies": {
+    "@react-stately/list": "3.2.2",
+    "@react-types/shared": "^3.1.0"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0-rc.1"
+  }
+}

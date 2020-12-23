@@ -1,0 +1,66 @@
+{
+  "name": "@react-spectrum/steplist",
+  "version": "3.0.0-alpha.1",
+  "private": true,
+  "description": "Spectrum UI components in React",
+  "license": "Apache-2.0",
+  "main": "dist/main.js",
+  "module": "dist/module.js",
+  "types": "dist/types.d.ts",
+  "source": "src/index.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "targets": {
+    "main": {
+      "includeNodeModules": [
+        "@adobe/spectrum-css-temp"
+      ]
+    },
+    "module": {
+      "includeNodeModules": [
+        "@adobe/spectrum-css-temp"
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adobe/react-spectrum"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.6.2",
+    "@react-aria/breadcrumbs": "3.1.1",
+    "@react-aria/focus": "3.2.3",
+    "@react-aria/i18n": "3.2.0",
+    "@react-aria/interactions": "3.3.2",
+    "@react-aria/sidenav": "3.0.0-alpha.1",
+    "@react-aria/steplist": "^3.0.0-alpha.1",
+    "@react-aria/utils": "^3.0.0-alpha.1",
+    "@react-aria/virtualizer": "3.3.1",
+    "@react-aria/visually-hidden": "3.2.1",
+    "@react-spectrum/utils": "^3.0.0-alpha.1",
+    "@react-stately/layout": "3.2.0",
+    "@react-stately/steplist": "^3.0.0-alpha.1",
+    "@react-stately/tree": "3.1.2",
+    "@react-stately/virtualizer": "3.1.2",
+    "@react-types/breadcrumbs": "3.1.1",
+    "@react-types/shared": "3.3.0",
+    "@react-types/sidenav": "3.0.0-alpha.1",
+    "@react-types/steplist": "^3.0.0-alpha.1",
+    "@spectrum-icons/ui": "3.2.0"
+  },
+  "devDependencies": {
+    "@adobe/spectrum-css-temp": "^3.0.0-alpha.1"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0-rc.1",
+    "@react-spectrum/provider": "^3.0.0-rc.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

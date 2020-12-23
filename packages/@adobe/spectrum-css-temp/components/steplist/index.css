@@ -13,255 +13,271 @@ governing permissions and limitations under the License.
 @import '../commons/index.css';
 
 :root {
-  /* The width of a step */
-  --spectrum-steplist-step-width: 80px;
+  --spectrum-steplist-incomplete-marker-color: var(--spectrum-global-color-gray-400);
+  /* The color of the complete marker */
+  --spectrum-steplist-complete-marker-color: var(--spectrum-global-color-gray-700);
+  /* The color of the selected marker */
+  --spectrum-steplist-current-marker-color: var(--spectrum-global-color-gray-900);
 
   /* The diameter of the marker */
-  --spectrum-steplist-marker-diameter: 8px;
+  --spectrum-steplist-marker-diameter-small: 8px;
+  --spectrum-steplist-marker-diameter-medium: 16px;
+  --spectrum-steplist-marker-diameter-large: 24px;
+  --spectrum-steplist-marker-diameter-xlarge: 32px;
 
-  /* The width of the hit area */
-  --spectrum-steplist-marker-hitArea: 20px;
+  /* The width of the border */
+  --spectrum-steplist-marker-border-width: 2px;
+  --spectrum-steplist-marker-total-border-width: calc(var(--spectrum-steplist-marker-border-width) * 4);
 
   /* The height of the line */
   --spectrum-steplist-segment-height: 2px;
 
-  /* This gives enough space for one line of text */
-  --spectrum-steplist-topPadding: 22px;
-  --spectrum-steplist-small-topPadding: 11px;
+  /* The width of the marker including borders */ 
+  --spectrum-steplist-marker-box-width-small: calc(var(--spectrum-steplist-marker-diameter-small) + var(--spectrum-steplist-marker-total-border-width));
+  --spectrum-steplist-marker-box-width-medium: calc(var(--spectrum-steplist-marker-diameter-medium) + var(--spectrum-steplist-marker-total-border-width));
+  --spectrum-steplist-marker-box-width-large: calc(var(--spectrum-steplist-marker-diameter-large) + var(--spectrum-steplist-marker-total-border-width));
+  --spectrum-steplist-marker-box-width-xlarge: calc(var(--spectrum-steplist-marker-diameter-xlarge) + var(--spectrum-steplist-marker-total-border-width));
 
-  /* This gives enough space for the longest possible label */
-  --spectrum-steplist-sidePadding: 60px;
+  /* Distance between chevron and previous/next link */ 
+  --spectrum-steplist-chevron-link-gap-small: 6px;
+  --spectrum-steplist-chevron-link-gap-medium: 12px;
+  --spectrum-steplist-chevron-link-gap-large: 16px;
+  --spectrum-steplist-chevron-link-gap-xlarge: 24px;
 
-  /* Offset from the BOTTOM of the steplist */
-  --spectrum-steplist-label-labelOffset: 10px;
+  /* Distance between number bullet and label */ 
+  --spectrum-steplist-number-label-gap-small: 6px;
+  --spectrum-steplist-number-label-gap-medium: 8px;
+  --spectrum-steplist-number-label-gap-large: 12px;
+  --spectrum-steplist-number-label-gap-xlarge: 16px;
 
-  /* Font size of the label */
-  --spectrum-steplist-label-text-size: 12px;
+  /* The distance between steps in vertical  */
+  --spectrum-steplist-vertical-separation: 28px;
+
 }
 
 .spectrum-Steplist {
-  /* Contain child elements with positive z-index */
-  z-index: 0;
-  position: relative;
-
-  display: block;
-  vertical-align: top;
+  padding: 0;
   margin: 0;
-  padding-top: var(--spectrum-steplist-topPadding);
-  padding-left: var(--spectrum-steplist-sidePadding);
-  padding-right: var(--spectrum-steplist-sidePadding);
-
-  text-align: center;
-  white-space: nowrap;
-  font-size: 0; /* To remove html whitespace between inline elements */
-  line-height: 16px; /* in case the container changes it */
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 
-.spectrum-Steplist--interactive {
-  .spectrum-Steplist-label,
-  .spectrum-Steplist-markerContainer {
-    /* Show cursor on hit zone when clickable */
-    cursor: pointer;
-  }
-}
-
-/* Small (w/o label or tooltip) */
-.spectrum-Steplist--small {
-  padding: var(--spectrum-steplist-small-topPadding) 0;
-
-  .spectrum-Steplist-item {
-    padding: 0 40px 0 0;
-    width: 80px;
-
-    /* Disable Label */
-    .spectrum-Steplist-label {
-      display: none;
-    }
-
-    &:first-child, &:last-child {
-      width: 20px;
-    }
-
-    /* Disable first line */
-    &:first-child {
-      .spectrum-Steplist-markerContainer {
-        margin-left: -10px;
-      }
-    }
-
-    &:last-child {
-      .spectrum-Steplist-markerContainer {
-        margin-right: -10px;
-      }
-    }
-  }
+.spectrum-Steplist-marker-focus {
+  padding: var(--spectrum-steplist-marker-border-width);
+  border-width: var(--spectrum-steplist-marker-border-width);
+  border-color: transparent;
+  border-style: solid;
+  border-radius: 100%;
 }
 
 .spectrum-Steplist-item {
-  outline: none;
-  position: relative;
-  display: inline-block;
-  margin: 0;
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  grid-template-rows: auto;
+  grid-template-areas: 
+    "chevron link";
+  .spectrum-Steplist-segment {
+    grid-area: chevron;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
 
-  /* Don't let tooltips mess up alignment */
-  vertical-align: bottom;
-
-  box-sizing: content-box;
-  width: var(--spectrum-steplist-step-width);
-  padding: 0 calc(var(--spectrum-steplist-step-width) / 2) 0 0;
+  /* Focus */
+  &:focus,
+  &.is-focused,
+  *:focus {
+    outline: none;
+  }
 
   /* Completed State */
   &.is-complete {
     .spectrum-Steplist-marker {
       border: none;
     }
-
-    /* The next step's line should be solid */
-    & + .spectrum-Steplist-item .spectrum-Steplist-segment {
-      border-bottom-width: var(--spectrum-steplist-segment-height);
-      border-bottom-style: solid;
-    }
   }
 
   /* Selected state */
   &.is-selected {
-    /* Focus */
-    &:focus,
-    &.is-focused,
-    *:focus {
-      outline: none;
+   .spectrum-Steplist-marker {
+      border: none;
     }
-    .spectrum-Steplist-marker {
+  }
+  &.is-navigable .spectrum-Steplist-link {
+    cursor: pointer;
+  }
+  &.is-hovered {
+    &.is-navigable .spectrum-Steplist-marker {
       border: none;
     }
   }
 }
 
-.spectrum-Steplist-label {
-  position: absolute;
-  left: 50%;
-  bottom: var(--spectrum-steplist-label-labelOffset);
-
-  display: block;
-  width: calc(var(--spectrum-steplist-step-width) * 1.5);
-
-  font-size: var(--spectrum-steplist-label-text-size);
-  white-space: normal;
-
-  transform: translateX(-50%);
+.spectrum-Steplist-link {
+  grid-area: link;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  grid-template-areas: "number label";
+  
+  .spectrum-Steplist-marker {
+    grid-area: number;
+    outline: none;
+    box-sizing: border-box; /* So we can stroke nicely */
+    border-style: solid;
+    border-width: var(--spectrum-steplist-marker-border-width);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+  }
+  .spectrum-Steplist-label {
+    grid-area: label;
+  }
 }
 
-.spectrum-Steplist-markerContainer {
-  display: block;
+/* Small size */
+.spectrum-Steplist--small {
+  line-height: calc(var(--spectrum-steplist-marker-diameter-small) + (var(--spectrum-steplist-marker-border-width) * 4));
+  column-gap: calc(var(--spectrum-steplist-chevron-link-gap-small) + (var(--spectrum-steplist-marker-border-width) * 2));
+  font-size: var(--spectrum-global-dimension-font-size-50);     
 
-  z-index: 2;
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
+  .spectrum-Steplist-item {
+    grid-template-columns: var(--spectrum-steplist-marker-box-width-small) auto;
+    grid-column-gap: var(--spectrum-steplist-chevron-link-gap-small);
+  }
+  .spectrum-Steplist-link {
+    grid-column-gap: var(--spectrum-steplist-number-label-gap-small); 
 
-  width: var(--spectrum-steplist-marker-hitArea);
-  height: var(--spectrum-steplist-marker-hitArea);
-
-  margin-left: calc(calc(var(--spectrum-steplist-marker-hitArea) / 2) * -1);
+    .spectrum-Steplist-marker {
+      line-height: var(--spectrum-steplist-marker-diameter-small);
+      width: var(--spectrum-steplist-marker-diameter-small);
+      height: var(--spectrum-steplist-marker-diameter-small);
+      border-radius: var(--spectrum-steplist-marker-diameter-small);
+      font-size: 0;     
+    }
+  }
+  .spectrum-Steplist-chevron {
+    transform: scale(0.9);
+  }
 }
 
-/* Circle step marker */
-.spectrum-Steplist-marker {
-  box-sizing: border-box; /* So we can stroke nicely */
-  display: block;
+/* Medium size */
+.spectrum-Steplist--medium {
+  line-height: calc(var(--spectrum-steplist-marker-diameter-medium) + (var(--spectrum-steplist-marker-border-width) * 4));
+  column-gap: calc(var(--spectrum-steplist-chevron-link-gap-medium) + (var(--spectrum-steplist-marker-border-width) * 2));
+  font-size: var(--spectrum-global-dimension-font-size-75);     
 
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: calc(calc(var(--spectrum-steplist-marker-diameter) / 2) * -1);
-  margin-left: calc(calc(var(--spectrum-steplist-marker-diameter) / 2) * -1);
+  .spectrum-Steplist-item {
+    grid-template-columns: var(--spectrum-steplist-marker-box-width-medium) auto;
+    grid-column-gap: var(--spectrum-steplist-chevron-link-gap-medium);
+  }
+  .spectrum-Steplist-link {
+    grid-column-gap: var(--spectrum-steplist-number-label-gap-medium); 
 
-  width: var(--spectrum-steplist-marker-diameter);
-  height: var(--spectrum-steplist-marker-diameter);
-
-  border-radius: var(--spectrum-steplist-marker-diameter);
-
-  border: 2px solid;
-  border-color: transparent;
-  background: transparent;
+    .spectrum-Steplist-marker {
+      line-height: var(--spectrum-steplist-marker-diameter-medium);
+      width: var(--spectrum-steplist-marker-diameter-medium);
+      height: var(--spectrum-steplist-marker-diameter-medium);
+      border-radius: var(--spectrum-steplist-marker-diameter-medium);
+      font-size: var(--spectrum-global-dimension-font-size-50);     
+    }
+  }
 }
 
-/* Step line */
-.spectrum-Steplist-segment {
-  display: block;
-  z-index: 1;
-  position: absolute;
-  right: calc(var(--spectrum-steplist-step-width) - calc(var(--spectrum-steplist-marker-diameter) * 1.5));
+/* large size */
+.spectrum-Steplist--large {
+  line-height: calc(var(--spectrum-steplist-marker-diameter-large) + (var(--spectrum-steplist-marker-border-width) * 4));
+  column-gap: calc(var(--spectrum-steplist-chevron-link-gap-large) + (var(--spectrum-steplist-marker-border-width) * 2));
+  font-size: var(--spectrum-global-dimension-font-size-150);     
 
-  box-sizing: content-box;
-  width: calc(calc(var(--spectrum-steplist-step-width) * 1.5) - calc(var(--spectrum-steplist-marker-diameter) * 2));
-  bottom: calc(calc(var(--spectrum-steplist-segment-height) / 2) * -1);
+  .spectrum-Steplist-item {
+    grid-template-columns: var(--spectrum-steplist-marker-box-width-large) auto;
+    grid-column-gap: var(--spectrum-steplist-chevron-link-gap-large);
+  }
+  .spectrum-Steplist-link {
+    grid-column-gap: var(--spectrum-steplist-number-label-gap-large); 
 
-  /* Default is dashed */
-  border-bottom-width: var(--spectrum-steplist-segment-height);
-  border-bottom-style: dashed;
+    .spectrum-Steplist-marker {
+      line-height: var(--spectrum-steplist-marker-diameter-large);
+      width: var(--spectrum-steplist-marker-diameter-large);
+      height: var(--spectrum-steplist-marker-diameter-large);
+      border-radius: var(--spectrum-steplist-marker-diameter-large);
+      font-size: var(--spectrum-global-dimension-font-size-100);     
+    }
+  }
+  .spectrum-Steplist-chevron {
+    transform: scale(1.25);
+  }
 }
+
+/* xlarge size */
+.spectrum-Steplist--xlarge {
+  line-height: calc(var(--spectrum-steplist-marker-diameter-xlarge) + (var(--spectrum-steplist-marker-border-width) * 4));
+  column-gap: calc(var(--spectrum-steplist-chevron-link-gap-xlarge) + (var(--spectrum-steplist-marker-border-width) * 2));
+  font-size: var(--spectrum-global-dimension-font-size-200);     
+
+  .spectrum-Steplist-item {
+    grid-template-columns: var(--spectrum-steplist-marker-box-width-xlarge) auto;
+    grid-column-gap: var(--spectrum-steplist-chevron-link-gap-xlarge);
+  }
+  .spectrum-Steplist-link {
+    grid-column-gap: var(--spectrum-steplist-number-label-gap-xlarge); 
+
+    .spectrum-Steplist-marker {
+      line-height: var(--spectrum-steplist-marker-diameter-xlarge);
+      width: var(--spectrum-steplist-marker-diameter-xlarge);
+      height: var(--spectrum-steplist-marker-diameter-xlarge);
+      border-radius: var(--spectrum-steplist-marker-diameter-xlarge);
+      font-size: var(--spectrum-global-dimension-font-size-150);     
+    }
+  }
+  .spectrum-Steplist-chevron {
+    transform: scale(1.5);
+  }
+}
+
 
 /* First step overrides */
 .spectrum-Steplist-item:first-child {
-  .spectrum-Steplist-markerContainer {
-    left: 0;
-  }
-
-  .spectrum-Steplist-label {
-    left: 0;
-  }
-
+  grid-template-areas: "link";
+  grid-template-columns: auto;
   .spectrum-Steplist-segment {
     /* Not visible for first step */
     display: none;
   }
 }
 
-/* Last step overrides */
-.spectrum-Steplist-item:last-child {
-  .spectrum-Steplist-label {
-    left: auto;
-    right: 0;
 
-    transform: translateX(50%);
+/* vertical version */
+.spectrum-Steplist--vertical {
+  flex-direction: column;
+  gap: 0;
+  .spectrum-Steplist-item {
+    grid-template-areas: "chevron ."
+                         "link link";
+    justify-items: left;
+    &.is-navigable {
+      .spectrum-Steplist-segment {
+        border-style: solid;
+      }
+    }
   }
-
-  .spectrum-Steplist-markerContainer {
-    left: auto;
-    right: 0;
-
-    margin-left: 0;
-    margin-right: calc(calc(var(--spectrum-steplist-marker-hitArea) / 2) * -1);
+  .spectrum-Steplist-chevron {
+    display: none;
   }
-
   .spectrum-Steplist-segment {
-    right: var(--spectrum-steplist-marker-diameter);
-    left: auto;
-  }
-}
-
-.spectrum-Steplist-item:first-child,
-.spectrum-Steplist-item:last-child {
-  width: calc(calc(var(--spectrum-steplist-step-width) / 2) - calc(var(--spectrum-steplist-marker-diameter) * 2.5));
-}
-
-/* Single step */
-.spectrum-Steplist-item:only-child {
-  .spectrum-Steplist-label {
-    /* Be centered */
-    left: 50%;
-
-    /* Override last-child bits */
-    transform: translate(-50%);
-  }
-
-  .spectrum-Steplist-markerContainer {
-    /* Be centered */
-    left: 50%;
-
-    /* Override last-child bits */
-    margin-right: 0;
-    margin-left: calc(calc(var(--spectrum-steplist-marker-hitArea) / 2) * -1);
-  }
+    grid-area: chevron;
+    justify-self: center;
+    display: block;
+    box-sizing: content-box;
+    height: var(--spectrum-steplist-vertical-separation);
+    width: 0;
+    border-width: 0;
+    border-left-width: 2px;
+    border-left-style: dashed;
+  }  
 }
