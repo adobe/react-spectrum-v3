@@ -36,9 +36,11 @@ function Tray(props: TrayProps, ref: DOMRef<HTMLDivElement>) {
   let domRef = useDOMRef(ref);
   let {styleProps} = useStyleProps(props);
 
+  let underlayRef = useRef(null);
+
   return (
-    <Overlay {...otherProps}>
-      <Underlay />
+    <Overlay {...otherProps} nodeRef={underlayRef}>
+      <Underlay ref={underlayRef} />
       <TrayWrapper
         {...styleProps}
         onClose={onClose}

@@ -15,6 +15,7 @@ import {Overlay} from '@react-spectrum/overlays';
 import React, {ReactElement, useRef} from 'react';
 import {SpectrumTooltipTriggerProps} from '@react-types/tooltip';
 import {TooltipContext} from './context';
+import {unwrapDOMRef} from '@react-spectrum/utils';
 import {useOverlayPosition} from '@react-aria/overlays';
 import {useTooltipTrigger} from '@react-aria/tooltip';
 import {useTooltipTriggerState} from '@react-stately/tooltip';
@@ -31,7 +32,22 @@ function TooltipTrigger(props: SpectrumTooltipTriggerProps) {
     trigger: triggerAction
   } = props;
 
-  let [trigger, tooltip] = React.Children.toArray(children);
+  let tooltipRef = useRef();
+
+  let [trigger, tooltip] = React.Children.toArray(children) as [ReactElement, ReactElement];
+
+  // this does mean that we can't have some element wrapping the Tooltip
+  // we'd need to do it through context if we wanted to allow for that
+  let tooltipWithRef = React.cloneElement(tooltip, {
+    ref: node => {
+      tooltipRef.current = node;
+      // @ts-ignore react forwardRef doesn't get typed quite right, so we ignore these two warnings about accessing ref
+      if (tooltip.ref) {
+        // @ts-ignore
+        tooltip.ref.current = node;
+      }
+    }
+  });
 
   let state = useTooltipTriggerState(props);
 
@@ -66,8 +82,8 @@ function TooltipTrigger(props: SpectrumTooltipTriggerProps) {
           arrowProps,
           ...tooltipProps
         }}>
-        <Overlay isOpen={state.isOpen}>
-          {tooltip}
+        <Overlay isOpen={state.isOpen} nodeRef={unwrapDOMRef(tooltipRef)}>
+          {tooltipWithRef}
         </Overlay>
       </TooltipContext.Provider>
     </FocusableProvider>

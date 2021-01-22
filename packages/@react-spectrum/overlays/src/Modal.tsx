@@ -17,7 +17,7 @@ import {ModalProps} from '@react-types/overlays';
 import modalStyles from '@adobe/spectrum-css-temp/components/modal/vars.css';
 import {Overlay} from './Overlay';
 import overrideStyles from './overlays.css';
-import React, {forwardRef, HTMLAttributes, ReactNode, RefObject} from 'react';
+import React, {forwardRef, HTMLAttributes, ReactNode, RefObject, useRef} from 'react';
 import {Underlay} from './Underlay';
 import {useModal, useOverlay, usePreventScroll} from '@react-aria/overlays';
 
@@ -35,9 +35,11 @@ function Modal(props: ModalProps, ref: DOMRef<HTMLDivElement>) {
   let domRef = useDOMRef(ref);
   let {styleProps} = useStyleProps(props);
 
+  let underlayRef = useRef(null);
+
   return (
-    <Overlay {...otherProps}>
-      <Underlay />
+    <Overlay {...otherProps} nodeRef={underlayRef}>
+      <Underlay ref={underlayRef} />
       <ModalWrapper
         {...styleProps}
         onClose={onClose}

@@ -18,7 +18,7 @@ import React, {useCallback, useState} from 'react';
 import ReactDOM from 'react-dom';
 
 function Overlay(props: OverlayProps, ref: DOMRef<HTMLDivElement>) {
-  let {children, isOpen, container, onEnter, onEntering, onEntered, onExit, onExiting, onExited} = props;
+  let {children, isOpen, container, onEnter, onEntering, onEntered, onExit, onExiting, onExited, nodeRef} = props;
   let [exited, setExited] = useState(!isOpen);
 
   let handleEntered = useCallback(() => {
@@ -52,7 +52,8 @@ function Overlay(props: OverlayProps, ref: DOMRef<HTMLDivElement>) {
         onExited={handleExited}
         onEnter={onEnter}
         onEntering={onEntering}
-        onEntered={handleEntered}>
+        onEntered={handleEntered}
+        nodeRef={nodeRef}>
         {children}
       </OpenTransition>
     </Provider>
