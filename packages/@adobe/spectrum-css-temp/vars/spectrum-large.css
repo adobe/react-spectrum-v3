@@ -196,6 +196,12 @@
   --spectrum-dropdown-thumbnail-small-touch-hit-x: var(--spectrum-global-dimension-static-size-50);
   --spectrum-dropdown-thumbnail-small-touch-hit-y: var(--spectrum-global-dimension-static-size-50);
   --spectrum-fieldbutton-quiet-min-width: var(--spectrum-global-dimension-size-200);
+  /* BEGIN RSP PATCH */
+  /* padding for quiet textfield input field labels following XD values (TextField beta 5.3) */
+  --spectrum-fieldlabel-quiet-padding-top: 6px;
+  --spectrum-fieldlabel-quiet-padding-bottom: 0px;
+  --spectrum-fieldlabel-quiet-text-line-height: 17px;
+  /* END RSP PATCH */
   --spectrum-icon-arrow-down-small-height: 12px;
   --spectrum-icon-arrow-left-medium-height: 12px;
   --spectrum-icon-checkmark-medium-width: 16px;
@@ -387,6 +393,12 @@
   --spectrum-textfield-quiet-touch-hit-x: var(--spectrum-global-dimension-static-size-50);
   --spectrum-textfield-quiet-touch-hit-y: var(--spectrum-global-dimension-static-size-50);
   --spectrum-textfield-quiet-icon-frame: var(--spectrum-global-dimension-static-size-500);
+  /* BEGIN RSP PATCH */
+  /* padding for quiet textfield inputs following XD values (TextField beta 5.3) */
+  --spectrum-textfield-quiet-padding-top: 9px;
+  --spectrum-textfield-quiet-padding-bottom: 10px;
+  --spectrum-textfield-quiet-text-line-height: 20px;
+  /* END RSP PATCH */
   --spectrum-tool-touch-hit-x: var(--spectrum-global-dimension-static-size-50);
   --spectrum-tool-touch-hit-y: var(--spectrum-global-dimension-static-size-50);
   --spectrum-tool-high-emphasis-touch-hit-x: var(--spectrum-global-dimension-static-size-50);

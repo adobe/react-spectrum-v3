@@ -29,6 +29,7 @@ function Field(props: SpectrumFieldProps, ref: RefObject<HTMLElement>) {
     labelProps,
     elementType,
     wrapperClassName,
+    isQuiet,
     ...otherProps
   } = props;
   let {styleProps} = useStyleProps(otherProps);
@@ -56,6 +57,7 @@ function Field(props: SpectrumFieldProps, ref: RefObject<HTMLElement>) {
         className={labelWrapperClass}>
         <Label
           {...labelProps}
+          isQuiet={isQuiet}
           labelPosition={labelPosition}
           labelAlign={labelAlign}
           isRequired={isRequired}

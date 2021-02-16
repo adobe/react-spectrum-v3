@@ -177,6 +177,7 @@ function TextFieldBase(props: TextFieldBaseProps, ref: Ref<TextFieldRef>) {
         className={labelWrapperClass}>
         <Label
           {...labelProps}
+          isQuiet={isQuiet}
           labelPosition={labelPosition}
           labelAlign={labelAlign}
           isRequired={isRequired}

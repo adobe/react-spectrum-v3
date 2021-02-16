@@ -106,6 +106,10 @@ storiesOf('TextField', module)
     'no visible label',
     () => render({label: null, 'aria-label': 'Street address'})
   )
+  .add(
+    'no visible label, quiet',
+    () => render({label: null, 'aria-label': 'Street address', isQuiet: true})
+  )
   .add('custom width',
     () => render({icon: <Info />, validationState: 'invalid', width: '300px'})
   )

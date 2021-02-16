@@ -179,6 +179,10 @@ governing permissions and limitations under the License.
     /* Treat all quiet inputs and textareas the same */
     resize: none;
     overflow-y: hidden;
+
+    padding-top: var(--spectrum-textfield-quiet-padding-top);
+    padding-bottom: var(--spectrum-textfield-quiet-padding-bottom);
+    line-height: var(--spectrum-textfield-quiet-text-line-height);
   }
 
   .spectrum-Textfield--valid & {

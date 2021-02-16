@@ -35,6 +35,7 @@ function Label(props: SpectrumLabelProps, ref: DOMRef<HTMLLabelElement>) {
     for: labelFor,
     elementType: ElementType = 'label',
     onClick,
+    isQuiet,
     ...otherProps
   } = props;
 
@@ -54,7 +55,8 @@ function Label(props: SpectrumLabelProps, ref: DOMRef<HTMLLabelElement>) {
     'spectrum-FieldLabel',
     {
       'spectrum-FieldLabel--positionSide': labelPosition === 'side',
-      'spectrum-FieldLabel--alignEnd': labelAlign === 'end'
+      'spectrum-FieldLabel--alignEnd': labelAlign === 'end',
+      'spectrum-FieldLabel--quiet': isQuiet
     },
     styleProps.className
   );

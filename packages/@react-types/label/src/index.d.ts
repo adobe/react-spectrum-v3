@@ -25,7 +25,8 @@ export interface SpectrumLabelProps extends LabelProps, DOMProps, StyleProps, HT
   labelAlign?: Alignment, // default start
   isRequired?: boolean,
   necessityIndicator?: NecessityIndicator, // default icon
-  includeNecessityIndicatorInAccessibilityName?: boolean
+  includeNecessityIndicatorInAccessibilityName?: boolean,
+  isQuiet?: boolean
 }
 
 export interface SpectrumFieldProps extends SpectrumLabelProps {

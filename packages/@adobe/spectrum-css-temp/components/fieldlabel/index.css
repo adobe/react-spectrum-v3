@@ -78,6 +78,14 @@ governing permissions and limitations under the License.
     .spectrum-Field-field--multiline {
       flex: 1 1 auto;
     }
+
+    .spectrum-FieldLabel--quiet {
+      padding-bottom: var(--spectrum-fieldlabel-quiet-padding-bottom);
+      padding-top: var(--spectrum-fieldlabel-quiet-padding-top);
+      line-height: var(--spectrum-fieldlabel-quiet-text-line-height);
+      /* Negative margin so the label is positioned properly */
+      margin-bottom: -3px;
+    }
   }
 
   /* The side label variant of Field is inline, and fills as much space as needed
