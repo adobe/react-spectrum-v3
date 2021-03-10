@@ -4174,6 +4174,15 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
+"@react-aria/interactions@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@react-aria/interactions/-/interactions-3.1.0.tgz#2d9ea4d9751c0bb859f900c1a29aed74bc4b45a9"
+  integrity sha512-iu+O/qsRs7o7J0262eijbgyovNXXGHEZMtpWjJXz0NGKD870iAtuGu3irUewQJkf1t8w+qDGycATTkuV9FKhfw==
+  dependencies:
+    "@babel/runtime" "^7.6.2"
+    "@react-aria/utils" "^3.1.0"
+    "@react-types/shared" "^3.1.0"
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"

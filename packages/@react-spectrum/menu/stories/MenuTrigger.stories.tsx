@@ -487,6 +487,24 @@ storiesOf('MenuTrigger', module)
         <Item key="3">Three</Item>
       </Menu>
     )
+  )
+  .add(
+    'MenuTrigger with trigger="longPress"',
+    () => (
+      <>
+        <div style={{display: 'flex', width: 'auto', margin: '250px 0'}}>
+          <MenuTrigger onOpenChange={action('onOpenChange')} trigger="longPress">
+            <ActionButton
+              onPress={action('press')}
+              onPressStart={action('pressstart')}
+              onPressEnd={action('pressend')}>
+              Menu Button
+            </ActionButton>
+            {defaultMenu}
+          </MenuTrigger>
+        </div>
+      </>
+    )
   );
 
 let customMenuItem = (item) => {

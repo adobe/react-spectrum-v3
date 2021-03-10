@@ -14,6 +14,7 @@ import {act, fireEvent} from '@testing-library/react';
 import type {ITypeOpts} from '@testing-library/user-event';
 import userEvent from '@testing-library/user-event';
 
+const LONG_PRESS_DEFAULT_THRESHOLD_IN_MS = 500;
 // Triggers a "press" event on an element.
 // TODO: move to somewhere more common
 export function triggerPress(element, opts = {}) {
@@ -80,6 +81,14 @@ export function installPointerEvent() {
   });
 }
 
+export function triggerTouchPress(element) {
+  act(() => {
+    fireEvent.touchStart(element, {targetTouches: [{}]});
+  });
+  act(() => {
+    fireEvent.touchEnd(element, {targetTouches: [{}]});
+  });
+}
 /**
  * Must **not** be called inside an `act` callback!
  *
@@ -97,4 +106,27 @@ export function typeText(el: HTMLElement, value: string, opts?: ITypeOpts) {
 
     skipClick = true;
   }
+}
+
+
+type pointerType = 'mouse' | 'touch'
+
+export function triggerLongPress(button: HTMLElement, pointerType: pointerType) {
+  act(() => {
+    if (pointerType === 'touch') {
+      fireEvent.touchStart(button, {targetTouches: [{}]});
+      setTimeout(() => {
+        fireEvent.touchEnd(button, {targetTouches: [{}]});
+      }, LONG_PRESS_DEFAULT_THRESHOLD_IN_MS);
+  
+    } else {
+      fireEvent.mouseDown(button, {detail: 1});
+      setTimeout(() => {
+        fireEvent.mouseUp(button, {detail: 1});
+      }, LONG_PRESS_DEFAULT_THRESHOLD_IN_MS);
+    }
+  
+    jest.advanceTimersByTime(LONG_PRESS_DEFAULT_THRESHOLD_IN_MS);
+  
+  });
 }

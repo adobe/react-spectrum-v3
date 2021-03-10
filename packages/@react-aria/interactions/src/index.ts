@@ -18,5 +18,6 @@ export * from './useFocusWithin';
 export * from './useHover';
 export * from './useInteractOutside';
 export * from './useKeyboard';
+export * from './useLongPress';
 export * from './useMove';
 export * from './usePress';

@@ -14,8 +14,14 @@ import {Alignment, AriaLabelingProps, CollectionBase, DOMProps, FocusStrategy, M
 import {Key, ReactElement} from 'react';
 import {OverlayTriggerProps} from '@react-types/overlays';
 
+export type MenuTriggerType = 'press' | 'longPress'
+
 export interface MenuTriggerProps extends OverlayTriggerProps {
-  // trigger?: 'press' | 'longPress',
+  /**
+   * Determines trigger behavior. When set to longPress, it opens the menu after a delay of 500ms and also enables using Alt+Arrow(Up/Down) as a long press gesture alternative.
+   * @default 'press'
+   */
+  trigger?: MenuTriggerType,
   /**
    * Alignment of the menu relative to the trigger.
    * @default 'start'

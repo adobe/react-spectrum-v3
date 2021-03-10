@@ -13,12 +13,15 @@
 import {AriaButtonProps} from '@react-types/button';
 import {HTMLAttributes, RefObject} from 'react';
 import {MenuTriggerState} from '@react-stately/menu';
-import {useId} from '@react-aria/utils';
+import {MenuTriggerType} from '@react-types/menu';
+import {mergeProps, useId} from '@react-aria/utils';
+import {useLongPress} from '@react-aria/interactions';
 import {useOverlayTrigger} from '@react-aria/overlays';
 
 interface MenuTriggerAriaProps {
   /** The type of menu that the menu trigger opens. */
-  type?: 'menu' | 'listbox'
+  type?: 'menu' | 'listbox',
+  trigger?: MenuTriggerType
 }
 
 interface MenuTriggerAria {
@@ -36,50 +39,81 @@ interface MenuTriggerAria {
  */
 export function useMenuTrigger(props: MenuTriggerAriaProps, state: MenuTriggerState, ref: RefObject<HTMLElement>): MenuTriggerAria {
   let {
-    type = 'menu' as MenuTriggerAriaProps['type']
+    type = 'menu' as MenuTriggerAriaProps['type'],
+    trigger
   } = props;
 
   let menuTriggerId = useId();
   let {triggerProps, overlayProps} = useOverlayTrigger({type}, state, ref);
+  
+  const handleArrowKeyBehaviour = (e) => {
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        state.toggle('first');
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        state.toggle('last');
+        break;
+    }
+  };
 
-  let onKeyDown = (e) => {
+  const handleLongPressAltBehaviour = (e) => {
+    if (e.altKey) {
+      handleArrowKeyBehaviour(e);
+    }
+  };
+  
+  const onKeyDown = (e) => {
     if ((typeof e.isDefaultPrevented === 'function' && e.isDefaultPrevented()) || e.defaultPrevented) {
       return;
     }
 
     if (ref && ref.current) {
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault();
-          state.toggle('first');
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          state.toggle('last');
-          break;
+      if (trigger === 'longPress') {
+        handleLongPressAltBehaviour(e);
+      } else  {
+        handleArrowKeyBehaviour(e);
       }
     }
   };
 
-  return {
-    menuTriggerProps: {
-      ...triggerProps,
-      id: menuTriggerId,
-      onPressStart(e) {
-        // For consistency with native, open the menu on mouse/key down, but touch up.
-        if (e.pointerType !== 'touch') {
-          // If opened with a keyboard or screen reader, auto focus the first item.
-          // Otherwise, the menu itself will be focused.
-          state.toggle(e.pointerType === 'keyboard' || e.pointerType === 'virtual' ? 'first' : null);
-        }
-      },
-      onPress(e) {
-        if (e.pointerType === 'touch') {
-          state.toggle();
-        }
-      },
-      onKeyDown
+  const longPressProps = useLongPress({
+    // Close on press start as menu can be in a open state after onLongPress.
+    onPressStart() {
+      state.close();
     },
+    onLongPress() {
+      state.open('first');
+    }
+  });
+
+  const pressProps = {
+    onPressStart(e) {
+      // For consistency with native, open the menu on mouse/key down, but touch up.
+      if (e.pointerType !== 'touch') {
+        // If opened with a keyboard or screen reader, auto focus the first item.
+        // Otherwise, the menu itself will be focused.
+        state.toggle(e.pointerType === 'keyboard' || e.pointerType === 'virtual' ? 'first' : null);
+      }
+    },
+    onPress(e) {
+      if (e.pointerType === 'touch') {
+        state.toggle();
+      }
+    }
+  };
+
+  let menuTriggerProps = {
+    ...triggerProps,
+    id: menuTriggerId
+  };
+
+  menuTriggerProps = mergeProps(menuTriggerProps, trigger === 'longPress' ? longPressProps : pressProps, {onKeyDown});
+
+  return {
+    menuTriggerProps,
     menuProps: {
       ...overlayProps,
       'aria-labelledby': menuTriggerId
