@@ -50,13 +50,11 @@ export function VirtualizedListBoxExample(props) {
       for (let item of e.items) {
         if (item.kind === 'text') {
           let type: string;
-          if (props.accept) {
-            if (item.types.has(props.accept)) {
-              type = props.accept;
-            }
-          } else if (item.types.has('folder')) {
+          if (props.accept && item.types.has(props.accept)) {
+            type = props.accept;
+          } else if (!props.accept && item.types.has('folder')) {
             type = 'folder';
-          } else if (item.types.has('item')) {
+          } else if (!props.accept && item.types.has('item')) {
             type = 'item';
           }
 

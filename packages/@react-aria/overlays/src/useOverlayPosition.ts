@@ -87,21 +87,6 @@ export function useOverlayPosition(props: AriaPositionProps): PositionAria {
     placement: undefined
   });
 
-  let deps = [
-    shouldUpdatePosition,
-    placement,
-    overlayRef.current,
-    targetRef.current,
-    scrollRef.current,
-    containerPadding,
-    shouldFlip,
-    boundaryElement,
-    offset,
-    crossOffset,
-    isOpen,
-    direction
-  ];
-
   let updatePosition = useCallback(() => {
     if (shouldUpdatePosition === false || !isOpen || !overlayRef.current || !targetRef.current || !scrollRef.current || !boundaryElement) {
       return;
@@ -120,10 +105,10 @@ export function useOverlayPosition(props: AriaPositionProps): PositionAria {
         crossOffset
       })
     );
-  }, deps);
+  }, [shouldUpdatePosition, placement, overlayRef, targetRef, scrollRef, containerPadding, shouldFlip, boundaryElement, offset, crossOffset, isOpen, direction]);
 
   // Update position when anything changes
-  useLayoutEffect(updatePosition, deps);
+  useLayoutEffect(updatePosition, [updatePosition]);
 
   // Update position on window resize
   useResize(updatePosition);

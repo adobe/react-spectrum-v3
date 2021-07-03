@@ -196,7 +196,7 @@ export function useHover(props: HoverProps): HoverResult {
     if (isDisabled) {
       triggerHoverEnd({target: state.target}, state.pointerType);
     }
-  }, [isDisabled]);
+  }, [triggerHoverEnd, isDisabled, state.target, state.pointerType]);
 
   return {
     hoverProps,

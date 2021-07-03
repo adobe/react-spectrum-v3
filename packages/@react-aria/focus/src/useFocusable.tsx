@@ -12,7 +12,7 @@
 
 import {FocusableDOMProps, FocusableProps} from '@react-types/shared';
 import {mergeProps, useSyncRef} from '@react-aria/utils';
-import React, {HTMLAttributes, MutableRefObject, ReactNode, RefObject, useContext, useEffect} from 'react';
+import React, {HTMLAttributes, MutableRefObject, ReactNode, RefObject, useContext, useEffect, useMemo} from 'react';
 import {useFocus, useKeyboard} from '@react-aria/interactions';
 
 interface FocusableOptions extends FocusableProps, FocusableDOMProps {
@@ -32,7 +32,8 @@ interface FocusableContextValue extends FocusableProviderProps {
 let FocusableContext = React.createContext<FocusableContextValue>(null);
 
 function useFocusableContext(ref: RefObject<HTMLElement>): FocusableContextValue {
-  let context = useContext(FocusableContext) || {};
+  let context = useContext(FocusableContext);
+  context = useMemo(() => context || {}, [context]);
   useSyncRef(context, ref);
 
   return context;

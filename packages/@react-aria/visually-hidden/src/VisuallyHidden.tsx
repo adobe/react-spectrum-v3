@@ -70,7 +70,7 @@ export function useVisuallyHidden(props: VisuallyHiddenProps = {}): VisuallyHidd
     } else {
       return styles;
     }
-  }, [isFocused]);
+  }, [isFocused, style]);
 
   return {
     visuallyHiddenProps: {

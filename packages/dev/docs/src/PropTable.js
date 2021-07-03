@@ -106,6 +106,7 @@ function groupProps(props) {
     for (let propName of GROUPS[group]) {
       if (propName instanceof RegExp) {
         for (let key in props) {
+          // eslint-disable-next-line max-depth
           if (propName.test(key)) {
             groupProps[key] = props[key];
             delete props[key];

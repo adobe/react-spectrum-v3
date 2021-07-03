@@ -65,6 +65,8 @@ function ButtonGroup(props: SpectrumButtonGroupProps, ref: DOMRef<HTMLDivElement
         yield computeHasOverflow();
       });
     }
+  // We need scale and children in dependency array since it will affect overflow calcuation
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [domRef, orientation, scale, setHasOverflow, children]);
 
   // There are two main reasons we need to remeasure:
@@ -77,7 +79,7 @@ function ButtonGroup(props: SpectrumButtonGroupProps, ref: DOMRef<HTMLDivElement
   let parent = useRef<HTMLElement>();
   useEffect(() => {
     parent.current = domRef.current.parentElement;
-  }, [domRef.current]);
+  }, [domRef]);
   useResizeObserver({ref: parent, onResize: checkForOverflow});
 
   return (

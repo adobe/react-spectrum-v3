@@ -75,7 +75,7 @@ export function useSSRSafeId(defaultId?: string): string {
     console.warn('When server rendering, you must wrap your application in an <SSRProvider> to ensure consistent ids are generated between the client and server.');
   }
 
-  return useMemo(() => defaultId || `react-aria-${ctx.prefix}-${++ctx.current}`, [defaultId]);
+  return useMemo(() => defaultId || `react-aria-${ctx.prefix}-${++ctx.current}`, [defaultId, ctx]);
 }
 
 /**

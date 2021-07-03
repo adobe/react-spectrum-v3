@@ -11,7 +11,7 @@
  */
 
 import {ActionButton} from '@react-spectrum/button';
-import {classNames, SlotProvider, unwrapDOMRef, useDOMRef, useHasChild, useStyleProps} from '@react-spectrum/utils';
+import {classNames, SlotProvider, useDOMRef, useHasChild, useStyleProps, useUnwrapDOMRef} from '@react-spectrum/utils';
 import CrossLarge from '@spectrum-icons/ui/CrossLarge';
 import {DialogContext, DialogContextValue} from './context';
 import {DismissButton} from '@react-aria/overlays';
@@ -54,11 +54,12 @@ function Dialog(props: SpectrumDialogProps, ref: DOMRef) {
 
   let domRef = useDOMRef(ref);
   let gridRef = useRef();
+  let unwrappedGridRef = useUnwrapDOMRef(gridRef);
   let sizeVariant = sizeMap[type] || sizeMap[size];
   let {dialogProps, titleProps} = useDialog(mergeProps(contextProps, props), domRef);
 
-  let hasHeader = useHasChild(`.${styles['spectrum-Dialog-header']}`, unwrapDOMRef(gridRef));
-  let hasFooter = useHasChild(`.${styles['spectrum-Dialog-footer']}`, unwrapDOMRef(gridRef));
+  let hasHeader = useHasChild(`.${styles['spectrum-Dialog-header']}`, unwrappedGridRef);
+  let hasFooter = useHasChild(`.${styles['spectrum-Dialog-footer']}`, unwrappedGridRef);
 
   let slots = {
     hero: {UNSAFE_className: styles['spectrum-Dialog-hero']},

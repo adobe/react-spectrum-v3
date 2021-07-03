@@ -53,12 +53,13 @@ export function useListState<T extends object>(props: ListProps<T>): ListState<T
 
   let collection = useCollection(props, factory, context, [filter]);
 
+  let {focusedKey, setFocusedKey} = selectionState;
   // Reset focused key if that item is deleted from the collection.
   useEffect(() => {
-    if (selectionState.focusedKey != null && !collection.getItem(selectionState.focusedKey)) {
-      selectionState.setFocusedKey(null);
+    if (focusedKey != null && !collection.getItem(focusedKey)) {
+      setFocusedKey(null);
     }
-  }, [collection, selectionState.focusedKey]);
+  }, [collection, focusedKey, setFocusedKey]);
 
   return {
     collection,

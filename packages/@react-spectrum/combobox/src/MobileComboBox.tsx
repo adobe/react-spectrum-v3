@@ -15,7 +15,7 @@ import {AriaButtonProps} from '@react-types/button';
 import buttonStyles from '@adobe/spectrum-css-temp/components/button/vars.css';
 import CheckmarkMedium from '@spectrum-icons/ui/CheckmarkMedium';
 import ChevronDownMedium from '@spectrum-icons/ui/ChevronDownMedium';
-import {classNames, unwrapDOMRef} from '@react-spectrum/utils';
+import {classNames, useUnwrapDOMRef} from '@react-spectrum/utils';
 import {ClearButton} from '@react-spectrum/button';
 import {ComboBoxState, useComboBoxState} from '@react-stately/combobox';
 import comboboxStyles from './combobox.css';
@@ -303,7 +303,7 @@ function ComboBoxTray(props: ComboBoxTrayProps) {
       ...props,
       // completionMode,
       keyboardDelegate: layout,
-      buttonRef: unwrapDOMRef(buttonRef),
+      buttonRef: useUnwrapDOMRef(buttonRef),
       popoverRef: popoverRef,
       listBoxRef,
       inputRef

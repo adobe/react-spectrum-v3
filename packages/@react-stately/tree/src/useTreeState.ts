@@ -53,12 +53,13 @@ export function useTreeState<T extends object>(props: TreeProps<T>): TreeState<T
 
   let tree = useCollection(props, nodes => new TreeCollection(nodes, {expandedKeys}), null, [expandedKeys]);
 
+  let {focusedKey, setFocusedKey} = selectionState;
   // Reset focused key if that item is deleted from the collection.
   useEffect(() => {
-    if (selectionState.focusedKey != null && !tree.getItem(selectionState.focusedKey)) {
-      selectionState.setFocusedKey(null);
+    if (focusedKey != null && !tree.getItem(focusedKey)) {
+      setFocusedKey(null);
     }
-  }, [tree, selectionState.focusedKey]);
+  }, [tree, focusedKey, setFocusedKey]);
 
   let onToggle = (key: Key) => {
     setExpandedKeys(expandedKeys => toggleKey(expandedKeys, key));

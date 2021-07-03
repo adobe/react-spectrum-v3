@@ -1,4 +1,4 @@
-import React, {ReactNode, useContext, useEffect, useState} from 'react';
+import React, {ReactNode, useCallback, useContext, useEffect, useState} from 'react';
 import {useIsSSR} from '@react-aria/ssr';
 
 interface Breakpoints {
@@ -38,7 +38,7 @@ export function useMatchedBreakpoints(breakpoints: Breakpoints): string[] {
   let breakpointQueries = entries.map(([, value]) => `(min-width: ${value}px)`);
 
   let supportsMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
-  let getBreakpointHandler = () => {
+  let getBreakpointHandler = useCallback(() => {
     let matched = [];
     for (let i in breakpointQueries) {
       let query = breakpointQueries[i];
@@ -48,7 +48,7 @@ export function useMatchedBreakpoints(breakpoints: Breakpoints): string[] {
     }
     matched.push('base');
     return matched;
-  };
+  }, [breakpointQueries, entries]);
 
   let [breakpoint, setBreakpoint] = useState(() =>
     supportsMatchMedia
@@ -69,7 +69,7 @@ export function useMatchedBreakpoints(breakpoints: Breakpoints): string[] {
     return () => {
       window.removeEventListener('resize', onResize);
     };
-  }, [supportsMatchMedia]);
+  }, [supportsMatchMedia, getBreakpointHandler]);
 
   // If in SSR, the media query should never match. Once the page hydrates,
   // this will update and the real value will be returned.

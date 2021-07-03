@@ -103,9 +103,12 @@ export function useNumberFieldState(
 
   // Update the input value when the number value or format options change. This is done
   // in a useEffect so that the controlled behavior is correct and we only update the
-  // textfield after prop changes.
+  // textfield after prop changes. We don't want to update when format changes because
+  // it changes whenever the formatter changes which changes based on the numbering system
+  // which could cause us to never be able to type.
   useEffect(() => {
     setInputValue(format(numberValue));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numberValue, locale, formatOptions]);
 
   // Store last parsed value in a ref so it can be used by increment/decrement below

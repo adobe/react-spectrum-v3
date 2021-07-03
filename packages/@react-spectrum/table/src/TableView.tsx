@@ -309,8 +309,9 @@ function TableVirtualizer({layout, collection, focusedKey, renderView, renderWra
     }
   }, state, domRef);
 
+  let {setVisibleRect, virtualizer, contentSize, isAnimating} = state;
   let headerHeight = layout.getLayoutInfo('header')?.rect.height || 0;
-  let visibleRect = state.virtualizer.visibleRect;
+  let visibleRect = virtualizer.visibleRect;
 
   // Sync the scroll position from the table body to the header container.
   let onScroll = useCallback(() => {
@@ -318,23 +319,23 @@ function TableVirtualizer({layout, collection, focusedKey, renderView, renderWra
   }, [bodyRef]);
 
   let onVisibleRectChange = useCallback((rect: Rect) => {
-    state.setVisibleRect(rect);
+    setVisibleRect(rect);
 
     if (!isLoading && onLoadMore) {
-      let scrollOffset = state.virtualizer.contentSize.height - rect.height * 2;
+      let scrollOffset = virtualizer.contentSize.height - rect.height * 2;
       if (rect.y > scrollOffset) {
         onLoadMore();
       }
     }
-  }, [onLoadMore, isLoading, state.setVisibleRect, state.virtualizer]);
+  }, [onLoadMore, isLoading, setVisibleRect, virtualizer]);
 
   useLayoutEffect(() => {
-    if (!isLoading && onLoadMore && !state.isAnimating) {
-      if (state.contentSize.height <= state.virtualizer.visibleRect.height) {
+    if (!isLoading && onLoadMore && !isAnimating) {
+      if (contentSize.height <= virtualizer.visibleRect.height) {
         onLoadMore();
       }
     }
-  }, [state.contentSize, state.virtualizer, state.isAnimating, onLoadMore, isLoading]);
+  }, [contentSize, virtualizer.visibleRect.height, isAnimating, onLoadMore, isLoading]);
 
   return (
     <div

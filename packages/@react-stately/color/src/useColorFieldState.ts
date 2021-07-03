@@ -110,7 +110,7 @@ export function useColorFieldState(
       color = null;
     }
     return color;
-  }, [parseColor, inputValue]);
+  }, [inputValue]);
   let parsed = useRef(null);
   parsed.current = parsedValue;
 

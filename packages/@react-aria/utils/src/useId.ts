@@ -26,6 +26,7 @@ export function useId(defaultId?: string): string {
   let [value, setValue] = useState(defaultId);
   let nextId = useRef(null);
   // don't memo this, we want it new each render so that the Effects always run
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   let updateValue = (val) => {
     if (!isRendering.current) {
       setValue(val);

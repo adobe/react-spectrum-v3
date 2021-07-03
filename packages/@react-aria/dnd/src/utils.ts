@@ -207,6 +207,7 @@ export function readFromDataTransfer(dataTransfer: DataTransfer) {
         // only implemented in Chrome.
         if (typeof item.webkitGetAsEntry === 'function') {
           let entry: FileSystemEntry = item.webkitGetAsEntry();
+          // eslint-disable-next-line max-depth
           if (!entry) {
             // For some reason, Firefox includes an item with type image/png when copy
             // and pasting any file or directory (no matter the type), but returns `null` for both
@@ -215,7 +216,7 @@ export function readFromDataTransfer(dataTransfer: DataTransfer) {
             // This was recently fixed in Chrome Canary: https://bugs.chromium.org/p/chromium/issues/detail?id=1175483.
             continue;
           }
-
+          // eslint-disable-next-line max-depth
           if (entry.isFile) {
             items.push(createFileItem(item.getAsFile()));
           } else if (entry.isDirectory) {

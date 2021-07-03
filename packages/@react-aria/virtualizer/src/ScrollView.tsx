@@ -120,6 +120,8 @@ function ScrollView(props: ScrollViewProps, ref: RefObject<HTMLDivElement>) {
     return () => {
       clearTimeout(state.scrollTimeout);
     };
+  // We only need to cleanup state.scrollTimeout on unmount here, don't want to constantly clearTimeout by including state.scrollTimeout in dep array
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let updateSize = useCallback(() => {

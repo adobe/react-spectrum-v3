@@ -50,7 +50,7 @@ export function useGridState<T extends object, C extends GridCollection<T>>(prop
     if (selectionState.focusedKey != null && !collection.getItem(selectionState.focusedKey)) {
       selectionState.setFocusedKey(null);
     }
-  }, [collection, selectionState.focusedKey]);
+  }, [collection, selectionState, selectionState.focusedKey]);
 
   return {
     collection,

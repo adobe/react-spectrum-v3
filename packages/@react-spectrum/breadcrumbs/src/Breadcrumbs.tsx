@@ -118,11 +118,13 @@ function Breadcrumbs<T>(props: SpectrumBreadcrumbsProps<T>, ref: DOMRef) {
         yield computeVisibleItems(newVisibleItems);
       }
     });
+  // Don't need to include childArray.length in dep array cuz children is already in array
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listRef, children, setVisibleItems, showRoot, isMultiline]);
 
   useResizeObserver({ref: domRef, onResize: updateOverflow});
 
-  useLayoutEffect(updateOverflow, [children]);
+  useLayoutEffect(updateOverflow, [updateOverflow]);
 
   let contents = childArray;
   if (childArray.length > visibleItems) {

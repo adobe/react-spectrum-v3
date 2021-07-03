@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {classNames, SlotProvider, unwrapDOMRef, useDOMRef, useStyleProps, useValueEffect} from '@react-spectrum/utils';
+import {classNames, SlotProvider, useDOMRef, useStyleProps, useUnwrapDOMRef, useValueEffect} from '@react-spectrum/utils';
 import {DOMProps, DOMRef, Node, Orientation} from '@react-types/shared';
 import {filterDOMProps} from '@react-aria/utils';
 import {FocusRing} from '@react-aria/focus';
@@ -371,12 +371,12 @@ function TabPicker<T>(props: TabPickerProps<T>) {
   } = props;
 
   let ref = useRef();
+  let unwrappedRef = useUnwrapDOMRef(ref);
   let [pickerNode, setPickerNode] = useState(null);
 
   useEffect(() => {
-    let node = unwrapDOMRef(ref);
-    setPickerNode(node.current);
-  }, [ref]);
+    setPickerNode(unwrappedRef);
+  }, [unwrappedRef]);
 
   let items = [...state.collection].map((item) => ({
     rendered: item.rendered,

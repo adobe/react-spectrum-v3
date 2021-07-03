@@ -696,7 +696,7 @@ let customFilterItems = [
 let CustomFilterComboBox = (props) => {
   let {startsWith} = useFilter({sensitivity: 'base'});
   let [filterValue, setFilterValue] = React.useState('');
-  let filteredItems = React.useMemo(() => customFilterItems.filter(item => startsWith(item.name, filterValue)), [props.items, filterValue, startsWith]);
+  let filteredItems = React.useMemo(() => customFilterItems.filter(item => startsWith(item.name, filterValue)), [filterValue, startsWith]);
 
   return (
     <ComboBox

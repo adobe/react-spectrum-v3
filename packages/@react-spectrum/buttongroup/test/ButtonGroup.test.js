@@ -165,7 +165,7 @@ function ButtonGroupWithRefs(props) {
       button2: button2.current.UNSAFE_getDOMNode(),
       button3: button3.current.UNSAFE_getDOMNode()
     });
-  }, []);
+  }, [props]);
   return (
     <Provider theme={theme}>
       <ButtonGroup ref={buttonGroup} data-testid={buttonGroupId} {...props}>

@@ -106,7 +106,7 @@ export function useInteractOutside(props: InteractOutsideProps) {
         document.removeEventListener('touchend', onTouchEnd, true);
       };
     }
-  }, [onInteractOutside, ref, state.ignoreEmulatedMouseEvents, state.isPointerDown, isDisabled]);
+  }, [onInteractOutside, ref, state, isDisabled, onInteractOutsideStart]);
 }
 
 function isValidEvent(event, ref) {
