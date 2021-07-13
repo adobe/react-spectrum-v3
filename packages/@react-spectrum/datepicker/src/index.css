@@ -54,6 +54,11 @@
   color: var(--spectrum-textfield-placeholder-text-color, var(--spectrum-global-color-gray-600));
 }
 
+/* Datepicker dialog should scroll when Calendar overflows */
+.react-spectrum-Datepicker-dialog {
+  overflow: auto;
+}
+
 /* When displayed in a tray (aria-modal), center the dialog rather than using fixed padding. */
 .react-spectrum-Datepicker-dialog[aria-modal] {
   margin: 0 auto;
