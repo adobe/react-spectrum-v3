@@ -14,4 +14,4 @@
 
 export * from './MenuTrigger';
 export * from './Menu';
-export {Item, Section} from '@react-stately/collections';
+export {Item, Section, SelectionGroup} from '@react-stately/collections';

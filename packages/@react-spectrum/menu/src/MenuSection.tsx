@@ -18,6 +18,7 @@ import styles from '@adobe/spectrum-css-temp/components/menu/vars.css';
 import {TreeState} from '@react-stately/tree';
 import {useMenuSection} from '@react-aria/menu';
 import {useSeparator} from '@react-aria/separator';
+import {MenuSelectionGroup} from './MenuSelectionGroup';
 
 interface MenuSectionProps<T> {
   item: Node<T>,
@@ -69,6 +70,10 @@ export function MenuSection<T>(props: MenuSectionProps<T>) {
             )
           }>
           {[...item.childNodes].map(node => {
+            if (node.type === "selectionGroup") {
+              return <MenuSelectionGroup item={node} {...node.props} state={state} />
+            }
+
             let item = (
               <MenuItem
                 key={node.key}

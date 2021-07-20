@@ -24,6 +24,7 @@ import {Keyboard, Text} from '@react-spectrum/text';
 import Paste from '@spectrum-icons/workflow/Paste';
 import React from 'react';
 import {storiesOf} from '@storybook/react';
+import {SelectionGroup} from '@react-stately/collections';
 
 let iconMap = {
   AlignCenter,
@@ -525,6 +526,47 @@ storiesOf('MenuTrigger', module)
         <Item key="1">One</Item>
         <Item key="">Two</Item>
         <Item key="3">Three</Item>
+      </Menu>
+    )
+  ).add(
+    'with Selection Group',
+    () => render(
+      <Menu onAction={action('onAction')} disabledKeys={["8"]}>
+        <Section title="Single selection">
+          <SelectionGroup selectionMode="single">
+            <Item key="1">
+              One
+            </Item>
+            <Item key="2">
+              Two
+            </Item>
+            <Item key="3">
+              Three
+            </Item>
+          </SelectionGroup>
+        </Section>
+        <Section title="Multi selection">
+          <SelectionGroup selectionMode="multiple">
+            <Item key="7">
+              Seven
+            </Item>
+            <Item key="8">
+              Eight
+            </Item>
+            <Item key="9">
+              Nine
+            </Item>
+          </SelectionGroup>
+        </Section>
+        <Item key="4">
+          Four
+        </Item>
+        <Item key="5">
+          Five
+        </Item>
+        <Item key="6">
+          Six
+        </Item>
       </Menu>
     )
   );

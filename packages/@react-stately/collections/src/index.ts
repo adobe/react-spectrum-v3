@@ -12,6 +12,7 @@
 
 export * from './Item';
 export * from './Section';
+export * from './SelectionGroup';
 export * from './types';
 export * from './useCollection';
 export * from './getItemCount';

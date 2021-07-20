@@ -11,6 +11,7 @@
  */
 
 import {Key, ReactElement, ReactNode} from 'react';
+import {MultipleSelection} from './selection';
 
 export interface ItemProps<T> {
   /** Rendered contents of the item or child items. */
@@ -48,6 +49,8 @@ export interface SectionProps<T> {
   /** Item objects in the section. */
   items?: Iterable<T>
 }
+
+export interface SelectionGroupProps<T> extends Omit<CollectionBase<T>, 'disabledKeys'>, Omit<MultipleSelection, "disabledKeys"> {}
 
 export type SectionElement<T> = ReactElement<SectionProps<T>>;
 

@@ -21,6 +21,7 @@ import {SpectrumMenuProps} from '@react-types/menu';
 import styles from '@adobe/spectrum-css-temp/components/menu/vars.css';
 import {useMenu} from '@react-aria/menu';
 import {useTreeState} from '@react-stately/tree';
+import {MenuSelectionGroup} from './MenuSelectionGroup';
 
 function Menu<T extends object>(props: SpectrumMenuProps<T>, ref: DOMRef<HTMLUListElement>) {
   let contextProps = useContext(MenuContext);
@@ -47,6 +48,10 @@ function Menu<T extends object>(props: SpectrumMenuProps<T>, ref: DOMRef<HTMLULi
         )
       }>
       {[...state.collection].map(item => {
+        if (item.type === 'selectionGroup') {
+          return <MenuSelectionGroup item={item} state={state} {...item.props} />
+        }
+
         if (item.type === 'section') {
           return (
             <MenuSection

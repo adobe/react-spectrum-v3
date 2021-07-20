@@ -26,7 +26,7 @@ export class TreeCollection<T> implements Collection<Node<T>> {
     let visit = (node: Node<T>) => {
       this.keyMap.set(node.key, node);
 
-      if (node.childNodes && (node.type === 'section' || expandedKeys.has(node.key))) {
+      if (node.childNodes && (node.type === 'section' || node.type === "selectionGroup" || expandedKeys.has(node.key))) {
         for (let child of node.childNodes) {
           visit(child);
         }
