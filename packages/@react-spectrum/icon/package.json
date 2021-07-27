@@ -41,7 +41,16 @@
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0-rc.1",
+    "@adobe/react-spectrum": "^3.0.0-rc.1",
     "@react-spectrum/provider": "^3.0.0-rc.1"
+  },
+  "peerDependenciesMeta": {
+    "@adobe/react-spectrum": {
+      "optional": true
+    },
+    "@react-spectrum/provider": {
+      "optional": true
+    }
   },
   "publishConfig": {
     "access": "public"
