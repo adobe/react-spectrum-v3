@@ -309,6 +309,181 @@ describe('ListBox', function () {
       expect(onSelectionChange.mock.calls[1][0].has('Bar')).toBeTruthy();
     });
 
+    it('supports selecting multiple items at once with the shift key', function () {
+      let tree = renderComponent({onSelectionChange, selectionMode: 'multiple'});
+      let listbox = tree.getByRole('listbox');
+      expect(listbox).toHaveAttribute('aria-multiselectable', 'true');
+
+      // Make sure nothing is checked by default
+      let checkmarks = tree.queryAllByRole('img');
+      expect(checkmarks.length).toBe(0);
+
+      let options = within(listbox).getAllByRole('option');
+      let firstItem = options[0];
+      triggerPress(firstItem);
+      expect(firstItem).toHaveAttribute('aria-selected', 'true');
+      let checkmark = within(firstItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+
+      let secondItem = options[1];
+      let thirdItem = options[2];
+      // Select a different menu item
+      triggerPress(thirdItem, {shiftKey: true});
+      expect(secondItem).toHaveAttribute('aria-selected', 'true');
+      expect(thirdItem).toHaveAttribute('aria-selected', 'true');
+      checkmark = within(secondItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+      checkmark = within(thirdItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+
+      // Make sure there are multiple checkmark in the entire menu
+      checkmarks = tree.getAllByRole('img', {hidden: true});
+      expect(checkmarks.length).toBe(3);
+
+      expect(onSelectionChange).toBeCalledTimes(2);
+      expect(onSelectionChange.mock.calls[0][0].has('Foo')).toBeTruthy();
+      expect(onSelectionChange.mock.calls[1][0].has('Bar')).toBeTruthy();
+      expect(onSelectionChange.mock.calls[1][0].has('Baz')).toBeTruthy();
+    });
+
+    it('selectionBehavior toggle will add to the current selection', function () {
+      let tree = renderComponent({onSelectionChange, selectionMode: 'multiple'});
+      let listbox = tree.getByRole('listbox');
+      expect(listbox).toHaveAttribute('aria-multiselectable', 'true');
+
+      // Make sure nothing is checked by default
+      let checkmarks = tree.queryAllByRole('img');
+      expect(checkmarks.length).toBe(0);
+
+      let options = within(listbox).getAllByRole('option');
+      let firstItem = options[0];
+      triggerPress(firstItem);
+      expect(firstItem).toHaveAttribute('aria-selected', 'true');
+      let checkmark = within(firstItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+
+      let secondItem = options[1];
+      let thirdItem = options[2];
+      // Select a different menu item
+      triggerPress(thirdItem, {shiftKey: true});
+      expect(secondItem).toHaveAttribute('aria-selected', 'true');
+      expect(thirdItem).toHaveAttribute('aria-selected', 'true');
+      checkmark = within(secondItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+      checkmark = within(thirdItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+
+      // Make sure there are multiple checkmark in the entire menu
+      checkmarks = tree.getAllByRole('img', {hidden: true});
+      expect(checkmarks.length).toBe(3);
+
+      expect(onSelectionChange).toBeCalledTimes(2);
+      expect(onSelectionChange.mock.calls[0][0].has('Foo')).toBeTruthy();
+      expect(onSelectionChange.mock.calls[1][0].has('Bar')).toBeTruthy();
+      expect(onSelectionChange.mock.calls[1][0].has('Baz')).toBeTruthy();
+
+      let fifthItem = options[4];
+      triggerPress(fifthItem);
+      expect(onSelectionChange).toBeCalledTimes(3);
+      expect(onSelectionChange.mock.calls[2][0].has('Bleh')).toBeTruthy();
+
+      // Make sure there are multiple checkmark in the entire menu
+      checkmarks = tree.getAllByRole('img', {hidden: true});
+      expect(checkmarks.length).toBe(4);
+    });
+
+    it('selectionBehavior replace will replace the current selection with the new selection', function () {
+      let tree = renderComponent({onSelectionChange, selectionMode: 'multiple', selectionBehavior: 'replace'});
+      let listbox = tree.getByRole('listbox');
+      expect(listbox).toHaveAttribute('aria-multiselectable', 'true');
+
+      // Make sure nothing is checked by default
+      let checkmarks = tree.queryAllByRole('img');
+      expect(checkmarks.length).toBe(0);
+
+      let options = within(listbox).getAllByRole('option');
+      let firstItem = options[0];
+      triggerPress(firstItem);
+      expect(firstItem).toHaveAttribute('aria-selected', 'true');
+      let checkmark = within(firstItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+
+      let secondItem = options[1];
+      let thirdItem = options[2];
+      // Select a different menu item
+      triggerPress(thirdItem, {shiftKey: true});
+      expect(secondItem).toHaveAttribute('aria-selected', 'true');
+      expect(thirdItem).toHaveAttribute('aria-selected', 'true');
+      checkmark = within(secondItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+      checkmark = within(thirdItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+
+      // Make sure there are multiple checkmark in the entire menu
+      checkmarks = tree.getAllByRole('img', {hidden: true});
+      expect(checkmarks.length).toBe(3);
+
+      expect(onSelectionChange).toBeCalledTimes(2);
+      expect(onSelectionChange.mock.calls[0][0].has('Foo')).toBeTruthy();
+      expect(onSelectionChange.mock.calls[1][0].has('Bar')).toBeTruthy();
+      expect(onSelectionChange.mock.calls[1][0].has('Baz')).toBeTruthy();
+
+      let fifthItem = options[4];
+      triggerPress(fifthItem);
+      expect(onSelectionChange).toBeCalledTimes(3);
+      expect(onSelectionChange.mock.calls[2][0].has('Bleh')).toBeTruthy();
+
+      // there should only be one selection now
+      checkmarks = tree.getAllByRole('img', {hidden: true});
+      expect(checkmarks.length).toBe(1);
+    });
+
+    it('selectionBehavior replace will add to the current selection if the command key is pressed', function () {
+      let tree = renderComponent({onSelectionChange, selectionMode: 'multiple', selectionBehavior: 'replace'});
+      let listbox = tree.getByRole('listbox');
+      expect(listbox).toHaveAttribute('aria-multiselectable', 'true');
+
+      // Make sure nothing is checked by default
+      let checkmarks = tree.queryAllByRole('img');
+      expect(checkmarks.length).toBe(0);
+
+      let options = within(listbox).getAllByRole('option');
+      let firstItem = options[0];
+      triggerPress(firstItem);
+      expect(firstItem).toHaveAttribute('aria-selected', 'true');
+      let checkmark = within(firstItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+
+      let secondItem = options[1];
+      let thirdItem = options[2];
+      // Select a different menu item
+      triggerPress(thirdItem, {shiftKey: true});
+      expect(secondItem).toHaveAttribute('aria-selected', 'true');
+      expect(thirdItem).toHaveAttribute('aria-selected', 'true');
+      checkmark = within(secondItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+      checkmark = within(thirdItem).getByRole('img', {hidden: true});
+      expect(checkmark).toBeTruthy();
+
+      // Make sure there are multiple checkmark in the entire menu
+      checkmarks = tree.getAllByRole('img', {hidden: true});
+      expect(checkmarks.length).toBe(3);
+
+      expect(onSelectionChange).toBeCalledTimes(2);
+      expect(onSelectionChange.mock.calls[0][0].has('Foo')).toBeTruthy();
+      expect(onSelectionChange.mock.calls[1][0].has('Bar')).toBeTruthy();
+      expect(onSelectionChange.mock.calls[1][0].has('Baz')).toBeTruthy();
+
+      let fifthItem = options[4];
+      triggerPress(fifthItem, {metaKey: true});
+      expect(onSelectionChange).toBeCalledTimes(3);
+      expect(onSelectionChange.mock.calls[2][0].has('Bleh')).toBeTruthy();
+
+      // there should only be one selection now
+      checkmarks = tree.getAllByRole('img', {hidden: true});
+      expect(checkmarks.length).toBe(4);
+    });
+
     it('supports multiple defaultSelectedKeys (uncontrolled)', function () {
       let tree = renderComponent({onSelectionChange, selectionMode: 'multiple', defaultSelectedKeys: ['Foo', 'Bar']});
       let listbox = tree.getByRole('listbox');

@@ -1,5 +1,6 @@
 import {CollectionBase, Node} from '@react-types/shared';
 import {Item} from '@react-spectrum/actiongroup';
+import {List} from './List';
 import {ListState, useListState} from '@react-stately/list';
 import * as React from 'react';
 import {Section} from '@react-spectrum/menu';
@@ -25,11 +26,11 @@ function SelectableList(props: CollectionBase<any> & {
 
   return (
     <ul
-      {...listProps} 
+      {...listProps}
       style={{
         height: 200, overflow: 'auto', padding: 10, margin: 0, listStyle: 'none',
         position: props.isUlRelativelyPositioned ? 'relative' : 'static'
-      }} 
+      }}
       ref={listRef}>
       {Array.from(state.collection).map(node => {
         if (node.hasChildNodes) {
@@ -72,9 +73,9 @@ function SelectableItem(props: {
 
   const isFocused = node.key === state.selectionManager.focusedKey;
   return (
-    <li 
+    <li
       {...itemProps}
-      key={node.key} 
+      key={node.key}
       style={{
         backgroundColor: isFocused ? 'gray' : 'white',
         fontWeight: isFocused ? 'bold' : 'normal'
@@ -131,4 +132,54 @@ storiesOf('useSelectableList', module)
     <SelectableList isSubUlRelativelyPositioned isUlRelativelyPositioned>
       {options}
     </SelectableList>
-  ));
+  ))
+  .add(
+    'single select, allow empty, select on focus',
+    () => (
+      <List selectionMode="single">
+        <Item>Paco de Lucia</Item>
+        <Item>Vicente Amigo</Item>
+        <Item>Gerardo Nunez</Item>
+      </List>
+    )
+  )
+  .add(
+    'single select, disallow empty selection, select on focus',
+    () => (
+      <List selectionMode="single" disallowEmptySelection>
+        <Item>Paco de Lucia</Item>
+        <Item>Vicente Amigo</Item>
+        <Item>Gerardo Nunez</Item>
+      </List>
+    )
+  )
+  .add(
+    'multi select, replace on press, select on focus',
+    () => (
+      <List selectionMode="multiple" selectionBehavior="replace">
+        <Item>Paco de Lucia</Item>
+        <Item>Vicente Amigo</Item>
+        <Item>Gerardo Nunez</Item>
+      </List>
+    )
+  )
+  .add(
+    'multi select, allow empty, select on focus',
+    () => (
+      <List selectionMode="multiple">
+        <Item>Paco de Lucia</Item>
+        <Item>Vicente Amigo</Item>
+        <Item>Gerardo Nunez</Item>
+      </List>
+    )
+  )
+  .add(
+    'multi select, disallow empty, select on focus',
+    () => (
+      <List selectionMode="multiple" disallowEmptySelection>
+        <Item>Paco de Lucia</Item>
+        <Item>Vicente Amigo</Item>
+        <Item>Gerardo Nunez</Item>
+      </List>
+    )
+  );

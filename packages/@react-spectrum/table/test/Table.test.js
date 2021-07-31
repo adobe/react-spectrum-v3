@@ -1974,6 +1974,70 @@ describe('TableView', function () {
         checkRowSelection(rows.slice(16, 17), false);
         checkRowSelection(rows.slice(17, 21), true);
       });
+
+      it('selectionBehavior replace will replace the current selection with the new selection', function () {
+        let onSelectionChange = jest.fn();
+        let tree = renderTable({onSelectionChange, selectionBehavior: 'replace'});
+
+        checkSelectAll(tree, 'unchecked');
+
+        let rows = tree.getAllByRole('row');
+        checkRowSelection(rows.slice(1), false);
+        triggerPress(getCell(tree, 'Baz 10'));
+
+        onSelectionChange.mockReset();
+        triggerPress(getCell(tree, 'Baz 20'), {shiftKey: true});
+
+        onSelectionChange.mockReset();
+        triggerPress(getCell(tree, 'Foo 5'));
+
+        checkSelection(onSelectionChange, [
+          'Foo 5'
+        ]);
+
+        checkRowSelection(rows.slice(1, 5), false);
+        checkRowSelection(rows.slice(5, 6), true);
+        checkRowSelection(rows.slice(6), false);
+
+        onSelectionChange.mockReset();
+        triggerPress(getCell(tree, 'Foo 10'), {shiftKey: true});
+
+        checkSelection(onSelectionChange, [
+          'Foo 5', 'Foo 6', 'Foo 7', 'Foo 8', 'Foo 9', 'Foo 10'
+        ]);
+
+        checkRowSelection(rows.slice(1, 5), false);
+        checkRowSelection(rows.slice(5, 11), true);
+        checkRowSelection(rows.slice(11), false);
+      });
+
+      it('selectionBehavior replace will add to the current selection if the command key is pressed', function () {
+        let onSelectionChange = jest.fn();
+        let tree = renderTable({onSelectionChange, selectionBehavior: 'replace'});
+
+        checkSelectAll(tree, 'unchecked');
+
+        let rows = tree.getAllByRole('row');
+        checkRowSelection(rows.slice(1), false);
+        triggerPress(getCell(tree, 'Baz 10'));
+
+        onSelectionChange.mockReset();
+        triggerPress(getCell(tree, 'Baz 20'), {shiftKey: true});
+
+        onSelectionChange.mockReset();
+        triggerPress(getCell(tree, 'Foo 5'), {metaKey: true});
+
+        checkSelection(onSelectionChange, [
+          'Foo 5', 'Foo 10', 'Foo 11', 'Foo 12', 'Foo 13', 'Foo 14', 'Foo 15',
+          'Foo 16', 'Foo 17', 'Foo 18', 'Foo 19', 'Foo 20'
+        ]);
+
+        checkRowSelection(rows.slice(1, 5), false);
+        checkRowSelection(rows.slice(5, 6), true);
+        checkRowSelection(rows.slice(6, 10), false);
+        checkRowSelection(rows.slice(10, 21), true);
+        checkRowSelection(rows.slice(21), false);
+      });
     });
 
     describe('select all', function () {

@@ -247,6 +247,23 @@ storiesOf('TableView', module)
     )
   )
   .add(
+    'multiple selection selectionBehavior replace',
+    () => (
+      <TableView aria-label="TableView with dynamic contents" selectionMode="multiple" selectionBehavior="replace" width={300} height={200} onSelectionChange={s => onSelectionChange([...s])}>
+        <TableHeader columns={columns}>
+          {column => <Column>{column.name}</Column>}
+        </TableHeader>
+        <TableBody items={items}>
+          {item =>
+            (<Row key={item.foo}>
+              {key => <Cell>{item[key]}</Cell>}
+            </Row>)
+          }
+        </TableBody>
+      </TableView>
+    )
+  )
+  .add(
     // For testing https://github.com/adobe/react-spectrum/issues/1885
     'swap selection mode',
     () => (

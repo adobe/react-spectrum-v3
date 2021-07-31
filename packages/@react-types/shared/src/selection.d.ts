@@ -24,10 +24,13 @@ export interface SingleSelection {
 }
 
 export type SelectionMode = 'none' | 'single' | 'multiple';
+export type SelectionBehavior = 'toggle' | 'replace';
 export type Selection = 'all' | Set<Key>;
 export interface MultipleSelection {
   /** The type of selection that is allowed in the collection. */
   selectionMode?: SelectionMode,
+  /** How multiple selection works in the collection. */
+  selectionBehavior?: SelectionBehavior,
   /** Whether the collection allows empty selection. */
   disallowEmptySelection?: boolean,
   /** The currently selected keys in the collection (controlled). */
