@@ -34,12 +34,12 @@ function Tray(props: TrayProps, ref: DOMRef<HTMLDivElement>) {
   let {children, onClose, isFixedHeight, isNonModal, ...otherProps} = props;
   let domRef = useDOMRef(ref);
   let {styleProps} = useStyleProps(props);
-
   let {overlayProps, underlayProps} = useOverlay({...props, isDismissable: true}, domRef);
+  let underlayRef = useRef(null);
 
   return (
-    <Overlay {...otherProps}>
-      <Underlay {...underlayProps} />
+    <Overlay {...otherProps} nodeRef={underlayRef}>
+      <Underlay {...underlayProps} ref={underlayRef} />
       <TrayWrapper
         {...styleProps}
         onClose={onClose}

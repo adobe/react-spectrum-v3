@@ -64,7 +64,7 @@ function Popover(props: PopoverProps, ref: DOMRef<HTMLDivElement>) {
   let {styleProps} = useStyleProps(props);
 
   return (
-    <Overlay {...otherProps}>
+    <Overlay {...otherProps} nodeRef={domRef}>
       <PopoverWrapper
         {...styleProps}
         ref={domRef}

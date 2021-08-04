@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {HTMLAttributes, ReactElement, ReactNode} from 'react';
+import {HTMLAttributes, MutableRefObject, ReactElement, ReactNode} from 'react';
 import {StyleProps} from '@react-types/shared';
 
 export type Placement = 'bottom' | 'bottom left' | 'bottom right' | 'bottom start' | 'bottom end' |
@@ -71,10 +71,11 @@ export interface OverlayProps {
   onEntered?: () => void,
   onExit?: () => void,
   onExiting?: () => void,
-  onExited?: () => void
+  onExited?: () => void,
+  nodeRef: MutableRefObject<HTMLElement>
 }
 
-export interface ModalProps extends StyleProps, OverlayProps {
+export interface ModalProps extends StyleProps, Omit<OverlayProps, 'nodeRef'> {
   children: ReactElement,
   isOpen?: boolean,
   onClose?: () => void,
@@ -82,7 +83,7 @@ export interface ModalProps extends StyleProps, OverlayProps {
   isDismissable?: boolean
 }
 
-export interface PopoverProps extends StyleProps, OverlayProps {
+export interface PopoverProps extends StyleProps, Omit<OverlayProps, 'nodeRef'>  {
   children: ReactNode,
   placement?: PlacementAxis,
   arrowProps?: HTMLAttributes<HTMLElement>,
@@ -94,7 +95,7 @@ export interface PopoverProps extends StyleProps, OverlayProps {
   isDismissable?: boolean
 }
 
-export interface TrayProps extends StyleProps, OverlayProps {
+export interface TrayProps extends StyleProps, Omit<OverlayProps, 'nodeRef'>  {
   children: ReactElement,
   isOpen?: boolean,
   onClose?: () => void,

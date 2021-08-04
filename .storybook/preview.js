@@ -20,7 +20,9 @@ export const parameters = {
 export const decorators = [
   story => (
     <VerticalCenter style={{alignItems: 'center', minHeight: '100vh', boxSizing: 'border-box', display: 'flex', justifyContent: 'center'}}>
-      {story()}
+      <React.StrictMode>
+        {story()}
+      </React.StrictMode>
     </VerticalCenter>
   ),
   withProviderSwitcher
