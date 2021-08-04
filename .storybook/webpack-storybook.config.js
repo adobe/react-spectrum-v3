@@ -66,7 +66,7 @@ module.exports = () => {
         },
         {
           test: /\.css$/,
-          loaders: ['style-loader', 'css-loader'],
+          use: ['style-loader', 'css-loader'],
           include: path.resolve(__dirname, '../'),
           exclude: /packages[\\/].*\.css$/
         },

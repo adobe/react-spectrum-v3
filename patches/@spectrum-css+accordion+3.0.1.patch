@@ -1,0 +1,260 @@
+diff --git a/node_modules/@spectrum-css/accordion/dist/index-vars.css b/node_modules/@spectrum-css/accordion/dist/index-vars.css
+index 6f05727..19cb343 100644
+--- a/node_modules/@spectrum-css/accordion/dist/index-vars.css
++++ b/node_modules/@spectrum-css/accordion/dist/index-vars.css
+@@ -1,4 +1,4 @@
+-.spectrum-Accordion {
++.spectrum-Accordion_blah {
+   --spectrum-accordion-item-title-tracking-actual: calc(var(--spectrum-accordion-item-title-tracking, var(--spectrum-global-font-letter-spacing-medium)) / 100);
+   --spectrum-accordion-item-title-padding-y: var(
+     --spectrum-global-dimension-size-150
+@@ -8,24 +8,24 @@
+   --spectrum-accordion-icon-width: var(--spectrum-global-dimension-size-125);
+ }
+ 
+-.spectrum-Accordion {
++.spectrum-Accordion_blah {
+   display: block;
+   list-style: none;
+   padding: 0;
+   margin: 0;
+ }
+ 
+-[dir="ltr"] .spectrum-Accordion-itemIndicator {
++[dir="ltr"] .spectrum-Accordion-itemIndicator_blah {
+   left: var(--spectrum-accordion-item-padding-x, var(--spectrum-global-dimension-size-225));
+ }
+ 
+-[dir="rtl"] .spectrum-Accordion-itemIndicator {
++[dir="rtl"] .spectrum-Accordion-itemIndicator_blah {
+   right: var(--spectrum-accordion-item-padding-x, var(--spectrum-global-dimension-size-225));
+ }
+ 
+-[dir="rtl"] .spectrum-Accordion-itemIndicator { transform: matrix(-1, 0, 0, 1, 0, 0) ; }
++[dir="rtl"] .spectrum-Accordion-itemIndicator_blah { transform: matrix(-1, 0, 0, 1, 0, 0) ; }
+ 
+-.spectrum-Accordion-itemIndicator {
++.spectrum-Accordion-itemIndicator_blah {
+   display: block;
+ 
+   position: absolute;
+@@ -34,7 +34,7 @@
+   transition: transform ease var(--spectrum-accordion-animation-duration);
+ }
+ 
+-.spectrum-Accordion-item {
++.spectrum-Accordion-item_blah {
+   z-index: inherit;
+   position: relative;
+ 
+@@ -44,42 +44,42 @@
+   border-bottom: var(--spectrum-accordion-item-border-size, var(--spectrum-alias-border-size-thin)) solid transparent;
+ }
+ 
+-.spectrum-Accordion-item:first-of-type {
++.spectrum-Accordion-item_blah:first-of-type {
+     border-top: var(--spectrum-accordion-item-border-size, var(--spectrum-alias-border-size-thin)) solid
+       transparent;
+   }
+ 
+-.spectrum-Accordion-itemHeading {
++.spectrum-Accordion-itemHeading_blah {
+   margin: 0;
+   position: relative;
+   box-sizing: border-box;
+ }
+ 
+-[dir="ltr"] .spectrum-Accordion-itemHeader {
++[dir="ltr"] .spectrum-Accordion-itemHeader_blah {
+   padding-left: calc(var(--spectrum-accordion-item-padding-x, var(--spectrum-global-dimension-size-225)) + var(--spectrum-accordion-icon-width, var(--spectrum-global-dimension-size-75)) + var(--spectrum-accordion-icon-gap, var(--spectrum-global-dimension-size-100)) + var(--spectrum-accordion-item-border-left-size-key-focus, var(--spectrum-alias-border-size-thick)));
+ }
+ 
+-[dir="rtl"] .spectrum-Accordion-itemHeader {
++[dir="rtl"] .spectrum-Accordion-itemHeader_blah {
+   padding-right: calc(var(--spectrum-accordion-item-padding-x, var(--spectrum-global-dimension-size-225)) + var(--spectrum-accordion-icon-width, var(--spectrum-global-dimension-size-75)) + var(--spectrum-accordion-icon-gap, var(--spectrum-global-dimension-size-100)) + var(--spectrum-accordion-item-border-left-size-key-focus, var(--spectrum-alias-border-size-thick)));
+ }
+ 
+-[dir="ltr"] .spectrum-Accordion-itemHeader {
++[dir="ltr"] .spectrum-Accordion-itemHeader_blah {
+   padding-right: var(--spectrum-accordion-item-padding-x, var(--spectrum-global-dimension-size-225));
+ }
+ 
+-[dir="rtl"] .spectrum-Accordion-itemHeader {
++[dir="rtl"] .spectrum-Accordion-itemHeader_blah {
+   padding-left: var(--spectrum-accordion-item-padding-x, var(--spectrum-global-dimension-size-225));
+ }
+ 
+-[dir="ltr"] .spectrum-Accordion-itemHeader {
++[dir="ltr"] .spectrum-Accordion-itemHeader_blah {
+   text-align: left;
+ }
+ 
+-[dir="rtl"] .spectrum-Accordion-itemHeader {
++[dir="rtl"] .spectrum-Accordion-itemHeader_blah {
+   text-align: right;
+ }
+ 
+-.spectrum-Accordion-itemHeader {
++.spectrum-Accordion-itemHeader_blah {
+   position: relative;
+ 
+   display: -ms-flexbox;
+@@ -114,19 +114,19 @@
+   width: 100%;
+ }
+ 
+-.spectrum-Accordion-itemHeader:focus {
++.spectrum-Accordion-itemHeader_blah:focus {
+     outline: none;
+   }
+ 
+-[dir="ltr"] .spectrum-Accordion-itemHeader:focus::after {
++[dir="ltr"] .spectrum-Accordion-itemHeader_blah:focus::after {
+       left: 0;
+ }
+ 
+-[dir="rtl"] .spectrum-Accordion-itemHeader:focus::after {
++[dir="rtl"] .spectrum-Accordion-itemHeader_blah:focus::after {
+       right: 0;
+ }
+ 
+-.spectrum-Accordion-itemHeader:focus::after {
++.spectrum-Accordion-itemHeader_blah:focus::after {
+       content: "";
+ 
+       position: absolute;
+@@ -136,7 +136,7 @@
+       width: var(--spectrum-accordion-item-border-left-size-key-focus, var(--spectrum-alias-border-size-thick));
+     }
+ 
+-.spectrum-Accordion-itemContent {
++.spectrum-Accordion-itemContent_blah {
+   padding-top: 0;
+   padding-bottom: var(--spectrum-accordion-item-content-padding, var(--spectrum-global-dimension-size-200));
+   padding-left: var(--spectrum-accordion-item-content-padding, var(--spectrum-global-dimension-size-200));
+@@ -144,63 +144,63 @@
+   display: none;
+ }
+ 
+-[dir="ltr"] .spectrum-Accordion-item.is-open > .spectrum-Accordion-itemHeading > .spectrum-Accordion-itemIndicator { transform: rotate(90deg); }
++[dir="ltr"] .spectrum-Accordion-item_blah.is-open_blah > .spectrum-Accordion-itemHeading_blah .spectrum-Accordion-itemIndicator_blah { transform: rotate(90deg); }
+ 
+-[dir="rtl"] .spectrum-Accordion-item.is-open > .spectrum-Accordion-itemHeading > .spectrum-Accordion-itemIndicator { transform: matrix(-1, 0, 0, 1, 0, 0) rotate(90deg); }
++[dir="rtl"] .spectrum-Accordion-item_blah.is-open_blah > .spectrum-Accordion-itemHeading_blah .spectrum-Accordion-itemIndicator_blah { transform: matrix(-1, 0, 0, 1, 0, 0) rotate(90deg); }
+ 
+-[dir="ltr"] .spectrum-Accordion-item.is-open > .spectrum-Accordion-itemIndicator { transform: rotate(90deg); }
++[dir="ltr"] .spectrum-Accordion-item_blah.is-open_blah .spectrum-Accordion-itemIndicator_blah { transform: rotate(90deg); }
+ 
+-[dir="rtl"] .spectrum-Accordion-item.is-open > .spectrum-Accordion-itemIndicator { transform: matrix(-1, 0, 0, 1, 0, 0) rotate(90deg); }
++[dir="rtl"] .spectrum-Accordion-item_blah.is-open_blah .spectrum-Accordion-itemIndicator_blah { transform: matrix(-1, 0, 0, 1, 0, 0) rotate(90deg); }
+ 
+-.spectrum-Accordion-item.is-open > .spectrum-Accordion-itemHeader::after {
++.spectrum-Accordion-item_blah.is-open_blah > .spectrum-Accordion-itemHeader_blah::after {
+       height: calc(100% - var(--spectrum-accordion-item-border-size, var(--spectrum-alias-border-size-thin)));
+     }
+ 
+-.spectrum-Accordion-item.is-open > .spectrum-Accordion-itemContent {
++.spectrum-Accordion-item_blah.is-open_blah > .spectrum-Accordion-itemContent_blah {
+       display: block;
+     }
+ 
+-.spectrum-Accordion-item.is-disabled .spectrum-Accordion-itemHeader {
++.spectrum-Accordion-item_blah.is-disabled_blah .spectrum-Accordion-itemHeader_blah {
+       cursor: default;
+     }
+ 
+-.spectrum-Accordion-item {
++.spectrum-Accordion-item_blah {
+   border-color: var(--spectrum-accordion-border-color, var(--spectrum-global-color-gray-300));
+ }
+ 
+-.spectrum-Accordion-itemIndicator {
++.spectrum-Accordion-itemIndicator_blah {
+   color: var(--spectrum-accordion-icon-color, var(--spectrum-global-color-gray-600));
+ }
+ 
+-.spectrum-Accordion-itemHeader {
++.spectrum-Accordion-itemHeader_blah {
+   color: var(--spectrum-accordion-text-color, var(--spectrum-global-color-gray-700));
+ }
+ 
+-.spectrum-Accordion-itemHeader:hover {
++.spectrum-Accordion-itemHeader_blah:hover {
+     color: var(--spectrum-accordion-text-color-hover, var(--spectrum-global-color-gray-900));
+ 
+     background-color: var(--spectrum-accordion-background-color-hover, var(--spectrum-global-color-gray-200));
+   }
+ 
+-.spectrum-Accordion-itemHeader:hover + .spectrum-Accordion-itemIndicator {
++.spectrum-Accordion-itemHeader_blah:hover + .spectrum-Accordion-itemIndicator_blah {
+       color: var(--spectrum-accordion-icon-color-hover, var(--spectrum-global-color-gray-800));
+     }
+ 
+-.spectrum-Accordion-itemHeader.focus-ring:after {
++.spectrum-Accordion-itemHeader_blah.focus-ring_blah:after {
+       background-color: var(--spectrum-accordion-item-border-left-color-key-focus, var(--spectrum-alias-border-color-focus));
+     }
+ 
+-.spectrum-Accordion-item.is-open .spectrum-Accordion-itemHeader:hover {
++.spectrum-Accordion-item_blah.is-open_blah .spectrum-Accordion-itemHeader_blah:hover {
+         background-color: transparent;
+       }
+ 
+-.spectrum-Accordion-item.is-disabled .spectrum-Accordion-itemHeader,
+-    .spectrum-Accordion-item.is-disabled .spectrum-Accordion-itemHeader:hover,
+-    .spectrum-Accordion-item.is-disabled .spectrum-Accordion-itemHeader.focus-ring {
++.spectrum-Accordion-item_blah.is-disabled_blah .spectrum-Accordion-itemHeader_blah,
++    .spectrum-Accordion-item_blah.is-disabled_blah .spectrum-Accordion-itemHeader_blah:hover,
++    .spectrum-Accordion-item_blah.is-disabled_blah .spectrum-Accordion-itemHeader_blah.focus-ring_blah {
+       color: var(--spectrum-accordion-text-color-disabled, var(--spectrum-global-color-gray-500));
+       background-color: transparent;
+     }
+ 
+-.spectrum-Accordion-item.is-disabled .spectrum-Accordion-itemHeader + .spectrum-Accordion-itemIndicator {
++.spectrum-Accordion-item_blah.is-disabled_blah .spectrum-Accordion-itemHeader_blah + .spectrum-Accordion-itemIndicator_blah {
+       color: var(--spectrum-accordion-icon-color-disabled, var(--spectrum-global-color-gray-400));
+     }
+diff --git a/node_modules/@spectrum-css/accordion/dist/index.js b/node_modules/@spectrum-css/accordion/dist/index.js
+new file mode 100644
+index 0000000..e148a98
+--- /dev/null
++++ b/node_modules/@spectrum-css/accordion/dist/index.js
+@@ -0,0 +1,27 @@
++
++"use strict";
++
++Object.defineProperty(exports, "__esModule", {
++  value: true
++});
++exports.default = void 0;
++
++require("./vars.css");
++
++require("./index-vars.css");
++
++var mappings = {
++  "spectrum-Accordion": "spectrum-Accordion_blah",
++  "spectrum-Accordion-item": "spectrum-Accordion-item_blah",
++  "spectrum-Accordion-itemIndicator": "spectrum-Accordion-itemIndicator_blah",
++  "spectrum-Accordion-itemHeading": "spectrum-Accordion-itemHeading_blah",
++  "spectrum-Accordion-itemHeader": "spectrum-Accordion-itemHeader_blah",
++  "spectrum-Accordion-itemContent": "spectrum-Accordion-itemContent_blah",
++  "is-open": "is-open_blah",
++  "is-disabled": "is-disabled",
++  "focus-ring": "focus-ring_blah"
++};
++var _default = mappings;
++exports.default = _default;
++
++
+diff --git a/node_modules/@spectrum-css/accordion/dist/vars.css b/node_modules/@spectrum-css/accordion/dist/vars.css
+index 80bbf60..525fe22 100644
+--- a/node_modules/@spectrum-css/accordion/dist/vars.css
++++ b/node_modules/@spectrum-css/accordion/dist/vars.css
+@@ -1,5 +1,5 @@
+ 
+-.spectrum-Accordion {
++.spectrum-Accordion_blah {
+   --spectrum-accordion-item-title-tracking: var(--spectrum-global-font-letter-spacing-medium);
+   --spectrum-accordion-item-padding-x: var(--spectrum-global-dimension-size-225);
+   --spectrum-accordion-icon-height: var(--spectrum-global-dimension-size-125);

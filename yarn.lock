@@ -4264,6 +4264,11 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
+"@spectrum-css/accordion@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@spectrum-css/accordion/-/accordion-3.0.1.tgz#c82bd3cef913a67b52f34ad78e4c3f1451edad93"
+  integrity sha512-ffhQLF1zZhXVTuae7/oFOldRPdI2eq/tiTDKwCP/YkxZ7/GBD+14/DkTaw3QenxViXhRkzB5PJHVNdtln4xhEg==
+
 "@spectrum-css/component-builder@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@spectrum-css/component-builder/-/component-builder-1.0.1.tgz#32f5f884bd0e64246dc2cbcce016f6cd0e78ba9c"
