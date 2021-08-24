@@ -18,11 +18,9 @@ import {Mutable} from './utils';
 
 const ONE_HOUR = 3600000;
 
-/* eslint-disable no-redeclare */
 export function add(date: CalendarDateTime, duration: Duration): CalendarDateTime;
 export function add(date: CalendarDate, duration: Duration): CalendarDate;
 export function add(date: CalendarDate | CalendarDateTime, duration: Duration): CalendarDate | CalendarDateTime {
-/* eslint-enable no-redeclare */
   let mutableDate: Mutable<CalendarDate> = date.copy();
   let days = addTimeFields(toCalendarDateTime(date), duration);
 
@@ -105,19 +103,15 @@ export function invertDuration(duration: Duration): Duration {
   return inverseDuration;
 }
 
-/* eslint-disable no-redeclare */
 export function subtract(date: CalendarDateTime, duration: Duration): CalendarDateTime;
 export function subtract(date: CalendarDate, duration: Duration): CalendarDate;
 export function subtract(date: CalendarDate | CalendarDateTime, duration: Duration): CalendarDate | CalendarDateTime {
-/* eslint-enable no-redeclare */
   return add(date, invertDuration(duration));
 }
 
-/* eslint-disable no-redeclare */
 export function set(date: CalendarDateTime, fields: DateFields, behavior?: OverflowBehavior): CalendarDateTime;
 export function set(date: CalendarDate, fields: DateFields, behavior: OverflowBehavior): CalendarDate;
 export function set(date: CalendarDate, fields: DateFields, behavior: OverflowBehavior = 'balance'): CalendarDate {
-/* eslint-enable no-redeclare */
   let mutableDate: Mutable<CalendarDate> = date.copy();
 
   if (fields.era != null) {
@@ -151,11 +145,9 @@ export function set(date: CalendarDate, fields: DateFields, behavior: OverflowBe
   return mutableDate;
 }
 
-/* eslint-disable no-redeclare */
 export function setTime(value: CalendarDateTime, fields: TimeFields, behavior?: OverflowBehavior): CalendarDateTime;
 export function setTime(value: Time, fields: TimeFields, behavior: OverflowBehavior): Time;
 export function setTime(value: Time | CalendarDateTime, fields: TimeFields, behavior: OverflowBehavior = 'balance'): Time | CalendarDateTime {
-/* eslint-enable no-redeclare */
   let mutableValue: Mutable<Time | CalendarDateTime> = value.copy();
 
   if (fields.hour != null) {
@@ -254,11 +246,9 @@ export function endOfMonth(date: CalendarDate): CalendarDate {
   return mutableDate;
 }
 
-/* eslint-disable no-redeclare */
 export function cycleDate(value: CalendarDateTime, field: DateField, amount: number, options?: CycleOptions): CalendarDateTime;
 export function cycleDate(value: CalendarDate, field: DateField, amount: number, options?: CycleOptions): CalendarDate;
 export function cycleDate(value: CalendarDate, field: DateField, amount: number, options?: CycleOptions) {
-/* eslint-enable no-redeclare */
   let mutable: Mutable<CalendarDate> = value.copy();
 
   switch (field) {
@@ -294,11 +284,9 @@ export function cycleDate(value: CalendarDate, field: DateField, amount: number,
   return mutable;
 }
 
-/* eslint-disable no-redeclare */
 export function cycleTime(value: CalendarDateTime, field: TimeField, amount: number, options?: CycleTimeOptions): CalendarDateTime;
 export function cycleTime(value: Time, field: TimeField, amount: number, options?: CycleTimeOptions): Time;
 export function cycleTime(value: Time | CalendarDateTime, field: TimeField, amount: number, options?: CycleTimeOptions) {
-/* eslint-enable no-redeclare */
   let mutable: Mutable<Time | CalendarDateTime> = value.copy();
 
   switch (field) {

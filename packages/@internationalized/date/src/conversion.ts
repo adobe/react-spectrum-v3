@@ -167,12 +167,10 @@ export function toCalendarDate(dateTime: CalendarDateTime): CalendarDate {
   return new CalendarDate(dateTime.calendar, dateTime.era, dateTime.year, dateTime.month, dateTime.day);
 }
 
-/* eslint-disable no-redeclare */
 export function toCalendarDateTime(date: ZonedDateTime, time?: Time): CalendarDateTime;
 export function toCalendarDateTime(date: CalendarDateTime, time?: Time): CalendarDateTime;
 export function toCalendarDateTime(date: CalendarDate, time?: Time): CalendarDateTime;
 export function toCalendarDateTime(date: CalendarDate | CalendarDateTime | ZonedDateTime, time?: Time) {
-/* eslint-enable no-redeclare */
   let hour = 0, minute = 0, second = 0, millisecond = 0;
   if ('timeZone' in date && !time) {
     ({hour, minute, second, millisecond} = date);
@@ -201,12 +199,10 @@ export function toTime(dateTime: CalendarDateTime): Time {
   return new Time(dateTime.hour, dateTime.minute, dateTime.second, dateTime.millisecond);
 }
 
-/* eslint-disable no-redeclare */
 export function toCalendar(date: ZonedDateTime, calendar: Calendar): ZonedDateTime;
 export function toCalendar(date: CalendarDateTime, calendar: Calendar): CalendarDateTime;
 export function toCalendar(date: CalendarDate, calendar: Calendar): CalendarDate;
 export function toCalendar(date: CalendarDate | CalendarDateTime | ZonedDateTime, calendar: Calendar) {
-/* eslint-enable no-redeclare */
   if (date.calendar.identifier === calendar.identifier) {
     return date;
   }

@@ -32,7 +32,6 @@ export interface ButtonAria<T> {
   isPressed: boolean
 }
 
-/* eslint-disable no-redeclare */
 export function useButton(props: AriaButtonProps<'a'>, ref: RefObject<HTMLAnchorElement>): ButtonAria<AnchorHTMLAttributes<HTMLAnchorElement>>;
 export function useButton(props: AriaButtonProps<'button'>, ref: RefObject<HTMLButtonElement>): ButtonAria<ButtonHTMLAttributes<HTMLButtonElement>>;
 export function useButton(props: AriaButtonProps<'div'>, ref: RefObject<HTMLDivElement>): ButtonAria<HTMLAttributes<HTMLDivElement>>;
@@ -46,7 +45,6 @@ export function useButton(props: AriaButtonProps<ElementType>, ref: RefObject<HT
  * @param ref - A ref to a DOM element for the button.
  */
 export function useButton(props: AriaButtonProps<ElementType>, ref: RefObject<any>): ButtonAria<HTMLAttributes<any>> {
-/* eslint-enable no-redeclare */
   let {
     elementType = 'button',
     isDisabled,

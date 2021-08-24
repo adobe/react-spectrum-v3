@@ -35,6 +35,8 @@ module.exports = {
       // enable this rule to see literally everything missing jsdocs, this rule needs some refinement but is good as a sanity check.
       // 'jsdoc/require-jsdoc': [ERROR, {contexts:['TSInterfaceDeclaration TSPropertySignature', 'TSInterfaceDeclaration TSMethodSignature']}],
       'jsdoc/require-description': [ERROR, {exemptedBy: ['deprecated'], checkConstructors: false}],
+      'no-redeclare': OFF,
+      '@typescript-eslint/no-redeclare': ERROR,
       'no-unused-vars': OFF,
       '@typescript-eslint/no-unused-vars': ERROR,
       '@typescript-eslint/member-delimiter-style': [ERROR, {
