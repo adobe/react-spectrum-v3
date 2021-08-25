@@ -17,7 +17,7 @@ import {AriaListBoxOptions, getItemId, listData} from '@react-aria/listbox';
 import {chain, isAppleDevice, mergeProps, useLabels} from '@react-aria/utils';
 import {ComboBoxProps} from '@react-types/combobox';
 import {ComboBoxState} from '@react-stately/combobox';
-import {FocusEvent, HTMLAttributes, InputHTMLAttributes, KeyboardEvent, RefObject, TouchEvent, useEffect, useMemo, useRef} from 'react';
+import {FocusEvent, HTMLAttributes, InputHTMLAttributes, KeyboardEvent, RefObject, TouchEvent, useEffect, useMemo, useRef, useState} from 'react';
 import {getItemCount} from '@react-stately/collections';
 // @ts-ignore
 import intlMessages from '../intl/*.json';
@@ -218,6 +218,19 @@ export function useComboBox<T>(props: AriaComboBoxProps<T>, state: ComboBoxState
       lastEventTime.current = e.timeStamp;
     }
   };
+
+  // Trigger a rerender when focused key changes so that our aria-activedescendant is updated
+  let [, setFocusedKey] = useState(false);
+  useEffect(() => {
+    let handler = (focusedKey) => {
+      setFocusedKey(focusedKey);
+    };
+
+    state.selectionManager.subscribeToFocusKeyChange(handler);
+    return () => {
+      state.selectionManager.unsubscribeToFocusKeyChange(handler);
+    };
+  }, [state.selectionManager]);
 
   // VoiceOver has issues with announcing aria-activedescendant properly on change
   // (especially on iOS). We use a live region announcer to announce focus changes

@@ -15,6 +15,8 @@ import {Key} from 'react';
 import {MultipleSelectionManager, MultipleSelectionState} from './types';
 import {Selection} from './Selection';
 
+type Handler = (focusedKey: Key) => void;
+
 interface SelectionManagerOptions {
   allowsCellSelection?: boolean
 }
@@ -27,12 +29,14 @@ export class SelectionManager implements MultipleSelectionManager {
   private state: MultipleSelectionState;
   private allowsCellSelection: boolean;
   private _isSelectAll: boolean;
+  private callbackSet;
 
   constructor(collection: Collection<Node<unknown>>, state: MultipleSelectionState, options?: SelectionManagerOptions) {
     this.collection = collection;
     this.state = state;
     this.allowsCellSelection = options?.allowsCellSelection ?? false;
     this._isSelectAll = null;
+    this.callbackSet = new Set<Handler>();
   }
 
   /**
@@ -79,7 +83,23 @@ export class SelectionManager implements MultipleSelectionManager {
    * Sets the focused key.
    */
   setFocusedKey(key: Key, childFocusStrategy?: FocusStrategy) {
-    this.state.setFocusedKey(key, childFocusStrategy);
+    // console.log('selection manager set focused', this.id);
+    // TODO: Kinda weird that this doesn't directly trigger the callbacks in callbackSet, but instead relies on the state.setFocusedKey to do so...
+    // It's like this though cuz useGridState modifies what key is actually called depending on the child focus strategy.
+    // Also, perhaps those state hooks should instead get access to the selection manager instead of passing this.callbackSet?
+    this.state.setFocusedKey(key, childFocusStrategy, this.callbackSet);
+  }
+
+  subscribeToFocusKeyChange(handler: Handler) {
+    this.callbackSet.add(handler);
+  }
+
+  unsubscribeToFocusKeyChange(handler: Handler) {
+    this.callbackSet.delete(handler);
+  }
+
+  get focusCallbacks() {
+    return this.callbackSet;
   }
 
   /**

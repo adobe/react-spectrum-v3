@@ -28,7 +28,7 @@ export function useGridState<T extends object, C extends GridCollection<T>>(prop
     , [props.disabledKeys]);
 
   let setFocusedKey = selectionState.setFocusedKey;
-  selectionState.setFocusedKey = (key, child) => {
+  selectionState.setFocusedKey = (key, child, callbackSet) => {
     // If focusMode is cell and an item is focused, focus a child cell instead.
     if (focusMode === 'cell' && key != null) {
       let item = collection.getItem(key);
@@ -41,20 +41,22 @@ export function useGridState<T extends object, C extends GridCollection<T>>(prop
         }
       }
     }
-
-    setFocusedKey(key, child);
+    setFocusedKey(key, child, callbackSet);
   };
+
+  let selectionManager = useMemo(() => new SelectionManager(collection, selectionState), [collection, selectionState]);
 
   // Reset focused key if that item is deleted from the collection.
   useEffect(() => {
     if (selectionState.focusedKey != null && !collection.getItem(selectionState.focusedKey)) {
-      selectionState.setFocusedKey(null);
+      // Need to include focusCallbacks here so that this setFocusedKey call doesn't blow up
+      selectionState.setFocusedKey(null, undefined, selectionManager.focusCallbacks);
     }
-  }, [collection, selectionState.focusedKey]);
+  }, [collection, selectionState.focusedKey, selectionManager]);
 
   return {
     collection,
     disabledKeys,
-    selectionManager: new SelectionManager(collection, selectionState)
+    selectionManager
   };
 }

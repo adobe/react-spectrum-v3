@@ -19,7 +19,9 @@ describe('useSideNavItem', function () {
     selectionManager: {
       isSelected(key) {
         return key === 'selected';
-      }
+      },
+      subscribeToFocusKeyChange: () => {},
+      unsubscribeToFocusKeyChange: () => {}
     },
     disabledKeys: new Set()
   };

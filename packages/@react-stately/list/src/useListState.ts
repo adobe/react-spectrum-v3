@@ -52,6 +52,7 @@ export function useListState<T extends object>(props: ListProps<T>): ListState<T
   let context = useMemo(() => ({suppressTextValueWarning: props.suppressTextValueWarning}), [props.suppressTextValueWarning]);
 
   let collection = useCollection(props, factory, context, [filter]);
+  let selectionManager = useMemo(() => new SelectionManager(collection, selectionState), [collection, selectionState]);
 
   // Reset focused key if that item is deleted from the collection.
   useEffect(() => {
@@ -63,6 +64,6 @@ export function useListState<T extends object>(props: ListProps<T>): ListState<T
   return {
     collection,
     disabledKeys,
-    selectionManager: new SelectionManager(collection, selectionState)
+    selectionManager
   };
 }

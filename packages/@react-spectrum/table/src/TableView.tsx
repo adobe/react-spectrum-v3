@@ -21,7 +21,7 @@ import intlMessages from '../intl/*.json';
 import {layoutInfoToStyle, ScrollView, setScrollLeft, useVirtualizer, VirtualizerItem} from '@react-aria/virtualizer';
 import {mergeProps, useLayoutEffect} from '@react-aria/utils';
 import {ProgressCircle} from '@react-spectrum/progress';
-import React, {ReactElement, useCallback, useContext, useMemo, useRef} from 'react';
+import React, {ReactElement, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {Rect, ReusableView, useVirtualizerState} from '@react-stately/virtualizer';
 import {SpectrumColumnProps, SpectrumTableProps} from '@react-types/table';
 import styles from '@adobe/spectrum-css-temp/components/table/vars.css';
@@ -244,6 +244,19 @@ function TableView<T extends object>(props: SpectrumTableProps<T>, ref: DOMRef<H
     }
   };
 
+  // Call manager.subscribeToFocusKey with callback that calls a setState when focusKey changes so scrolling happens properly if focusing something out of view
+  let [focusedKey, setFocusedKey] = useState(state.selectionManager.focusedKey);
+  useEffect(() => {
+    let handler = (focusedKey) => {
+      setFocusedKey(focusedKey);
+    };
+
+    state.selectionManager.subscribeToFocusKeyChange(handler);
+    return () => {
+      state.selectionManager.unsubscribeToFocusKeyChange(handler);
+    };
+  }, [state.selectionManager]);
+
   return (
     <TableContext.Provider value={state}>
       <TableVirtualizer
@@ -266,7 +279,7 @@ function TableView<T extends object>(props: SpectrumTableProps<T>, ref: DOMRef<H
         }
         layout={layout}
         collection={state.collection}
-        focusedKey={state.selectionManager.focusedKey}
+        focusedKey={focusedKey}
         renderView={renderView}
         renderWrapper={renderWrapper}
         domRef={domRef} />

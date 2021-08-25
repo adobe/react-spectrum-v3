@@ -13,6 +13,8 @@
 import {FocusStrategy, PressEvent, Selection, SelectionMode} from '@react-types/shared';
 import {Key} from 'react';
 
+type Handler = (focusedKey: Key) => void;
+
 export interface FocusState {
   /** Whether the collection is currently focused. */
   readonly isFocused: boolean,
@@ -23,7 +25,7 @@ export interface FocusState {
   /** Whether the first or last child of the focused key should receive focus. */
   readonly childFocusStrategy: FocusStrategy,
   /** Sets the focused key, and optionally, whether the first or last child of that key should receive focus. */
-  setFocusedKey(key: Key, child?: FocusStrategy): void
+  setFocusedKey(key: Key, child?: FocusStrategy, callbackSet?: Set<Handler>): void
 }
 
 export interface SingleSelectionState extends FocusState {
@@ -85,5 +87,9 @@ export interface MultipleSelectionManager extends FocusState {
    * Toggles, replaces, or extends selection to the given key depending
    * on the pointer event and collection's selection mode.
    */
-  select(key: Key, e?: PressEvent | PointerEvent): void
+  select(key: Key, e?: PressEvent | PointerEvent): void,
+  /** Adds a callback to a list of callbacks to be called whenever the focused key changes. */
+  subscribeToFocusKeyChange(handler: Handler): void,
+  /** Removes a callback from the list of callbacks to be called whenever the focused key changes. */
+  unsubscribeToFocusKeyChange(handler: Handler): void
 }

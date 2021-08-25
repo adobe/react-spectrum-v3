@@ -291,6 +291,10 @@ export function useSelectableCollection(options: SelectableCollectionOptions): S
       } else {
         manager.setFocusedKey(manager.firstSelectedKey ?? delegate.getFirstKey());
       }
+    } else {
+      // Focus the previously focused cell by calling setFocusedKey on the same focused key so that tabbing back into the
+      // TableView properly rerenders the previously focused cell and doesn't instead focus the nearest focusable element
+      manager.setFocusedKey(manager.focusedKey);
     }
   };
 

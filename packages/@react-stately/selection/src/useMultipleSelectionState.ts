@@ -31,7 +31,6 @@ export function useMultipleSelectionState(props: MultipleSelection): MultipleSel
   let [, setFocused] = useState(false);
   let focusedKeyRef = useRef(null);
   let childFocusStrategyRef = useRef(null);
-  let [, setFocusedKey] = useState(null);
   let selectedKeysProp = useMemo(() => convertSelection(props.selectedKeys), [props.selectedKeys]);
   let defaultSelectedKeys = useMemo(() => convertSelection(props.defaultSelectedKeys, new Selection()), [props.defaultSelectedKeys]);
   let [selectedKeys, setSelectedKeys] = useControlledState(
@@ -43,7 +42,8 @@ export function useMultipleSelectionState(props: MultipleSelection): MultipleSel
     props.disabledKeys ? new Set(props.disabledKeys) : new Set<Key>()
   , [props.disabledKeys]);
 
-  return {
+  let state = useMemo(() =>
+  ({
     selectionMode,
     disallowEmptySelection,
     get isFocused() {
@@ -59,15 +59,22 @@ export function useMultipleSelectionState(props: MultipleSelection): MultipleSel
     get childFocusStrategy() {
       return childFocusStrategyRef.current;
     },
-    setFocusedKey(k, childFocusStrategy = 'first') {
+    setFocusedKey(k, childFocusStrategy = 'first', callbackSet) {
       focusedKeyRef.current = k;
       childFocusStrategyRef.current = childFocusStrategy;
-      setFocusedKey(k);
+
+      if (callbackSet) {
+        for (let handler of callbackSet) {
+          handler(k);
+        }
+      }
     },
     selectedKeys,
     setSelectedKeys,
     disabledKeys: disabledKeysProp
-  };
+  }), [selectionMode, disallowEmptySelection, disabledKeysProp, selectedKeys]);
+
+  return state;
 }
 
 function convertSelection(selection: 'all' | Iterable<Key>, defaultValue?: Selection): 'all' | Selection {

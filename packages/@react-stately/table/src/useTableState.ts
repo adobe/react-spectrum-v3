@@ -49,13 +49,13 @@ const OPPOSITE_SORT_DIRECTION = {
  * of columns and rows from props. In addition, it tracks row selection and manages sort order changes.
  */
 export function useTableState<T extends object>(props: TableStateProps<T>): TableState<T>  {
-  let {selectionMode = 'none'} = props;
+  let {selectionMode = 'none', showSelectionCheckboxes, sortDescriptor, onSortChange, children} = props;
 
   let context = useMemo(() => ({
-    showSelectionCheckboxes: props.showSelectionCheckboxes && selectionMode !== 'none',
+    showSelectionCheckboxes: showSelectionCheckboxes && selectionMode !== 'none',
     selectionMode,
     columns: []
-  }), [props.children, props.showSelectionCheckboxes, selectionMode]);
+  }), [children, showSelectionCheckboxes, selectionMode]);
 
   let collection = useCollection<T, TableCollection<T>>(
     props,
@@ -64,19 +64,21 @@ export function useTableState<T extends object>(props: TableStateProps<T>): Tabl
   );
   let {disabledKeys, selectionManager} = useGridState({...props, collection});
 
-  return {
+  let state = useMemo(() => ({
     collection,
     disabledKeys,
     selectionManager,
-    showSelectionCheckboxes: props.showSelectionCheckboxes || false,
-    sortDescriptor: props.sortDescriptor,
+    showSelectionCheckboxes: showSelectionCheckboxes || false,
+    sortDescriptor,
     sort(columnKey: Key) {
-      props.onSortChange({
+      onSortChange({
         column: columnKey,
-        direction: props.sortDescriptor?.column === columnKey
-          ? OPPOSITE_SORT_DIRECTION[props.sortDescriptor.direction]
+        direction: sortDescriptor?.column === columnKey
+          ? OPPOSITE_SORT_DIRECTION[sortDescriptor.direction]
           : 'ascending'
       });
     }
-  };
+  }), [collection, disabledKeys, selectionManager, showSelectionCheckboxes, sortDescriptor, onSortChange]);
+
+  return state;
 }

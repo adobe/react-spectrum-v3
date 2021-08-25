@@ -12,7 +12,7 @@
 
 import {getRowLabelledBy} from './utils';
 import {GridRowAria, GridRowProps, useGridRow} from '@react-aria/grid';
-import {RefObject} from 'react';
+import {RefObject, useMemo} from 'react';
 import {TableCollection} from '@react-types/table';
 import {TableState} from '@react-stately/table';
 
@@ -24,10 +24,12 @@ import {TableState} from '@react-stately/table';
 export function useTableRow<T>(props: GridRowProps<T>, state: TableState<T>, ref: RefObject<HTMLElement>): GridRowAria {
   let {node} = props;
   let {rowProps} = useGridRow<T, TableCollection<T>, TableState<T>>(props, state, ref);
+  // Not entirely sure why I needed this, but this fixed the tests... Weird cuz the aria-labelledby values didn't seem to be a problem in storybook
+  let rowLabel = useMemo(() => getRowLabelledBy(state, node.key), [state, node.key]);
   return {
     rowProps: {
       ...rowProps,
-      'aria-labelledby': getRowLabelledBy(state, node.key)
+      'aria-labelledby': rowLabel
     }
   };
 }
