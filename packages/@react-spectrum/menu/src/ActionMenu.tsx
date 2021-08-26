@@ -28,23 +28,23 @@ function ActionMenu<T extends object>(props: SpectrumActionMenuProps<T>, ref: Fo
   if (buttonProps['aria-label'] === undefined) {
     buttonProps['aria-label'] = formatMessage('moreActions');
   }
-  
+
   return (
-    <MenuTrigger 
+    <MenuTrigger
       align={props.align}
       direction={props.direction}
       shouldFlip={props.shouldFlip}>
-      <ActionButton 
-        ref={ref} 
+      <ActionButton
+        ref={ref}
         {...buttonProps}
         isDisabled={props.isDisabled}
         isQuiet={props.isQuiet}
         autoFocus={props.autoFocus}>
         <More />
       </ActionButton>
-      <Menu 
-        children={props.children} 
-        items={props.items} 
+      <Menu
+        children={props.children}
+        items={props.items}
         disabledKeys={props.disabledKeys}
         onAction={props.onAction} />
     </MenuTrigger>
@@ -52,7 +52,7 @@ function ActionMenu<T extends object>(props: SpectrumActionMenuProps<T>, ref: Fo
 }
 
 /**
- * Convenience component to display an ActionButton with a Menu.
+ * ActionMenu combines an ActionButton with a Menu for simple "more actions" use cases.
  */
 let _ActionMenu = React.forwardRef(ActionMenu);
 export {_ActionMenu as ActionMenu};
