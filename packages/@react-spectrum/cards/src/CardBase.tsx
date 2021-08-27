@@ -35,7 +35,6 @@ function CardBase<T extends object>(props: CardBaseProps<T>, ref: DOMRef<HTMLDiv
   let context = useCardViewContext() || {}; // we can call again here, won't change from Card.tsx
   let {state} = context;
   let manager = state?.selectionManager;
-  // let [isSelected, setIsSelected] = useControlledState(context.isSelected, undefined, context.onSelectionChange);
   let {
     isQuiet,
     orientation = 'vertical',
@@ -47,14 +46,14 @@ function CardBase<T extends object>(props: CardBaseProps<T>, ref: DOMRef<HTMLDiv
   let key = item?.key;
   let isSelected = manager?.isSelected(key);
   let isDisabled = state?.disabledKeys.has(key);
-  let onChange = () => manager.select(key);
+  let onChange = () => manager?.select(key);
 
   let {styleProps} = useStyleProps(props);
   let {cardProps, titleProps, contentProps} = useCard(props);
   let domRef = useDOMRef(ref);
   let gridRef = useRef<HTMLDivElement>();
 
-  let {hoverProps, isHovered} = useHover({});
+  let {hoverProps, isHovered} = useHover({isDisabled});
   let [isFocused, setIsFocused] = useState(false);
   let {focusWithinProps} = useFocusWithin({
     onFocusWithinChange: setIsFocused,
@@ -108,6 +107,7 @@ function CardBase<T extends object>(props: CardBaseProps<T>, ref: DOMRef<HTMLDiv
           {manager && manager.selectionMode !== 'none' && (
             <div className={classNames(styles, 'spectrum-Card-checkboxWrapper')}>
               <Checkbox
+                isDisabled={isDisabled}
                 excludeFromTabOrder
                 isSelected={isSelected}
                 onChange={onChange}

@@ -10,11 +10,17 @@
  * governing permissions and limitations under the License.
  */
 
-/// <reference types="css-module-types" />
+import {CardView} from '../';
+import React from 'react';
+import {render} from '@testing-library/react';
 
-export * from './CardView';
-export * from './BaseLayout';
-export * from './GalleryLayout';
-export * from './GridLayout';
-export * from './WaterfallLayout';
-export * from './Card';
+describe('CardView', function () {
+  it.each`
+    Name | Component      | props
+    ${'CardView'} | ${CardView} | ${{}}
+  `('$Name handles defaults', function ({Component, props}) {
+    let tree = render(<Component {...props} />);
+
+    expect(tree).toBeTruthy();
+  });
+});

@@ -32,14 +32,15 @@ let Card = forwardRef((props: SpectrumCardProps, ref: DOMRef<HTMLDivElement>) =>
 // @ts-ignore
 // eslint-disable-next-line
 Card.getCollectionNode = function* getCollectionNode<T>(props, context: any): Generator<PartialNode<T>> {
-  let {children} = props;
+  let {children, textValue} = props;
 
   yield {
     type: 'item',
     props: props,
     rendered: children,
     'aria-label': props['aria-label'],
-    hasChildNodes: false
+    hasChildNodes: false,
+    textValue
   };
 };
 

@@ -50,7 +50,7 @@ governing permissions and limitations under the License.
 }
 
 .spectrum-Card--default {
-  border-color: var(--spectrum-card-border-color);
+  box-shadow: inset 0 0 0 1px var(--spectrum-card-border-color-hover);
   background-color: var(--spectrum-card-background-color);
   .spectrum-Card-grid {
     &:before {
@@ -139,49 +139,53 @@ governing permissions and limitations under the License.
 .spectrum-Card--isQuiet {
   border-color: transparent;
   background-color: transparent;
+
   &:hover {
     .spectrum-Card-grid {
       &:before {
         background-color: var(--spectrum-card-quiet-preview-background-color-hover);
-        box-shadow: 0 0 0 1px var(--spectrum-card-border-color-hover);
+      }
+
+      &:after {
+        box-shadow: inset 0 0 0 1px var(--spectrum-card-border-color-hover);
       }
     }
   }
 
   &.is-selected {
     .spectrum-Card-grid {
-      &:before {
+      &:after {
         /* Image needs to go right to the edge, so no border. Adding border on focus causes
         * a jump in the text and image. So focus ring is only box-shadow
         */
-        box-shadow: 0 0 0 1px var(--spectrum-card-border-color-key-focus);
+        box-shadow: inset 0 0 0 1px var(--spectrum-card-border-color-key-focus);
       }
     }
   }
 
   &:hover.is-selected {
     .spectrum-Card-grid {
-      &:before {
+      &:after {
         /* Image needs to go right to the edge, so no border. Adding border on focus causes
         * a jump in the text and image. So focus ring is only box-shadow
         */
-        box-shadow: 0 0 0 1px var(--spectrum-card-border-color-key-focus);
+        box-shadow: inset 0 0 0 1px var(--spectrum-card-border-color-key-focus);
       }
     }
   }
 
   &:focus-ring {
     .spectrum-Card-grid {
-      &:before {
-        box-shadow: 0 0 0 2px var(--spectrum-card-border-color-key-focus);
+      &:after {
+        box-shadow: inset 0 0 0 2px var(--spectrum-card-border-color-key-focus);
       }
     }
   }
 
   &:focus-ring:hover.is-selected {
     .spectrum-Card-grid {
-      &:before {
-        box-shadow: 0 0 0 2px var(--spectrum-card-border-color-key-focus);
+      &:after {
+        box-shadow: inset 0 0 0 2px var(--spectrum-card-border-color-key-focus);
       }
     }
   }
@@ -190,6 +194,7 @@ governing permissions and limitations under the License.
     .spectrum-Card-grid {
       &:after {
         background-color: var(--spectrum-global-color-blue-400);
+        /* TODO: this causes an issue with quiet selected focused cards cuz the opacity applies to the focus ring */
         opacity: 0.15;
       }
     }
