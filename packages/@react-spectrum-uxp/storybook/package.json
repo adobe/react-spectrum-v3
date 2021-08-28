@@ -1,0 +1,47 @@
+{
+  "name": "@react-spectrum-uxp/storybook",
+  "version": "3.0.0-alpha.1",
+  "private": true,
+  "license": "MIT",
+  "browser": "dist/index.html",
+  "scripts": {
+    "watch:parcel": "rm -rf ../../../.parcel-cache && parcel serve src/index.html --target main --no-content-hash --no-cache --log-level verbose",
+    "watch-:uxp": "sleep 20 && yarn uxp",
+    "watch": "run-p watch:*",
+    "uxp": "../../../../torq-native/build/out/bin/macos/v8/nativeui/Debug/demo.app/Contents/MacOS/demo --extension dist"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "targets": {
+    "main": {
+      "minify": false
+    }
+  },
+  "alias": {
+    "@storybook/react": "./src/@storybook/react.ts",
+    "@storybook/addon-actions": "./src/@storybook/addon-actions.ts",
+    "@react-spectrum/button": "@react-spectrum-uxp/button"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7",
+    "npm-run-all": "^4.1.5",
+    "parcel": "nightly",
+    "typescript": "^3.8.3"
+  },
+  "unpublishedDependencies": {
+    "@react-spectrum-uxp/button": "^3.3.0",
+    "@react-spectrum-uxp/parcel-resolver-alias-fix": "1.0.0"
+  },
+  "dependencies": {
+    "@react-spectrum/button": "^3.4.0",
+    "@react-spectrum/provider": "^3.1.2",
+    "@react-spectrum/theme-default": "^3.1.0",
+    "react": "^16.8.0 || ^17.0.0-rc.1",
+    "react-dom": "^16.8.0 || ^17.0.0-rc.1"
+  },
+  "bundledDependencies": [
+    "react",
+    "react-dom"
+  ]
+}

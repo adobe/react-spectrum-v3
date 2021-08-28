@@ -1,0 +1,24 @@
+:root {
+    --margin: 8px;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0px;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* #app:nth-child(1) {
+    flex: 0 0 auto;
+}
+*/
+

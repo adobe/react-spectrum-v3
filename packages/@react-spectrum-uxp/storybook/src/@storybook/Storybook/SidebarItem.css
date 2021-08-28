@@ -1,0 +1,20 @@
+.SidebarItem {
+    margin: calc(var(--margin) / 4);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+}
+
+.SidebarItem.selected {
+    color: blue;
+    font-weight: bold;
+}
+
+.SidebarItem_Title {
+    white-space: pre;
+}
+
+.SidebarItem_Title:hover {
+    color: blue;
+}

@@ -1,0 +1,4 @@
+{
+    "extends": "@parcel/config-default",
+    "resolvers": ["@react-spectrum-uxp/parcel-resolver-alias-fix", "..."]
+}

@@ -1,0 +1,11 @@
+.Sidebar {
+    display: flex;
+    flex-direction: column;
+    background: lightgray;
+    flex: 0 0 auto;
+    width: 300px;
+    padding: var(--margin);
+    white-space: pre;
+    overflow: auto;
+    user-select: none;
+}

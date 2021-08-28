@@ -1,0 +1,28 @@
+{
+  "name": "@react-spectrum-uxp/utils",
+  "version": "3.0.0-alpha.1",
+  "description": "Common utility functions for react-spectrum-uxp components.",
+  "license": "Apache-2.0",
+  "private": true,
+  "main": "dist/main.js",
+  "module": "dist/module.js",
+  "types": "dist/types.d.ts",
+  "source": "src/index.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adobe/react-spectrum"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.6.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

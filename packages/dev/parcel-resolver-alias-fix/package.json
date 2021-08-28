@@ -1,0 +1,13 @@
+{
+  "name": "@react-spectrum-uxp/parcel-resolver-alias-fix",
+  "version": "3.0.0-alpha.1",
+  "private": true,
+  "main": "AliasFixResolver.js",
+  "engines": {
+    "parcel": ">= 2.0.0-alpha.3.2"
+  },
+  "dependencies": {
+    "@parcel/plugin": "nightly",
+    "@parcel/node-resolver-core": "nightly"
+  }
+}

@@ -1,0 +1,7 @@
+
+#storybook {
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    flex: 1 1 auto;
+}

@@ -1,0 +1,5 @@
+.Header {
+    flex: 0 0 auto;
+    padding: var(--margin);
+    font-size: 10px;
+}

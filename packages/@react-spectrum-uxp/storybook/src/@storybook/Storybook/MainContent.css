@@ -1,0 +1,8 @@
+.MainContent {
+    background: beige;
+    flex: 1 1 auto;
+    display: flex;
+    /* align-items: center; */
+    padding: calc(var(--margin) * 4);
+    justify-content: center;
+}

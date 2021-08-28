@@ -1,0 +1,10 @@
+.parcel-cache
+.cache
+*.log
+node_modules
+sync
+dist/*.css
+dist/*.map
+dist/*.js
+dist/*.html
+!dist/*.json
