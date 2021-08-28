@@ -57,7 +57,7 @@ export interface MenuProps<T> extends CollectionBase<T>, MultipleSelection {
 export interface AriaMenuProps<T> extends MenuProps<T>, DOMProps, AriaLabelingProps {}
 export interface SpectrumMenuProps<T> extends AriaMenuProps<T>, StyleProps {}
 
-export interface SpectrumActionMenuProps<T> extends CollectionBase<T>, DOMProps, AriaLabelingProps {
+export interface SpectrumActionMenuProps<T> extends CollectionBase<T>, StyleProps, DOMProps, AriaLabelingProps {
   /**
    * Alignment of the menu relative to the trigger.
    * @default 'start'
@@ -80,5 +80,5 @@ export interface SpectrumActionMenuProps<T> extends CollectionBase<T>, DOMProps,
   /** Whether the element should receive focus on render. */
   autoFocus?: boolean,
   /** Handler that is called when an item is selected. */
-  onAction?: (key: Key) => void 
+  onAction?: (key: Key) => void
 }

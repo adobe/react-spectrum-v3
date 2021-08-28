@@ -13,6 +13,8 @@ governing permissions and limitations under the License.
 @import '../commons/index.css';
 
 .spectrum-Asset {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,6 +29,9 @@ governing permissions and limitations under the License.
 
 .spectrum-Asset-folder,
 .spectrum-Asset-file {
+  width: 100%;
+  height: 100%;
   min-width: var(--spectrum-asset-icon-min-width);
   max-width: var(--spectrum-asset-icon-max-width);
+  margin: var(--spectrum-asset-icon-margin);
 }

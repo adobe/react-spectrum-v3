@@ -1,0 +1,92 @@
+<!-- Copyright 2021 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License. -->
+
+import {Layout} from '@react-spectrum/docs';
+export default Layout;
+
+*Additional types can be imported via a direct path to the *.d.ts file if need be. See the useComboBox.mdx for an example.*
+import docs from 'docs:@react-aria/cards';
+import {HeaderInfo, FunctionAPI, TypeContext, InterfaceType, TypeLink} from '@react-spectrum/docs';
+import packageData from '@react-aria/cards/package.json';
+import Anatomy from './cardsAnatomy.svg'
+
+```jsx import
+import {useCard} from '@react-aria/cards';
+```
+
+*Include after_version if the docs shouldn't be published to the website until reaching a specific package version.*
+---
+category: Category Name
+keywords: []
+after_version: 3.0.0-alpha.0
+---
+
+# useCard
+
+<p>{docs.exports.useCard.description}</p>
+
+*Be sure to update the W3C url below if applicable to your hook, otherwise omit the sourceData prop.*
+<HeaderInfo
+  packageData={packageData}
+  componentNames={['useCard']}
+  sourceData={[
+    {type: 'W3C', url: 'https://www.w3.org/TR/wai-aria-practices/#button'}
+  ]} />
+
+## API
+
+*Include an additional FunctionAPI if multiple hooks are being documented in a single file. See useTabList.mdx for an example.*
+<FunctionAPI function={docs.exports.useCard} links={docs.links} />
+
+## Features
+
+*Describe what the aria hook helps with/provides.*
+
+## Anatomy/Usage
+
+*For hooks that are meant to be used with specific elements/components, include an Anatomy section detailing the props the hook returns. See useColorField.mdx for an example.*
+*If applicable, the anatomy diagram should be added as a local svg file, sourced from the Spectrum XD file (ask Devon for the file if you are unsure). Follow these steps after you obtain the XD file:*
+*1. Open the XD file and find the anatomy diagram. Select it by double clicking its artboard.*
+*2. Export it as an SVG via File -> Export -> Selected...*
+*3a. Manually remove any extraneous Spectrum-only elements and labels from the SVG.*
+*3b. Replace the colors in the SVG with their spectrum color variable equivalents. See docs.css .provider for a mapping of these colors.*
+*3c. Add a `title` and `desc` to the SVG summarizing the contents of the diagram. See any of existing anatomy.svg for an example. *
+<Anatomy />
+
+*For hooks that are meant for more general use, include a Usage section instead detailing the props/params the hook accepts and returns. See useKeyboard.mdx for an example.*
+
+*If the below doesn't work see useFocusRing.mdx, useFocusWithin.mdx, and useHover.mdx for some alternative ways of using InterfaceType. *
+<TypeContext.Provider value={docs.links}>
+  <InterfaceType properties={docs.links[docs.exports.useCard.return.id].properties} />
+</TypeContext.Provider>
+
+*If you'd like to have a inline type link (e.g. referencing the type def of the stately hook), use the TypeLink component below and replace the links to the appropriate docs import.*
+<TypeLink links={docs.links} type={docs.exports.useCard} />
+
+## Example
+
+*Add an example of the hook (being used with native elements, etc)*
+*If you create an example component that will be reused else where in this doc, include export=true so that you can directly reuse the component and avoid copy pasting the same code.*
+*See useComboBox.mdx for an example.*
+```tsx example export=true
+function Example(props) {
+  return (
+    <div>test</div>
+  );
+}
+```
+
+## Usage
+
+*For hooks that are meant to be used with specific elements/components, include this usage section detailing examples of how to use the hook. *
+*This should roughly mirror the examples that the corresponding React Spectrum component docs have (e.g. Controlled/Uncontrolled, Disabled, change handlers, etc). *
+
+## Internationalization
+
+*Mention if RTL *

@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {classNames, dimensionValue, useDOMRef, useStyleProps} from '@react-spectrum/utils';
+import {classNames, dimensionValue, useDOMRef, useSlotProps, useStyleProps} from '@react-spectrum/utils';
 import {DOMRef} from '@react-types/shared';
 import {filterDOMProps} from '@react-aria/utils';
 import React, {forwardRef} from 'react';
@@ -22,6 +22,7 @@ const DEFAULT_SIZE = 'avatar-size-100';
 const SIZE_RE = /^size-\d+/;
 
 function Avatar(props: SpectrumAvatarProps, ref: DOMRef<HTMLImageElement>) {
+  props = useSlotProps(props, 'avatar');
   const {
     alt = '',
     isDisabled,
