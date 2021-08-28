@@ -36,6 +36,7 @@ const IMPORT_MAPPINGS = {
 module.exports = new Transformer({
   async transform({asset, options}) {
     let exampleCode = [];
+    let exampleImports = [];
     let assetPackage = await asset.getPackage();
     let preReleaseParts = assetPackage.version.match(/(alpha)|(beta)|(rc)/);
     let preRelease = preReleaseParts ? preReleaseParts[0] : '';
@@ -45,6 +46,7 @@ module.exports = new Transformer({
           let [meta, ...options] = (node.meta || '').split(' ');
           if (meta === 'import') {
             exampleCode.push(node.value);
+            exampleImports.push(node.value);
             node.meta = null;
             return [];
           }
@@ -57,6 +59,7 @@ module.exports = new Transformer({
             code = code.replace(/import ((?:.|\n)*?) from (['"].*?['"]);?/g, (m, _, s) => {
               if (s.slice(1, -1) !== 'your-component-library') {
                 exampleCode.push(m);
+                exampleImports.push(m);
               }
               return '';
             });
@@ -214,6 +217,7 @@ module.exports = new Transformer({
         flatMap(tree, node => {
           if (node.tagName === 'pre' && node.children && node.children.length > 0 && node.children[0].tagName === 'code' && node.children[0].properties.metastring) {
             node.properties.className = node.children[0].properties.metastring.split(' ');
+            node.properties['data-imports'] = exampleImports.join('/n');
           }
 
           return [node];
