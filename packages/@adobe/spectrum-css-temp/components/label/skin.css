@@ -11,40 +11,53 @@ governing permissions and limitations under the License.
 */
 
 .spectrum-Label {
+  --spectrum-label-colored-indigo-background-color: var(--spectrum-global-color-indigo-400);
+  --spectrum-label-colored-purple-background-color: var(--spectrum-global-color-purple-400);
+  --spectrum-label-colored-magenta-background-color: var(--spectrum-global-color-magenta-400);
+
+
   color: var(--spectrum-label-colored-text-color);
 }
 
-.spectrum-Label--inactive,
-.spectrum-Label--grey {
-  background-color: var(--spectrum-label-colored-gray-background-color);
-}
-
-.spectrum-Label--red {
-  background-color: var(--spectrum-label-colored-red-background-color);
-}
-
-.spectrum-Label--orange, .spectrum-Label--or {
-  background-color: var(--spectrum-label-colored-orange-background-color);
-}
-
-.spectrum-Label--yellow {
-  background-color: var(--spectrum-label-colored-yellow-background-color);
-}
-
-.spectrum-Label--seafoam  {
-  background-color: var(--spectrum-label-colored-seafoam-background-color);
-}
-
-.spectrum-Label--green {
+.spectrum-Label--positive {
   /* this color is not accessible in dark mode */
   /* background-color: var(--spectrum-label-colored-green-background-color); */
   background-color: var(--spectrum-global-color-static-green-700);
 }
 
-.spectrum-Label--blue, .spectrum-Label--active, .spectrum-Label--and  {
+.spectrum-Label--info {
   background-color: var(--spectrum-label-colored-blue-background-color);
 }
 
-.spectrum-Label--fuchsia  {
+.spectrum-Label--negative {
+  background-color: var(--spectrum-label-colored-red-background-color);
+}
+
+.spectrum-Label--neutral {
+  background-color: var(--spectrum-label-colored-gray-background-color);
+}
+
+.spectrum-Label--seafoam {
+  background-color: var(--spectrum-label-colored-seafoam-background-color);
+}
+
+.spectrum-Label--indigo {
+  background-color: var(--spectrum-label-colored-indigo-background-color);
+}
+
+.spectrum-Label--purple {
+  background-color: var(--spectrum-label-colored-purple-background-color);
+}
+
+.spectrum-Label--fuchsia {
   background-color: var(--spectrum-label-colored-fuchsia-background-color);
+}
+
+.spectrum-Label--magenta {
+  background-color: var(--spectrum-label-colored-magenta-background-color);
+}
+
+.spectrum-Label--yellow {
+  background-color: var(--spectrum-label-colored-yellow-background-color);
+  color: black;
 }

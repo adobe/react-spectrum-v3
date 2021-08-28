@@ -13,8 +13,13 @@ governing permissions and limitations under the License.
 @import '../commons/index.css';
 
 .spectrum-Label {
-  display: inline-block;
   position: relative;
+
+  display: inline-flex;
+  box-sizing: border-box;
+
+  align-items: center;
+  justify-content: center;
 
   width: auto;
 
@@ -30,6 +35,51 @@ governing permissions and limitations under the License.
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: auto;
   font-smoothing: subpixel-antialiased;
+
+  /* icon + text buttons should have padding between the text and icon no matter the order */
+  .spectrum-Label-icon + .spectrum-Label-label {
+    padding-inline-start: var(--spectrum-global-dimension-size-50);
+  }
+
+  .spectrum-Label-label + .spectrum-Label-icon {
+    padding-inline-end: var(--spectrum-global-dimension-size-50);
+  }
+
+  &.spectrum-Label--anchorTop {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  &.spectrum-Label--anchorRight {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &.spectrum-Label--anchorBottom {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &.spectrum-Label--anchorLeft {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.spectrum-Label-label {
+  align-self: center;
+  justify-self: center;
+  order: 1; /* always be after the icon, regardless of DOM order */
+
+  /* Fixes horizontal alignment of text in anchor buttons */
+  text-align: center;
+
+  /* @safari10 Workaround for https://bugs.webkit.org/show_bug.cgi?id=169700 */
+  inline-size: 100%;
+
+  &:empty {
+    display: none;
+  }
 }
 
 .spectrum-Label--large {
