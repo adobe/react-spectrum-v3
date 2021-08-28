@@ -190,7 +190,7 @@ function FormWithControls(props: any = {}) {
 
   return (
     <Flex>
-      <Checkbox isSelected={preventDefault} onChange={setPreventDefault}>Prevent Default onSubmit</Checkbox>
+      <Checkbox alignSelf="start" isSelected={preventDefault} onChange={setPreventDefault}>Prevent Default onSubmit</Checkbox>
       <Form
         onSubmit={e => {
           action('onSubmit')(e);

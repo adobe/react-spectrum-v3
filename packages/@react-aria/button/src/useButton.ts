@@ -93,8 +93,7 @@ export function useButton(props: AriaButtonProps<ElementType>, ref: RefObject<an
   });
 
   let {focusableProps} = useFocusable(props, ref);
-  let buttonProps = mergeProps(focusableProps, pressProps);
-  buttonProps = mergeProps(buttonProps, filterDOMProps(props, {labelable: true}));
+  let buttonProps = mergeProps(focusableProps, pressProps, filterDOMProps(props, {labelable: true}));
 
   return {
     isPressed, // Used to indicate press state for visual
