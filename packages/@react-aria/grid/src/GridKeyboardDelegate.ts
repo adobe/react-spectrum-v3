@@ -22,7 +22,8 @@ export interface GridKeyboardDelegateOptions<T, C> {
   direction: Direction,
   collator?: Intl.Collator,
   layout?: Layout<Node<T>>,
-  focusMode?: 'row' | 'cell'
+  focusMode?: 'row' | 'cell',
+  cycleMode?: 'none' | 'within' | 'between'
 }
 
 export class GridKeyboardDelegate<T, C extends GridCollection<T>> implements KeyboardDelegate {
@@ -33,6 +34,7 @@ export class GridKeyboardDelegate<T, C extends GridCollection<T>> implements Key
   protected collator: Intl.Collator;
   protected layout: Layout<Node<T>>;
   protected focusMode;
+  protected cycleMode;
 
   constructor(options: GridKeyboardDelegateOptions<T, C>) {
     this.collection = options.collection;
@@ -42,6 +44,7 @@ export class GridKeyboardDelegate<T, C extends GridCollection<T>> implements Key
     this.collator = options.collator;
     this.layout = options.layout;
     this.focusMode = options.focusMode || 'row';
+    this.cycleMode = options.cycleMode || 'none';
   }
 
   protected isCell(node: Node<T>) {
@@ -168,6 +171,18 @@ export class GridKeyboardDelegate<T, C extends GridCollection<T>> implements Key
         return item.parentKey;
       }
 
+      if (this.cycleMode === 'within') {
+        return this.direction === 'rtl' ? this.getLastKey(key) : this.getFirstKey(key);
+      } else if (this.cycleMode === 'between') {
+        // let parent = this.collection.getItem(item.parentKey);
+        let nextKey = this.getKeyBelow(item.key);
+        if (nextKey) {
+          // let next = this.collection.getItem(nextKey);
+          // let nextChildren = [...next.childNodes];
+          return this.direction === 'rtl' ? this.getLastKey(nextKey, false) : this.getFirstKey(nextKey, false);
+        }
+      }
+
       return this.direction === 'rtl' ? this.getFirstKey(key) : this.getLastKey(key);
     }
   }
@@ -202,6 +217,15 @@ export class GridKeyboardDelegate<T, C extends GridCollection<T>> implements Key
       // focus row only if focusMode is set to row
       if (this.focusMode === 'row') {
         return item.parentKey;
+      }
+
+      if (this.cycleMode === 'within') {
+        return this.direction === 'rtl' ? this.getFirstKey(key) : this.getLastKey(key);
+      } else if (this.cycleMode === 'between') {
+        let previousKey = this.getKeyAbove(item.key);
+        if (previousKey) {
+          return this.direction === 'rtl' ? this.getFirstKey(previousKey, false) : this.getLastKey(previousKey, false);
+        }
       }
 
       return this.direction === 'rtl' ? this.getLastKey(key) : this.getFirstKey(key);

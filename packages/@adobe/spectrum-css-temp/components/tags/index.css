@@ -57,6 +57,13 @@ governing permissions and limitations under the License.
     block-size: var(--spectrum-alias-font-size-default);
     inline-size: var(--spectrum-alias-font-size-default);
     border-radius: var(--spectrum-alias-border-radius-small);
+
+    &:focus-ring {
+       border-color: var(--spectrum-dropzone-border-color-selected-hover);
+       box-shadow: 0 0 0 1px var(--spectrum-dropzone-border-color-selected-hover);
+    }
+
+
   }
 }
 
@@ -69,4 +76,5 @@ governing permissions and limitations under the License.
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  outline: none;
 }

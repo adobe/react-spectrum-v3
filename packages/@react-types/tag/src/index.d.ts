@@ -10,23 +10,12 @@
  * governing permissions and limitations under the License.
  */
 
-import {DOMProps, MultipleSelection, Removable, StyleProps} from '@react-types/shared';
-import {ReactChild, ReactElement, ReactNode} from 'react';
+import {CollectionBase, DOMProps, MultipleSelection, StyleProps} from '@react-types/shared';
 
-export interface TagProps extends Removable<ReactChild, void> {
-  children?: ReactNode,
-  icon?: ReactElement,
+export interface TagGroupProps<T> extends CollectionBase<T>, MultipleSelection {
   isDisabled?: boolean,
-  validationState?: 'invalid' | 'valid'
+  isRemovable?: boolean,
+  onRemove?: (items: any[]) => void
 }
 
-export interface TagGroupProps extends MultipleSelection {
-  children: ReactElement<TagProps> | ReactElement<TagProps>[],
-  isDisabled?: boolean,
-  isReadOnly?: boolean,
-  onRemove?: (items: any[]) => void,
-  validationState?: 'invalid' | 'valid'
-}
-
-export interface SpectrumTagProps extends TagProps, DOMProps, StyleProps {}
-export interface SpectrumTagGroupProps extends TagGroupProps, DOMProps, StyleProps {}
+export interface SpectrumTagGroupProps<T> extends TagGroupProps<T>, DOMProps, StyleProps {}

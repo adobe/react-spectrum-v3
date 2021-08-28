@@ -12,5 +12,4 @@
 
 /// <reference types="css-module-types" />
 
-export * from './Tag';
 export * from './TagGroup';

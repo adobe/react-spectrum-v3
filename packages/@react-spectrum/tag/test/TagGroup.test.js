@@ -15,7 +15,7 @@ import React from 'react';
 import {render} from '@testing-library/react';
 import {Tag, TagGroup} from '../src';
 
-describe('TagGroup', function () {
+describe.skip('TagGroup', function () {
   let onRemoveSpy = jest.fn();
 
   afterEach(() => {

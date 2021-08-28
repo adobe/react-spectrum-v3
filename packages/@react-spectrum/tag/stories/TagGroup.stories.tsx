@@ -11,30 +11,46 @@
  */
 
 import {action} from '@storybook/addon-actions';
+import {Item} from '@react-stately/collections';
 import React, {useState} from 'react';
 import {storiesOf} from '@storybook/react';
-import {Tag, TagGroup} from '../src';
+import {TagGroup} from '../src';
 
 storiesOf('TagGroup', module)
   .add(
     'default',
     () => render({})
-  ).add(
+  )
+  .add(
+    'items',
+    () => (
+      <TagGroup items={[{key: '1', label: 'Cool Tag 1'}, {key: '2', label: 'Cool Tag 2'}]}>
+        {item =>
+          <Item key={item.key}>{item.label}</Item>
+        }
+      </TagGroup>
+    )
+  )
+  // .add('icons', () => (
+  //   <TagGroup>
+  //     <Item>
+  //       <Text>Tag 1</Text>
+  //     </Item>
+  //   </TagGroup>
+  // ))
+  .add(
     'onRemove',
-    () => renderWithRemovableTags({
+    () => render({
+      isRemovable: true,
       onRemove: action('onRemove')
     })
-  ).add(
-    'is Disabled',
-    () => render({
-      isDisabled: true
-    })
-  ).add(
-    'isReadOnly',
-    () => renderWithRemovableTags({
-      isReadOnly: true
-    })
-  ).add(
+  )
+  .add(
+  'is Disabled',
+  () => render({
+    isDisabled: true
+  }))
+  .add(
     'with announcing',
     () => (
       <WithAnnouncing />
@@ -44,19 +60,9 @@ storiesOf('TagGroup', module)
 function render(props: any = {}) {
   return (
     <TagGroup {...props}>
-      <Tag>Cool Tag 1</Tag>
-      <Tag>Cool Tag 2</Tag>
-      <Tag>Cool Tag 3</Tag>
-    </TagGroup>
-  );
-}
-
-function renderWithRemovableTags(props: any = {}) {
-  return (
-    <TagGroup {...props}>
-      <Tag isRemovable>Cool Tag 1</Tag>
-      <Tag isRemovable>Cool Tag 2</Tag>
-      <Tag isRemovable>Cool Tag 3</Tag>
+      <Item>Cool Tag 1</Item>
+      <Item>Cool Tag 2</Item>
+      <Item>Cool Tag 3</Item>
     </TagGroup>
   );
 }
@@ -75,7 +81,7 @@ function WithAnnouncing() {
       {/*
         // @ts-ignore */}
       <TagGroup onKeyDown={handleKeyDown}>
-        {tags.map((t, index) => <Tag key={index}>{t}</Tag>)}
+        {tags.map((t, index) => <Item key={index}>{t}</Item>)}
       </TagGroup>
     </React.Fragment>
   );

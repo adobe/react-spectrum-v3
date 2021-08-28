@@ -19,9 +19,14 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.6.2",
+    "@react-aria/focus": "^3.3.0",
+    "@react-aria/grid": "3.0.0-alpha.2",
     "@react-aria/i18n": "^3.1.0",
     "@react-aria/interactions": "^3.1.0",
     "@react-aria/utils": "^3.1.0",
+    "@react-spectrum/utils": "^3.5.2",
+    "@react-stately/grid": "3.0.0-alpha.2",
+    "@react-stately/list": "^3.2.3",
     "@react-types/shared": "^3.1.0",
     "@react-types/tag": "3.0.0-alpha.1"
   },

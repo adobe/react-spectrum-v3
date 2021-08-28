@@ -10,21 +10,13 @@
  * governing permissions and limitations under the License.
  */
 
-import {ButtonHTMLAttributes, HTMLAttributes, KeyboardEvent, ReactNode} from 'react';
-import {DOMProps, Removable} from '@react-types/shared';
+import {ButtonHTMLAttributes, HTMLAttributes, KeyboardEvent, useRef} from 'react';
 import {filterDOMProps, mergeProps, useId} from '@react-aria/utils';
 // @ts-ignore
 import intlMessages from '../intl/*.json';
+import {useGridCell, useGridRow} from '@react-aria/grid';
 import {useMessageFormatter} from '@react-aria/i18n';
 
-
-export interface AriaTagProps extends Removable<ReactNode, void>, DOMProps {
-  children?: ReactNode,
-  isDisabled?: boolean,
-  validationState?: 'invalid' | 'valid',
-  isSelected?: boolean,
-  role?: string
-}
 
 export interface TagAria {
   tagProps: HTMLAttributes<HTMLElement>,
@@ -32,20 +24,30 @@ export interface TagAria {
   clearButtonProps: ButtonHTMLAttributes<HTMLButtonElement>
 }
 
-export function useTag(props: AriaTagProps): TagAria {
+export function useTag(props, state): TagAria {
   const {
     isDisabled,
-    validationState,
     isRemovable,
-    isSelected,
     onRemove,
     children,
-    role
+    item
   } = props;
   const formatMessage = useMessageFormatter(intlMessages);
   const removeString = formatMessage('remove');
   const tagId = useId();
   const buttonId = useId();
+  let tagRef = useRef();
+  let labelRef = useRef();
+
+  let {rowProps} = useGridRow({
+    node: item,
+    ref: tagRef
+  }, state);
+  let {gridCellProps} = useGridCell({
+    node: item.childNodes[0],
+    ref: labelRef,
+    focusMode: 'cell'
+  }, state);
 
   function onKeyDown(e: KeyboardEvent<HTMLElement>) {
     if (e.key === 'Delete' || e.key === 'Backspace') {
@@ -54,30 +56,27 @@ export function useTag(props: AriaTagProps): TagAria {
     }
   }
   const pressProps = {
-    onPress: e => onRemove(children, e)
+    onPress: e => onRemove && onRemove(children, e)
   };
 
   let domProps = filterDOMProps(props);
   return {
-    tagProps: mergeProps(domProps, {
-      'aria-selected': !isDisabled && isSelected,
-      'aria-invalid': validationState === 'invalid' || undefined,
+    tagProps: mergeProps(domProps, rowProps, {
       'aria-errormessage': props['aria-errormessage'],
       onKeyDown: !isDisabled && isRemovable ? onKeyDown : null,
-      role: role === 'gridcell' ? 'row' : null,
-      tabIndex: isDisabled ? -1 : 0
+      tabIndex: isDisabled ? -1 : 0,
+      ref: tagRef
     }),
-    labelProps: {
+    labelProps: mergeProps(gridCellProps, {
       id: tagId,
-      role
-    },
+      ref: labelRef
+    }),
     clearButtonProps: mergeProps(pressProps, {
       'aria-label': removeString,
       'aria-labelledby': `${buttonId} ${tagId}`,
       id: buttonId,
       title: removeString,
-      isDisabled,
-      role
+      isDisabled
     })
   };
 }
