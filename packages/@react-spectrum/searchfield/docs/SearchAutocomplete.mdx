@@ -1,0 +1,483 @@
+<!-- Copyright 2020 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License. -->
+
+import {Layout} from '@react-spectrum/docs';
+export default Layout;
+
+import docs from 'docs:@react-spectrum/searchfield';
+import {HeaderInfo, PropTable} from '@react-spectrum/docs';
+import packageData from '@react-spectrum/searchfield/package.json';
+
+```jsx import
+import {SearchAutocomplete, Section, Item} from '@react-spectrum/searchfield';
+import {useFilter} from '@react-aria/i18n';
+```
+
+---
+category: Pickers
+keywords: [search field, input]
+---
+
+# SearchAutocomplete
+
+<p>{docs.exports.SearchAutocomplete.description}</p>
+
+<HeaderInfo
+  packageData={packageData}
+  componentNames={['SearchAutocomplete', 'Item']} />
+
+## Example
+
+```tsx example
+function Example() {
+
+  return (
+    <SearchAutocomplete label="Search with Autocomplete">
+      <Item>Aardvark</Item>
+      <Item>Kangaroo</Item>
+      <Item>Snake</Item>
+    </SearchAutocomplete>
+  );
+}
+```
+
+## Content
+SearchAutocomplete follows the [Collection Components](../react-stately/collections.html) API, accepting both static and dynamic collections.
+Similar to [ComboBox](ComboBox.html), SearchAutocomplete accepts `<Item>` elements as children, each with a `key` prop. Basic usage of SearchAutocomplete, seen in the example above, shows multiple options populated with a string.
+Static collections, as in this example, can be used when the full list of options is known ahead of time.
+
+Dynamic collections, as shown below, can be used when the options come from an external data source such as an API call, or update over time.
+Providing the data in this way allows SearchAutocomplete to automatically cache the rendering of each item, which dramatically improves performance.
+
+As seen below, an iterable list of options is passed to the SearchAutocomplete using the `defaultItems` prop. 
+
+```tsx example
+function Example() {
+  let options = [
+    {id: 1, name: 'Aerospace'},
+    {id: 2, name: 'Mechanical'},
+    {id: 3, name: 'Civil'},
+    {id: 4, name: 'Biomedical'},
+    {id: 5, name: 'Nuclear'},
+    {id: 6, name: 'Industrial'},
+    {id: 7, name: 'Chemical'},
+    {id: 8, name: 'Agricultural'},
+    {id: 9, name: 'Electrical'}
+  ];
+
+  return (
+    <SearchAutocomplete
+      label="Search engineering majors"
+      defaultItems={options}>
+      {item => <Item>{item.name}</Item>}
+    </SearchAutocomplete>
+  );
+}
+```
+
+Alternatively, passing your list of options to SearchAutocomplete's `items` prop will cause the list of items to be controlled, useful for when you want to provide your own
+filtering logic. See the [Custom Filtering](#custom-filtering) section for more detail.
+
+### Internationalization
+To internationalize a SearchAutocomplete, a localized string should be passed to the `children` of each `Item`.
+For languages that are read right-to-left (e.g. Hebrew and Arabic), the layout of the SearchAutocomplete is automatically flipped.
+
+### Placeholder
+
+Placeholder text that describes the expected value or formatting for the SearchAutocomplete can be provided using the `placeholder` prop.
+Placeholder text will only appear when the SearchAutocomplete is empty, and should not be used as a substitute for labeling the component with a visible label.
+
+```tsx example
+function Example() {
+  let options = [
+    {id: 1, name: 'Aerospace'},
+    {id: 2, name: 'Mechanical'},
+    {id: 3, name: 'Civil'},
+    {id: 4, name: 'Biomedical'},
+    {id: 5, name: 'Nuclear'},
+    {id: 6, name: 'Industrial'},
+    {id: 7, name: 'Chemical'},
+    {id: 8, name: 'Agricultural'},
+    {id: 9, name: 'Electrical'}
+  ];
+
+  return (
+    <SearchAutocomplete
+      label="Search engineering majors"
+      defaultItems={options}
+      placeholder="Aerospace, Mechanical, etc.">
+      {item => <Item>{item.name}</Item>}
+    </SearchAutocomplete>
+  );
+}
+```
+
+## Labeling
+SearchAutocomplete can be labeled using the `label` prop. If the SearchAutocomplete is a required field, the `isRequired` and `necessityIndicator` props can be used to show a required state.
+
+```tsx example
+<SearchAutocomplete label="Favorite Animal" isRequired necessityIndicator="icon">
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```
+```tsx example
+<SearchAutocomplete label="Favorite Animal" isRequired necessityIndicator="label">
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```
+```tsx example
+<SearchAutocomplete label="Favorite Animal" necessityIndicator="label">
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```
+
+### Accessibility
+
+If a visible label isn't specified, an `aria-label` must be provided to the SearchAutocomplete for
+accessibility. If the field is labeled by a separate element, an `aria-labelledby` prop must be provided using
+the `id` of the labeling element instead.
+
+### Internationalization
+
+In order to internationalize a SearchAutocomplete, a localized string should be passed to the `label` or `aria-label` prop.
+When the `necessityIndicator` prop is set to `"label"`, a localized string will be provided for `"(required)"` or `"(optional)"` automatically.
+
+
+## Sections
+SearchAutocomplete supports sections in order to group options. Sections can be used by wrapping groups of items in a `Section` element. Each `Section` takes a `title` and `key` prop.
+
+### Static items
+```tsx example
+<SearchAutocomplete label="Preferred fruit or vegetable">
+  <Section title="Fruit">
+    <Item key="Apple">Apple</Item>
+    <Item key="Banana">Banana</Item>
+    <Item key="Orange">Orange</Item>
+    <Item key="Honeydew">Honeydew</Item>
+    <Item key="Grapes">Grapes</Item>
+    <Item key="Watermelon">Watermelon</Item>
+    <Item key="Cantaloupe">Cantaloupe</Item>
+    <Item key="Pear">Pear</Item>
+  </Section>
+  <Section title="Vegetable">
+    <Item key="Cabbage">Cabbage</Item>
+    <Item key="Broccoli">Broccoli</Item>
+    <Item key="Carrots">Carrots</Item>
+    <Item key="Lettuce">Lettuce</Item>
+    <Item key="Spinach">Spinach</Item>
+    <Item key="Bok Choy">Bok Choy</Item>
+    <Item key="Cauliflower">Cauliflower</Item>
+    <Item key="Potatoes">Potatoes</Item>
+  </Section>
+</SearchAutocomplete>
+```
+
+### Dynamic items
+Sections used with dynamic items are populated from a hierarchical data structure. Please note that `Section` takes an array of data using the `items` prop only.
+
+```tsx example
+function Example() {
+  let options = [
+    {name: 'Fruit', children: [
+      {name: 'Apple'},
+      {name: 'Banana'},
+      {name: 'Orange'},
+      {name: 'Honeydew'},
+      {name: 'Grapes'},
+      {name: 'Watermelon'},
+      {name: 'Cantaloupe'},
+      {name: 'Pear'}
+    ]},
+    {name: 'Vegetable', children: [
+      {name: 'Cabbage'},
+      {name: 'Broccoli'},
+      {name: 'Carrots'},
+      {name: 'Lettuce'},
+      {name: 'Spinach'},
+      {name: 'Bok Choy'},
+      {name: 'Cauliflower'},
+      {name: 'Potatoes'}
+    ]}
+  ];
+
+  return (
+    <SearchAutocomplete label="Preferred fruit or vegetable" defaultItems={options}>
+      {item => (
+        <Section key={item.name} items={item.children} title={item.name}>
+          {item => <Item key={item.name}>{item.name}</Item>}
+        </Section>
+      )}
+    </SearchAutocomplete>
+  );
+}
+```
+
+## Asynchronous loading
+
+SearchAutocomplete supports loading data asynchronously, and will display a progress circle reflecting the current load state,
+set by the `loadingState` prop. It also supports infinite scrolling to load more data on demand as the user scrolls, via the `onLoadMore` prop.
+
+This example uses the [useAsyncList](../react-stately/useAsyncList.html) hook to handle loading the data. See the docs for more information.
+
+```tsx example
+import {useAsyncList} from '@react-stately/data';
+
+function AsyncLoadingExample() {
+  let list = useAsyncList({
+    async load({signal, cursor, filterText}) {
+      if (cursor) {
+        cursor = cursor.replace(/^http:\/\//i, 'https://');
+      }
+
+      // If no cursor is available, then we're loading the first page,
+      // filtering the results returned via a query string that
+      // mirrors the SearchAutocomplete input text.
+      // Otherwise, the cursor is the next URL to load,
+      // as returned from the previous page.
+      let res = await fetch(cursor || `https://swapi.dev/api/people/?search=${filterText}`, {signal});
+      let json = await res.json();
+
+      return {
+        items: json.results,
+        cursor: json.next
+      };
+    }
+  });
+
+  return (
+    <SearchAutocomplete
+      label="Star Wars Character Lookup"
+      items={list.items}
+      inputValue={list.filterText}
+      onInputChange={list.setFilterText}
+      loadingState={list.loadingState}
+      onLoadMore={list.loadMore}>
+      {item => <Item key={item.name}>{item.name}</Item>}
+    </SearchAutocomplete>
+  );
+}
+```
+
+## Validation
+SearchAutocomplete can display a validation state to communicate to the user whether the current value is valid or invalid.
+Implement your own validation logic in your app and pass either `"valid"` or `"invalid"` to the SearchAutocomplete via the `validationState` prop.
+
+The example below illustrates how one would validate if the user has entered a valid email into the SearchAutocomplete.
+```tsx example
+function Example() {
+  let [value, setValue] = React.useState('me@email.com');
+  let isValid = React.useMemo(() => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value), [value]);
+
+  let options = [
+    {id: 1, email: 'fake@email.com'},
+    {id: 2, email: 'anotherfake@email.com'},
+    {id: 3, email: 'bob@email.com'},
+    {id: 4, email: 'joe@email.com'},
+    {id: 5, email: 'yourEmail@email.com'},
+    {id: 6, email: 'valid@email.com'},
+    {id: 7, email: 'spam@email.com'},
+    {id: 8, email: 'newsletter@email.com'},
+    {id: 9, email: 'subscribe@email.com'}
+  ];
+
+  return (
+    <SearchAutocomplete
+      width="size-3000"
+      label="Search Email Addresses"
+      validationState={isValid ? 'valid' : 'invalid'}
+      defaultItems={options}
+      inputValue={value}
+      onInputChange={setValue}
+      placeholder="Enter email">
+      {item => <Item>{item.email}</Item>}
+    </SearchAutocomplete>
+  );
+}
+```
+
+## Custom Filtering
+By default, SearchAutocomplete uses a string "contains" filtering strategy when deciding what items to display in the dropdown menu. This filtering strategy can be overwritten
+by filtering the list of items yourself and passing the filtered list to the SearchAutocomplete via the `items` prop.
+
+The example below uses a string "startsWith" filter function obtained from the `useFilter` hook to display items that start with the SearchAutocomplete's current input
+value only. By using the `menuTrigger` returned by `onOpenChange`, it also handles displaying the entire option list regardless of the current filter value when the SearchAutocomplete menu is
+opened via the trigger button or arrow keys. `menuTrigger` tells you if the menu was opened manually by the user ("manual"), by focusing the SearchAutocomplete ("focus"), or by
+changes in the input field ("input"), allowing you to make updates to other controlled aspects of your SearchAutocomplete accordingly.
+
+```tsx example
+function Example() {
+  let options = [
+    {id: 1, email: 'fake@email.com'},
+    {id: 2, email: 'anotherfake@email.com'},
+    {id: 3, email: 'bob@email.com'},
+    {id: 4, email: 'joe@email.com'},
+    {id: 5, email: 'yourEmail@email.com'},
+    {id: 6, email: 'valid@email.com'},
+    {id: 7, email: 'spam@email.com'},
+    {id: 8, email: 'newsletter@email.com'},
+    {id: 9, email: 'subscribe@email.com'}
+  ];
+
+  let [showAll, setShowAll] = React.useState(false);
+  let [filterValue, setFilterValue] = React.useState('');
+  let {startsWith} = useFilter({sensitivity: 'base'});
+  let filteredItems = React.useMemo(() => options.filter(item => startsWith(item.email, filterValue)), [options, filterValue]);
+
+  return (
+    <SearchAutocomplete
+      onOpenChange={(isOpen, menuTrigger) => {
+        // Show all items if menu is opened manually
+        // i.e. by the arrow keys or trigger button
+        if (menuTrigger === 'manual' && isOpen) {
+          setShowAll(true);
+        }
+      }}
+      width="size-3000"
+      label="Search Email Addresses"
+      items={showAll ? options : filteredItems}
+      inputValue={filterValue}
+      onInputChange={(value) => {
+        setShowAll(false);
+        setFilterValue(value);
+      }}
+      placeholder="Enter email">
+      {item => <Item>{item.email}</Item>}
+    </SearchAutocomplete>
+  );
+}
+```
+
+## Trigger options
+By default, the SearchAutocomplete's menu is opened when the user types into the input field ("input"). There are two other supported modes: one where the menu opens when the SearchAutocomplete is focused ("focus") and
+the other where the menu only opens when the user clicks or taps on the SearchAutocomplete's field button ("manual"). These can be set by providing "focus" or "manual" to the `menuTrigger` prop.
+Guidelines on when to use a specific mode can be found [here](https://spectrum.adobe.com/page/combo-box/#Menu-trigger). Note that the mobile SearchAutocomplete experience requires the end user to press the SearchAutocomplete button
+to open the tray regardless of the `menuTrigger` setting.
+
+```tsx example
+<SearchAutocomplete label="Favorite Animal" menuTrigger="focus">
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```
+```tsx example
+<SearchAutocomplete label="Favorite Animal" menuTrigger="manual">
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```
+
+## Props
+
+<PropTable component={docs.exports.SearchAutocomplete} links={docs.links} />
+
+## Visual options
+
+### Label alignment and position
+
+By default, the label is positioned above the SearchAutocomplete. The `labelPosition` prop can be used to position the label to the side.
+The `labelAlign` prop can be used to align the label as "start" or "end". For left-to-right (LTR) languages, "start" refers to the left most edge of the SearchAutocomplete and "end" refers to the right most edge.
+For right-to-left (RTL) languages, this is flipped.
+
+```tsx example
+<SearchAutocomplete label="Favorite Animal" labelPosition="side" labelAlign="end">
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```
+
+### Quiet
+
+```tsx example
+<SearchAutocomplete label="Favorite Animal" isQuiet>
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```
+
+### Disabled
+
+```tsx example
+<SearchAutocomplete label="Favorite Animal" isDisabled>
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```
+
+### Read only
+
+```tsx example
+<SearchAutocomplete label="Favorite Animal" isReadOnly selectedKey="red panda">
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```
+
+### Custom widths
+
+```tsx example
+<SearchAutocomplete label="Favorite Animal" width="size-6000" maxWidth="100%">
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```
+
+### Menu direction
+```tsx example
+<SearchAutocomplete label="Favorite Animal" direction="top">
+  <Item>Red Panda</Item>
+  <Item>Cat</Item>
+  <Item>Dog</Item>
+  <Item>Aardvark</Item>
+  <Item>Kangaroo</Item>
+  <Item>Snake</Item>
+</SearchAutocomplete>
+```

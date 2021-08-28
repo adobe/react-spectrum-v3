@@ -11,3 +11,4 @@
  */
 
 export * from './useSearchField';
+export * from './useSearchAutocomplete';

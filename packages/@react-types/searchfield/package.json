@@ -9,7 +9,10 @@
     "url": "https://github.com/adobe/react-spectrum"
   },
   "dependencies": {
-    "@react-types/textfield": "^3.2.3"
+    "@react-spectrum/textfield": "^3.1.7",
+    "@react-types/combobox": "^3.0.1",
+    "@react-types/shared": "^3.7.1",
+    "@react-types/textfield": "^3.2.1"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0-rc.1"
