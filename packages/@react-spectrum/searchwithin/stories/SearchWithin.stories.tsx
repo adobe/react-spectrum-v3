@@ -33,6 +33,7 @@ function render(props: Omit<SpectrumSearchWithinProps, 'children'> = {}, searchF
         <Item key="campaigns">Campaigns</Item>
         <Item key="audiences">Audiences</Item>
         <Item key="tags">Tags</Item>
+        <Item key="long">This item is very long and word wraps poorly</Item>
       </Picker>
     </SearchWithin>
   );
@@ -46,6 +47,7 @@ function renderReverse(props: Omit<SpectrumSearchWithinProps, 'children'> = {}, 
         <Item key="campaigns">Campaigns</Item>
         <Item key="audiences">Audiences</Item>
         <Item key="tags">Tags</Item>
+        <Item key="long">This item is very long and word wraps poorly</Item>
       </Picker>
       <SearchField placeholder="Search" {...searchFieldProps} onChange={action('change')} onSubmit={action('submit')} />
     </SearchWithin>
@@ -65,6 +67,7 @@ function ResizeSearchWithinApp(props) {
             <Item key="campaigns">Campaigns</Item>
             <Item key="audiences">Audiences</Item>
             <Item key="tags">Tags</Item>
+            <Item key="long">This item is very long and word wraps poorly</Item>
           </Picker>
         </SearchWithin>
       </div>
