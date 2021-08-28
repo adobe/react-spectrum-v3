@@ -15,6 +15,7 @@ import docsStyle from './docs.css';
 import {listen} from 'quicklink';
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
+import {SearchField} from '@react-spectrum/searchfield';
 import ShowMenu from '@spectrum-icons/workflow/ShowMenu';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {watchModals} from '@react-aria/aria-modal-polyfill';
@@ -69,21 +70,25 @@ function Hamburger() {
     let nav = document.querySelector('.' + docsStyle.nav);
     let main = document.querySelector('main');
     let themeSwitcher = event.target.parentElement.nextElementSibling;
-
+    let themeSwitcherButton = themeSwitcher.querySelector('button');
     nav.classList.toggle(docsStyle.visible);
 
     if (nav.classList.contains(docsStyle.visible)) {
       setIsPressed(true);
       main.setAttribute('aria-hidden', 'true');
       themeSwitcher.setAttribute('aria-hidden', 'true');
-      themeSwitcher.querySelector('button').tabIndex = -1;
+      if (themeSwitcherButton) {
+        themeSwitcherButton.tabIndex = -1;
+      }
       nav.tabIndex = -1;
       nav.focus();
     } else {
       setIsPressed(false);
       main.removeAttribute('aria-hidden');
       themeSwitcher.removeAttribute('aria-hidden');
-      themeSwitcher.querySelector('button').removeAttribute('tabindex');
+      if (themeSwitcherButton) {
+        themeSwitcherButton.removeAttribute('tabindex');
+      }
       nav.removeAttribute('tabindex');
     }
   };
@@ -97,16 +102,21 @@ function Hamburger() {
 
     /* remove visible className and aria-attributes that make nav behave as a modal */
     let removeVisible = (isNotResponsive = false) => {
-      hamburgerButton.setAttribute('aria-pressed', 'false');
-
-      if (nav.contains(document.activeElement) && !isNotResponsive) {
-        hamburgerButton.focus();
+      setIsPressed(false);
+      let button = hamburgerButton.querySelector('button');
+      if (button) {
+        if (nav.contains(document.activeElement) && !isNotResponsive) {
+          button.focus();
+        }
       }
 
       nav.classList.remove(docsStyle.visible);
       main.removeAttribute('aria-hidden');
       themeSwitcher.removeAttribute('aria-hidden');
-      themeSwitcher.querySelector('button').removeAttribute('tabindex');
+      let themeSwitcherButton = themeSwitcher.querySelector('button');
+      if (themeSwitcherButton) {
+        themeSwitcherButton.removeAttribute('tabindex');
+      }
       nav.removeAttribute('tabindex');
     };
 
@@ -170,15 +180,133 @@ function Hamburger() {
 
   return (
     <div className={docsStyle.hamburgerButton} title="Open navigation panel" role="presentation">
-      <ActionButton onPress={onPress} aria-label="Open navigation panel" aria-pressed={isPressed ? isPressed : undefined}>
+      <ActionButton onPress={onPress} aria-label="Open navigation panel" aria-pressed={isPressed ? isPressed : 'false'}>
         <ShowMenu />
       </ActionButton>
     </div>
   );
 }
 
+function DocSearch() {
+  useEffect(() => {
+    // the following comes from docsearch.min.js
+    // eslint-disable-next-line no-undef
+    const search = docsearch({
+      apiKey: '9b5a0967c8bb751b5048ecfc99917979',
+      indexName: 'react-spectrum',
+      inputSelector: '#algolia-doc-search',
+      debug: false // Set debug to true to inspect the dropdown
+    });
+
+    // autocomplete:opened event handler
+    search.autocomplete.on('autocomplete:opened', event => {
+      const input = event.target;
+      
+      // WAI-ARIA 1.2 uses aria-controls rather than aria-owns on combobox.
+      if (!input.hasAttribute('aria-controls') && input.hasAttribute('aria-owns')) {
+        input.setAttribute('aria-controls', input.getAttribute('aria-owns'));
+      }
+
+      // Listbox dropdown should have an accessibility name.
+      const listbox = input.parentElement.querySelector(`#${input.getAttribute('aria-controls')}`);
+      listbox.setAttribute('aria-label', 'Search results');
+    });
+
+    // autocomplete:updated event handler
+    search.autocomplete.on('autocomplete:updated', event => {
+      const input = event.target;
+      const listbox = input.parentElement.querySelector(`#${input.getAttribute('aria-controls')}`);
+      
+      // Add aria-hidden to the logo in the footer so that it does not break the listbox accessibility tree structure.
+      const footer = listbox.querySelector('.algolia-docsearch-footer');
+      if (footer && !footer.hasAttribute('aria-hidden')) {
+        footer.setAttribute('aria-hidden', 'true');
+        footer.querySelector('a[href]').tabIndex = -1;
+      }
+
+      // With no results, the message should be an option in the listbox. 
+      const noResults = listbox.querySelector('.algolia-docsearch-suggestion--no-results');
+      if (noResults) {
+        noResults.setAttribute('role', 'option');
+
+        // Use aria-live to ensure that the noResults message gets announced.
+        noResults.querySelector('.algolia-docsearch-suggestion--title').setAttribute('aria-live', 'assertive');
+      }
+
+      // Clean up WAI-ARIA listbox structure by setting role=presentation to non-semantic div and span elements.
+      [...listbox.querySelectorAll('div:not([role]), span:not([role])')].forEach(element => element.setAttribute('role', 'presentation'));
+
+      // Clean up WAI-ARIA listbox structure by correcting improper nesting of interactive controls.
+      [...listbox.querySelectorAll('.ds-suggestion[role="option"]')].forEach(element => {
+        const link = element.querySelector('a.algolia-docsearch-suggestion');
+        if (link) {
+
+          // Remove static aria-label="Link to the result" that causes all options to be named the same.
+          link.removeAttribute('aria-label');
+
+          // The interactive element should have role="option", a unique id, and tabIndex.
+          link.setAttribute('role', 'option');
+          link.id = `${element.id}-link`;
+          link.tabIndex = -1;
+
+          // containing element should have role="presentation"
+          element.setAttribute('role', 'presentation');
+
+          // Move aria-selected to the link, and update aria-activedescendant on input.
+          if (element.hasAttribute('aria-selected')) {
+            link.setAttribute('aria-selected', element.getAttribute('aria-selected'));
+            element.removeAttribute('aria-selected');
+            input.setAttribute('aria-activedescendant', link.id);
+          }
+
+          // Fix double voicing of options when subcategory matches suggestion title.
+          const subcategoryColumn = link.querySelector('.algolia-docsearch-suggestion--subcategory-column');
+          const suggestionTitle = link.querySelector('.algolia-docsearch-suggestion--title');
+          if (subcategoryColumn.textContent.trim() === suggestionTitle.textContent.trim()) {
+            subcategoryColumn.setAttribute('aria-hidden', 'true');
+          }
+        }
+      });
+    });
+
+    // When navigating listbox, move aria-selected to link.
+    search.autocomplete.on('autocomplete:cursorchanged', event => {
+      const input = event.target;
+      const listbox = input.parentElement.querySelector(`#${input.getAttribute('aria-controls')}`);
+      let element = listbox.querySelector('a.algolia-docsearch-suggestion[aria-selected]');
+      if (element) {
+        element.removeAttribute('aria-selected');
+      }
+      
+      element = listbox.querySelector('.ds-suggestion.ds-cursor[aria-selected]');
+      if (element) {
+        let link = element.querySelector('a.algolia-docsearch-suggestion');
+        
+        // Move aria-selected to the link, and update aria-activedescendant on input.
+        if (link) {
+          link.id = `${element.id}-link`;
+          link.setAttribute('aria-selected', 'true');
+          input.setAttribute('aria-activedescendant', link.id);
+          element.removeAttribute('aria-selected');
+        }
+      }
+    });
+  }, []);
+
+  return (
+    <div role="search">
+      <SearchField
+        aria-label="Search"
+        UNSAFE_className={docsStyle.docSearchBox}
+        id="algolia-doc-search"
+        placeholder="Search" />
+    </div>
+  );
+}
+
 ReactDOM.render(<>
   <Hamburger />
+  <DocSearch />
   <ThemeSwitcher />
 </>, document.querySelector('.' + docsStyle.pageHeader));
 

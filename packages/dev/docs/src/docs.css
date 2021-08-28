@@ -596,6 +596,7 @@ h2.sectionHeader {
 }
 
 .pageHeader {
+  gap: var(--spectrum-global-dimension-size-100);
   position: fixed;
   top: 0;
   display: inline-flex;
@@ -610,6 +611,104 @@ h2.sectionHeader {
   [dir='rtl'] & {
     left: 0;
   }
+
+  z-index: 1;
+
+  & :global(.algolia-autocomplete .ds-dropdown-menu) {
+    border-color: var(--spectrum-alias-border-color-dark, var(--spectrum-global-color-gray-400));
+    border-radius: var(--spectrum-global-dimension-size-65);
+    border-style: solid;
+    border-width: var(--spectrum-alias-border-size-thin, var(--spectrum-global-dimension-static-size-10));
+    box-shadow: unset;
+    filter: drop-shadow(0 1px 4px var(--spectrum-alias-dropshadow-color));
+
+    & [class^='ds-dataset-'] {
+      background-color: var(--spectrum-global-color-gray-50);
+      border: unset;
+    }
+
+    &:before {
+      background-color: var(--spectrum-global-color-gray-50);
+      border-right-color: var(--spectrum-alias-border-color-dark, var(--spectrum-global-color-gray-400));
+      border-top-color: var(--spectrum-alias-border-color-dark, var(--spectrum-global-color-gray-400));
+      z-index: -1;
+    }
+
+    & :global(.algolia-docsearch-suggestion) {
+      background-color: var(--spectrum-global-color-gray-50);
+    }
+
+    & :global(.algolia-docsearch-suggestion.algolia-docsearch-suggestion__main) {
+      text-decoration: none;
+    }
+
+    & :global(.algolia-docsearch-suggestion--category-header) {
+      border-bottom-color: var(--spectrum-global-color-gray-300);
+      color: var(--spectrum-global-color-gray-900);
+      font-weight: var(--spectrum-global-font-weight-semi-bold);
+      text-transform: uppercase;
+    }
+
+    & :global(.algolia-docsearch-suggestion--highlight) {
+      background: var(--spectrum-alias-text-highlight-color);
+      color: var(--spectrum-global-color-blue-700);
+    }
+
+    & :global(.algolia-docsearch-suggestion--subcategory-column) {
+      color: var(--spectrum-global-color-gray-800);
+    }
+
+    & :global(.algolia-docsearch-suggestion--subcategory-column:before) {
+      background: var(--spectrum-global-color-gray-300);
+    }
+
+    & :global(.ds-suggestion.ds-cursor .algolia-docsearch-suggestion--subcategory-column:before) {
+      background: var(--spectrum-alias-border-color-focus);
+      width: var(--spectrum-selectlist-border-size-key-focus);
+    }
+
+    & :global(.ds-suggestion.ds-cursor .algolia-docsearch-suggestion--content:before) {
+      background: var(--spectrum-alias-border-color-focus);
+      width: var(--spectrum-selectlist-border-size-key-focus);
+      left: calc(-1 * var(--spectrum-selectlist-border-size-key-focus));
+    }
+
+    & :global(.ds-suggestion.ds-cursor .algolia-docsearch-suggestion:not(.suggestion-layout-simple) .algolia-docsearch-suggestion--content) {
+      background-color: var(--spectrum-alias-background-color-hover-overlay);
+    }
+
+    & :global(.algolia-docsearch-suggestion--content:before) {
+      background: var(--spectrum-global-color-gray-300);
+    }
+
+    & :global(.algolia-docsearch-suggestion--title) {
+      color: var(--spectrum-global-color-gray-800);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .pageHeader {
+    & :global(.algolia-autocomplete) {
+      & :global(.algolia-docsearch-suggestion .algolia-docsearch-suggestion--subcategory-column) {
+        color: var(--spectrum-global-color-gray-700);
+        opacity: 1;
+      }
+
+      & :global(.algolia-docsearch-suggestion .algolia-docsearch-suggestion--subcategory-column:after) {
+        content: "|\00A0";
+      }
+
+      & :global(.ds-suggestion.ds-cursor .algolia-docsearch-suggestion .algolia-docsearch-suggestion--subcategory-column:after) {
+        color: var(--spectrum-alias-border-color-focus);
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.docSearchBox {
+  margin-inline-start: auto;
 }
 
 /* hamburger menu should be hidden so that it doesn't receive focus before the sidenav */
@@ -691,6 +790,32 @@ h2.sectionHeader {
     margin-left: auto;
     margin-right: auto;
     width: auto
+  }
+
+  @media (min-width: 570px) {
+    .pageHeader {
+      & :global(.algolia-autocomplete .ds-dropdown-menu) {
+        margin-inline-end: var(--spectrum-global-dimension-size-600);
+        max-width: 500px;
+        min-width: unset;
+        position: fixed !important;
+        top: var(--spectrum-global-dimension-size-500) !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 569px) {
+  .pageHeader {
+    & :global(.algolia-autocomplete .ds-dropdown-menu) {
+      min-width: unset;
+      position: fixed !important;
+      top: var(--spectrum-global-dimension-size-500) !important;
+
+      &:before {
+        right: var(--spectrum-global-dimension-size-1200) !important;
+      }
+    }
   }
 }
 
