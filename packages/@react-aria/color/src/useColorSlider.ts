@@ -113,7 +113,10 @@ export function useColorSlider(props: ColorSliderAriaOptions, state: ColorSlider
         background: generateBackground()
       }
     },
-    inputProps,
+    inputProps: {
+      ...inputProps,
+      title: (channel === 'hue' ? state.value.getHueName(locale) : null)
+    },
     thumbProps: {
       ...thumbProps,
       style: {

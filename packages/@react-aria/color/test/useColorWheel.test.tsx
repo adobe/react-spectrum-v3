@@ -217,8 +217,8 @@ describe('useColorWheel', () => {
 
       fireEvent.keyDown(slider, {key: 'PageUp'});
       expect(onChangeSpy).toHaveBeenCalledTimes(1);
-      expect(onChangeSpy.mock.calls[0][0].toString('hsla')).toBe(defaultColor.withChannelValue('hue', 6).toString('hsla'));
-      expect(slider).toHaveAttribute('value', '6');
+      expect(onChangeSpy.mock.calls[0][0].toString('hsla')).toBe(defaultColor.withChannelValue('hue', 15).toString('hsla'));
+      expect(slider).toHaveAttribute('value', '15');
       fireEvent.keyDown(slider, {key: 'PageDown'});
       expect(onChangeSpy).toHaveBeenCalledTimes(2);
       expect(onChangeSpy.mock.calls[1][0].toString('hsla')).toBe(defaultColor.withChannelValue('hue', 0).toString('hsla'));

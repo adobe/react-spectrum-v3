@@ -15,7 +15,7 @@ import {ColorThumb} from './ColorThumb';
 import {Flex} from '@react-spectrum/layout';
 import {FocusableRef} from '@react-types/shared';
 import {Label} from '@react-spectrum/label';
-import React, {useRef, useState} from 'react';
+import React, {ReactElement, useRef, useState} from 'react';
 import {SpectrumColorSliderProps} from '@react-types/color';
 import styles from '@adobe/spectrum-css-temp/components/colorslider/vars.css';
 import {useColorSlider} from '@react-aria/color';
@@ -136,5 +136,5 @@ function ColorSlider(props: SpectrumColorSliderProps, ref: FocusableRef<HTMLDivE
 /**
  * ColorSliders allow users to adjust an individual channel of a color value.
  */
-let _ColorSlider = React.forwardRef(ColorSlider);
+let _ColorSlider = React.forwardRef(ColorSlider) as (props: SpectrumColorSliderProps & {ref?: FocusableRef<HTMLDivElement>}) => ReactElement;
 export {_ColorSlider as ColorSlider};

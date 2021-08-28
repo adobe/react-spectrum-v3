@@ -1,0 +1,75 @@
+%spectrum-ColorControl-hiddenField {
+  opacity: 0.0001;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+%spectrum-ColorControl-handle--focused {
+  /* Bigger handle when focused */
+  width: calc(var(--spectrum-colorhandle-size) * 2);
+  height: calc(var(--spectrum-colorhandle-size) * 2);
+
+  margin-left: calc(-1 * var(--spectrum-colorhandle-size));
+  margin-top: calc(-1 * var(--spectrum-colorhandle-size));
+}
+
+.spectrum-ColorArea {
+  position: relative;
+  display: inline-block;
+  width: var(--spectrum-colorarea-default-width);
+  height: var(--spectrum-colorarea-default-height);
+
+  border-radius: var(--spectrum-colorarea-border-radius);
+
+  cursor: default;
+
+  user-select: none;
+
+  &.is-focused,
+  &.focus-ring {
+    z-index: 2;
+
+    .spectrum-ColorArea-handle {
+      @extend %spectrum-ColorControl-handle--focused;
+    }
+  }
+
+  &:focus-within {
+    z-index: 2;
+  }
+
+  &.is-disabled {
+    pointer-events: none;
+  }
+
+  /* the floating inset box shadow must be a separate element since <canvas> won't take it */
+  &:before {
+    content: '';
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border-radius: var(--spectrum-colorarea-border-radius);
+  }
+}
+
+.spectrum-ColorArea-handle {
+  left: 0;
+  top: 0;
+}
+
+.spectrum-ColorArea-gradient {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--spectrum-colorarea-border-radius);
+}
+
+.spectrum-ColorArea-slider {
+  @extend %spectrum-ColorControl-hiddenField;
+}

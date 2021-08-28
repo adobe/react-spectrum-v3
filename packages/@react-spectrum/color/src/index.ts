@@ -15,3 +15,4 @@
 export * from './ColorWheel';
 export * from './ColorSlider';
 export * from './ColorField';
+export * from './ColorArea';

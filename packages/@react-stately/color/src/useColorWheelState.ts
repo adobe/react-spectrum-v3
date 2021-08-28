@@ -12,7 +12,7 @@
 
 import {Color, ColorWheelProps} from '@react-types/color';
 import {parseColor} from './Color';
-import {useControlledState} from '@react-stately/utils';
+import {snapValueToStep, useControlledState} from '@react-stately/utils';
 import {useRef, useState} from 'react';
 
 export interface ColorWheelState {
@@ -142,17 +142,23 @@ export function useColorWheelState(props: ColorWheelProps): ColorWheelState {
         // Make sure you can always get back to 0.
         newValue = 0;
       }
+      if (minStepSize > step) {
+        let {minValue, maxValue} = value.getChannelRange('hue');
+        newValue = snapValueToStep(newValue, minValue, maxValue, minStepSize);
+      }
       setHue(newValue);
     },
     decrement(minStepSize: number = 0) {
       let s = Math.max(minStepSize, step);
-      if (hue === 0) {
-        // We can't just subtract step because this might be the case:
-        // |(previous step) - 0| < step size
-        setHue(roundDown(360 / s) * s);
-      } else {
-        setHue(hue - s);
+
+      // We can't just subtract step because this might be the case:
+      // |(previous step) - 0| < step size
+      let newValue = hue === 0 ? roundDown(360 / s) * s : hue - s;
+      if (minStepSize > step) {
+        let {minValue, maxValue} = value.getChannelRange('hue');
+        newValue = snapValueToStep(newValue, minValue, maxValue, minStepSize);
       }
+      setHue(newValue);
     },
     setDragging(isDragging) {
       setDragging(wasDragging => {
@@ -165,7 +171,7 @@ export function useColorWheelState(props: ColorWheelProps): ColorWheelState {
     },
     isDragging,
     getDisplayColor() {
-      return value.withChannelValue('saturation', 100).withChannelValue('lightness', 50);
+      return value.toFormat('hsl').withChannelValue('saturation', 100).withChannelValue('lightness', 50).withChannelValue('alpha', 1);
     }
   };
 }

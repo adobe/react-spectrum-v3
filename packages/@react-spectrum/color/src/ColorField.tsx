@@ -11,7 +11,7 @@
  */
 
 import {classNames} from '@react-spectrum/utils';
-import React, {RefObject, useRef} from 'react';
+import React, {ReactElement, RefObject, useRef} from 'react';
 import {SpectrumColorFieldProps} from '@react-types/color';
 import styles from './colorfield.css';
 import {TextFieldBase} from '@react-spectrum/textfield';
@@ -50,5 +50,5 @@ function ColorField(props: SpectrumColorFieldProps, ref: RefObject<TextFieldRef>
 /**
  * ColorFields allow users to enter a color in #rrggbb hexadecimal format.
  */
-const _ColorField = React.forwardRef(ColorField);
+const _ColorField = React.forwardRef(ColorField) as (props: SpectrumColorFieldProps & {ref?: RefObject<TextFieldRef>}) => ReactElement;
 export {_ColorField as ColorField};

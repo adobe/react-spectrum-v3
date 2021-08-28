@@ -35,6 +35,7 @@
   pointer-events: none;
 
   &.is-open {
+    z-index: 2;
     transform: translate(0, 0);
     opacity: 1;
   }

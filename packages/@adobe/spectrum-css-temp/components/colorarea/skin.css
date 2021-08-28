@@ -1,0 +1,36 @@
+.spectrum-ColorArea {
+    &:before {
+      box-shadow: inset 0 0 0 var(--spectrum-colorarea-border-size) var(--spectrum-colorarea-border-color);
+    }
+  }
+  .spectrum-ColorArea-gradient {
+    forced-color-adjust: none;
+  }
+  .spectrum-ColorHandle-color {
+    forced-color-adjust: none;
+  }
+  
+  .spectrum-ColorArea {
+    &.is-disabled {
+      background: var(--spectrum-colorarea-fill-color-disabled);
+  
+      &:before {
+        box-shadow: inset 0 0 0 var(--spectrum-colorarea-border-size) var(--spectrum-colorarea-border-color-disabled);
+      }
+  
+      .spectrum-ColorArea-gradient {
+        display: none;
+      }
+    }
+  }
+  
+  @media (forced-colors: active) {
+    .spectrum-ColorArea {
+      --spectrum-colorarea-fill-color-disabled : GrayText;
+    }
+    .spectrum-ColorArea {
+      &.is-disabled {
+        forced-color-adjust: none;
+      }
+    }
+  }

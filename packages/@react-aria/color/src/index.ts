@@ -13,3 +13,4 @@
 export * from './useColorSlider';
 export * from './useColorWheel';
 export * from './useColorField';
+export * from './useColorArea';

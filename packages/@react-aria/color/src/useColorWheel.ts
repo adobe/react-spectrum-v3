@@ -33,7 +33,7 @@ interface ColorWheelAria {
   inputProps: InputHTMLAttributes<HTMLInputElement>
 }
 
-const PAGE_MIN_STEP_SIZE = 6;
+const PAGE_MIN_STEP_SIZE = 15;
 
 /**
  * Provides the behavior and accessibility implementation for a color wheel component.
@@ -279,6 +279,7 @@ export function useColorWheel(props: ColorWheelAriaProps, state: ColorWheelState
         max: '360',
         step: String(step),
         'aria-valuetext': state.value.formatChannelValue('hue', locale),
+        title: state.value.getHueName(locale),
         disabled: isDisabled,
         value: `${state.value.getChannelValue('hue')}`,
         onChange: (e: ChangeEvent<HTMLInputElement>) => {

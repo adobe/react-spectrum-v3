@@ -18,13 +18,14 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.6.2",
+    "@internationalized/message": "^3.0.2",
+    "@internationalized/number": "^3.0.2",
     "@react-aria/utils": "^3.8.2",
     "@react-stately/slider": "^3.0.3",
     "@react-stately/utils": "^3.2.2",
     "@react-types/color": "3.0.0-beta.2",
     "@react-types/numberfield": "^3.0.1",
-    "@internationalized/message": "^3.0.2",
-    "@internationalized/number": "^3.0.2"
+    "delta-e": "^0.0.8"
   },
   "peerDependencies": {
     "react": "^16.8.0"
