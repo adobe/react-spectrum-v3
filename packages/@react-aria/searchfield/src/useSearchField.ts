@@ -12,7 +12,7 @@
 
 import {AriaButtonProps} from '@react-types/button';
 import {AriaSearchFieldProps} from '@react-types/searchfield';
-import {InputHTMLAttributes, LabelHTMLAttributes, RefObject} from 'react';
+import {HTMLAttributes, InputHTMLAttributes, LabelHTMLAttributes, RefObject} from 'react';
 // @ts-ignore
 import intlMessages from '../intl/*.json';
 import {SearchFieldState} from '@react-stately/searchfield';
@@ -25,7 +25,11 @@ interface SearchFieldAria {
   /** Props for the input element. */
   inputProps: InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>,
   /** Props for the clear button. */
-  clearButtonProps: AriaButtonProps
+  clearButtonProps: AriaButtonProps,
+  /** Props for the description element. */
+  descriptionProps: HTMLAttributes<HTMLElement>,
+  /** Props for the error message element. */
+  errorMessageProps: HTMLAttributes<HTMLElement>
 }
 
 /**
@@ -84,7 +88,7 @@ export function useSearchField(
     inputRef.current.focus();
   };
 
-  let {labelProps, inputProps} = useTextField({
+  let {labelProps, inputProps, descriptionProps, errorMessageProps} = useTextField({
     ...props,
     value: state.value,
     onChange: state.setValue,
@@ -106,6 +110,8 @@ export function useSearchField(
       preventFocusOnPress: true,
       onPress: onClearButtonClick,
       onPressStart
-    }
+    },
+    descriptionProps,
+    errorMessageProps
   };
 }

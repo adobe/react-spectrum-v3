@@ -427,6 +427,32 @@ describe('Shared TextField behavior', () => {
     ${'v3 TextField'}   | ${TextField}
     ${'v3 TextArea'}    | ${TextArea}
     ${'v3 SearchField'} | ${SearchField}
+  `('$Name supports description', ({Component}) => {
+    let tree = renderComponent(Component, {description: 'Enter a search term.', 'aria-label': 'mandatory label'});
+    let input = tree.getByTestId(testId);
+    let description = tree.getByText('Enter a search term.');
+    expect(description).toHaveAttribute('id');
+    expect(input).toHaveAttribute('aria-describedby', `${description.id}`);
+  });
+
+  it.each`
+    Name                | Component
+    ${'v3 TextField'}   | ${TextField}
+    ${'v3 TextArea'}    | ${TextArea}
+    ${'v3 SearchField'} | ${SearchField}
+  `('$Name supports error message', ({Component}) => {
+    let tree = renderComponent(Component, {errorMessage: 'Remove special characters.', validationState: 'invalid', 'aria-label': 'mandatory label'});
+    let input = tree.getByTestId(testId);
+    let errorMessage = tree.getByText('Remove special characters.');
+    expect(errorMessage).toHaveAttribute('id');
+    expect(input).toHaveAttribute('aria-describedby', `${errorMessage.id}`);
+  });
+
+  it.each`
+    Name                | Component
+    ${'v3 TextField'}   | ${TextField}
+    ${'v3 TextArea'}    | ${TextArea}
+    ${'v3 SearchField'} | ${SearchField}
   `('$Name passes through ARIA props', ({Name, Component}) => {
     let tree = renderComponent(Component, {'aria-label': 'mandatory label', 'aria-activedescendant': 'test', 'aria-autocomplete': 'list', 'aria-haspopup': 'menu'});
     let input = tree.getByTestId(testId);

@@ -331,6 +331,26 @@ storiesOf('Picker', module)
     )
   )
   .add(
+    'with description',
+    () => (
+      <Picker label="Test" description="Please select an item." onSelectionChange={action('selectionChange')}>
+        <Item>One</Item>
+        <Item>Two</Item>
+        <Item>Three</Item>
+      </Picker>
+    )
+  )
+  .add(
+    'with error message',
+    () => (
+      <Picker label="Test" errorMessage="Please select a valid item." validationState="invalid" onSelectionChange={action('selectionChange')}>
+        <Item>One</Item>
+        <Item>Two</Item>
+        <Item>Three</Item>
+      </Picker>
+    )
+  )
+  .add(
     'isQuiet, no visible label',
     () => (
       <Picker aria-label="Test" isQuiet onSelectionChange={action('selectionChange')}>

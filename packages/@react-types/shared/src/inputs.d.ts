@@ -10,6 +10,9 @@
  * governing permissions and limitations under the License.
  */
 
+import {Alignment} from './labelable';
+import {ReactNode} from 'react';
+
 export type ValidationState = 'valid' | 'invalid';
 
 export interface Validation {
@@ -57,4 +60,21 @@ export interface RangeInputBase<T> {
   maxValue?: T,
   /** The amount that the input value changes with each increment or decrement "tick". */
   step?: T // ??
+}
+
+export interface HelpTextProps {
+  /** A description for the field. Provides a hint such as specific requirements for what to choose. */
+  description?: ReactNode,
+  /** An error message for the field. */
+  errorMessage?: ReactNode
+}
+
+// Spectrum specific types. Extends `Validation` so that the `validationState` prop is available.
+export interface SpectrumHelpTextProps extends HelpTextProps, Validation {
+  /** Whether the description is displayed with lighter text. */
+  isDisabled?: boolean,
+  /** Whether an error icon is rendered. */
+  showErrorIcon?: boolean,
+  /** The help text's horizontal alignment relative to the element it is describing. */
+  labelAlign?: Alignment
 }

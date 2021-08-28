@@ -1,0 +1,61 @@
+/*
+ * Copyright 2021 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
+@import '../commons/index.css';
+
+:root {
+  --spectrum-helptext-neutral-texticon-text-size: var(--spectrum-global-dimension-font-size-75);
+  --spectrum-helptext-neutral-texticon-icon-gap: var(--spectrum-global-dimension-size-100);
+
+  --spectrum-helptext-negative-texticon-icon-padding-top: var(--spectrum-global-dimension-size-40);
+  --spectrum-helptext-negative-texticon-icon-padding-bottom: var(--spectrum-global-dimension-size-40);
+
+  --spectrum-helptext-neutral-textonly-text-padding-top: var(--spectrum-global-dimension-static-size-50);
+  --spectrum-helptext-neutral-textonly-text-transform: none;
+  --spectrum-helptext-neutral-textonly-text-letter-spacing: var(--spectrum-global-font-letter-spacing-none);
+
+  /* Uses value for DNA variable --spectrum-helptext-l-neutral-textonly-text-padding-bottom, since m variant doesn't exist */
+  --spectrum-helptext-neutral-textonly-text-padding-bottom: var(--spectrum-global-dimension-size-115);
+  /* Override: DNA uses --spectrum-alias-component-text-line-height */
+  --spectrum-helptext-neutral-textonly-text-line-height: var(--spectrum-global-font-line-height-small);
+}
+
+.spectrum-HelpText {
+  display: flex;
+  font-size: var(--spectrum-helptext-neutral-texticon-text-size);
+  .spectrum-HelpText-validationIcon {
+    margin-inline-end: var(--spectrum-helptext-neutral-texticon-icon-gap);
+    padding-block: var(--spectrum-helptext-negative-texticon-icon-padding-top) var(--spectrum-helptext-negative-texticon-icon-padding-bottom);
+    flex-shrink: 0;
+  }
+  .spectrum-HelpText-text {
+    /* Not in DNA: make text fill up all horizontal space. */
+    flex: 1;
+
+    margin-inline-end: var(--spectrum-helptext-neutral-texticon-icon-gap);
+    padding-block: var(--spectrum-helptext-neutral-textonly-text-padding-top) var(--spectrum-helptext-neutral-textonly-text-padding-bottom);
+    line-height: var(--spectrum-helptext-neutral-textonly-text-line-height);
+    text-transform: var(--spectrum-helptext-neutral-textonly-text-transform);
+    letter-spacing: var(--spectrum-helptext-neutral-textonly-text-letter-spacing);
+  }
+  /* Not in DNA */
+  &.spectrum-HelpText--alignEnd {
+    text-align: end; /* Works with labelPosition=top and labelPosition=side */
+    .spectrum-HelpText-text {
+      margin-inline-end: 0;
+      margin-inline-start: var(--spectrum-helptext-neutral-texticon-icon-gap);
+    }
+    .spectrum-HelpText-validationIcon {
+      margin-inline-end: 0;
+    }
+  }
+}

@@ -19,18 +19,16 @@ import {
   useDOMRef,
   useIsMobileDevice,
   useSlotProps,
-  useStyleProps,
   useUnwrapDOMRef
 } from '@react-spectrum/utils';
 import {DismissButton, useOverlayPosition} from '@react-aria/overlays';
 import {DOMRef, DOMRefValue, FocusableRefValue, LabelPosition} from '@react-types/shared';
+import {Field} from '@react-spectrum/label';
 import {FieldButton} from '@react-spectrum/button';
 import {FocusScope} from '@react-aria/focus';
 import {HiddenSelect, useSelect} from '@react-aria/select';
 // @ts-ignore
 import intlMessages from '../intl/*.json';
-import {Label} from '@react-spectrum/label';
-import labelStyles from '@adobe/spectrum-css-temp/components/fieldlabel/vars.css';
 import {ListBoxBase, useListBoxLayout} from '@react-spectrum/listbox';
 import {mergeProps, useLayoutEffect, useResizeObserver} from '@react-aria/utils';
 import {Placement} from '@react-types/overlays';
@@ -61,15 +59,11 @@ function Picker<T extends object>(props: SpectrumPickerProps<T>, ref: DOMRef<HTM
     isQuiet,
     label,
     labelPosition = 'top' as LabelPosition,
-    labelAlign,
-    isRequired,
-    necessityIndicator,
     menuWidth,
     name,
     autoFocus
   } = props;
 
-  let {styleProps} = useStyleProps(props);
   let state = useSelectState(props);
   let domRef = useDOMRef(ref);
 
@@ -83,7 +77,7 @@ function Picker<T extends object>(props: SpectrumPickerProps<T>, ref: DOMRef<HTM
   // so that the layout information can be cached even while the listbox is not mounted.
   // We also use the layout as the keyboard delegate for type to select.
   let layout = useListBoxLayout(state);
-  let {labelProps, triggerProps, valueProps, menuProps} = useSelect({
+  let {labelProps, triggerProps, valueProps, menuProps, descriptionProps, errorMessageProps} = useSelect({
     ...props,
     keyboardDelegate: layout
   }, state, unwrappedTriggerRef);
@@ -255,53 +249,28 @@ function Picker<T extends object>(props: SpectrumPickerProps<T>, ref: DOMRef<HTM
     </div>
   );
 
-  if (label) {
-    let labelWrapperClass = classNames(
-      labelStyles,
-      'spectrum-Field',
-      {
-        'spectrum-Field--positionTop': labelPosition === 'top',
-        'spectrum-Field--positionSide': labelPosition === 'side'
-      },
-      classNames(
-        styles,
-        'spectrum-Field',
-        {
-          'spectrum-Dropdown-fieldWrapper--quiet': isQuiet,
-          'spectrum-Dropdown-fieldWrapper--positionSide': labelPosition === 'side'
-        }
-      ),
-      styleProps.className
-    );
+  let wrapperClassName = label ? classNames(
+    styles,
+    'spectrum-Field',
+    {
+      'spectrum-Dropdown-fieldWrapper--quiet': isQuiet,
+      'spectrum-Dropdown-fieldWrapper--positionSide': labelPosition === 'side'
+    }
+  ) : '';
 
-    picker = React.cloneElement(picker, mergeProps(picker.props, {
-      className: classNames(labelStyles, 'spectrum-Field-field')
-    }));
-
-    return (
-      <div
-        {...styleProps}
-        ref={domRef}
-        className={labelWrapperClass}>
-        <Label
-          {...labelProps}
-          labelPosition={labelPosition}
-          labelAlign={labelAlign}
-          isRequired={isRequired}
-          necessityIndicator={necessityIndicator}
-          includeNecessityIndicatorInAccessibilityName
-          elementType="span">
-          {label}
-        </Label>
-        {picker}
-      </div>
-    );
-  }
-
-  return React.cloneElement(picker, mergeProps(picker.props, {
-    ...styleProps,
-    ref: domRef
-  }));
+  return (
+    <Field
+      {...props}
+      ref={domRef}
+      wrapperClassName={wrapperClassName}
+      labelProps={labelProps}
+      descriptionProps={descriptionProps}
+      errorMessageProps={errorMessageProps}
+      includeNecessityIndicatorInAccessibilityName
+      elementType="span">
+      {picker}
+    </Field>
+  );
 }
 
 /**

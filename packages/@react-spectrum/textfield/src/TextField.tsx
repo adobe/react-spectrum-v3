@@ -20,12 +20,14 @@ function TextField(props: SpectrumTextFieldProps, ref: RefObject<TextFieldRef>) 
   props = useProviderProps(props);
 
   let inputRef = useRef<HTMLInputElement>();
-  let {labelProps, inputProps} = useTextField(props, inputRef);
+  let {labelProps, inputProps, descriptionProps, errorMessageProps} = useTextField(props, inputRef);
   return (
     <TextFieldBase
       {...props}
       labelProps={labelProps}
       inputProps={inputProps}
+      descriptionProps={descriptionProps}
+      errorMessageProps={errorMessageProps}
       ref={ref}
       inputRef={inputRef} />
   );

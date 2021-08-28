@@ -58,7 +58,7 @@ governing permissions and limitations under the License.
   text-align: end; /* labelPosition=side case */
 }
 
-/* A Field is a wrapper for a FieldLabel and a field component (e.g. textfield).
+/* A Field is a wrapper for a FieldLabel, a field component (e.g. textfield), and a HelpText.
  * By default, labels are placed above the field. Fields have a default width, and the
  * label will wrap within this width. The width of the whole field can be overridden by the user,
  * and this causes both the label and inner field to resize as well. */
@@ -86,10 +86,25 @@ governing permissions and limitations under the License.
     display: inline-flex;
     align-items: flex-start;
 
-    .spectrum-Field-field {
+    /* Wraps the field & help text, but not the label */
+    .spectrum-Field-wrapper {
       flex: 1;
       /* Setting `flex: 1;` is equivalent to `flex: 1 1 0;`, which means we expect to be able to shrink
-      * To be able to shrink, we must have a min-width that isn't 'auto' */
+       * To be able to shrink, we must have a min-width that isn't 'auto' */
+      min-width: 0;
+      /* TODO: By default, vertical flex wrapper for `labelPosition: side` should have default field width.
+       * This is a workaround until we find a better way to set the width of the field & help text.
+       * Should default to form field's default width and and allow users to override with custom width. */
+      width: var(--spectrum-field-default-width);
+
+      .spectrum-Field-field {
+        /* If the user overrides the width of the field, propagate to the inner component */
+        width: 100%;
+      }
+    }
+
+    .spectrum-Field-field {
+      flex: 1;
       min-width: 0;
     }
 
@@ -120,6 +135,10 @@ governing permissions and limitations under the License.
 
     .spectrum-FieldLabel {
       display: table-cell;
+    }
+
+    .spectrum-Field-wrapper {
+      width: 100%;
     }
 
     .spectrum-Field-field {

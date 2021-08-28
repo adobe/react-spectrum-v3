@@ -932,6 +932,42 @@ describe('Picker', function () {
         expect(listbox).toHaveAttribute('aria-labelledby', label.id);
       });
     });
+
+    describe('help text', function () {
+      it('supports description', function () {
+        let {getByText, getByRole} = render(
+          <Provider theme={theme}>
+            <Picker label="Test" description="Please select an item." onSelectionChange={onSelectionChange}>
+              <Item>One</Item>
+              <Item>Two</Item>
+              <Item>Three</Item>
+            </Picker>
+          </Provider>
+        );
+
+        let picker = getByRole('button');
+        let description = getByText('Please select an item.');
+        expect(description).toHaveAttribute('id');
+        expect(picker).toHaveAttribute('aria-describedby', `${description.id}`);
+      });
+
+      it('supports error message', function () {
+        let {getByText, getByRole} = render(
+          <Provider theme={theme}>
+            <Picker label="Test" errorMessage="Please select a valid item." validationState="invalid" onSelectionChange={onSelectionChange}>
+              <Item>One</Item>
+              <Item>Two</Item>
+              <Item>Three</Item>
+            </Picker>
+          </Provider>
+        );
+
+        let picker = getByRole('button');
+        let errorMessage = getByText('Please select a valid item.');
+        expect(errorMessage).toHaveAttribute('id');
+        expect(picker).toHaveAttribute('aria-describedby', `${errorMessage.id}`);
+      });
+    });
   });
 
   describe('selection', function () {

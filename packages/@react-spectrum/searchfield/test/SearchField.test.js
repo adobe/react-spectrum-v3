@@ -271,6 +271,28 @@ describe('Search', () => {
   it.each`
     Name                | Component
     ${'v3 SearchField'} | ${SearchField}
+  `('$Name should support description', ({Component}) => {
+    let tree = renderComponent(Component, {description: 'Enter a search term.'});
+    let input = tree.getByTestId(testId);
+    let description = tree.getByText('Enter a search term.');
+    expect(description).toHaveAttribute('id');
+    expect(input).toHaveAttribute('aria-describedby', `${description.id}`);
+  });
+
+  it.each`
+    Name                | Component
+    ${'v3 SearchField'} | ${SearchField}
+  `('$Name should support error message', ({Component}) => {
+    let tree = renderComponent(Component, {errorMessage: 'Remove special characters.', validationState: 'invalid'});
+    let input = tree.getByTestId(testId);
+    let errorMessage = tree.getByText('Remove special characters.');
+    expect(errorMessage).toHaveAttribute('id');
+    expect(input).toHaveAttribute('aria-describedby', `${errorMessage.id}`);
+  });
+
+  it.each`
+    Name                | Component
+    ${'v3 SearchField'} | ${SearchField}
     ${'v2 SearchField'} | ${V2SearchField}
   `('$Name should support aria-label', ({Component}) => {
     let tree = renderComponent(Component, {'aria-label': 'Test'});
