@@ -56,7 +56,10 @@ module.exports = new Transformer({
             exports[path.node.declaration.id.name] = processExport(path.get('declaration'));
           } else {
             let identifiers = t.getBindingIdentifiers(path.node.declaration);
+            let index = 0;
             for (let id of Object.keys(identifiers)) {
+              exports[identifiers[id].name] = processExport(path.get('declaration.declarations')[index]);
+              index += 1;
               asset.symbols.set(identifiers[id].name, identifiers[id].name);
             }
           }

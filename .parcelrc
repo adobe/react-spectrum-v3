@@ -2,6 +2,7 @@
   "extends": "@parcel/config-default",
   "resolvers": ["parcel-resolver-docs", "..."],
   "transformers": {
+    "apiCheck:*.{js,ts,tsx,json}": ["parcel-transformer-docs"],
     "docs:*.{js,ts,tsx,json}": ["parcel-transformer-docs", "@parcel/transformer-inline"],
     "docs-json:*.{js,ts,tsx,json}": ["parcel-transformer-docs"],
     "*.{md,mdx}": ["parcel-transformer-mdx-docs"],

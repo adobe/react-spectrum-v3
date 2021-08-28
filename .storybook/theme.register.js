@@ -2,7 +2,7 @@ import {themes} from '@storybook/theming';
 import addons from '@storybook/addons';
 import {FORCE_RE_RENDER} from '@storybook/core-events';
 // temporary until we have a better place to grab it from
-import * as packageJSON from '../packages/@react-spectrum/alert/package.json';
+import * as packageJSON from '../packages/@adobe/react-spectrum/package.json';
 
 // Automatically switch light/dark theme based on system pref.
 addons.register('theme-switcher', api => {

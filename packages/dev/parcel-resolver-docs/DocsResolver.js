@@ -16,7 +16,7 @@ const path = require('path');
 
 module.exports = new Resolver({
   async resolve({dependency, options, filePath}) {
-    if (dependency.moduleSpecifier.startsWith('docs:') || dependency.pipeline === 'docs' || dependency.pipeline === 'docs-json') {
+    if (dependency.moduleSpecifier.startsWith('docs:') || dependency.moduleSpecifier.startsWith('apiCheck:') || dependency.pipeline === 'docs' || dependency.pipeline === 'docs-json' || dependency.pipeline === 'apiCheck') {
       const resolver = new NodeResolver({
         extensions: ['ts', 'tsx', 'd.ts', 'js'],
         mainFields: ['source', 'types', 'main'],
@@ -33,7 +33,10 @@ module.exports = new Resolver({
       if (resolved) {
         // HACK: ensure source code is used to build types, not compiled code.
         // Parcel removes the source field from package.json when the code comes from node_modules.
-        if (resolved.filePath.endsWith('.d.ts') && !resolved.filePath.includes('@react-types')) {
+        if ((
+          /^@(react-spectrum|react-aria|react-stately|internationalized|react-types|spectrum-icons|adobe\/react-spectrum)/g.test(resolved.filePath)
+            || /^(react-aria|react-stately)/g.test(resolved.filePath)
+          ) && resolved.filePath.endsWith('.d.ts') && !resolved.filePath.includes('@react-types')) {
           resolved.filePath = path.resolve(path.dirname(resolved.filePath), '..', 'src', 'index.ts');
         }
 
