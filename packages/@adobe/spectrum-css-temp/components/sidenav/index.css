@@ -35,7 +35,7 @@ governing permissions and limitations under the License.
   position: relative;
   display: inline-flex;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   box-sizing: border-box;
 
   inline-size: 100%;
