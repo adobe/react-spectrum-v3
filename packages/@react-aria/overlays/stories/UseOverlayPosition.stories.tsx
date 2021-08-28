@@ -20,9 +20,10 @@ import {useOverlayTriggerState} from '@react-stately/overlays';
 
 function Trigger(props: {
   withPortal: boolean,
-  placement: Placement
+  placement: Placement,
+  buttonWidth?: number
 }) {
-  const {withPortal, placement} = props;
+  const {withPortal, placement, buttonWidth = 300} = props;
   const targetRef = React.useRef<HTMLButtonElement>(null);
   const overlayRef = React.useRef<HTMLDivElement>(null);
   const state = useOverlayTriggerState({
@@ -56,10 +57,10 @@ function Trigger(props: {
           margin: 0,
           listStyleType: 'none'
         }}>
+        <li>Hello Hello</li>
+        <li>Hello Hello</li>
         <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
+        <li>Hello Hello</li>
         <li>Hello</li>
       </ul>
     </div>
@@ -69,8 +70,8 @@ function Trigger(props: {
     overlay = ReactDOM.createPortal(overlay, document.body);
   }
   return (
-    <div style={{position: 'relative', margin: 'auto'}}>
-      <button ref={targetRef} {...triggerProps} onClick={() => state.toggle()}>Trigger (open: {`${state.isOpen}`})</button>
+    <div style={{position: 'relative', margin: 'auto', padding: 12}}>
+      <button ref={targetRef} {...triggerProps} style={{width: buttonWidth}} onClick={() => state.toggle()}>Trigger<br />(open: {`${state.isOpen}`})</button>
       {state.isOpen && overlay}
     </div>
   );
@@ -78,6 +79,12 @@ function Trigger(props: {
 
 storiesOf('UseOverlayPosition', module)
   .add('document.body container bottom', () => <Trigger withPortal placement="bottom" />)
+  .add('document.body container bottom left', () => <Trigger withPortal placement="bottom left" />)
+  .add('document.body container bottom right', () => <Trigger withPortal placement="bottom right" />)
+  .add('document.body small trigger bottom left', () => <Trigger buttonWidth={80} withPortal placement="bottom left" />)
+  .add('document.body small trigger bottom right', () => <Trigger buttonWidth={80} withPortal placement="bottom right" />)
   .add('document.body container top', () => <Trigger withPortal placement="top" />)
   .add('positioned container bottom', () => <Trigger withPortal={false} placement="bottom" />)
+  .add('positioned container bottom left', () => <Trigger withPortal={false} placement="bottom left" />)
+  .add('positioned container bottom right', () => <Trigger withPortal={false} placement="bottom right" />)
   .add('positioned container top', () => <Trigger withPortal={false} placement="top" />);
