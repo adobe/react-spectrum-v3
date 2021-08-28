@@ -12,16 +12,20 @@
 
 import {AriaTextFieldProps} from '@react-types/textfield';
 import {ChangeEvent, InputHTMLAttributes, LabelHTMLAttributes, RefObject, TextareaHTMLAttributes} from 'react';
-import {ElementType} from 'react';
+import {ElementType, HTMLAttributes} from 'react';
 import {filterDOMProps, mergeProps} from '@react-aria/utils';
+import {useField} from '@react-aria/label';
 import {useFocusable} from '@react-aria/focus';
-import {useLabel} from '@react-aria/label';
 
 export interface TextFieldAria {
   /** Props for the input element. */
   inputProps: InputHTMLAttributes<HTMLInputElement> | TextareaHTMLAttributes<HTMLTextAreaElement>,
-  /** Props for the text field's visible label element (if any). */
-  labelProps: LabelHTMLAttributes<HTMLLabelElement>
+  /** Props for the text field's visible label element, if any. */
+  labelProps: LabelHTMLAttributes<HTMLLabelElement>,
+  /** Props for the text field's description element, if any. */
+  descriptionProps: HTMLAttributes<HTMLElement>,
+  /** Props for the text field's error message element, if any. */
+  errorMessageProps: HTMLAttributes<HTMLElement>
 }
 
 interface AriaTextFieldOptions extends AriaTextFieldProps {
@@ -53,7 +57,7 @@ export function useTextField(
     onChange = () => {}
   } = props;
   let {focusableProps} = useFocusable(props, ref);
-  let {labelProps, fieldProps} = useLabel(props);
+  let {labelProps, fieldProps, descriptionProps, errorMessageProps} = useField(props);
   let domProps = filterDOMProps(props, {labelable: true});
 
   const inputOnlyProps = {
@@ -104,6 +108,8 @@ export function useTextField(
         ...focusableProps,
         ...fieldProps
       }
-    )
+    ),
+    descriptionProps,
+    errorMessageProps
   };
 }

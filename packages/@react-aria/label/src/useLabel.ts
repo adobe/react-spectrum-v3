@@ -14,7 +14,7 @@ import {AriaLabelingProps, DOMProps, LabelableProps} from '@react-types/shared';
 import {ElementType, LabelHTMLAttributes} from 'react';
 import {useId, useLabels} from '@react-aria/utils';
 
-interface LabelAriaProps extends LabelableProps, DOMProps, AriaLabelingProps {
+export interface LabelAriaProps extends LabelableProps, DOMProps, AriaLabelingProps {
   /**
    * The HTML element used to render the label, e.g. 'label', or 'span'.
    * @default 'label'
@@ -22,7 +22,7 @@ interface LabelAriaProps extends LabelableProps, DOMProps, AriaLabelingProps {
   labelElementType?: ElementType
 }
 
-interface LabelAria {
+export interface LabelAria {
   /** Props to apply to the label container element. */
   labelProps: LabelHTMLAttributes<HTMLLabelElement>,
   /** Props to apply to the field container element being labeled. */

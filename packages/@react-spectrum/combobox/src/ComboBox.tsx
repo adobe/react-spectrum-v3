@@ -156,7 +156,10 @@ const ComboBoxBase = React.forwardRef(function ComboBoxBase<T extends object>(pr
 
   return (
     <>
-      <Field {...props} labelProps={labelProps} ref={domRef}>
+      <Field
+        {...props}
+        labelProps={labelProps}
+        ref={domRef}>
         <ComboBoxInput
           {...props}
           isOpen={state.isOpen}

@@ -118,7 +118,7 @@ export function useFormattedTextField(props: AriaTextFieldProps, state: Formatte
     }
     : null;
 
-  let {labelProps, inputProps: textFieldProps} = useTextField(props, inputRef);
+  let {labelProps, inputProps: textFieldProps, descriptionProps, errorMessageProps} = useTextField(props, inputRef);
 
   let compositionStartState = useRef(null);
   return {
@@ -154,6 +154,8 @@ export function useFormattedTextField(props: AriaTextFieldProps, state: Formatte
         }
       }
     ),
-    labelProps
+    labelProps,
+    descriptionProps,
+    errorMessageProps
   };
 }

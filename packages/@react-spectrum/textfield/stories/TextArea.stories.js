@@ -117,6 +117,12 @@ storiesOf('TextArea', module)
     'no visible label',
     () => render({label: null, 'aria-label': 'Street address'})
   )
+  .add('with description',
+    () => render({description: 'Enter product feedback.'})
+  )
+  .add('with error message',
+    () => render({errorMessage: 'Enter at least 250 characters.', validationState: 'invalid'})
+  )
   .add('custom width',
     () => render({icon: <Info />, validationState: 'invalid', width: '300px'})
   )

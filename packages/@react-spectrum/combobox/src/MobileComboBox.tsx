@@ -41,9 +41,9 @@ import {Tray} from '@react-spectrum/overlays';
 import {useButton} from '@react-aria/button';
 import {useComboBox} from '@react-aria/combobox';
 import {useDialog} from '@react-aria/dialog';
+import {useField} from '@react-aria/label';
 import {useFilter} from '@react-aria/i18n';
 import {useFocusableRef} from '@react-spectrum/utils';
-import {useLabel} from '@react-aria/label';
 import {useMessageFormatter} from '@react-aria/i18n';
 import {useOverlayTrigger} from '@react-aria/overlays';
 import {useProviderProps} from '@react-spectrum/provider';
@@ -73,7 +73,7 @@ export const MobileComboBox = React.forwardRef(function MobileComboBox<T extends
   let domRef = useFocusableRef(ref, buttonRef);
   let {triggerProps, overlayProps} = useOverlayTrigger({type: 'listbox'}, state, buttonRef);
 
-  let {labelProps, fieldProps} = useLabel({
+  let {labelProps, fieldProps} = useField({
     ...props,
     labelElementType: 'span'
   });

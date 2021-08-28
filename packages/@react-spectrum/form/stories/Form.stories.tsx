@@ -57,16 +57,16 @@ storiesOf('Form', module)
     () => (
       <Form>
         <Flex>
-          <TextField label="First Name" placeholder="John" marginEnd="size-100" flex={1} />
-          <TextField label="Last Name" placeholder="Smith" flex={1} />
+          <TextField label="First Name" placeholder="John" marginEnd="size-100" flex={1} description="Please enter your first name." />
+          <TextField label="Last Name" placeholder="Smith" flex={1} description="Please enter your last name." />
         </Flex>
-        <TextField label="Street Address" placeholder="123 Any Street" />
+        <TextField label="Street Address" placeholder="123 Any Street" description="Please include apartment or suite number." />
         <Flex>
-          <TextField label="City" placeholder="San Francisco" marginEnd="size-100" flex={1} />
+          <TextField label="City" placeholder="San Francisco" marginEnd="size-100" flex={1} description="Please enter the city you live in." />
           <Picker label="State" placeholder="Select a state" items={states} marginEnd="size-100" flex={1}>
             {item => <Item key={item.abbr}>{item.name}</Item>}
           </Picker>
-          <TextField label="Zip code" placeholder="12345" flex={1} />
+          <TextField label="Zip code" placeholder="12345" flex={1} description="Please enter a five-digit zip code." />
         </Flex>
       </Form>
     )
@@ -135,13 +135,13 @@ function render(props: any = {}) {
     <Form {...props}>
       <TextField label="First Name" placeholder="John" />
       <TextField label="Last Name" placeholder="Smith" />
-      <TextField label="Street Address" placeholder="123 Any Street" />
+      <TextField label="Street Address" placeholder="123 Any Street" description="Please include apartment or suite number." errorMessage="Please enter a valid street address." />
       <TextField label="City" placeholder="San Francisco" />
       <NumberField label="Years lived there" />
       <Picker label="State" placeholder="Select a state" items={states}>
         {item => <Item key={item.abbr}>{item.name}</Item>}
       </Picker>
-      <TextField label="Zip code" placeholder="12345" />
+      <TextField label="Zip code" placeholder="12345" description="Please enter a five-digit zip code." errorMessage="Please remove letters and special characters." />
       <Picker label="Country" placeholder="Select a country" items={countries}>
         {item => <Item key={item.name}>{item.name}</Item>}
       </Picker>
@@ -155,7 +155,7 @@ function render(props: any = {}) {
         <Radio value="cats">Cats</Radio>
         <Radio value="dragons">Dragons</Radio>
       </RadioGroup>
-      <Picker label="Favorite color">
+      <Picker label="Favorite color" description="Select any color you like." errorMessage="Please select a nicer color.">
         <Item>Red</Item>
         <Item>Orange</Item>
         <Item>Yellow</Item>
@@ -163,7 +163,7 @@ function render(props: any = {}) {
         <Item>Blue</Item>
         <Item>Purple</Item>
       </Picker>
-      <TextArea label="Comments" placeholder="How do you feel?" />
+      <TextArea label="Comments" placeholder="How do you feel?" description="Express yourself!" errorMessage="No wrong answers, except for this one." />
       <SearchWithin label="Search">
         <SearchField placeholder="Search" />
         <Picker label="State" placeholder="Select a state" items={states}>

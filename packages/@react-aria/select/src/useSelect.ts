@@ -20,7 +20,7 @@ import {ListKeyboardDelegate, useTypeSelect} from '@react-aria/selection';
 import {SelectState} from '@react-stately/select';
 import {setInteractionModality} from '@react-aria/interactions';
 import {useCollator} from '@react-aria/i18n';
-import {useLabel} from '@react-aria/label';
+import {useField} from '@react-aria/label';
 import {useMenuTrigger} from '@react-aria/menu';
 
 interface AriaSelectOptions<T> extends AriaSelectProps<T> {
@@ -42,7 +42,13 @@ interface SelectAria {
   valueProps: HTMLAttributes<HTMLElement>,
 
   /** Props for the popup. */
-  menuProps: AriaListBoxOptions<unknown>
+  menuProps: AriaListBoxOptions<unknown>,
+
+  /** Props for the description element. */
+  descriptionProps: HTMLAttributes<HTMLElement>,
+
+  /** Props for the error message element. */
+  errorMessageProps: HTMLAttributes<HTMLElement>
 }
 
 /**
@@ -104,7 +110,7 @@ export function useSelect<T>(props: AriaSelectOptions<T>, state: SelectState<T>,
     }
   });
 
-  let {labelProps, fieldProps} = useLabel({
+  let {labelProps, fieldProps, descriptionProps, errorMessageProps} = useField({
     ...props,
     labelElementType: 'span'
   });
@@ -184,6 +190,8 @@ export function useSelect<T>(props: AriaSelectOptions<T>, state: SelectState<T>,
         fieldProps['aria-labelledby'],
         triggerProps['aria-label'] && !fieldProps['aria-labelledby'] ? triggerProps.id : null
       ].filter(Boolean).join(' ')
-    }
+    },
+    descriptionProps,
+    errorMessageProps
   };
 }

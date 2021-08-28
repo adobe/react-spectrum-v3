@@ -110,6 +110,12 @@ storiesOf('SearchField', module)
     'no visible label',
     () => render({label: null, 'aria-label': 'Street address'})
   )
+  .add('with description',
+    () => render({description: 'Enter a search term.'})
+  )
+  .add('with error message',
+    () => render({errorMessage: 'Remove special characters.', validationState: 'invalid'})
+  )
   .add('custom width',
     () => render({width: 300})
   )
