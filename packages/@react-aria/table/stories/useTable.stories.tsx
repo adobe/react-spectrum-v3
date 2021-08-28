@@ -23,27 +23,29 @@ export default meta;
 let columns = [
   {name: 'Name', uid: 'name'},
   {name: 'Type', uid: 'type'},
-  {name: 'Level', uid: 'level'}
+  {name: 'Level', uid: 'level'},
+  {name: 'Filler', uid: 'filler'},
+  {name: 'Blah', uid: 'blah'}
 ];
 
 let rows = [
-  {id: 1, name: 'Charizard', type: 'Fire, Flying', level: '67'},
-  {id: 2, name: 'Blastoise', type: 'Water', level: '56'},
-  {id: 3, name: 'Venusaur', type: 'Grass, Poison', level: '83'},
-  {id: 4, name: 'Pikachu', type: 'Electric', level: '100'},
-  {id: 5, name: 'Charizard', type: 'Fire, Flying', level: '67'},
-  {id: 6, name: 'Blastoise', type: 'Water', level: '56'},
-  {id: 7, name: 'Venusaur', type: 'Grass, Poison', level: '83'},
-  {id: 8, name: 'Pikachu', type: 'Electric', level: '100'},
-  {id: 9, name: 'Charizard', type: 'Fire, Flying', level: '67'},
-  {id: 10, name: 'Blastoise', type: 'Water', level: '56'},
-  {id: 11, name: 'Venusaur', type: 'Grass, Poison', level: '83'},
-  {id: 12, name: 'Pikachu', type: 'Electric', level: '100'}
+  {id: 1, name: 'Charizard', type: 'Fire, Flying', level: '67', filler: 'filler here', blah: 'blah here'},
+  {id: 2, name: 'Blastoise', type: 'Water', level: '56', filler: 'filler here', blah: 'blah here'},
+  {id: 3, name: 'Venusaur', type: 'Grass, Poison', level: '83', filler: 'filler here', blah: 'blah here'},
+  {id: 4, name: 'Pikachu', type: 'Electric', level: '100', filler: 'filler here', blah: 'blah here'},
+  {id: 5, name: 'Charizard', type: 'Fire, Flying', level: '67', filler: 'filler here', blah: 'blah here'},
+  {id: 6, name: 'Blastoise', type: 'Water', level: '56', filler: 'filler here', blah: 'blah here'},
+  {id: 7, name: 'Venusaur', type: 'Grass, Poison', level: '83', filler: 'filler here', blah: 'blah here'},
+  {id: 8, name: 'Pikachu', type: 'Electric', level: '100', filler: 'filler here', blah: 'blah here'},
+  {id: 9, name: 'Charizard', type: 'Fire, Flying', level: '67', filler: 'filler here', blah: 'blah here'},
+  {id: 10, name: 'Blastoise', type: 'Water', level: '56', filler: 'filler here', blah: 'blah here'},
+  {id: 11, name: 'Venusaur', type: 'Grass, Poison', level: '83', filler: 'filler here', blah: 'blah here'},
+  {id: 12, name: 'Pikachu', type: 'Electric', level: '100', filler: 'filler here', blah: 'blah here'}
 ];
 
-const Template = () => () => (
+const Template = () => (args: any = {}) => (
   <>
-    <input aria-label="Focusable before" placeholder="Focusable before" />
+    {!args.hideInput && <input aria-label="Focusable before" placeholder="Focusable before" />}
     <Table aria-label="Table with selection" selectionMode="multiple">
       <TableHeader columns={columns}>
         {column => (
@@ -60,9 +62,12 @@ const Template = () => () => (
         )}
       </TableBody>
     </Table>
-    <input aria-label="Focusable after" placeholder="Focusable after" />
+    {!args.hideInput && <input aria-label="Focusable after" placeholder="Focusable after" />}
   </>
 );
 
 export const ScrollTesting = Template().bind({});
 ScrollTesting.args = {};
+
+export const ScrollTestingTabFromBrowser = Template().bind({});
+ScrollTestingTabFromBrowser.args = {hideInput: true};

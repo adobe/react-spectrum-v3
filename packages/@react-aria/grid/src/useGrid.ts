@@ -49,7 +49,9 @@ export interface GridProps extends DOMProps, AriaLabelingProps {
 
 export interface GridAria {
   /** Props for the grid element. */
-  gridProps: HTMLAttributes<HTMLElement>
+  gridProps: HTMLAttributes<HTMLElement>,
+  /** Props for the grid's scrollable region. */
+  scrollBodyProps: HTMLAttributes<HTMLElement>
 }
 
 /**
@@ -85,7 +87,7 @@ export function useGrid<T>(props: GridProps, state: GridState<T, GridCollection<
     collator,
     focusMode
   }), [keyboardDelegate, state.collection, state.disabledKeys, ref, direction, collator, focusMode]);
-  let {collectionProps} = useSelectableCollection({
+  let {collectionProps, scrollBodyProps} = useSelectableCollection({
     ref,
     selectionManager: state.selectionManager,
     keyboardDelegate: delegate,
@@ -153,7 +155,8 @@ export function useGrid<T>(props: GridProps, state: GridState<T, GridCollection<
   }, [selection]);
 
   return {
-    gridProps
+    gridProps,
+    scrollBodyProps
   };
 }
 

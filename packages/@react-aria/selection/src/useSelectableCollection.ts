@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {FocusEvent, HTMLAttributes, Key, KeyboardEvent, RefObject, useEffect, useRef} from 'react';
+import {FocusEvent, HTMLAttributes, Key, KeyboardEvent, RefObject, useCallback, useEffect, useRef} from 'react';
 import {focusSafely, getFocusableTreeWalker} from '@react-aria/focus';
 import {FocusStrategy, KeyboardDelegate} from '@react-types/shared';
 import {focusWithoutScrolling, isMac, mergeProps} from '@react-aria/utils';
@@ -90,7 +90,9 @@ interface SelectableCollectionOptions {
 
 interface SelectableCollectionAria {
   /** Props for the collection element. */
-  collectionProps: HTMLAttributes<HTMLElement>
+  collectionProps: HTMLAttributes<HTMLElement>,
+  /** Props for the collection element's scrollable region. */
+  scrollBodyProps: HTMLAttributes<HTMLElement>
 }
 
 /**
@@ -342,6 +344,98 @@ export function useSelectableCollection(options: SelectableCollectionOptions): S
     }
   }, [isVirtualized, scrollRef, manager.focusedKey]);
 
+  let prevScroll = useRef({scrollTop: scrollRef?.current?.scrollTop || 0, scrollLeft: scrollRef?.current?.scrollLeft || 0});
+  // Bring focused key into view if focus enters the collection from outside. Only for non virtualized collections,
+  // virtualized collections should handle this in their virtualizer or get this for free via our Virtualizer component
+  useEffect(() => {
+    let onFocus = (e) => {
+      // Note: we can get away with only checking if the target is in the scrollable region only because the keydown capturing listener below
+      // will prevent tab/shift tab from focusing the select all checkbox and instead focus the last focused key.
+      if ((e.target instanceof HTMLElement && scrollRef.current?.contains(e.target)) && !isVirtualized && !manager.isFocused) {
+        if (manager.focusedKey) {
+          let element = scrollRef.current.querySelector(`[data-key="${manager.focusedKey}"]`) as HTMLElement;
+          if (element) {
+            // Figure out if element is out of view
+            let scrollContainerTop = scrollRef.current.offsetTop + prevScroll.current.scrollTop;
+            let scrollContainerBottom = scrollRef.current.offsetTop + prevScroll.current.scrollTop + scrollRef.current.offsetHeight;
+            let scrollContainerLeft = scrollRef.current.offsetLeft + prevScroll.current.scrollLeft;
+            let scrollContainerRight = scrollRef.current.offsetLeft + prevScroll.current.scrollLeft + scrollRef.current.offsetWidth;
+            let elementTop = element.offsetTop;
+            let elementBottom = element.offsetTop + element.clientHeight;
+            let elementLeft = element.offsetLeft;
+            let elementRight = element.offsetLeft + element.clientWidth;
+
+            let elementOutOfView = elementTop <= scrollContainerTop || elementBottom >= scrollContainerBottom || elementRight >= scrollContainerRight || elementLeft <= scrollContainerLeft;
+            // If focused key is out of view and is in the scrollable region, scroll it into view when re-entering the table
+            if (scrollRef.current?.contains(element) && elementOutOfView) {
+              scrollIntoView(scrollRef.current, element);
+            } else {
+              // If focusedkey is already in view, override the scroll that may happen from shift tabbing (browser will focus last focusable element in the table which may be out of view, causing a scroll)
+              scrollRef.current.scrollTop = prevScroll.current.scrollTop;
+              scrollRef.current.scrollLeft = prevScroll.current.scrollLeft;
+            }
+          }
+        }
+      }
+    };
+
+    window.addEventListener('focus', onFocus, true);
+    return () => {
+      window.removeEventListener('focus', onFocus, true);
+    };
+  }, [manager.focusedKey, scrollRef, isVirtualized]);
+
+  // Save the previous scroll position
+  let onScroll = useCallback(() => {
+    prevScroll.current = {scrollTop: scrollRef.current.scrollTop, scrollLeft: scrollRef.current.scrollLeft};
+  }, [scrollRef]);
+
+  useEffect(() => {
+    let onKeyDown = (e) => {
+      // The consts here can be removed if we export them from FocusScope
+      const focusableElements = [
+        'input:not([disabled]):not([type=hidden])',
+        'select:not([disabled])',
+        'textarea:not([disabled])',
+        'button:not([disabled])',
+        'a[href]',
+        'area[href]',
+        'summary',
+        'iframe',
+        'object',
+        'embed',
+        'audio[controls]',
+        'video[controls]',
+        '[contenteditable]'
+      ];
+
+      focusableElements.push('[tabindex]:not([tabindex="-1"]):not([disabled])');
+      const TABBABLE_ELEMENT_SELECTOR = focusableElements.join(':not([hidden]):not([tabindex="-1"]),');
+
+      if (e.key === 'Tab' && !ref.current.contains(e.target as HTMLElement) && !isVirtualized) {
+        let tabbableElements = Array.from(document.querySelectorAll(TABBABLE_ELEMENT_SELECTOR));
+        let index = tabbableElements.findIndex(node => node === e.target);
+        let nodeToFocus;
+        if (e.shiftKey) {
+          nodeToFocus = tabbableElements[index - 1];
+        } else {
+          nodeToFocus = tabbableElements[index + 1];
+        }
+
+        if (ref.current.contains(nodeToFocus) && manager.focusedKey) {
+          e.preventDefault();
+          let element = ref.current.querySelector(`[data-key="${manager.focusedKey}"]`) as HTMLElement;
+          element && focusSafely(element);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown, true);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown, true);
+    };
+  }, [manager.focusedKey, ref, isVirtualized]);
+
   let handlers = {
     onKeyDown,
     onFocus,
@@ -377,6 +471,9 @@ export function useSelectableCollection(options: SelectableCollectionOptions): S
     collectionProps: {
       ...handlers,
       tabIndex
+    },
+    scrollBodyProps: {
+      onScroll
     }
   };
 }

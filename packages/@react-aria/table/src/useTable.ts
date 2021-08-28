@@ -60,7 +60,7 @@ export function useTable<T>(props: TableProps<T>, state: TableState<T>, ref: Ref
   let id = useId();
   gridIds.set(state, id);
 
-  let {gridProps} = useGrid({
+  let {gridProps, scrollBodyProps} = useGrid({
     ...props,
     id,
     keyboardDelegate: delegate,
@@ -114,6 +114,7 @@ export function useTable<T>(props: TableProps<T>, state: TableState<T>, ref: Ref
   }, [sortDescription]);
 
   return {
-    gridProps: mergeProps(gridProps, descriptionProps)
+    gridProps: mergeProps(gridProps, descriptionProps),
+    scrollBodyProps
   };
 }
