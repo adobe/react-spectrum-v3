@@ -10,7 +10,12 @@
  * governing permissions and limitations under the License.
  */
 
+import fc from 'fast-check';
+import messages from '../../../@react-aria/numberfield/intl/*';
 import {NumberParser} from '../src/NumberParser';
+
+// for some reason hu-HU isn't supported in jsdom/node
+let locales = Object.keys(messages).map(locale => locale.replace('.json', '')).filter(locale => locale !== 'hu-HU');
 
 describe('NumberParser', function () {
   describe('parse', function () {
@@ -137,8 +142,82 @@ describe('NumberParser', function () {
       });
 
       it('should parse a percent with decimals', function () {
-        expect(new NumberParser('en-US', {style: 'percent'}).parse('10.5%')).toBe(0.1);
+        expect(new NumberParser('en-US', {style: 'percent'}).parse('10.5%')).toBe(0.11);
         expect(new NumberParser('en-US', {style: 'percent', minimumFractionDigits: 2}).parse('10.5%')).toBe(0.105);
+      });
+    });
+
+    describe('round trips', function () {
+      // Locales have to include: 'de-DE', 'ar-EG', 'fr-FR' and possibly others
+      // But for the moment they are not properly supported
+      const localesArb = fc.constantFrom(...locales);
+      const styleOptsArb = fc.oneof(
+        {withCrossShrink: true},
+        fc.record({style: fc.constant('decimal')}),
+        // 'percent' should be part of the possible options, but for the moment it fails for some tests
+        fc.record({style: fc.constant('percent')}),
+        fc.record(
+          {style: fc.constant('currency'), currency: fc.constantFrom('USD', 'EUR', 'CNY', 'JPY'), currencyDisplay: fc.constantFrom('symbol', 'code', 'name')},
+          {requiredKeys: ['style', 'currency']}
+        ),
+        fc.record(
+          {style: fc.constant('unit'), unit: fc.constantFrom('inch', 'liter', 'kilometer-per-hour')},
+          {requiredKeys: ['style', 'unit']}
+        )
+      );
+      const genericOptsArb = fc.record({
+        localeMatcher: fc.constantFrom('best fit', 'lookup'),
+        unitDisplay: fc.constantFrom('narrow', 'short', 'long'),
+        useGrouping: fc.boolean(),
+        minimumIntegerDigits: fc.integer({min: 1, max: 21}),
+        minimumFractionDigits: fc.integer({min: 0, max: 20}),
+        maximumFractionDigits: fc.integer({min: 0, max: 20}),
+        minimumSignificantDigits: fc.integer({min: 1, max: 21}),
+        maximumSignificantDigits: fc.integer({min: 1, max: 21})
+      }, {requiredKeys: []});
+
+      // We restricted the set of possible values to avoid unwanted overflows to infinity and underflows to zero
+      // and stay in the domain of legit values.
+      const DOUBLE_MIN = Number.EPSILON;
+      const valueArb = fc.tuple(
+        fc.constantFrom(1, -1),
+        fc.double({next: true, noNaN: true, min: DOUBLE_MIN, max: 1 / DOUBLE_MIN})
+      ).map(([sign, value]) => sign * value);
+
+      const inputsArb = fc.tuple(valueArb, localesArb, styleOptsArb, genericOptsArb)
+        .map(([d, locale, styleOpts, genericOpts]) => ({d, opts: {...styleOpts, ...genericOpts}, locale}))
+        .filter(({opts}) => opts.minimumFractionDigits === undefined || opts.maximumFractionDigits === undefined || opts.minimumFractionDigits <= opts.maximumFractionDigits)
+        .filter(({opts}) => opts.minimumSignificantDigits === undefined || opts.maximumSignificantDigits === undefined || opts.minimumSignificantDigits <= opts.maximumSignificantDigits)
+        .map(({d, opts, locale}) => {
+          if (opts.style === 'percent') {
+            opts.minimumFractionDigits = opts.minimumFractionDigits > 18 ? 18 : opts.minimumFractionDigits;
+            opts.maximumFractionDigits = opts.maximumFractionDigits > 18 ? 18 : opts.maximumFractionDigits;
+          }
+          return {d, opts, locale};
+        })
+        .map(({d, opts, locale}) => {
+          let adjustedNumberForFractions = d;
+          if (Math.abs(d) < 1 && opts.minimumFractionDigits && opts.minimumFractionDigits > 1) {
+            adjustedNumberForFractions = d * (10 ** (opts.minimumFractionDigits || 2));
+          } else if (Math.abs(d) > 1 && opts.minimumFractionDigits && opts.minimumFractionDigits > 1) {
+            adjustedNumberForFractions = d / (10 ** (opts.minimumFractionDigits || 2));
+          }
+          return {adjustedNumberForFractions, opts, locale};
+        });
+
+      it('should fully reverse NumberFormat', function () {
+        fc.assert(
+          fc.property(
+            inputsArb,
+            function ({adjustedNumberForFractions, locale, opts}) {
+              const formatter = new Intl.NumberFormat(locale, opts);
+              const parser = new NumberParser(locale, opts);
+
+              const formattedOnce = formatter.format(adjustedNumberForFractions);
+              expect(formatter.format(parser.parse(formattedOnce))).toBe(formattedOnce);
+            }
+          )
+        );
       });
     });
   });

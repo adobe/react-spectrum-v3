@@ -16,6 +16,7 @@ import {Flex} from '@react-spectrum/layout';
 import {Form} from '@react-spectrum/form';
 import {Item, Picker} from '@react-spectrum/picker';
 import {NumberField} from '../src';
+import {NumberFormatter, NumberParser} from '@internationalized/number';
 import React, {useState} from 'react';
 import {storiesOf} from '@storybook/react';
 
@@ -218,10 +219,21 @@ storiesOf('NumberField', module)
     () => render({onBlur: action('onBlur'), onFocus: action('onFocus'), onFocusChange: action('onFocusChange'), onKeyDown: action('onKeyDown'), onKeyUp: action('onKeyUp')})
   );
 
+// temporarily taking over the function so it's easier to debug crazy setups
+// should probably put together something to combine them into a real story like our currency one but bigger
+// eslint-disable-next-line
 function render(props: any = {}) {
-  return (
-    <NumberField onChange={action('onChange')} UNSAFE_className="custom_classname" label="Width" {...props} />
-  );
+  // eslint-disable-next-line
+  let formatter = new NumberFormatter('da-DK', {"style":"unit","unit":"kilometer-per-hour", "unitDisplay":"long","maximumSignificantDigits":1});
+  console.log('initial format', formatter.format(2.220446049250313e-16));
+  // eslint-disable-next-line
+  let parser = new NumberParser('da-DK', {"style":"unit","unit":"kilometer-per-hour", "unitDisplay":"long","maximumSignificantDigits":1});
+  console.log('result', parser.parse(formatter.format(2.220446049250313e-16)));
+  console.log('final', formatter.format(parser.parse(formatter.format(2.220446049250313e-16))));
+  // return (
+  //   <NumberField onChange={action('onChange')} UNSAFE_className="custom_classname" label="Width" {...props} />
+  // );
+  return <div />;
 }
 
 function renderNoLabel(props: any = {}) {

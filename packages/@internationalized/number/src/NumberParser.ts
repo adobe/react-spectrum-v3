@@ -10,6 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
+import {NumberFormatter} from './NumberFormatter';
+
 interface Symbols {
   minusSign: string,
   plusSign: string,
@@ -17,6 +19,7 @@ interface Symbols {
   group: string,
   literals: RegExp,
   numeral: RegExp,
+  numerals: string[],
   index: (v: string) => string
 }
 
@@ -99,41 +102,71 @@ function getCachedNumberParser(locale: string, options: Intl.NumberFormatOptions
 // The actual number parser implementation. Instances of this class are cached
 // based on the locale, options, and detected numbering system.
 class NumberParserImpl {
+  locale: string;
   formatter: Intl.NumberFormat;
   options: Intl.ResolvedNumberFormatOptions;
   symbols: Symbols;
 
   constructor(locale: string, options: Intl.NumberFormatOptions = {}) {
+    this.locale = locale;
     this.formatter = new Intl.NumberFormat(locale, options);
     this.options = this.formatter.resolvedOptions();
-    this.symbols = getSymbols(this.formatter, this.options, options);
+    this.symbols = getSymbols(locale, this.formatter, this.options, options);
+    if (this.options.style === 'percent' && ((this.options.minimumFractionDigits ?? 0) > 18 || (this.options.maximumFractionDigits ?? 0) > 18)) {
+      console.warn('NumberParser cannot handle percentages with greater than 18 decimal places, please reduce the number in your options.');
+    }
   }
 
   parse(value: string) {
     // to parse the number, we need to remove anything that isn't actually part of the number, for example we want '-10.40' not '-10.40 USD'
     let fullySanitizedValue = this.sanitize(value);
-
     // Remove group characters, and replace decimal points and numerals with ASCII values.
     fullySanitizedValue = replaceAll(fullySanitizedValue, this.symbols.group, '')
       .replace(this.symbols.decimal, '.')
       .replace(this.symbols.minusSign, '-')
       .replace(this.symbols.numeral, this.symbols.index);
 
+    if (this.options.style === 'percent') {
+      // javascript is bad at dividing by 100 and maintaining the same significant figures, so perform it on the string before parsing
+      let isNegative = fullySanitizedValue.indexOf('-');
+      fullySanitizedValue = fullySanitizedValue.replace('-', '');
+      let index = fullySanitizedValue.indexOf('.');
+      if (index === -1) {
+        index = fullySanitizedValue.length;
+      }
+      fullySanitizedValue = fullySanitizedValue.replace('.', '');
+      if (index - 2 === 0) {
+        fullySanitizedValue = `0.${fullySanitizedValue}`;
+      } else if (index - 2 === -1) {
+        fullySanitizedValue = `0.0${fullySanitizedValue}`;
+      } else if (index - 2 === -2) {
+        fullySanitizedValue = '0.00';
+      } else {
+        fullySanitizedValue = `${fullySanitizedValue.slice(0, index - 2)}.${fullySanitizedValue.slice(index - 2)}`;
+      }
+      if (isNegative > -1) {
+        fullySanitizedValue = `-${fullySanitizedValue}`;
+      }
+    }
+
     let newValue = fullySanitizedValue ? +fullySanitizedValue : NaN;
     if (isNaN(newValue)) {
       return NaN;
+    }
+    if (this.options.style === 'percent') {
+      // extra step for rounding percents to what our formatter would output
+      let options = {
+        ...this.options,
+        style: 'decimal',
+        minimumFractionDigits: Math.min(this.options.minimumFractionDigits + 2, 20),
+        maximumFractionDigits: Math.min(this.options.maximumFractionDigits + 2, 20)
+      };
+      return (new NumberParser(this.locale, options)).parse(new NumberFormatter(this.locale, options).format(newValue));
     }
 
     // accounting will always be stripped to a positive number, so if it's accounting and has a () around everything, then we need to make it negative again
     if (this.options.currencySign === 'accounting' && CURRENCY_SIGN_REGEX.test(value)) {
       newValue = -1 * newValue;
-    }
-
-    // when reading the number, if it's a percent, then it should be interpreted as being divided by 100
-    if (this.options.style === 'percent') {
-      newValue /= 100;
-      // after dividing to get the percent value, javascript may get .0210999999 instead of .0211, so fix the number of fraction digits
-      newValue = +newValue.toFixed((this.options.maximumFractionDigits ?? 0) + 2);
     }
 
     return newValue;
@@ -179,6 +212,10 @@ class NumberParserImpl {
       return false;
     }
 
+    // Numbers that can't have any decimal values fail if a decimal character is typed
+    if (value.indexOf(this.symbols.decimal) > -1 && this.options.maximumFractionDigits === 0) {
+      return false;
+    }
     // Remove numerals, groups, and decimals
     value = replaceAll(value, this.symbols.group, '')
       .replace(this.symbols.numeral, '')
@@ -191,11 +228,23 @@ class NumberParserImpl {
 
 const nonLiteralParts = new Set(['decimal', 'fraction', 'integer', 'minusSign', 'plusSign', 'group']);
 
-function getSymbols(formatter: Intl.NumberFormat, intlOptions: Intl.ResolvedNumberFormatOptions, originalOptions: Intl.NumberFormatOptions): Symbols {
+function getSymbols(locale: string, formatter: Intl.NumberFormat, intlOptions: Intl.ResolvedNumberFormatOptions, originalOptions: Intl.NumberFormatOptions): Symbols {
   // Note: some locale's don't add a group symbol until there is a ten thousands place
   let allParts = formatter.formatToParts(-10000.111);
   let posAllParts = formatter.formatToParts(10000.111);
   let singularParts = formatter.formatToParts(1);
+  // some locales such as lv-LV unit inches have words that are specific to 0
+  let zeroParts = formatter.formatToParts(0);
+  // covers sr-SP which has a different word for this (but not 0.1, i clearly don't know how to i18n...) "unit":"liter", "unitDisplay":"long"
+  let decimalLiteralsParts = formatter.formatToParts(0.2);
+  // covers sl-SI which has a different word this (i'm guessing it's the thousands word?) "unit":"inch", "unitDisplay":"long"
+  let decimalLiteralsParts2 = formatter.formatToParts(1000);
+  // covers ru-RU {"style":"unit","unit":"inch"},{"minimumSignificantDigits":2} I DON'T UNDERSTAND THIS ONE!?
+  let foo = formatter.formatToParts(1575645006488261);
+  let bar = formatter.formatToParts(0.971912234434432);
+  // If maximumSignificantDigits is 1 (the minimum) then we won't get decimal characters out of the above formatters
+  // Percent also defaults to 0 fractionDigits, so we need to make a new one that isn't percent to get an accurate decimal
+  let decimalParts = new Intl.NumberFormat(locale, {...intlOptions, minimumFractionDigits: 2, maximumFractionDigits: 2}).formatToParts(0.001);
 
   let minusSign = allParts.find(p => p.type === 'minusSign')?.value ?? '-';
   let plusSign = posAllParts.find(p => p.type === 'plusSign')?.value;
@@ -207,14 +256,19 @@ function getSymbols(formatter: Intl.NumberFormat, intlOptions: Intl.ResolvedNumb
     plusSign = '+';
   }
 
-  let decimal = allParts.find(p => p.type === 'decimal')?.value;
+  let decimal = decimalParts.find(p => p.type === 'decimal')?.value;
   let group = allParts.find(p => p.type === 'group')?.value;
 
   // this set is also for a regex, it's all literals that might be in the string we want to eventually parse that
   // don't contribute to the numerical value
   let pluralLiterals = allParts.filter(p => !nonLiteralParts.has(p.type)).map(p => escapeRegex(p.value));
   let singularLiterals = singularParts.filter(p => !nonLiteralParts.has(p.type)).map(p => escapeRegex(p.value));
-  let sortedLiterals = [...new Set([...singularLiterals, ...pluralLiterals])].sort((a, b) => b.length - a.length);
+  let zeroLiterals = zeroParts.filter(p => !nonLiteralParts.has(p.type)).map(p => escapeRegex(p.value));
+  let decimalLiterals = decimalLiteralsParts.filter(p => !nonLiteralParts.has(p.type)).map(p => escapeRegex(p.value));
+  let decimalLiterals2 = decimalLiteralsParts2.filter(p => !nonLiteralParts.has(p.type)).map(p => escapeRegex(p.value));
+  let fooLiterals = foo.filter(p => !nonLiteralParts.has(p.type)).map(p => escapeRegex(p.value));
+  let barLiterals = bar.filter(p => !nonLiteralParts.has(p.type)).map(p => escapeRegex(p.value));
+  let sortedLiterals = [...new Set([...fooLiterals, ...barLiterals, ...zeroLiterals, ...decimalLiterals, ...decimalLiterals2, ...singularLiterals, ...pluralLiterals])].sort((a, b) => b.length - a.length);
   let literals = new RegExp(`${sortedLiterals.join('|')}|[\\p{White_Space}]`, 'gu');
 
   // These are for replacing non-latn characters with the latn equivalent
@@ -223,7 +277,7 @@ function getSymbols(formatter: Intl.NumberFormat, intlOptions: Intl.ResolvedNumb
   let numeral = new RegExp(`[${numerals.join('')}]`, 'g');
   let index = d => String(indexes.get(d));
 
-  return {minusSign, plusSign, decimal, group, literals, numeral, index};
+  return {minusSign, plusSign, decimal, group, literals, numeral, numerals, index};
 }
 
 function replaceAll(str: string, find: string, replace: string) {
@@ -237,5 +291,5 @@ function replaceAll(str: string, find: string, replace: string) {
 }
 
 function escapeRegex(string: string) {
-  return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
