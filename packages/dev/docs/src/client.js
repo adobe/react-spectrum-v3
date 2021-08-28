@@ -10,12 +10,14 @@
  * governing permissions and limitations under the License.
  */
 
-import {ActionButton} from '@react-spectrum/button';
+import {ActionButton, Button} from '@react-spectrum/button';
 import docsStyle from './docs.css';
+import LinkOut from '@spectrum-icons/workflow/LinkOut';
 import {listen} from 'quicklink';
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import ShowMenu from '@spectrum-icons/workflow/ShowMenu';
+import {Text} from '@react-spectrum/text';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {watchModals} from '@react-aria/aria-modal-polyfill';
 
@@ -181,6 +183,12 @@ ReactDOM.render(<>
   <Hamburger />
   <ThemeSwitcher />
 </>, document.querySelector('.' + docsStyle.pageHeader));
+
+let pathToPage = document.querySelector('[data-github-src]').getAttribute('data-github-src');
+ReactDOM.render(<Button variant="primary" isQuiet elementType="a" href={encodeURI(`https://github.com/adobe/react-spectrum/tree/main/${encodeURI(pathToPage)}`)} target="_blank">
+  <LinkOut />
+  <Text>Edit this page</Text>
+</Button>, document.querySelector('#edit-page'));
 
 document.addEventListener('mousedown', (e) => {
   // Prevent focusing on links to other pages with the mouse to avoid flash of focus ring during navigation.

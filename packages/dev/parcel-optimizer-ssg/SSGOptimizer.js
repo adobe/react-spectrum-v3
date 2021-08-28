@@ -60,6 +60,7 @@ module.exports = new Optimizer({
         })),
         pages,
         currentPage: {
+          filePath: mainAsset.filePath,
           category: mainAsset.meta.category,
           name,
           title: mainAsset.meta.title,

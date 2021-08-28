@@ -168,7 +168,13 @@ html, body {
     vertical-align: text-bottom;
   }
 }
-
+.editPageContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0;
+  width: 100%;
+  max-width: 967px;
+}
 .highlights {
   display: flex;
   flex-wrap: wrap;
