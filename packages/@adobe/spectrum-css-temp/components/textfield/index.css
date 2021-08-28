@@ -13,23 +13,22 @@ governing permissions and limitations under the License.
 @import '../commons/index.css';
 
 :root {
-  --spectrum-textfield-padding-top: 3px;
-  --spectrum-textfield-padding-bottom: 5px;
+  --spectrum-textarea-height: auto;
 
-  /* Todo fix in DNA */
-  --spectrum-textfield-quiet-border-radius: 0;
+  /* Todo: fix in DNA */
+  --spectrum-textarea-min-height: var(--spectrum-global-dimension-size-700);
 
-  --spectrum-textfield-quiet-invalid-background-position: 100% 50%;
+  /* Remove border width from padding */
+  --spectrum-textfield-padding-top-adjusted: calc(var(--spectrum-textfield-padding-top) - var(--spectrum-textfield-border-size));
+  --spectrum-textfield-padding-bottom-adjusted: calc(var(--spectrum-textfield-padding-bottom) - var(--spectrum-textfield-border-size));
+  --spectrum-textfield-padding-x-adjusted: calc(var(--spectrum-textfield-padding-x) - var(--spectrum-textfield-border-size));
 
-  --spectrum-textfield-multiline-height: auto;
-  --spectrum-textfield-multiline-min-height: var(--spectrum-global-dimension-size-700);
-
-  --spectrum-textfield-multiline-padding-x: var(--spectrum-textfield-padding-x);
-  --spectrum-textfield-multiline-padding-top: var(--spectrum-textfield-padding-top);
-  --spectrum-textfield-multiline-padding-bottom: var(--spectrum-textfield-padding-bottom);
+  --spectrum-textarea-padding-top-adjusted: calc(var(--spectrum-textarea-padding-top) - var(--spectrum-textarea-border-size));
+  --spectrum-textarea-padding-bottom-adjusted: calc(var(--spectrum-textarea-padding-bottom) - var(--spectrum-textarea-border-size));
+  --spectrum-textarea-padding-x-adjusted: calc(var(--spectrum-textarea-padding-x) - var(--spectrum-textarea-border-size));
 
   /* Todo: DNA uses incorrect font family "Adobe Clean" */;
-  --spectrum-textfield-text-font-family-fixed: var(--spectrum-font-family-base);
+  --spectrum-textfield-text-font-family: var(--spectrum-font-family-base);
 }
 
 .spectrum-Textfield {
@@ -52,7 +51,7 @@ governing permissions and limitations under the License.
   border-radius: var(--spectrum-textfield-border-radius);
 
   /* Apply padding by default to center text, giving consistency between input and textfield */
-  padding: var(--spectrum-textfield-padding-top) var(--spectrum-textfield-padding-x) var(--spectrum-textfield-padding-bottom) calc(var(--spectrum-textfield-padding-x) - 1px);
+  padding: var(--spectrum-textfield-padding-top-adjusted) var(--spectrum-textfield-padding-x-adjusted) var(--spectrum-textfield-padding-bottom-adjusted) var(--spectrum-textfield-padding-x-adjusted);
   /* Use padding instead of text-indent because text-indent does not left align the text in Edge browser  */
   text-indent: 0;
 
@@ -68,7 +67,7 @@ governing permissions and limitations under the License.
   overflow: visible;
 
   /* Change the input font styles in all browsers */
-  font-family: var(--spectrum-textfield-text-font-family-fixed);
+  font-family: var(--spectrum-textfield-text-font-family);
   font-size: var(--spectrum-textfield-text-size);
   line-height: var(--spectrum-textfield-text-line-height);
   text-overflow: ellipsis;
@@ -159,10 +158,18 @@ governing permissions and limitations under the License.
     box-shadow: none;
   }
 
+  .spectrum-Textfield.is-valid & {
+    padding-inline-end: calc(var(--spectrum-textfield-padding-x-adjusted) + var(--spectrum-icon-checkmark-medium-width) + var(--spectrum-textfield-icon-margin-left));
+  }
+
+  .spectrum-Textfield.is-invalid & {
+    padding-inline-end: calc(var(--spectrum-textfield-padding-x-adjusted) + var(--spectrum-icon-alert-medium-width) + var(--spectrum-textfield-icon-margin-left));
+  }
+
   .spectrum-Textfield--multiline & {
-    height: var(--spectrum-textfield-multiline-height);
-    min-height: var(--spectrum-textfield-multiline-min-height);
-    padding: var(--spectrum-textfield-multiline-padding-top) var(--spectrum-textfield-multiline-padding-x) var(--spectrum-textfield-multiline-padding-bottom) calc(var(--spectrum-textfield-multiline-padding-x) - 1px);
+    height: var(--spectrum-textarea-height);
+    min-height: var(--spectrum-textarea-min-height);
+    padding: var(--spectrum-textarea-padding-top-adjusted) var(--spectrum-textarea-padding-x-adjusted) var(--spectrum-textarea-padding-bottom-adjusted) var(--spectrum-textarea-padding-x-adjusted);
 
     /* Remove the default vertical scrollbar for textarea in IE. */
     overflow: auto;
@@ -199,7 +206,7 @@ governing permissions and limitations under the License.
     Note that the sizes are a bit different when compared with old background icons(more noticable for checkmark)
   */
   position: absolute;
-  padding-inline-end: calc(var(--spectrum-textfield-padding-x, var(--spectrum-global-dimension-size-150)) / 2);
+  padding-inline-end: calc(var(--spectrum-textfield-padding-x-adjusted, var(--spectrum-global-dimension-size-150)) / 2);
   pointer-events: all;
   transition: color var(--spectrum-global-animation-duration-100) ease-in-out;
 
