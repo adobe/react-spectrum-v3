@@ -223,6 +223,12 @@ export function useNumberField(props: AriaNumberFieldProps, state: NumberFieldSt
     }
   };
 
+  let onButtonPressEnd = (e) => {
+    if (e.pointerType !== 'mouse') {
+      inputRef.current.focus();
+    }
+  };
+
   // Determine the label for the increment and decrement buttons. There are 4 cases:
   //
   // 1. With a visible label that is a string: aria-label: `Increase ${props.label}`
@@ -250,7 +256,8 @@ export function useNumberField(props: AriaNumberFieldProps, state: NumberFieldSt
     excludeFromTabOrder: true,
     preventFocusOnPress: true,
     isDisabled: !state.canIncrement,
-    onPressStart: onButtonPressStart
+    onPressStart: onButtonPressStart,
+    onPressEnd: onButtonPressEnd
   });
 
   let decrementButtonProps: AriaButtonProps = mergeProps(decButtonProps, {
@@ -261,7 +268,8 @@ export function useNumberField(props: AriaNumberFieldProps, state: NumberFieldSt
     excludeFromTabOrder: true,
     preventFocusOnPress: true,
     isDisabled: !state.canDecrement,
-    onPressStart: onButtonPressStart
+    onPressStart: onButtonPressStart,
+    onPressEnd: onButtonPressEnd
   });
 
   return {
