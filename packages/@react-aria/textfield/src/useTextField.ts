@@ -11,7 +11,14 @@
  */
 
 import {AriaTextFieldProps} from '@react-types/textfield';
-import {ChangeEvent, InputHTMLAttributes, LabelHTMLAttributes, RefObject, TextareaHTMLAttributes} from 'react';
+import {
+  ChangeEvent,
+  InputHTMLAttributes,
+  KeyboardEvent,
+  LabelHTMLAttributes,
+  RefObject,
+  TextareaHTMLAttributes
+} from 'react';
 import {ElementType} from 'react';
 import {filterDOMProps, mergeProps} from '@react-aria/utils';
 import {useFocusable} from '@react-aria/focus';
@@ -56,9 +63,33 @@ export function useTextField(
   let {labelProps, fieldProps} = useLabel(props);
   let domProps = filterDOMProps(props, {labelable: true});
 
+  let onKeyDown = (e: KeyboardEvent) => {
+    let end;
+    switch (e.key) {
+      case 'Home':
+        if (ref.current.selectionStart === 0 && ref.current.selectionEnd === 0) {
+          return;
+        }
+        e.preventDefault();
+        ref.current.setSelectionRange(0, 0);
+        break;
+      case 'End':
+        end = ref.current.value.length;
+        if (ref.current.selectionStart === end && ref.current.selectionEnd === end) {
+          return;
+        }
+        e.preventDefault();
+        ref.current.setSelectionRange(end, end);
+        break;
+      default:
+        break;
+    }
+  };
+
   const inputOnlyProps = {
     type,
-    pattern: props.pattern
+    pattern: props.pattern,
+    onKeyDown
   };
 
   return {
