@@ -17,6 +17,7 @@ import {storiesOf} from '@storybook/react';
 import {TextArea} from '../';
 
 storiesOf('TextArea', module)
+  .addParameters({chromaticProvider: {locales: ['en-US', 'ar-AE', 'zh-TW']}})
   .add(
     'Default',
     () => render()
@@ -79,6 +80,14 @@ storiesOf('TextArea', module)
   )
   .add('custom width',
     () => render({icon: <Info />, validationState: 'invalid', width: 275})
+  )
+  .add(
+    'value: 測試, icon: Info, labelPosition: side, validationState: valid',
+    () => render({value: '測試', icon: <Info />, labelPosition: 'side', validationState: 'valid'})
+  )
+  .add(
+    'value: اختبار, isRequired: false, necessityIndicator: label',
+    () => render({value: 'اختبار', isRequired: false, necessityIndicator: 'label'})
   );
 
 // allow some stories where disabled styles probably won't affect anything to turn that off, mostly to reduce clutter

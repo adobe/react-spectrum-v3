@@ -91,6 +91,12 @@ let withSection = [
   ]}
 ];
 
+let withArabic = [
+  {name: 'نسخ', icon: 'Copy', shortcut: '⌘C'},
+  {name: 'قص', icon: 'Cut', shortcut: '⌘X'},
+  {name: 'لصق', icon: 'Paste', shortcut: '⌘V'}
+];
+
 const Template = (): Story<SpectrumMenuTriggerProps> => (args) => (
   <MenuTrigger {...args} isOpen>
     <ActionButton>
@@ -139,6 +145,17 @@ const TemplateWithIcons = (): Story<SpectrumMenuTriggerProps> => (args) => (
           {item => customMenuItem(item)}
         </Section>
       )}
+    </Menu>
+  </MenuTrigger>
+);
+
+const TemplateArabicWithIcons = (): Story<SpectrumMenuTriggerProps> => (args) => (
+  <MenuTrigger {...args} isOpen>
+    <ActionButton>
+      Menu Button
+    </ActionButton>
+    <Menu items={withArabic}>
+      {item => customMenuItem(item)}
     </Menu>
   </MenuTrigger>
 );
@@ -195,3 +212,6 @@ DirectionRight.args = {direction: 'right'};
 export const DirectionRightEnd = Template().bind({});
 DirectionRightEnd.storyName = 'direction="right", align="end"';
 DirectionRightEnd.args = {direction: 'right', align: 'end'};
+
+export const ArabicComplex = TemplateArabicWithIcons().bind({});
+ArabicComplex.storyName = 'Arabic complex items';

@@ -39,5 +39,6 @@ export {
   DirectionLeft,
   DirectionLeftEnd,
   DirectionRight,
-  DirectionRightEnd
+  DirectionRightEnd,
+  ArabicComplex
 } from './MenuTrigger.chromatic';

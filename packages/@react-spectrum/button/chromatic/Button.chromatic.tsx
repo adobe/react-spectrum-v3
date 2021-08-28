@@ -18,6 +18,7 @@ import {storiesOf} from '@storybook/react';
 import {Text} from '@react-spectrum/text';
 
 storiesOf('Button', module)
+  .addParameters({chromaticProvider: {locales: ['en-US', 'ar-AE', 'zh-TW']}})
   .add(
     'variant: cta',
     () => render({variant: 'cta'})
@@ -41,6 +42,12 @@ storiesOf('Button', module)
           variant="primary">
           <Bell />
           <Text>Quiet</Text>
+        </Button>
+        <Button
+          isQuiet
+          variant="primary">
+          <Bell />
+          <Text>هادئ</Text>
         </Button>
       </Flex>
     )
@@ -110,6 +117,10 @@ function render(props: any = {}) {
         Quiet
       </Button>
       )}
+      <Button
+        {...props}>
+        默認
+      </Button>
     </Flex>
   );
 }

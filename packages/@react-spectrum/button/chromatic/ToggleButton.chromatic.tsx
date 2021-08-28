@@ -50,4 +50,9 @@ storiesOf('Button/ToggleButton', module)
         {combinations.map(c => <ToggleButton {...c} staticColor="black">Button</ToggleButton>)}
       </Grid>
     </View>
+  ))
+  .add('Arabic', () => (
+    <Grid columns={repeat(states.length, '1fr')} autoFlow="row" gap="size-300">
+      {combinations.map(c => <ToggleButton {...c}>زر</ToggleButton>)}
+    </Grid>
   ));

@@ -19,6 +19,7 @@ import {Text} from '@react-spectrum/text';
 import {View} from '@react-spectrum/view';
 
 storiesOf('Button/ActionButton', module)
+  .addParameters({chromaticProvider: {locales: ['en-US', 'ar-AE', 'ja-JP']}})
   .add(
     'text',
     () => (
@@ -106,6 +107,27 @@ storiesOf('Button/ActionButton', module)
           </ActionButton>
           <ActionButton staticColor="black" isDisabled>
             <Text>Disabled</Text>
+            <Add />
+          </ActionButton>
+        </Flex>
+      </View>
+    )
+  )
+  .add(
+    'Japanese, icon + text, staticColor: white',
+    () => (
+      <View backgroundColor="static-seafoam-600" padding="size-1000">
+        <Flex direction="column" rowGap="size-150">
+          <ActionButton staticColor="white">
+            <Add />
+            <Text>ディフォルト</Text>
+          </ActionButton>
+          <ActionButton staticColor="white" isQuiet>
+            <Add />
+            <Text>静かな</Text>
+          </ActionButton>
+          <ActionButton staticColor="white" isDisabled>
+            <Text>無効</Text>
             <Add />
           </ActionButton>
         </Flex>
