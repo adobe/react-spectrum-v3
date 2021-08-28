@@ -12,31 +12,5 @@ governing permissions and limitations under the License.
 @import '../commons/index.css';
 
 .spectrum {
-  font-family: var(--spectrum-font-family-base);
-  font-size: var(--spectrum-text-size);
-  color: var(--spectrum-body-text-color, var(--spectrum-global-color-gray-800));
-
-  &:lang(ar) {
-    font-family: var(--spectrum-font-family-ar);
-  }
-
-  &:lang(he) {
-    font-family: var(--spectrum-font-family-he);
-  }
-
-  &:lang(zh-Hans) {
-    font-family: var(--spectrum-font-family-zhhans);
-  }
-
-  &:lang(zh) {
-    font-family: var(--spectrum-font-family-zh);
-  }
-
-  &:lang(ko) {
-    font-family: var(--spectrum-font-family-ko);
-  }
-
-  &:lang(ja) {
-    font-family: var(--spectrum-font-family-ja);
-  }
+  @extends %i18nFontFamily;
 }

@@ -62,7 +62,8 @@ governing permissions and limitations under the License.
               box-shadow var(--spectrum-global-animation-duration-100) ease-out;
 
   text-decoration: none;
-  font-family: var(--spectrum-font-family-base);
+
+  @extend %i18nFontFamily;
 
   line-height: var(--spectrum-button-line-height);
 
