@@ -69,6 +69,10 @@ function TooltipTrigger(props: SpectrumTooltipTriggerProps) {
         <Overlay isOpen={state.isOpen}>
           {tooltip}
         </Overlay>
+        { 
+          /* hidden tooltip for aria-describedby IDREF */
+          !state.isOpen && !isDisabled && <div hidden>{tooltip}</div>
+        }
       </TooltipContext.Provider>
     </FocusableProvider>
   );
