@@ -15,6 +15,8 @@ import {InputHTMLAttributes, RefObject} from 'react';
 import {ToggleState} from '@react-stately/toggle';
 import {useToggle} from '@react-aria/toggle';
 
+export {AriaSwitchProps} from '@react-types/switch';
+
 export interface SwitchAria {
   /** Props for the input element. */
   inputProps: InputHTMLAttributes<HTMLInputElement>
