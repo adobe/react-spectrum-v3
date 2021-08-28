@@ -58,7 +58,9 @@ export interface FocusableDOMProps extends DOMProps {
    * be avoided except in rare scenarios where an alternative means of accessing
    * the element or its functionality via the keyboard is available.
    */
-  excludeFromTabOrder?: boolean
+  excludeFromTabOrder?: boolean,
+  /** A tabIndex to return. */
+  tabIndex?: number
 }
 
 // DOM props that apply to all text inputs
@@ -125,7 +127,7 @@ export interface TextInputDOMProps extends DOMProps {
    * Handler that is called when a text composition system starts a new text composition session. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionstart_event).
    */
   onCompositionStart?: CompositionEventHandler<HTMLInputElement>,
-  
+
   /**
    * Handler that is called when a text composition system completes or cancels the current text composition session. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionend_event).
    */
