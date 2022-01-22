@@ -12,7 +12,7 @@
 
 import {act, fireEvent, render} from '@testing-library/react';
 import {FocusScope, useFocusManager} from '../';
-import React from 'react';
+import React, {useRef} from 'react';
 import ReactDOM from 'react-dom';
 import userEvent from '@testing-library/user-event';
 
@@ -331,6 +331,100 @@ describe('FocusScope', function () {
       expect(document.activeElement).toBe(outside);
     });
 
+    it('should restore focus to the previously focused node after a child with autoFocus unmounts', function () {
+      function Test({show}) {
+        return (
+          <div>
+            <input data-testid="outside" />
+            {show &&
+              <FocusScope restoreFocus>
+                <input data-testid="input1" />
+                <input data-testid="input2" autoFocus />
+                <input data-testid="input3" />
+              </FocusScope>
+            }
+          </div>
+        );
+      }
+
+      let {getByTestId, rerender} = render(<Test />);
+
+      let outside = getByTestId('outside');
+      act(() => {outside.focus();});
+
+      rerender(<Test show />);
+
+      let input2 = getByTestId('input2');
+      expect(document.activeElement).toBe(input2);
+
+      rerender(<Test />);
+
+      expect(document.activeElement).toBe(outside);
+    });
+
+    it('should restore focus to the previously focused node when tabbing away from a child with autoFocus', function () {
+      function Test({show}) {
+        return (
+          <div>
+            <input data-testid="outside" />
+            <input data-testid="after" />
+            {show &&
+              <FocusScope restoreFocus>
+                <input data-testid="input1" />
+                <input data-testid="input2" />
+                <input data-testid="input3" autoFocus />
+              </FocusScope>
+            }
+          </div>
+        );
+      }
+
+      let {getByTestId, rerender} = render(<Test />);
+
+      let outside = getByTestId('outside');
+      act(() => {outside.focus();});
+
+      rerender(<Test show />);
+
+      let input3 = getByTestId('input3');
+      expect(document.activeElement).toBe(input3);
+
+      userEvent.tab();
+      expect(document.activeElement).toBe(getByTestId('after'));
+    });
+
+    it('should restore focus to the previously focused node after children change', function () {
+      function Test({show, showChild}) {
+        return (
+          <div>
+            <input data-testid="outside" />
+            {show &&
+              <FocusScope restoreFocus autoFocus>
+                <input data-testid="input1" />
+                {showChild && <input data-testid="dynamic" />}
+              </FocusScope>
+            }
+          </div>
+        );
+      }
+
+      let {getByTestId, rerender} = render(<Test />);
+
+      let outside = getByTestId('outside');
+      act(() => {outside.focus();});
+
+      rerender(<Test show />);
+      rerender(<Test show showChild />);
+
+      let dynamic = getByTestId('dynamic');
+      act(() => {dynamic.focus();});
+      expect(document.activeElement).toBe(dynamic);
+
+      rerender(<Test />);
+
+      expect(document.activeElement).toBe(outside);
+    });
+
     it('should move focus to the next element after the previously focused node on Tab', function () {
       function Test({show}) {
         return (
@@ -396,6 +490,73 @@ describe('FocusScope', function () {
 
       userEvent.tab({shift: true});
       expect(document.activeElement).toBe(getByTestId('before'));
+    });
+
+    it('should move focus to the trigger element on Shift+Tab with tabOrder="after-trigger"', function () {
+      function Test({show}) {
+        return (
+          <div>
+            <input data-testid="before" />
+            <button data-testid="trigger" />
+            <input data-testid="after" />
+            {show &&
+              <FocusScope restoreFocus autoFocus tabOrder="after-trigger">
+                <input data-testid="input1" />
+                <input data-testid="input2" />
+                <input data-testid="input3" />
+              </FocusScope>
+            }
+          </div>
+        );
+      }
+
+      let {getByTestId, rerender} = render(<Test />);
+
+      let trigger = getByTestId('trigger');
+      act(() => {trigger.focus();});
+
+      rerender(<Test show />);
+
+      let input1 = getByTestId('input1');
+      expect(document.activeElement).toBe(input1);
+
+      userEvent.tab({shift: true});
+      expect(document.activeElement).toBe(getByTestId('trigger'));
+    });
+
+    it('should move focus to the next element on Tab with tabOrder="after-trigger"', function () {
+      function Test({show}) {
+        return (
+          <div>
+            <input data-testid="before" />
+            <button data-testid="trigger" />
+            <input data-testid="after" />
+            {show &&
+              <FocusScope restoreFocus autoFocus tabOrder="after-trigger">
+                <input data-testid="input1" />
+                <input data-testid="input2" />
+                <input data-testid="input3" />
+              </FocusScope>
+            }
+          </div>
+        );
+      }
+
+      let {getByTestId, rerender} = render(<Test />);
+
+      let trigger = getByTestId('trigger');
+      act(() => {trigger.focus();});
+
+      rerender(<Test show />);
+
+      let input1 = getByTestId('input1');
+      expect(document.activeElement).toBe(input1);
+
+      let input3 = getByTestId('input3');
+      act(() => {input3.focus();});
+
+      userEvent.tab();
+      expect(document.activeElement).toBe(getByTestId('after'));
     });
 
     it('should skip over elements within the scope when moving focus to the next element', function () {
@@ -467,6 +628,89 @@ describe('FocusScope', function () {
 
       userEvent.tab();
       expect(document.activeElement).toBe(getByTestId('after'));
+    });
+
+    it('should move focus to the element after a reference location on Tab', function () {
+      function Test({show}) {
+        const tabRef = useRef();
+        return (
+          <>
+            <div>
+              <button data-testid="trigger" />
+              <input data-testid="before" />
+              <div ref={tabRef} tabIndex={-1} />
+              <input data-testid="after" />
+            </div>
+            {show &&
+              <div>
+                <FocusScope restoreFocus autoFocus tabOrder={tabRef}>
+                  <input data-testid="input1" />
+                  <input data-testid="input2" />
+                  <input data-testid="input3" />
+                </FocusScope>
+              </div>
+            }
+          </>
+        );
+      }
+
+      let {getByTestId, rerender} = render(<Test />);
+
+      let trigger = getByTestId('trigger');
+      act(() => {trigger.focus();});
+
+      rerender(<Test show />);
+
+      let input1 = getByTestId('input1');
+      expect(document.activeElement).toBe(input1);
+
+      let input3 = getByTestId('input3');
+      act(() => {input3.focus();});
+
+      userEvent.tab();
+      expect(document.activeElement).toBe(getByTestId('after'));
+    });
+
+    it('should move focus to the element before a reference location on Shift+Tab', function () {
+      function Test({show}) {
+        let tabRef = useRef();
+        return (
+          <>
+            <div>
+              <button data-testid="trigger" />
+              <input data-testid="before" />
+              <div ref={tabRef} tabIndex={-1} />
+              <input data-testid="after" />
+            </div>
+            {show &&
+            <div>
+              <FocusScope restoreFocus autoFocus tabOrder={tabRef}>
+                <input data-testid="input1" />
+                <input data-testid="input2" />
+                <input data-testid="input3" />
+              </FocusScope>
+
+            </div>
+            }
+          </>
+        );
+      }
+
+      let {getByTestId, rerender} = render(<Test />);
+
+      let trigger = getByTestId('trigger');
+      act(() => {trigger.focus();});
+
+      rerender(<Test show />);
+
+      let input1 = getByTestId('input1');
+      expect(document.activeElement).toBe(input1);
+
+      let input3 = getByTestId('input3');
+      act(() => {input3.focus();});
+
+      userEvent.tab({shift: true});
+      expect(document.activeElement).toBe(getByTestId('before'));
     });
   });
 
