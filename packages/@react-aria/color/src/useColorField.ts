@@ -43,7 +43,8 @@ export function useColorField(
   let {
     isDisabled,
     isReadOnly,
-    isRequired
+    isRequired,
+    allowsAlpha
   } = props;
 
   let {
@@ -62,14 +63,14 @@ export function useColorField(
       isDisabled,
       isReadOnly,
       isRequired,
-      maxValue: 0xFFFFFF,
+      maxValue: allowsAlpha ? 0xFFFFFFFF : 0xFFFFFF,
       minValue: 0,
       onIncrement: increment,
       onIncrementToMax: incrementToMax,
       onDecrement: decrement,
       onDecrementToMin: decrementToMin,
       value: colorValue ? colorValue.toHexInt() : undefined,
-      textValue: colorValue ? colorValue.toString('hex') : undefined
+      textValue: colorValue ? colorValue.toString(allowsAlpha ? 'hexa' : 'hex') : undefined
     }
   );
 

@@ -73,7 +73,7 @@ describe('Color', function () {
 
   it('should convert a color to its equivalent hex value in decimal format', function () {
     const color = parseColor('#abcdef');
-    expect(color.toHexInt()).toBe(0xABCDEF);
+    expect(color.toHexInt()).toBe(0xABCDEFFF);
   });
 
   describe('rgb', function () {

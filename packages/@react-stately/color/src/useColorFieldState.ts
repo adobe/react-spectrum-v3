@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {Color, ColorFieldProps} from '@react-types/color';
+import {Color, ColorFieldProps, ColorFormat} from '@react-types/color';
 import {parseColor} from './Color';
 import {useColor} from './useColor';
 import {useControlledState} from '@react-stately/utils';
@@ -50,10 +50,19 @@ export interface ColorFieldState {
   validate(value: string): boolean
 }
 
-const MIN_COLOR = parseColor('#000000');
-const MAX_COLOR = parseColor('#FFFFFF');
+const MIN_COLOR = parseColor('#000000FF');
+const MAX_COLOR = parseColor('#FFFFFFFF');
 const MIN_COLOR_INT = MIN_COLOR.toHexInt();
 const MAX_COLOR_INT = MAX_COLOR.toHexInt();
+
+const MIN_COLOR_ALPHA_DEFAULT = parseColor('#000000FF');
+const MIN_COLOR_ALPHA = parseColor('#00000000');
+const MAX_COLOR_ALPHA = parseColor('#FFFFFFFF');
+const MIN_COLOR_INT_ALPHA = MIN_COLOR_ALPHA.toHexInt();
+const MAX_COLOR_INT_ALPHA = MAX_COLOR_ALPHA.toHexInt();
+
+const RGB_REGEX = /^#?[0-9a-f]{0,6}$/i;
+const RGBA_REGEX = /^#?[0-9a-f]{0,8}$/i;
 
 /**
  * Provides state management for a color field component. Color fields allow
@@ -65,14 +74,19 @@ export function useColorFieldState(
   let {
     value,
     defaultValue,
-    onChange
+    onChange,
+    allowsAlpha = false
   } = props;
+  let hexFormat: ColorFormat = allowsAlpha ? 'hexa' : 'hex';
+  let validationRegex = allowsAlpha ? RGBA_REGEX : RGB_REGEX;
+  let minColor = allowsAlpha ? MIN_COLOR_ALPHA_DEFAULT : MIN_COLOR;
+  let maxColor = allowsAlpha ? MAX_COLOR_ALPHA : MAX_COLOR;
   let {step} = MIN_COLOR.getChannelRange('red');
 
   let initialValue = useColor(value);
   let initialDefaultValue = useColor(defaultValue);
   let [colorValue, setColorValue] = useControlledState<Color>(initialValue, initialDefaultValue, onChange);
-  let [inputValue, setInputValue] = useState(() => (value || defaultValue) && colorValue ? colorValue.toString('hex') : '');
+  let [inputValue, setInputValue] = useState(() => (value || defaultValue) && colorValue ? colorValue.toString(hexFormat) : '');
 
   let safelySetColorValue = (newColor: Color) => {
     if (!colorValue || !newColor) {
@@ -86,9 +100,15 @@ export function useColorFieldState(
   };
 
   let prevValue = useRef(colorValue);
-  if (prevValue.current !== colorValue) {
-    setInputValue(colorValue ? colorValue.toString('hex') : '');
+  let prevAllowsAlpha = useRef(allowsAlpha);
+  if (prevValue.current !== colorValue || prevAllowsAlpha.current !== allowsAlpha) {
+    setInputValue(colorValue ? colorValue.toString(hexFormat) : '');
+    // if we move from allowing alpha to not allowing it, the data should match what is displayed
+    if (prevAllowsAlpha.current && colorValue) {
+      safelySetColorValue(parseColor(colorValue.toString(hexFormat)));
+    }
     prevValue.current = colorValue;
+    prevAllowsAlpha.current = allowsAlpha;
   }
 
 
@@ -101,20 +121,20 @@ export function useColorFieldState(
     }
     return color;
   }, [inputValue]);
-  let parsed = useRef(null);
+  let parsed = useRef<Color | null>(null);
   parsed.current = parsedValue;
 
   let commit = () => {
     // Set to empty state if input value is empty
     if (!inputValue.length) {
       safelySetColorValue(null);
-      setInputValue(value === undefined ? '' : colorValue.toString('hex'));
+      setInputValue(value === undefined ? '' : colorValue.toString(hexFormat));
       return;
     }
 
     // if it failed to parse, then reset input to formatted version of current number
     if (parsed.current == null) {
-      setInputValue(colorValue ? colorValue.toString('hex') : '');
+      setInputValue(colorValue ? colorValue.toString(hexFormat) : '');
       return;
     }
 
@@ -122,37 +142,51 @@ export function useColorFieldState(
     // in a controlled state, the numberValue won't change, so we won't go back to our old input without help
     let newColorValue = '';
     if (colorValue) {
-      newColorValue = colorValue.toString('hex');
+      newColorValue = colorValue.toString(hexFormat);
     }
     setInputValue(newColorValue);
   };
 
   let increment = () => {
     let newValue = addColorValue(parsed.current, step);
+    newValue = newValue.withChannelValue('alpha', parsed.current.getChannelValue('alpha'));
     // if we've arrived at the same value that was previously in the state, the
     // input value should be updated to match
     // ex type 4, press increment, highlight the number in the input, type 4 again, press increment
     // you'd be at 5, then incrementing to 5 again, so no re-render would happen and 4 would be left in the input
     if (newValue === colorValue) {
-      setInputValue(newValue.toString('hex'));
+      setInputValue(newValue.toString(hexFormat));
     }
     safelySetColorValue(newValue);
   };
   let decrement = () => {
     let newValue = addColorValue(parsed.current, -step);
+    newValue = newValue.withChannelValue('alpha', parsed.current.getChannelValue('alpha'));
     // if we've arrived at the same value that was previously in the state, the
     // input value should be updated to match
     // ex type 4, press increment, highlight the number in the input, type 4 again, press increment
     // you'd be at 5, then incrementing to 5 again, so no re-render would happen and 4 would be left in the input
     if (newValue === colorValue) {
-      setInputValue(newValue.toString('hex'));
+      setInputValue(newValue.toString(hexFormat));
     }
     safelySetColorValue(newValue);
   };
-  let incrementToMax = () => safelySetColorValue(MAX_COLOR);
-  let decrementToMin = () => safelySetColorValue(MIN_COLOR);
+  let incrementToMax = () => {
+    if (parsed.current) {
+      safelySetColorValue(maxColor.withChannelValue('alpha', parsed.current.getChannelValue('alpha')));
+    } else {
+      safelySetColorValue(maxColor);
+    }
+  };
+  let decrementToMin = () => {
+    if (parsed.current) {
+      safelySetColorValue(minColor.withChannelValue('alpha', parsed.current.getChannelValue('alpha')));
+    } else {
+      safelySetColorValue(minColor);
+    }
+  };
 
-  let validate = (value: string) => value === '' || !!value.match(/^#?[0-9a-f]{0,6}$/i)?.[0];
+  let validate = (value: string) => value === '' || !!value.match(validationRegex)?.[0];
 
   return {
     validate,
@@ -167,13 +201,16 @@ export function useColorFieldState(
   };
 }
 
-function addColorValue(color: Color, step: number) {
-  let newColor = color ? color : MIN_COLOR;
-  let colorInt = newColor.toHexInt();
+function addColorValue(color: Color, step: number, allowsAlpha: boolean = false) {
+  let minColorInt = allowsAlpha ? MIN_COLOR_INT_ALPHA : MIN_COLOR_INT;
+  let maxColorInt = allowsAlpha ? MAX_COLOR_INT_ALPHA : MAX_COLOR_INT;
+  step = allowsAlpha ? step : step * 0x100;
+  let newColor = color ? color : MIN_COLOR_ALPHA_DEFAULT;
+  let colorInt = newColor.toHexInt(); // always includes alpha
 
-  let clampInt = Math.min(Math.max(colorInt + step, MIN_COLOR_INT), MAX_COLOR_INT);
+  let clampInt = Math.min(Math.max(colorInt + step, minColorInt), maxColorInt);
   if (clampInt !== colorInt) {
-    let newColorString = `#${clampInt.toString(16).padStart(6, '0').toUpperCase()}`;
+    let newColorString = `#${clampInt.toString(16).padStart(8, '0').toUpperCase()}`;
     newColor = parseColor(newColorString);
   }
   return newColor;

@@ -82,7 +82,7 @@ abstract class Color implements IColor {
   abstract getColorChannels(): [ColorChannel, ColorChannel, ColorChannel]
 }
 class RGBColor extends Color {
-  constructor(private red: number, private green: number, private blue: number, private alpha: number) {
+  constructor(private red: number, private green: number, private blue: number, private alpha: number = 1) {
     super();
   }
 
@@ -94,7 +94,7 @@ class RGBColor extends Color {
       while (values.length > 0) {
         colors.push(parseInt(values.splice(0, 2).join(''), 16));
       }
-      colors[3] = colors[3] !== undefined ? colors[3] / 255 : undefined;
+      colors[3] = colors[3] !== undefined ? colors[3] / 255 : 1;
     }
 
     // matching rgb(rrr, ggg, bbb), rgba(rrr, ggg, bbb, 0.a)
@@ -119,6 +119,8 @@ class RGBColor extends Color {
       case 'css':
       case 'rgba':
         return `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`;
+      case undefined:
+        return this.toString('rgba');
       default:
         return this.toFormat(format).toString(format);
     }
@@ -143,7 +145,8 @@ class RGBColor extends Color {
   }
 
   toHexInt(): number {
-    return this.red << 16 | this.green << 8 | this.blue;
+    // can't do bitwise operations including alpha because bitwise operations drop out of 64 to 32 bits
+    return (this.red * 0x1000000) + (this.green * 0x10000) + (this.blue * 0x100) + Math.round(this.alpha * 255);
   }
 
   /**
@@ -304,6 +307,8 @@ class HSBColor extends Color {
         return `hsb(${this.hue}, ${toFixedNumber(this.saturation, 2)}%, ${toFixedNumber(this.brightness, 2)}%)`;
       case 'hsba':
         return `hsba(${this.hue}, ${toFixedNumber(this.saturation, 2)}%, ${toFixedNumber(this.brightness, 2)}%, ${this.alpha})`;
+      case undefined:
+        return this.toString('hsba');
       default:
         return this.toFormat(format).toString(format);
     }
@@ -445,6 +450,8 @@ class HSLColor extends Color {
       case 'css':
       case 'hsla':
         return `hsla(${this.hue}, ${toFixedNumber(this.saturation, 2)}%, ${toFixedNumber(this.lightness, 2)}%, ${this.alpha})`;
+      case undefined:
+        return this.toString('hsla');
       default:
         return this.toFormat(format).toString(format);
     }
