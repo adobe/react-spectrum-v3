@@ -9,33 +9,18 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
-import {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  ElementType,
-  HTMLAttributes,
-  InputHTMLAttributes,
-  RefObject
-} from 'react';
+import {AriaButtonPropsElementType, ButtonAria, RefObjectElementType, useButton} from './useButton';
 import {AriaToggleButtonProps} from '@react-types/button';
-import {ButtonAria, useButton} from './useButton';
 import {chain} from '@react-aria/utils';
-import {DOMAttributes} from '@react-types/shared';
+import {HTMLAttributes, RefObject} from 'react';
 import {mergeProps} from '@react-aria/utils';
 import {ToggleState} from '@react-stately/toggle';
 
-export function useToggleButton(props: AriaToggleButtonProps<'a'>, state: ToggleState, ref: RefObject<HTMLAnchorElement>): ButtonAria<AnchorHTMLAttributes<HTMLAnchorElement>>;
-export function useToggleButton(props: AriaToggleButtonProps<'button'>, state: ToggleState, ref: RefObject<HTMLButtonElement>): ButtonAria<ButtonHTMLAttributes<HTMLButtonElement>>;
-export function useToggleButton(props: AriaToggleButtonProps<'div'>, state: ToggleState, ref: RefObject<HTMLDivElement>): ButtonAria<HTMLAttributes<HTMLDivElement>>;
-export function useToggleButton(props: AriaToggleButtonProps<'input'>, state: ToggleState, ref: RefObject<HTMLInputElement>): ButtonAria<InputHTMLAttributes<HTMLInputElement>>;
-export function useToggleButton(props: AriaToggleButtonProps<'span'>, state: ToggleState, ref: RefObject<HTMLSpanElement>): ButtonAria<HTMLAttributes<HTMLSpanElement>>;
-export function useToggleButton(props: AriaToggleButtonProps<ElementType>, state: ToggleState, ref: RefObject<Element>): ButtonAria<DOMAttributes>;
 /**
  * Provides the behavior and accessibility implementation for a toggle button component.
  * ToggleButtons allow users to toggle a selection on or off, for example switching between two states or modes.
  */
-export function useToggleButton(props: AriaToggleButtonProps<ElementType>, state: ToggleState, ref: RefObject<any>): ButtonAria<HTMLAttributes<any>> {
+export function useToggleButton<T extends AriaButtonPropsElementType, V extends RefObjectElementType>(props: AriaToggleButtonProps<T>, state: ToggleState, ref: RefObject<V>): ButtonAria<HTMLAttributes<any>> {
   const {isSelected} = state;
   const {isPressed, buttonProps} = useButton({
     ...props,

@@ -10,17 +10,10 @@
  * governing permissions and limitations under the License.
  */
 
-import {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  ElementType,
-  HTMLAttributes,
-  InputHTMLAttributes,
-  RefObject
-} from 'react';
 import {AriaButtonProps} from '@react-types/button';
-import {DOMAttributes} from '@react-types/shared';
+import {ElementType, HTMLAttributes, RefObject} from 'react';
 import {filterDOMProps} from '@react-aria/utils';
+import {FocusableElement} from '@react-types/shared';
 import {mergeProps} from '@react-aria/utils';
 import {useFocusable} from '@react-aria/focus';
 import {usePress} from '@react-aria/interactions';
@@ -33,20 +26,19 @@ export interface ButtonAria<T> {
   isPressed: boolean
 }
 
-// Order with overrides is important: 'button' should be default
-export function useButton(props: AriaButtonProps<'button'>, ref: RefObject<HTMLButtonElement>): ButtonAria<ButtonHTMLAttributes<HTMLButtonElement>>;
-export function useButton(props: AriaButtonProps<'a'>, ref: RefObject<HTMLAnchorElement>): ButtonAria<AnchorHTMLAttributes<HTMLAnchorElement>>;
-export function useButton(props: AriaButtonProps<'div'>, ref: RefObject<HTMLDivElement>): ButtonAria<HTMLAttributes<HTMLDivElement>>;
-export function useButton(props: AriaButtonProps<'input'>, ref: RefObject<HTMLInputElement>): ButtonAria<InputHTMLAttributes<HTMLInputElement>>;
-export function useButton(props: AriaButtonProps<'span'>, ref: RefObject<HTMLSpanElement>): ButtonAria<HTMLAttributes<HTMLSpanElement>>;
-export function useButton(props: AriaButtonProps<ElementType>, ref: RefObject<Element>): ButtonAria<DOMAttributes>;
+export type AriaButtonPropsElementType = 'button' | 'a' | 'div' | 'input' | 'span' | ElementType;
+
+export type HTMLAttributesElementType = HTMLButtonElement | HTMLAnchorElement | HTMLDivElement | HTMLInputElement | HTMLSpanElement;
+
+export type RefObjectElementType = HTMLAttributesElementType | Element;
+
 /**
  * Provides the behavior and accessibility implementation for a button component. Handles mouse, keyboard, and touch interactions,
  * focus behavior, and ARIA props for both native button elements and custom element types.
  * @param props - Props to be applied to the button.
  * @param ref - A ref to a DOM element for the button.
  */
-export function useButton(props: AriaButtonProps<ElementType>, ref: RefObject<any>): ButtonAria<HTMLAttributes<any>> {
+export function useButton<T extends AriaButtonPropsElementType = 'button', V extends RefObjectElementType = HTMLButtonElement>(props: AriaButtonProps<T>, ref: RefObject<V>): ButtonAria<HTMLAttributes<any>> {
   let {
     elementType = 'button',
     isDisabled,
@@ -94,7 +86,7 @@ export function useButton(props: AriaButtonProps<ElementType>, ref: RefObject<an
     ref
   });
 
-  let {focusableProps} = useFocusable(props, ref);
+  let {focusableProps} = useFocusable(props, ref as RefObject<FocusableElement>);
   if (allowFocusWhenDisabled) {
     focusableProps.tabIndex = isDisabled ? -1 : focusableProps.tabIndex;
   }
