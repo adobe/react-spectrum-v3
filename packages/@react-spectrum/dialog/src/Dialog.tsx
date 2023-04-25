@@ -11,9 +11,9 @@
  */
 
 import {ActionButton} from '@react-spectrum/button';
+import {AlertDialogContext, AlertDialogContextValue, DialogContext, DialogContextValue} from './context';
 import {classNames, SlotProvider, unwrapDOMRef, useDOMRef, useHasChild, useStyleProps} from '@react-spectrum/utils';
 import CrossLarge from '@spectrum-icons/ui/CrossLarge';
-import {DialogContext, DialogContextValue} from './context';
 import {DOMRef} from '@react-types/shared';
 import {Grid} from '@react-spectrum/layout';
 // @ts-ignore
@@ -53,7 +53,9 @@ function Dialog(props: SpectrumDialogProps, ref: DOMRef) {
   let domRef = useDOMRef(ref);
   let gridRef = useRef();
   let sizeVariant = sizeMap[type] || sizeMap[size];
+  let {onKeyDown} = useContext(AlertDialogContext) || {} as AlertDialogContextValue;
   let {dialogProps, titleProps} = useDialog(mergeProps(contextProps, props), domRef);
+  dialogProps = mergeProps(dialogProps, {onKeyDown});
 
   let hasHeader = useHasChild(`.${styles['spectrum-Dialog-header']}`, unwrapDOMRef(gridRef));
   let hasHeading = useHasChild(`.${styles['spectrum-Dialog-heading']}`, unwrapDOMRef(gridRef));
