@@ -427,6 +427,41 @@ export const WHCM: ComboBoxStory = {
   )
 };
 
+export const FixedPositioning: ComboBoxStory = {
+  render: () => (
+    <>
+      <div
+        style={{
+          position: 'fixed',
+          top: 'calc(50vh - var(--spectrum-global-dimension-size-400) - 1.3 * var(--spectrum-global-dimension-size-150)'
+        }}>
+        <AsyncLoadingExample />
+      </div>
+      <div
+        style={{
+          position: 'relative',
+          height: '200vh'
+        }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: '0'
+          }}>
+          Top
+        </div>
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '0'
+          }}>
+          Bottom
+        </div>
+      </div>
+    </>
+  ),
+  name: 'Fixed positioning'
+};
+
 function LoadingExamples(props) {
   return (
     <Flex gap="size-300" direction="column" >
