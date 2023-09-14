@@ -115,9 +115,13 @@ function testSearchAutocompleteOpen(searchAutocomplete, listbox, focusedItemInde
   expect(items[1]).toHaveTextContent('Two');
   expect(items[2]).toHaveTextContent('Three');
 
-  expect(listbox).not.toHaveAttribute('tabIndex');
+  expect(listbox).toHaveAttribute('tabIndex', typeof focusedItemIndex === 'undefined' ? '0' : '-1');
   for (let item of items) {
-    expect(item).not.toHaveAttribute('tabIndex');
+    expect(item)
+    .toHaveAttribute(
+      'tabIndex',
+      typeof focusedItemIndex !== 'undefined' && item === items[focusedItemIndex] ? '0' : '-1'
+    );
   }
 
   expect(document.activeElement).toBe(searchAutocomplete);

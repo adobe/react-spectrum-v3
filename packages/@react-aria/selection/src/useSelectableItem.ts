@@ -11,10 +11,10 @@
  */
 
 import {DOMAttributes, FocusableElement, LongPressEvent, PressEvent} from '@react-types/shared';
+import {FocusEvent, FocusEventHandler, Key, RefObject, useEffect, useRef} from 'react';
 import {focusSafely} from '@react-aria/focus';
+import {isAndroid, isIOS, mergeProps} from '@react-aria/utils';
 import {isCtrlKeyPressed, isNonContiguousSelectionModifier} from './utils';
-import {Key, RefObject, useEffect, useRef} from 'react';
-import {mergeProps} from '@react-aria/utils';
 import {MultipleSelectionManager} from '@react-stately/selection';
 import {PressProps, useLongPress, usePress} from '@react-aria/interactions';
 
@@ -153,14 +153,21 @@ export function useSelectableItem(options: SelectableItemOptions): SelectableIte
   // item is tabbable.  If using virtual focus, don't set a tabIndex at all so that VoiceOver
   // on iOS 14 doesn't try to move real DOM focus to the item anyway.
   let itemProps: SelectableItemAria['itemProps'] = {};
-  if (!shouldUseVirtualFocus && !isDisabled) {
-    itemProps = {
-      tabIndex: key === manager.focusedKey ? 0 : -1,
-      onFocus(e) {
+  if (!isDisabled) {
+    let tabIndex: number;
+    let onFocus: FocusEventHandler<FocusableElement | Element>;
+    let isMobile = isAndroid() || isIOS();
+    if (!isMobile) {
+      tabIndex = key === manager.focusedKey ? 0 : -1;
+      onFocus = (e:FocusEvent<FocusableElement | Element>) => {
         if (e.target === ref.current) {
           manager.setFocusedKey(key);
         }
-      }
+      };
+    }
+    itemProps = {
+      tabIndex,
+      onFocus
     };
   } else if (isDisabled) {
     itemProps.onMouseDown = (e) => {
