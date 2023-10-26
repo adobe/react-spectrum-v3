@@ -342,7 +342,7 @@ function useFocusContainment(scopeRef: RefObject<Element[]>, contain: boolean) {
         // If a focus event occurs outside the active scope (e.g. user tabs from browser location bar),
         // restore focus to the previously focused node or the first tabbable element in the active scope.
         if (focusedNode.current) {
-          focusedNode.current.focus();
+          focusedNode.current.focus({preventScroll: true});
         } else if (activeScope) {
           focusFirstInScope(activeScope.current);
         }
@@ -362,7 +362,7 @@ function useFocusContainment(scopeRef: RefObject<Element[]>, contain: boolean) {
           activeScope = scopeRef;
           if (document.body.contains(e.target)) {
             focusedNode.current = e.target;
-            focusedNode.current.focus();
+            focusedNode.current.focus({preventScroll: true});
           } else if (activeScope) {
             focusFirstInScope(activeScope.current);
           }
