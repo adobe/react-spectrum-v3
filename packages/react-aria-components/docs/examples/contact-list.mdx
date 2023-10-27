@@ -31,6 +31,10 @@ A [ListBox](../ListBox.html) styled with [Tailwind CSS](https://tailwindcss.com/
 
 ```tsx import
 import './tailwind.global.css';
+```
+
+```tsx example standalone
+import {ListBox, Item, Section, Header, Collection, Text} from 'react-aria-components';
 
 const favorites = [
   {
@@ -104,10 +108,6 @@ const people = [
     username: "@cwebb"
   }
 ];
-```
-
-```tsx example standalone
-import {ListBox, Item, Section, Header, Collection, Text} from 'react-aria-components';
 
 function ContactListExample() {
   return (
