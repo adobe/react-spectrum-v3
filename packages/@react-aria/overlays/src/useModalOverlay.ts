@@ -11,26 +11,15 @@
  */
 
 import {ariaHideOutside} from './ariaHideOutside';
+import {AriaOverlayProps, useOverlay} from './useOverlay';
 import {DOMAttributes} from '@react-types/shared';
 import {mergeProps} from '@react-aria/utils';
 import {OverlayTriggerState} from '@react-stately/overlays';
 import {RefObject, useEffect} from 'react';
-import {useOverlay} from './useOverlay';
 import {useOverlayFocusContain} from './Overlay';
 import {usePreventScroll} from './usePreventScroll';
 
-export interface AriaModalOverlayProps {
-  /**
-   * Whether to close the modal when the user interacts outside it.
-   * @default false
-   */
-  isDismissable?: boolean,
-  /**
-   * Whether pressing the escape key to close the modal should be disabled.
-   * @default false
-   */
-  isKeyboardDismissDisabled?: boolean
-}
+export interface AriaModalOverlayProps extends AriaOverlayProps {}
 
 export interface ModalOverlayAria {
   /** Props for the modal element. */
