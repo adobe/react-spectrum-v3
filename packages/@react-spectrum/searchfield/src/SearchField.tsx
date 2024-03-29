@@ -39,8 +39,10 @@ function SearchField(props: SpectrumSearchFieldProps, ref: Ref<TextFieldRef>) {
     ...otherProps
   } = props;
 
-  if (placeholder) {
-    console.warn('Placeholders are deprecated due to accessibility issues. Please use help text instead. See the docs for details: https://react-spectrum.adobe.com/react-spectrum/SearchField.html#help-text');
+  if (process.env.NODE_ENV !== 'production') {
+    if (placeholder) {
+      console.warn('Placeholders are deprecated due to accessibility issues. Please use help text instead. See the docs for details: https://react-spectrum.adobe.com/react-spectrum/SearchField.html#help-text');
+    }
   }
 
   let state = useSearchFieldState(props);

@@ -311,11 +311,13 @@ function Table(props: TableProps, ref: ForwardedRef<HTMLTableElement>) {
   let dragHooksProvided = useRef(isListDraggable);
   let dropHooksProvided = useRef(isListDroppable);
   useEffect(() => {
-    if (dragHooksProvided.current !== isListDraggable) {
-      console.warn('Drag hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
-    }
-    if (dropHooksProvided.current !== isListDroppable) {
-      console.warn('Drop hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (dragHooksProvided.current !== isListDraggable) {
+        console.warn('Drag hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+      }
+      if (dropHooksProvided.current !== isListDroppable) {
+        console.warn('Drop hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+      }
     }
   }, [isListDraggable, isListDroppable]);
 
@@ -805,9 +807,11 @@ function TableColumnHeader<T>({column}: {column: GridNode<T>}) {
   if (layoutState) {
     isResizing = layoutState.resizingColumn === column.key;
   } else {
-    for (let prop in ['width', 'defaultWidth', 'minWidth', 'maxWidth']) {
-      if (prop in column.props) {
-        console.warn(`The ${prop} prop on a <Column> only applies when a <Table> is wrapped in a <ResizableTableContainer>. If you aren't using column resizing, you can set the width of a column with CSS.`);
+    if (process.env.NODE_ENV !== 'production') {
+      for (let prop in ['width', 'defaultWidth', 'minWidth', 'maxWidth']) {
+        if (prop in column.props) {
+          console.warn(`The ${prop} prop on a <Column> only applies when a <Table> is wrapped in a <ResizableTableContainer>. If you aren't using column resizing, you can set the width of a column with CSS.`);
+        }
       }
     }
   }
@@ -1032,8 +1036,10 @@ function TableRow<T>({item}: {item: GridNode<T>}) {
   let renderDropIndicator = dragAndDropHooks?.renderDropIndicator || (target => <DropIndicator target={target} />);
   let dragButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    if (dragState && !dragButtonRef.current) {
-      console.warn('Draggable items in a Table must contain a <Button slot="drag"> element so that keyboard and screen reader users can drag them.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (dragState && !dragButtonRef.current) {
+        console.warn('Draggable items in a Table must contain a <Button slot="drag"> element so that keyboard and screen reader users can drag them.');
+      }
     }
   // eslint-disable-next-line
   }, []);

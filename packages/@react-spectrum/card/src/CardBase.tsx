@@ -101,7 +101,9 @@ function CardBase<T extends object>(props: CardBaseProps<T>, ref: DOMRef<HTMLDiv
       let nextNode = walker.nextNode();
       while (nextNode != null) {
         if (checkboxRef.current && !checkboxRef.current.UNSAFE_getDOMNode().contains(nextNode)) {
-          console.warn('Card does not support focusable elements, please contact the team regarding your use case.');
+          if (process.env.NODE_ENV !== 'production') {
+            console.warn('Card does not support focusable elements, please contact the team regarding your use case.');
+          }
           break;
         }
         nextNode = walker.nextNode();

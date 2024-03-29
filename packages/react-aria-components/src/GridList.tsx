@@ -107,11 +107,13 @@ function GridListInner<T extends object>({props, collection, gridListRef: ref}: 
   let dragHooksProvided = useRef(isListDraggable);
   let dropHooksProvided = useRef(isListDroppable);
   useEffect(() => {
-    if (dragHooksProvided.current !== isListDraggable) {
-      console.warn('Drag hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
-    }
-    if (dropHooksProvided.current !== isListDroppable) {
-      console.warn('Drop hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (dragHooksProvided.current !== isListDraggable) {
+        console.warn('Drag hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+      }
+      if (dropHooksProvided.current !== isListDroppable) {
+        console.warn('Drop hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+      }
     }
   }, [isListDraggable, isListDroppable]);
 
@@ -300,15 +302,19 @@ function GridListRow({item}) {
   let renderDropIndicator = dragAndDropHooks?.renderDropIndicator || (target => <DropIndicator target={target} />);
   let dragButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    if (dragState && !dragButtonRef.current) {
-      console.warn('Draggable items in a GridList must contain a <Button slot="drag"> element so that keyboard and screen reader users can drag them.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (dragState && !dragButtonRef.current) {
+        console.warn('Draggable items in a GridList must contain a <Button slot="drag"> element so that keyboard and screen reader users can drag them.');
+      }
     }
   // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    if (!item.textValue) {
-      console.warn('A `textValue` prop is required for <GridListItem> elements with non-plain text children in order to support accessibility features such as type to select.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (!item.textValue) {
+        console.warn('A `textValue` prop is required for <GridListItem> elements with non-plain text children in order to support accessibility features such as type to select.');
+      }
     }
   }, [item.textValue]);
 

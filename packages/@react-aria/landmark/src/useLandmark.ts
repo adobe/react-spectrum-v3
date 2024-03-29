@@ -219,20 +219,24 @@ class LandmarkManager implements LandmarkManagerApi {
     if (landmarksWithRole.size > 1) {
       let duplicatesWithoutLabel = [...landmarksWithRole].filter(landmark => !landmark.label);
       if (duplicatesWithoutLabel.length > 0) {
-        console.warn(
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(
           `Page contains more than one landmark with the '${role}' role. If two or more landmarks on a page share the same role, all must be labeled with an aria-label or aria-labelledby attribute: `,
           duplicatesWithoutLabel.map(landmark => landmark.ref.current)
         );
+        }
       } else {
-        let labels = [...landmarksWithRole].map(landmark => landmark.label);
-        let duplicateLabels = labels.filter((item, index) => labels.indexOf(item) !== index);
+        if (process.env.NODE_ENV !== 'production') {
+          let labels = [...landmarksWithRole].map(landmark => landmark.label);
+          let duplicateLabels = labels.filter((item, index) => labels.indexOf(item) !== index);
 
-        duplicateLabels.forEach((label) => {
-          console.warn(
+          duplicateLabels.forEach((label) => {
+            console.warn(
             `Page contains more than one landmark with the '${role}' role and '${label}' label. If two or more landmarks on a page share the same role, they must have unique labels: `,
             [...landmarksWithRole].filter(landmark => landmark.label === label).map(landmark => landmark.ref.current)
           );
-        });
+          });
+        }
       }
     }
   }

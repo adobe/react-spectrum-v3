@@ -50,8 +50,10 @@ function SearchAutocomplete<T extends object>(props: SpectrumSearchAutocompleteP
   props = useProviderProps(props);
   props = useFormProps(props);
 
-  if (props.placeholder) {
-    console.warn('Placeholders are deprecated due to accessibility issues. Please use help text instead.');
+  if (process.env.NODE_ENV !== 'production') {
+    if (props.placeholder) {
+      console.warn('Placeholders are deprecated due to accessibility issues. Please use help text instead.');
+    }
   }
 
   let isMobile = useIsMobileDevice();

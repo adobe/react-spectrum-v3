@@ -169,11 +169,13 @@ function ListBoxInner<T>({state, props, listBoxRef}: ListBoxInnerProps<T>) {
   let dragHooksProvided = useRef(isListDraggable);
   let dropHooksProvided = useRef(isListDroppable);
   useEffect(() => {
-    if (dragHooksProvided.current !== isListDraggable) {
-      console.warn('Drag hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
-    }
-    if (dropHooksProvided.current !== isListDroppable) {
-      console.warn('Drop hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (dragHooksProvided.current !== isListDraggable) {
+        console.warn('Drag hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+      }
+      if (dropHooksProvided.current !== isListDroppable) {
+        console.warn('Drop hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+      }
     }
   }, [isListDraggable, isListDroppable]);
 
@@ -407,8 +409,10 @@ function Option<T>({item}: OptionProps<T>) {
   let renderDropIndicator = dragAndDropHooks?.renderDropIndicator || (target => <DropIndicator target={target} />);
 
   useEffect(() => {
-    if (!item.textValue) {
-      console.warn('A `textValue` prop is required for <ListBoxItem> elements with non-plain text children in order to support accessibility features such as type to select.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (!item.textValue) {
+        console.warn('A `textValue` prop is required for <ListBoxItem> elements with non-plain text children in order to support accessibility features such as type to select.');
+      }
     }
   }, [item.textValue]);
 

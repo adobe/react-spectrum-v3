@@ -169,7 +169,9 @@ const ProviderWrapper = React.forwardRef(function ProviderWrapper(props: Provide
       let closestDir = domRef.current.parentElement.closest('[dir]');
       let dir = closestDir && closestDir.getAttribute('dir');
       if (dir && dir !== direction && !hasWarned.current) {
-        console.warn(`Language directions cannot be nested. ${direction} inside ${dir}.`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`Language directions cannot be nested. ${direction} inside ${dir}.`);
+        }
         hasWarned.current = true;
       }
     }

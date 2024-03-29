@@ -88,7 +88,9 @@ function Dialog(props: DialogProps, ref: ForwardedRef<HTMLElement>) {
     if (props['aria-labelledby']) {
       dialogProps['aria-labelledby'] = props['aria-labelledby'];
     } else {
-      console.warn('If a Dialog does not contain a <Heading slot="title">, it must have an aria-label or aria-labelledby attribute for accessibility.');
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('If a Dialog does not contain a <Heading slot="title">, it must have an aria-label or aria-labelledby attribute for accessibility.');
+      }
     }
   }
 

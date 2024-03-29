@@ -32,10 +32,12 @@ export const DOMPropsResponder = React.forwardRef(({children, ...props}: DOMProp
 
   // TODO: Think of a more generic message when this replaces the PressResponder as well
   useEffect(() => {
-    if (!isRegistered.current) {
-      console.warn(
+    if (process.env.NODE_ENV !== 'production') {
+      if (!isRegistered.current) {
+        console.warn(
         'A DOMPropsResponder was ultilized without a hoverable DOM node.'
       );
+      }
     }
   }, []);
 

@@ -111,8 +111,10 @@ class NumberParserImpl {
     this.formatter = new Intl.NumberFormat(locale, options);
     this.options = this.formatter.resolvedOptions();
     this.symbols = getSymbols(locale, this.formatter, this.options, options);
-    if (this.options.style === 'percent' && ((this.options.minimumFractionDigits ?? 0) > 18 || (this.options.maximumFractionDigits ?? 0) > 18)) {
-      console.warn('NumberParser cannot handle percentages with greater than 18 decimal places, please reduce the number in your options.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (this.options.style === 'percent' && ((this.options.minimumFractionDigits ?? 0) > 18 || (this.options.maximumFractionDigits ?? 0) > 18)) {
+        console.warn('NumberParser cannot handle percentages with greater than 18 decimal places, please reduce the number in your options.');
+      }
     }
   }
 

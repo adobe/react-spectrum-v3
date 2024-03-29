@@ -35,8 +35,10 @@ function ColorField(props: SpectrumColorFieldProps, ref: Ref<TextFieldRef>) {
   let inputRef = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
   let result = useColorField(otherProps, state, inputRef);
 
-  if (props.placeholder) {
-    console.warn('Placeholders are deprecated due to accessibility issues. Please use help text instead. See the docs for details: https://react-spectrum.adobe.com/react-spectrum/ColorField.html#help-text');
+  if (process.env.NODE_ENV !== 'production') {
+    if (props.placeholder) {
+      console.warn('Placeholders are deprecated due to accessibility issues. Please use help text instead. See the docs for details: https://react-spectrum.adobe.com/react-spectrum/ColorField.html#help-text');
+    }
   }
 
   return (

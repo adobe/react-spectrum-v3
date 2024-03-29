@@ -34,12 +34,14 @@ function Image(props: SpectrumImageProps, ref: DOMRef<HTMLDivElement>) {
   let {styleProps} = useStyleProps(otherProps);
   let domRef = useDOMRef(ref);
 
-  if (alt == null) {
-    console.warn(
+  if (process.env.NODE_ENV !== 'production') {
+    if (alt == null) {
+      console.warn(
       'The `alt` prop was not provided to an image. ' +
       'Add `alt` text for screen readers, or set `alt=""` prop to indicate that the image ' +
       'is decorative or redundant with displayed text and should not be announced by screen readers.'
     );
+    }
   }
 
   return (

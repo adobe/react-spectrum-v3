@@ -59,11 +59,13 @@ function DialogTrigger(props: SpectrumDialogTriggerProps) {
 
   // eslint-disable-next-line arrow-body-style
   useEffect(() => {
-    return () => {
-      if ((wasOpen.current || isExiting.current) && type !== 'popover' && type !== 'tray') {
-        console.warn('A DialogTrigger unmounted while open. This is likely due to being placed within a trigger that unmounts or inside a conditional. Consider using a DialogContainer instead.');
-      }
-    };
+    if (process.env.NODE_ENV !== 'production') {
+      return () => {
+        if ((wasOpen.current || isExiting.current) && type !== 'popover' && type !== 'tray') {
+          console.warn('A DialogTrigger unmounted while open. This is likely due to being placed within a trigger that unmounts or inside a conditional. Consider using a DialogContainer instead.');
+        }
+      };
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -24,8 +24,10 @@ function TextField(props: SpectrumTextFieldProps, ref: Ref<TextFieldRef>) {
   let inputRef = useRef<HTMLInputElement>(null);
   let result = useTextField(props, inputRef);
 
-  if (props.placeholder) {
-    console.warn('Placeholders are deprecated due to accessibility issues. Please use help text instead. See the docs for details: https://react-spectrum.adobe.com/react-spectrum/TextField.html#help-text');
+  if (process.env.NODE_ENV !== 'production') {
+    if (props.placeholder) {
+      console.warn('Placeholders are deprecated due to accessibility issues. Please use help text instead. See the docs for details: https://react-spectrum.adobe.com/react-spectrum/TextField.html#help-text');
+    }
   }
 
   return (

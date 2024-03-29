@@ -41,7 +41,9 @@ const draggingElements: HTMLElement[] = [];
 // It can also handle either a vertical or horizontal movement, but not both at the same time
 
 export function useDrag1D(props: UseDrag1DProps): HTMLAttributes<HTMLElement> {
-  console.warn('useDrag1D is deprecated, please use `useMove` instead https://react-spectrum.adobe.com/react-aria/useMove.html');
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn('useDrag1D is deprecated, please use `useMove` instead https://react-spectrum.adobe.com/react-aria/useMove.html');
+  }
   let {containerRef, reverse, orientation, onHover, onDrag, onPositionChange, onIncrement, onDecrement, onIncrementToMax, onDecrementToMin, onCollapseToggle} = props;
   let getPosition = (e) => orientation === 'horizontal' ? e.clientX : e.clientY;
   let getNextOffset = (e: MouseEvent) => {

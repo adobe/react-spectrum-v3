@@ -154,7 +154,9 @@ export function useDrag(options: DragOptions): DragResult {
     addGlobalListener(window, 'drop', e => {
       e.preventDefault();
       e.stopPropagation();
-      console.warn('Drags initiated from the React Aria useDrag hook may only be dropped on a target created with useDrop. This ensures that a keyboard and screen reader accessible alternative is available.');
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('Drags initiated from the React Aria useDrag hook may only be dropped on a target created with useDrop. This ensures that a keyboard and screen reader accessible alternative is available.');
+      }
     }, {once: true});
     state.x = e.clientX;
     state.y = e.clientY;

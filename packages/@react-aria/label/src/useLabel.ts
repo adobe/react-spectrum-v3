@@ -52,9 +52,12 @@ export function useLabel(props: LabelAriaProps): LabelAria {
       id: labelId,
       htmlFor: labelElementType === 'label' ? id : undefined
     };
-  } else if (!ariaLabelledby && !ariaLabel) {
-    console.warn('If you do not provide a visible label, you must specify an aria-label or aria-labelledby attribute for accessibility');
+  } else if (process.env.NODE_ENV !== 'production') {
+    if (!ariaLabelledby && !ariaLabel) {
+      console.warn('If you do not provide a visible label, you must specify an aria-label or aria-labelledby attribute for accessibility');
+    }
   }
+
 
   let fieldProps = useLabels({
     id,

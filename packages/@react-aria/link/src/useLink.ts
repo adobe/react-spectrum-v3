@@ -75,7 +75,9 @@ export function useLink(props: AriaLinkOptions, ref: RefObject<FocusableElement>
         pressProps.onClick?.(e);
         if (deprecatedOnClick) {
           deprecatedOnClick(e);
-          console.warn('onClick is deprecated, please use onPress');
+          if (process.env.NODE_ENV !== 'production') {
+            console.warn('onClick is deprecated, please use onPress');
+          }
         }
 
         // If a custom router is provided, prevent default and forward if this link should client navigate.

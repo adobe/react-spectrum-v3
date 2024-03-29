@@ -64,8 +64,10 @@ function TextArea(props: SpectrumTextAreaProps, ref: Ref<TextFieldRef>) {
     }
   }, [onHeightChange, inputValue, inputRef]);
 
-  if (props.placeholder) {
-    console.warn('Placeholders are deprecated due to accessibility issues. Please use help text instead. See the docs for details: https://react-spectrum.adobe.com/react-spectrum/TextArea.html#help-text');
+  if (process.env.NODE_ENV !== 'production') {
+    if (props.placeholder) {
+      console.warn('Placeholders are deprecated due to accessibility issues. Please use help text instead. See the docs for details: https://react-spectrum.adobe.com/react-spectrum/TextArea.html#help-text');
+    }
   }
 
   let result = useTextField({

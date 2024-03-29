@@ -125,11 +125,13 @@ function ListView<T extends object>(props: SpectrumListViewProps<T>, ref: DOMRef
   let dragHooksProvided = useRef(isListDraggable);
   let dropHooksProvided = useRef(isListDroppable);
   useEffect(() => {
-    if (dragHooksProvided.current !== isListDraggable) {
-      console.warn('Drag hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
-    }
-    if (dropHooksProvided.current !== isListDroppable) {
-      console.warn('Drop hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (dragHooksProvided.current !== isListDraggable) {
+        console.warn('Drag hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+      }
+      if (dropHooksProvided.current !== isListDroppable) {
+        console.warn('Drop hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+      }
     }
   }, [isListDraggable, isListDroppable]);
 

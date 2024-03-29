@@ -112,7 +112,9 @@ export function useButton(props: AriaButtonOptions<ElementType>, ref: RefObject<
       onClick: (e) => {
         if (deprecatedOnClick) {
           deprecatedOnClick(e);
-          console.warn('onClick is deprecated, please use onPress');
+          if (process.env.NODE_ENV !== 'production') {
+            console.warn('onClick is deprecated, please use onPress');
+          }
         }
       }
     })

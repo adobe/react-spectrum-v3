@@ -379,8 +379,10 @@ function TreeRow<T>({item}: {item: Node<T>}) {
   });
 
   useEffect(() => {
-    if (!item.textValue) {
-      console.warn('A `textValue` prop is required for <TreeItem> elements in order to support accessibility features such as type to select.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (!item.textValue) {
+        console.warn('A `textValue` prop is required for <TreeItem> elements in order to support accessibility features such as type to select.');
+      }
     }
   }, [item.textValue]);
 
@@ -399,8 +401,10 @@ function TreeRow<T>({item}: {item: Node<T>}) {
 
   let expandButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    if (hasChildRows && !expandButtonRef.current) {
-      console.warn('Expandable tree rows must contain a expand button so screen reader users can expand/collapse the row.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (hasChildRows && !expandButtonRef.current) {
+        console.warn('Expandable tree rows must contain a expand button so screen reader users can expand/collapse the row.');
+      }
     }
   // eslint-disable-next-line
   }, []);

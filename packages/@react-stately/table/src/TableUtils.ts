@@ -25,8 +25,10 @@ export function parseFractionalUnit(width: string): number {
   let match = width.match(/^(.+)(?=fr$)/);
   // if width is the incorrect format, just default it to a 1fr
   if (!match) {
-    console.warn(`width: ${width} is not a supported format, width should be a number (ex. 150), percentage (ex. '50%') or fr unit (ex. '2fr')`,
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`width: ${width} is not a supported format, width should be a number (ex. 150), percentage (ex. '50%') or fr unit (ex. '2fr')`,
       'defaulting to \'1fr\'');
+    }
     return 1;
   }
   return parseFloat(match[0]);

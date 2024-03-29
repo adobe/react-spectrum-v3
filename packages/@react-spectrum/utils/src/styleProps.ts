@@ -263,22 +263,24 @@ export function useStyleProps<T extends StyleProps>(
   let styles = convertStyleProps(props, handlers, direction, matchedBreakpoints);
   let style = {...UNSAFE_style, ...styles};
 
-  // @ts-ignore
-  if (otherProps.className) {
-    console.warn(
-      'The className prop is unsafe and is unsupported in React Spectrum v3. ' +
-      'Please use style props with Spectrum variables, or UNSAFE_className if you absolutely must do something custom. ' +
-      'Note that this may break in future versions due to DOM structure changes.'
-    );
-  }
+  if (process.env.NODE_ENV !== 'production') {
+    // @ts-ignore
+    if (otherProps.className) {
+      console.warn(
+        'The className prop is unsafe and is unsupported in React Spectrum v3. ' +
+        'Please use style props with Spectrum variables, or UNSAFE_className if you absolutely must do something custom. ' +
+        'Note that this may break in future versions due to DOM structure changes.'
+      );
+    }
 
-  // @ts-ignore
-  if (otherProps.style) {
-    console.warn(
-      'The style prop is unsafe and is unsupported in React Spectrum v3. ' +
-      'Please use style props with Spectrum variables, or UNSAFE_style if you absolutely must do something custom. ' +
-      'Note that this may break in future versions due to DOM structure changes.'
-    );
+    // @ts-ignore
+    if (otherProps.style) {
+      console.warn(
+        'The style prop is unsafe and is unsupported in React Spectrum v3. ' +
+        'Please use style props with Spectrum variables, or UNSAFE_style if you absolutely must do something custom. ' +
+        'Note that this may break in future versions due to DOM structure changes.'
+      );
+    }
   }
 
   let styleProps: HTMLAttributes<HTMLElement> = {

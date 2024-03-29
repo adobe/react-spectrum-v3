@@ -54,8 +54,10 @@ function ProgressCircle(props: SpectrumProgressCircleProps, ref: DOMRef<HTMLDivE
     }
   }
 
-  if (!ariaLabel && !ariaLabelledby) {
-    console.warn('ProgressCircle requires an aria-label or aria-labelledby attribute for accessibility');
+  if (process.env.NODE_ENV !== 'production') {
+    if (!ariaLabel && !ariaLabelledby) {
+      console.warn('ProgressCircle requires an aria-label or aria-labelledby attribute for accessibility');
+    }
   }
 
   return (

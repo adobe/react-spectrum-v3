@@ -154,14 +154,16 @@ function TableViewBase<T extends object>(props: TableBaseProps<T>, ref: DOMRef<H
   let dragHooksProvided = useRef(isTableDraggable);
   let dropHooksProvided = useRef(isTableDroppable);
   useEffect(() => {
-    if (dragHooksProvided.current !== isTableDraggable) {
-      console.warn('Drag hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
-    }
-    if (dropHooksProvided.current !== isTableDroppable) {
-      console.warn('Drop hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
-    }
-    if ('expandedKeys' in state && (isTableDraggable || isTableDroppable)) {
-      console.warn('Drag and drop is not yet fully supported with expandable rows and may produce unexpected results.');
+    if (process.env.NODE_ENV !== 'production') {
+      if (dragHooksProvided.current !== isTableDraggable) {
+        console.warn('Drag hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+      }
+      if (dropHooksProvided.current !== isTableDroppable) {
+        console.warn('Drop hooks were provided during one render, but not another. This should be avoided as it may produce unexpected behavior.');
+      }
+      if ('expandedKeys' in state && (isTableDraggable || isTableDroppable)) {
+        console.warn('Drag and drop is not yet fully supported with expandable rows and may produce unexpected results.');
+      }
     }
   }, [isTableDraggable, isTableDroppable, state]);
 

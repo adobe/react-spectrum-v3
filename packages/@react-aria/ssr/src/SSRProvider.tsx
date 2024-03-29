@@ -84,9 +84,11 @@ let warnedAboutSSRProvider = false;
  */
 export function SSRProvider(props: SSRProviderProps): JSX.Element {
   if (typeof React['useId'] === 'function') {
-    if (process.env.NODE_ENV !== 'test' && !warnedAboutSSRProvider) {
-      console.warn('In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.');
-      warnedAboutSSRProvider = true;
+    if (process.env.NODE_ENV !== 'production') {
+      if (process.env.NODE_ENV !== 'test' && !warnedAboutSSRProvider) {
+        console.warn('In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.');
+        warnedAboutSSRProvider = true;
+      }
     }
     return <>{props.children}</>;
   }
@@ -145,10 +147,12 @@ function useCounter(isDisabled = false) {
 function useLegacySSRSafeId(defaultId?: string): string {
   let ctx = useContext(SSRContext);
 
+  if (process.env.NODE_ENV !== 'production') {
   // If we are rendering in a non-DOM environment, and there's no SSRProvider,
   // provide a warning to hint to the developer to add one.
-  if (ctx === defaultContext && !canUseDOM) {
-    console.warn('When server rendering, you must wrap your application in an <SSRProvider> to ensure consistent ids are generated between the client and server.');
+    if (ctx === defaultContext && !canUseDOM) {
+      console.warn('When server rendering, you must wrap your application in an <SSRProvider> to ensure consistent ids are generated between the client and server.');
+    }
   }
 
   let counter = useCounter(!!defaultId);
