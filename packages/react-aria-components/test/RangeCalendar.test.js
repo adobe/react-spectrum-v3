@@ -314,4 +314,31 @@ describe('RangeCalendar', () => {
     expect(cell).toHaveAttribute('aria-invalid', 'true');
     expect(cell).toHaveClass('invalid');
   });
+
+  it('should support fixedWeeks', async () => {
+    let {getByRole} = renderCalendar({isFixedWeeks: true, 
+      defaultValue: {start: new CalendarDate(2024, 2, 3), end: new CalendarDate(2024, 2, 10)}});
+
+    let grid = getByRole('grid');
+    let rowgroups = within(grid).getAllByRole('rowgroup');
+    expect(rowgroups[0]).toHaveAttribute('class', 'react-aria-CalendarGridBody');
+
+    let calendarGridBody = rowgroups[0];
+    let rowsInCalendarGridBody = within(calendarGridBody).getAllByRole('row');
+    expect(rowsInCalendarGridBody.length).toBe(6);
+
+    let header = getByRole('banner');
+    let nextButton = within(header).getByRole('button', {name: 'Next'});
+    
+    await user.click(nextButton);
+    calendarGridBody = rowgroups[0];
+    rowsInCalendarGridBody = within(calendarGridBody).getAllByRole('row');
+    expect(rowsInCalendarGridBody.length).toBe(6);
+
+    await user.click(nextButton);
+    rowgroups = within(grid).getAllByRole('rowgroup');
+    calendarGridBody = rowgroups[0];
+    rowsInCalendarGridBody = within(calendarGridBody).getAllByRole('row');
+    expect(rowsInCalendarGridBody.length).toBe(6);
+  });
 });

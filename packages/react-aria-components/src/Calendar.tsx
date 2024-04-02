@@ -63,6 +63,7 @@ export interface RangeCalendarProps<T extends DateValue> extends Omit<BaseRangeC
 export const CalendarContext = createContext<ContextValue<CalendarProps<any>, HTMLDivElement>>({});
 export const RangeCalendarContext = createContext<ContextValue<RangeCalendarProps<any>, HTMLDivElement>>({});
 export const CalendarStateContext = createContext<CalendarState | null>(null);
+export const CalendarGridContext = createContext<boolean | null>(null);
 export const RangeCalendarStateContext = createContext<RangeCalendarState | null>(null);
 
 function Calendar<T extends DateValue>(props: CalendarProps<T>, ref: ForwardedRef<HTMLDivElement>) {
@@ -104,6 +105,7 @@ function Calendar<T extends DateValue>(props: CalendarProps<T>, ref: ForwardedRe
           }],
           [HeadingContext, {'aria-hidden': true, level: 2, children: title}],
           [CalendarStateContext, state],
+          [CalendarGridContext, props.isFixedWeeks || false],
           [TextContext, {
             slots: {
               errorMessage: errorMessageProps
@@ -183,6 +185,7 @@ function RangeCalendar<T extends DateValue>(props: RangeCalendarProps<T>, ref: F
           }],
           [HeadingContext, {'aria-hidden': true, level: 2, children: title}],
           [RangeCalendarStateContext, state],
+          [CalendarGridContext, props.isFixedWeeks || false],
           [TextContext, {
             slots: {
               errorMessage: errorMessageProps
@@ -432,7 +435,8 @@ function CalendarGridBody(props: CalendarGridBodyProps, ref: ForwardedRef<HTMLTa
   let state = calendarState ?? rangeCalendarState!;
   let {startDate} = useContext(InternalCalendarGridContext)!;
   let {locale} = useLocale();
-  let weeksInMonth = getWeeksInMonth(startDate, locale);
+  let isFixedWeeks = useContext(CalendarGridContext);
+  let weeksInMonth = isFixedWeeks ? 6 : getWeeksInMonth(startDate, locale);
 
   return (
     <tbody

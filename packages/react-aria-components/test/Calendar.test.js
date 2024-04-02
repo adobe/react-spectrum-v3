@@ -284,4 +284,29 @@ describe('Calendar', () => {
     let headers = getAllByRole('columnheader', {hidden: true});
     expect(headers.map(h => h.textContent)).toEqual(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
   });
+
+  it('should support fixedWeeks', async () => {
+    let {getByRole} = renderCalendar({isFixedWeeks: true, defaultValue: new CalendarDate(2024, 2, 3)});
+    let grid = getByRole('grid');
+    let rowgroups = within(grid).getAllByRole('rowgroup');
+    expect(rowgroups[0]).toHaveAttribute('class', 'react-aria-CalendarGridBody');
+
+    let calendarGridBody = rowgroups[0];
+    let rowsInCalendarGridBody = within(calendarGridBody).getAllByRole('row');
+    expect(rowsInCalendarGridBody.length).toBe(6);
+
+    let header = getByRole('banner');
+    let nextButton = within(header).getByRole('button', {name: 'Next'});
+    
+    await user.click(nextButton);
+    calendarGridBody = rowgroups[0];
+    rowsInCalendarGridBody = within(calendarGridBody).getAllByRole('row');
+    expect(rowsInCalendarGridBody.length).toBe(6);
+
+    await user.click(nextButton);
+    rowgroups = within(grid).getAllByRole('rowgroup');
+    calendarGridBody = rowgroups[0];
+    rowsInCalendarGridBody = within(calendarGridBody).getAllByRole('row');
+    expect(rowsInCalendarGridBody.length).toBe(6);
+  });
 });

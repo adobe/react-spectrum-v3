@@ -62,7 +62,12 @@ export interface CalendarPropsBase {
    * Controls the behavior of paging. Pagination either works by advancing the visible page by visibleDuration (default) or one unit of visibleDuration.
    * @default visible
    */
-  pageBehavior?: PageBehavior
+  pageBehavior?: PageBehavior,
+  /**
+   * Whether the calendar should always display 6 weeks.
+   * @default false
+   */
+  isFixedWeeks?: boolean
 }
 
 export type DateRange = RangeValue<DateValue>;
