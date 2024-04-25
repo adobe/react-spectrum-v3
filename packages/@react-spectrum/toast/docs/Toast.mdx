@@ -165,6 +165,20 @@ function Example() {
 }
 ```
 
+## ReactNode as content
+
+Toasts can accept a `ReactNode` as content, allowing for more complex content, such as formatted text or other components. When using a `ReactNode`, be sure to provide an accessible description for screen readers.
+
+```tsx example
+<Button
+  ///- begin highlight -///
+  onPress={() => ToastQueue.info(<div><b>Bold</b> and <i>italic</i> toast</div>)}
+  ///- end highlight -///
+  variant="primary">
+  Show toast
+</Button>
+```
+
 ## API
 
 ### ToastQueue

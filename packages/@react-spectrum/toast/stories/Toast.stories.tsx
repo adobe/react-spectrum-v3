@@ -64,6 +64,21 @@ Default.story = {
   }
 };
 
+export const WithReactNode = (args) => <RenderProviderWithReactNode {...args} />;
+Default.story = {
+  parameters: {
+    a11y: {
+      config: {
+        rules: [
+          {id: 'landmark-main-is-top-level', enabled: false},
+          {id: 'landmark-no-duplicate-main', enabled: false},
+          {id: 'landmark-unique', enabled: false}
+        ]
+      }
+    }
+  }
+};
+
 
 export const WithAction = (args) => (
   <RenderProvider {...args} actionLabel="Action" onAction={action('onAction')} />
@@ -184,6 +199,34 @@ function RenderProvider(options: SpectrumToastOptions) {
       </Button>
       <Button
         onPress={() => ToastQueue.info('Toasting…', {...options, onClose: action('onClose')})}
+        variant="accent"
+        style="outline">
+        Show Info Toast
+      </Button>
+    </ButtonGroup>
+  );
+}
+
+function RenderProviderWithReactNode(options: SpectrumToastOptions) {
+  return (
+    <ButtonGroup>
+      <Button
+        onPress={() => ToastQueue.neutral(<div>Toast <i>available</i></div>, {...options, onClose: action('onClose')})}
+        variant="secondary">
+        Show Neutral Toast
+      </Button>
+      <Button
+        onPress={() => ToastQueue.positive(<span>Toast is <b>done</b>!</span>, {...options, onClose: action('onClose')})}
+        variant="primary">
+        Show Positive Toast
+      </Button>
+      <Button
+        onPress={() => ToastQueue.negative(<div>Toast is <em>burned</em>!</div>, {...options, onClose: action('onClose')})}
+        variant="negative">
+        Show Negative Toast
+      </Button>
+      <Button
+        onPress={() => ToastQueue.info(<span><strong>Toasting</strong>…</span>, {...options, onClose: action('onClose')})}
         variant="accent"
         style="outline">
         Show Info Toast

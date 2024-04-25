@@ -28,7 +28,7 @@ import {useLocalizedStringFormatter} from '@react-aria/i18n';
 import {useToast} from '@react-aria/toast';
 
 export interface SpectrumToastValue {
-  children: string,
+  children: string | React.ReactNode,
   variant: 'positive' | 'negative' | 'info' | 'neutral',
   actionLabel?: string,
   onAction?: () => void,

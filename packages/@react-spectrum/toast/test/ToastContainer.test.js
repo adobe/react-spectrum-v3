@@ -22,7 +22,7 @@ function RenderToastButton(props = {}) {
   return (
     <div>
       <Button
-        onPress={() => ToastQueue[props.variant || 'neutral']('Toast is default', props)}
+        onPress={() => ToastQueue[props.variant || 'neutral'](props.content ?? 'Toast is default', props)}
         variant="primary">
         Show Default Toast
       </Button>
@@ -371,5 +371,27 @@ describe('Toast Provider and Container', function () {
 
     let region = getByRole('region');
     expect(region).toHaveAttribute('aria-label', 'Toasts');
+  });
+
+  it('should support ReactNode as children/content', () => {
+    let {getByRole} = renderComponent(
+      <RenderToastButton
+        content={
+          <React.Fragment>
+            <strong>My new folder</strong> created within <b>Week 1</b>
+          </React.Fragment>
+        } />
+    );
+
+    const button = getByRole('button');
+    triggerPress(button);
+
+    const alert = getByRole('alert');
+    expect(alert).toBeVisible();
+    expect(alert).toHaveTextContent('My new folder created within Week 1');
+    expect(alert.querySelector('strong')).toBeVisible();
+    expect(alert.querySelector('strong')).toHaveTextContent('My new folder');
+    expect(alert.querySelector('b')).toBeVisible();
+    expect(alert.querySelector('b')).toHaveTextContent('Week 1');
   });
 });

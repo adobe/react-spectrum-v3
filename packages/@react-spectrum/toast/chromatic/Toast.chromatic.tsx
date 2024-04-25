@@ -51,3 +51,11 @@ export const LongContent = {
 export const LongContentAction = {
   args: {variant: 'positive', children: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.', actionLabel: 'Undo'}
 };
+
+export const WithReactNodeContent = {
+  args: {variant: 'positive', children: <React.Fragment><strong>Neutral</strong> <i>toast</i> <b>with</b> <em>ReactNode</em> content</React.Fragment>}
+};
+
+export const WithReactNodeContentAction = {
+  args: {variant: 'positive', children: <React.Fragment><strong>Neutral</strong> <i>toast</i> <b>with</b> <em>ReactNode</em> content</React.Fragment>, actionLabel: 'Undo'}
+};

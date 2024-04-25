@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {AriaToastRegionProps} from '@react-aria/toast';
+import type {AriaToastRegionProps} from '@react-aria/toast';
 import React, {ReactElement, useEffect, useRef} from 'react';
 import {SpectrumToastValue, Toast} from './Toast';
 import {Toaster} from './Toaster';
@@ -119,7 +119,7 @@ export function ToastContainer(props: SpectrumToastContainerProps): ReactElement
   return null;
 }
 
-function addToast(children: string, variant: SpectrumToastValue['variant'], options: SpectrumToastOptions = {}) {
+function addToast(children: string | React.ReactNode, variant: SpectrumToastValue['variant'], options: SpectrumToastOptions = {}) {
   // Dispatch a custom event so that toasts can be intercepted and re-targeted, e.g. when inside an iframe.
   if (typeof CustomEvent !== 'undefined' && typeof window !== 'undefined') {
     let event = new CustomEvent('react-spectrum-toast', {
@@ -157,19 +157,19 @@ function addToast(children: string, variant: SpectrumToastValue['variant'], opti
 
 const SpectrumToastQueue = {
   /** Queues a neutral toast. */
-  neutral(children: string, options: SpectrumToastOptions = {}): CloseFunction {
+  neutral(children: string | React.ReactNode, options: SpectrumToastOptions = {}): CloseFunction {
     return addToast(children, 'neutral', options);
   },
   /** Queues a positive toast. */
-  positive(children: string, options: SpectrumToastOptions = {}): CloseFunction {
+  positive(children: string | React.ReactNode, options: SpectrumToastOptions = {}): CloseFunction {
     return addToast(children, 'positive', options);
   },
   /** Queues a negative toast. */
-  negative(children: string, options: SpectrumToastOptions = {}): CloseFunction {
+  negative(children: string | React.ReactNode, options: SpectrumToastOptions = {}): CloseFunction {
     return addToast(children, 'negative', options);
   },
   /** Queues an informational toast. */
-  info(children: string, options: SpectrumToastOptions = {}): CloseFunction {
+  info(children: string | React.ReactNode, options: SpectrumToastOptions = {}): CloseFunction {
     return addToast(children, 'info', options);
   }
 };
