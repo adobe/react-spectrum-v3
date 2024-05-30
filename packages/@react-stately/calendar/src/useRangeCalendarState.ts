@@ -48,7 +48,7 @@ export function useRangeCalendarState<T extends DateValue = DateValue>(props: Ra
     onChange
   );
 
-  let [anchorDate, setAnchorDateState] = useState(null);
+  let [anchorDate, setAnchorDateState] = useState(props.anchorDate || null);
   let alignment: 'center' | 'start' = 'center';
   if (value && value.start && value.end) {
     let start = alignCenter(toCalendarDate(value.start), visibleDuration, locale, minValue, maxValue);
@@ -106,7 +106,7 @@ export function useRangeCalendarState<T extends DateValue = DateValue>(props: Ra
     }
   };
 
-  let highlightedRange = anchorDate ? makeRange(anchorDate, calendar.focusedDate) : value && makeRange(value.start, value.end);
+  let highlightedRange = anchorDate && !props.anchorDate ? makeRange(anchorDate, calendar.focusedDate) : value && makeRange(value.start, value.end);
   let selectDate = (date: CalendarDate) => {
     if (props.isReadOnly) {
       return;
@@ -126,7 +126,7 @@ export function useRangeCalendarState<T extends DateValue = DateValue>(props: Ra
         start: convertValue(range.start, value?.start),
         end: convertValue(range.end, value?.end)
       });
-      setAnchorDate(null);
+      setAnchorDate(props.anchorDate || null);
     }
   };
 
@@ -158,7 +158,9 @@ export function useRangeCalendarState<T extends DateValue = DateValue>(props: Ra
     validationState,
     isValueInvalid,
     selectFocusedDate() {
-      selectDate(calendar.focusedDate);
+      if (!props.anchorDate) {
+        selectDate(calendar.focusedDate);
+      }
     },
     selectDate,
     highlightDate(date) {

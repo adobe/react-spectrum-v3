@@ -28,6 +28,8 @@ export interface CalendarPropsBase {
   maxValue?: DateValue,
   /** Callback that is called for each date of the calendar. If it returns true, then the date is unavailable. */
   isDateUnavailable?: (date: DateValue) => boolean,
+  /** Fixed date of the range. */
+  anchorDate?: CalendarDate,
   /**
    * Whether the calendar is disabled.
    * @default false
