@@ -86,7 +86,7 @@ export function ComboBox(props) {
 }
 
 function Popover(props) {
-  let ref = React.useRef();
+  let ref = React.useRef(null);
   let {
     popoverRef = ref,
     isOpen,
@@ -152,7 +152,7 @@ function ListBox(props) {
 }
 
 function Option({item, state}) {
-  let ref = React.useRef();
+  let ref = React.useRef<HTMLLIElement>(null);
   let {optionProps, isSelected, isFocused, isDisabled} = useOption({key: item.key}, state, ref);
 
   let backgroundColor;
