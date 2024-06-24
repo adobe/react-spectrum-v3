@@ -77,8 +77,8 @@ export function useListState<T extends object>(props: ListProps<T>): ListState<T
       let index = Math.min(
         (
           diff > 1 ?
-          Math.max(startItem.index - diff + 1, 0) :
-          startItem.index
+          Math.max((startItem?.index ?? 0) - diff + 1, 0) :
+          startItem?.index ?? 0
         ),
         itemNodes.length - 1);
       let newNode:Node<T>;
@@ -92,8 +92,8 @@ export function useListState<T extends object>(props: ListProps<T>): ListState<T
           index++;
         // Otherwise, find previous, not disabled item.
         } else {
-          if (index > startItem.index) {
-            index = startItem.index;
+          if (index > startItem?.index ?? 0) {
+            index = startItem?.index ?? 0;
           }
           index--;
         }
