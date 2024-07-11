@@ -140,7 +140,7 @@ _3ThumbsWithDisabled.story = {
 export const _8ThumbsWithDisabled = () => (
   <StoryMultiSlider
     label="9 thumbs - 5 disabled"
-    onChange={action('onChange')}
+    onChange={action('onChange')} 
     onChangeEnd={action('onChangeEnd')}
     defaultValue={[5, 10, 15, 30, 35, 40, 50, 75, 90]}>
     <StoryThumb label="A" isDisabled />
@@ -173,4 +173,40 @@ export const _3ThumbsWithAriaLabel = () => (
 
 _3ThumbsWithAriaLabel.story = {
   name: '3 thumbs with aria-label'
+};
+
+export const _4StackedThumbsWithDisabledSwap = () => (
+  <StoryMultiSlider
+    label="4 thumbs - all stacked"
+    onChange={action('onChange')}
+    onChangeEnd={action('onChangeEnd')}
+    defaultValue={[50, 50, 50, 50]}
+    step={10}>
+    <StoryThumb label="A" />
+    <StoryThumb label="B" />
+    <StoryThumb label="C" />
+    <StoryThumb label="D" />
+  </StoryMultiSlider>
+);
+
+_4StackedThumbsWithDisabledSwap.story = {
+  name: '4 stacked thumbs with disabled swap'
+};
+
+export const _4StackedThumbsWithEnabledSwap = () => (
+  <StoryMultiSlider
+    label="4 thumbs - all stacked"
+    onChange={action('onChange')}
+    onChangeEnd={action('onChangeEnd')}
+    defaultValue={[50, 50, 50, 50]}
+    allowSwap>
+    <StoryThumb label="A" />
+    <StoryThumb label="B" />
+    <StoryThumb label="C" />
+    <StoryThumb label="D" />
+  </StoryMultiSlider>
+);
+
+_4StackedThumbsWithEnabledSwap.story = {
+  name: '4 stacked thumbs with enabled swap'
 };

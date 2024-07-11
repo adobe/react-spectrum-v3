@@ -1,7 +1,7 @@
 import {AriaSliderThumbProps} from '@react-types/slider';
 import {clamp, focusWithoutScrolling, mergeProps, useFormReset, useGlobalListeners} from '@react-aria/utils';
 import {DOMAttributes} from '@react-types/shared';
-import {getSliderThumbId, sliderData} from './utils';
+import {getSliderThumbId, getStuckThumbsIndexes, sliderData} from './utils';
 import React, {ChangeEvent, InputHTMLAttributes, LabelHTMLAttributes, RefObject, useCallback, useEffect, useRef} from 'react';
 import {SliderState} from '@react-stately/slider';
 import {useFocusable} from '@react-aria/focus';
@@ -40,10 +40,7 @@ export interface AriaSliderThumbOptions extends AriaSliderThumbProps {
  * @param opts Options for this Slider thumb.
  * @param state Slider state, created via `useSliderState`.
  */
-export function useSliderThumb(
-  opts: AriaSliderThumbOptions,
-  state: SliderState
-): SliderThumbAria {
+export function useSliderThumb(opts: AriaSliderThumbOptions, state: SliderState): SliderThumbAria {
   let {
     index = 0,
     isRequired,
@@ -87,82 +84,216 @@ export function useSliderThumb(
   let reverseX = direction === 'rtl';
   let currentPosition = useRef<number>(null);
 
+  const realTimeThumbDraggingIndex = useRef<number | null>(null);
+  const isCanBeSwapped = useRef<boolean | undefined>(undefined);
+
   let {keyboardProps} = useKeyboard({
     onKeyDown(e) {
       let {
         getThumbMaxValue,
         getThumbMinValue,
-        decrementThumb,
-        incrementThumb,
         setThumbValue,
         setThumbDragging,
-        pageSize
+        setFocusedThumb,
+        decrementThumb,
+        incrementThumb,
+        isThumbEditable,
+        pageSize,
+        swapEnabled
       } = state;
+
       // these are the cases that useMove or useSlider don't handle
       if (!/^(PageUp|PageDown|Home|End)$/.test(e.key)) {
         e.continuePropagation();
+
         return;
       }
       // same handling as useMove, stopPropagation to prevent useSlider from handling the event as well.
       e.preventDefault();
-      // remember to set this so that onChangeEnd is fired
-      setThumbDragging(index, true);
+
+      let controlledThumbIndex = index;
+      realTimeThumbDraggingIndex.current = index;
+
+      setThumbDragging(controlledThumbIndex, true);
+
+      if (isCanBeSwapped.current === undefined) {
+        isCanBeSwapped.current = getStuckThumbsIndexes(state, index) !== null;
+      }
+
+      const stuckThumbsIndexes = getStuckThumbsIndexes(state, controlledThumbIndex);
+      const isValueMustBeDecreasing = (e.key === 'PageDown') || (e.key === 'Home');
+      
+      const isNeededToSwap = stuckThumbsIndexes !== null;
+
+      if (isNeededToSwap) {
+        const possibleIndexesForSwap = stuckThumbsIndexes.filter((i) =>
+          isValueMustBeDecreasing
+            ? i < controlledThumbIndex && isThumbEditable(i)
+            : i > controlledThumbIndex && isThumbEditable(i)
+        );
+
+        const indexForSwap = isValueMustBeDecreasing
+          ? possibleIndexesForSwap[0]
+          : possibleIndexesForSwap[possibleIndexesForSwap.length - 1];
+
+        if (indexForSwap !== undefined && swapEnabled) {
+          controlledThumbIndex = indexForSwap;
+        }
+
+        if (!swapEnabled && isCanBeSwapped.current) {
+          controlledThumbIndex = indexForSwap ?? realTimeThumbDraggingIndex.current;
+          isCanBeSwapped.current = false;
+        }
+      }      
+
       switch (e.key) {
         case 'PageUp':
-          incrementThumb(index, pageSize);
+          incrementThumb(controlledThumbIndex, pageSize);
           break;
         case 'PageDown':
-          decrementThumb(index, pageSize);
+          decrementThumb(controlledThumbIndex, pageSize);
           break;
         case 'Home':
-          setThumbValue(index, getThumbMinValue(index));
+          setThumbValue(controlledThumbIndex, getThumbMinValue(controlledThumbIndex));
           break;
         case 'End':
-          setThumbValue(index, getThumbMaxValue(index));
+          setThumbValue(controlledThumbIndex, getThumbMaxValue(controlledThumbIndex));
           break;
       }
-      setThumbDragging(index, false);
+
+      if (
+        realTimeThumbDraggingIndex.current !== controlledThumbIndex
+      ) {
+        isCanBeSwapped.current = undefined;
+
+        setFocusedThumb(controlledThumbIndex);
+        setThumbDragging(realTimeThumbDraggingIndex.current, false);
+      }
+
+      realTimeThumbDraggingIndex.current = null;
+      setThumbDragging(controlledThumbIndex, false);
     }
   });
 
   let {moveProps} = useMove({
     onMoveStart() {
       currentPosition.current = null;
-      state.setThumbDragging(index, true);
+
+      if (isCanBeSwapped.current === undefined) {
+        isCanBeSwapped.current = getStuckThumbsIndexes(state, index) !== null;
+      }
+
+      if (realTimeThumbDraggingIndex.current === null) {
+        realTimeThumbDraggingIndex.current = index;
+        state.setThumbDragging(index, true);
+      }
     },
     onMove({deltaX, deltaY, pointerType, shiftKey}) {
       const {
         getThumbPercent,
+        getPercentValue,
+        getThumbValue,
         setThumbPercent,
+        setFocusedThumb,
+        setThumbDragging,
         decrementThumb,
         incrementThumb,
+        isThumbEditable,
         step,
-        pageSize
+        pageSize,
+        swapEnabled
       } = state;
       let {width, height} = trackRef.current.getBoundingClientRect();
       let size = isVertical ? height : width;
 
+      let controlledThumbIndex = realTimeThumbDraggingIndex.current;
+
       if (currentPosition.current == null) {
-        currentPosition.current = getThumbPercent(index) * size;
+        currentPosition.current = getThumbPercent(controlledThumbIndex) * size;
       }
+
+      let isValueMustBeDecreasing = false;
+      let isValueMustBeChanged = false;
+
       if (pointerType === 'keyboard') {
-        if ((deltaX > 0 && reverseX) || (deltaX < 0 && !reverseX) || deltaY > 0) {
-          decrementThumb(index, shiftKey ? pageSize : step);
-        } else {
-          incrementThumb(index, shiftKey ? pageSize : step);
-        }
+        isValueMustBeChanged = true;
+        isValueMustBeDecreasing =
+          (deltaX > 0 && reverseX) || (deltaX < 0 && !reverseX) || deltaY > 0;
       } else {
         let delta = isVertical ? deltaY : deltaX;
+
         if (isVertical || reverseX) {
           delta = -delta;
         }
 
         currentPosition.current += delta;
-        setThumbPercent(index, clamp(currentPosition.current / size, 0, 1));
+
+        const percent = clamp(currentPosition.current / size, 0, 1);
+
+        isValueMustBeChanged = getPercentValue(percent) !== getThumbValue(controlledThumbIndex);
+        isValueMustBeDecreasing = getPercentValue(percent) < getThumbValue(controlledThumbIndex);
+      }
+
+      const stuckThumbsIndexes = getStuckThumbsIndexes(state, controlledThumbIndex);
+      const isNeededToSwap = stuckThumbsIndexes !== null;
+
+      if (isNeededToSwap && isValueMustBeChanged) {
+        const possibleIndexesForSwap = stuckThumbsIndexes.filter((i) =>
+          isValueMustBeDecreasing
+            ? i < controlledThumbIndex && isThumbEditable(i)
+            : i > controlledThumbIndex && isThumbEditable(i)
+        );
+
+        const indexForSwap = isValueMustBeDecreasing
+          ? possibleIndexesForSwap[0]
+          : possibleIndexesForSwap[possibleIndexesForSwap.length - 1];
+
+        if (indexForSwap !== undefined && swapEnabled) {
+          controlledThumbIndex = indexForSwap;
+        }
+
+        if (!swapEnabled && isCanBeSwapped.current) {
+          controlledThumbIndex = indexForSwap ?? realTimeThumbDraggingIndex.current;
+          isCanBeSwapped.current = false;
+        }
+      }
+
+      if (
+        realTimeThumbDraggingIndex.current !== null &&
+        realTimeThumbDraggingIndex.current !== controlledThumbIndex
+      ) {
+        // The order matters because in the case of an empty array,
+        // an event (onChangeEnd) will be prematurely called
+        setThumbDragging(controlledThumbIndex, true);
+        setThumbDragging(realTimeThumbDraggingIndex.current, false);
+
+        setFocusedThumb(controlledThumbIndex);
+        realTimeThumbDraggingIndex.current = controlledThumbIndex;
+      }
+
+      if (pointerType === 'keyboard') {
+        if (isValueMustBeDecreasing) {
+          decrementThumb(controlledThumbIndex, shiftKey ? pageSize : step);
+        } else {
+          incrementThumb(controlledThumbIndex, shiftKey ? pageSize : step);
+        }
+      }
+
+      console.log('move', isValueMustBeChanged);
+      
+      if (pointerType !== 'keyboard' && isValueMustBeChanged) {
+        setThumbPercent(controlledThumbIndex, clamp(currentPosition.current / size, 0, 1));
       }
     },
-    onMoveEnd() {
-      state.setThumbDragging(index, false);
+    onMoveEnd({pointerType}) {
+      if (pointerType !== 'keyboard') {
+        isCanBeSwapped.current = undefined;
+      }
+
+      if (realTimeThumbDraggingIndex.current !== null) {
+        state.setThumbDragging(realTimeThumbDraggingIndex.current, false);
+        realTimeThumbDraggingIndex.current = null;
+      }
     }
   });
 
@@ -181,19 +312,30 @@ export function useSliderThumb(
   let onDown = (id?: number) => {
     focusInput();
     currentPointer.current = id;
-    state.setThumbDragging(index, true);
 
+    realTimeThumbDraggingIndex.current = index;
+    isCanBeSwapped.current = getStuckThumbsIndexes(state, index) !== null;
+    
+    state.setThumbDragging(index, true);
+    
     addGlobalListener(window, 'mouseup', onUp, false);
     addGlobalListener(window, 'touchend', onUp, false);
     addGlobalListener(window, 'pointerup', onUp, false);
-
   };
 
   let onUp = (e) => {
     let id = e.pointerId ?? e.changedTouches?.[0].identifier;
+
     if (id === currentPointer.current) {
-      focusInput();
-      state.setThumbDragging(index, false);
+      if (realTimeThumbDraggingIndex.current !== null) {
+        focusInput();
+        
+        state.setThumbDragging(realTimeThumbDraggingIndex.current, false);
+
+        realTimeThumbDraggingIndex.current = null;
+        isCanBeSwapped.current = undefined;        
+      }
+
       removeGlobalListener(window, 'mouseup', onUp, false);
       removeGlobalListener(window, 'touchend', onUp, false);
       removeGlobalListener(window, 'pointerup', onUp, false);
@@ -201,13 +343,14 @@ export function useSliderThumb(
   };
 
   let thumbPosition = state.getThumbPercent(index);
+
   if (isVertical || direction === 'rtl') {
     thumbPosition = 1 - thumbPosition;
   }
 
   let interactions = !isDisabled ? mergeProps(
-    keyboardProps,
-    moveProps,
+    keyboardProps, 
+    moveProps, 
     {
       onMouseDown: (e: React.MouseEvent) => {
         if (e.button !== 0 || e.altKey || e.ctrlKey || e.metaKey) {
@@ -221,9 +364,11 @@ export function useSliderThumb(
         }
         onDown(e.pointerId);
       },
-      onTouchStart: (e: React.TouchEvent) => {onDown(e.changedTouches[0].identifier);}
-    }
-  ) : {};
+      onTouchStart: (e: React.TouchEvent) => {
+        onDown(e.changedTouches[0].identifier);
+      }
+    })
+    : {};
 
   useFormReset(inputRef, value, (v) => {
     state.setThumbValue(index, v);
@@ -248,7 +393,9 @@ export function useSliderThumb(
       'aria-required': isRequired || undefined,
       'aria-invalid': isInvalid || validationState === 'invalid' || undefined,
       'aria-errormessage': opts['aria-errormessage'],
-      'aria-describedby': [data['aria-describedby'], opts['aria-describedby']].filter(Boolean).join(' '),
+      'aria-describedby': [data['aria-describedby'], opts['aria-describedby']]
+        .filter(Boolean)
+        .join(' '),
       'aria-details': [data['aria-details'], opts['aria-details']].filter(Boolean).join(' '),
       onChange: (e: ChangeEvent<HTMLInputElement>) => {
         state.setThumbValue(index, parseFloat(e.target.value));

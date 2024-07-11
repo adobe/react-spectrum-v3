@@ -123,6 +123,7 @@ export interface SliderState {
    * Increments the value of the thumb by the step or page amount.
    */
   incrementThumb(index: number, stepSize?: number): void,
+
   /**
    * Decrements the value of the thumb by the step or page amount.
    */
@@ -142,7 +143,10 @@ export interface SliderState {
   readonly orientation: Orientation,
 
   /** Whether the slider is disabled. */
-  readonly isDisabled: boolean
+  readonly isDisabled: boolean,
+
+  /** The behavior of swapping thumbs. */
+  readonly swapEnabled: boolean
 }
 
 const DEFAULT_MIN_VALUE = 0;
@@ -159,41 +163,50 @@ export interface SliderStateOptions<T> extends SliderProps<T> {
  * of any thumbs.
  * @param props
  */
-export function useSliderState<T extends number | number[]>(props: SliderStateOptions<T>): SliderState {
+export function useSliderState<T extends number | number[]>(
+  props: SliderStateOptions<T>
+): SliderState {
   const {
     isDisabled = false,
     minValue = DEFAULT_MIN_VALUE,
     maxValue = DEFAULT_MAX_VALUE,
     numberFormatter: formatter,
     step = DEFAULT_STEP_VALUE,
-    orientation = 'horizontal'
+    orientation = 'horizontal',
+    allowSwap = false
   } = props;
 
   // Page step should be at least equal to step and always a multiple of the step.
   let pageSize = useMemo(() => {
     let calcPageSize = (maxValue - minValue) / 10;
+
     calcPageSize = snapValueToStep(calcPageSize, 0, calcPageSize + step, step);
+
     return Math.max(calcPageSize, step);
   }, [step, maxValue, minValue]);
 
-  let restrictValues = useCallback((values: number[]) => values?.map((val, idx) => {
-    let min = idx === 0 ? minValue : val[idx - 1];
-    let max = idx === values.length - 1 ? maxValue : val[idx + 1];
-    return snapValueToStep(val, min, max, step);
-  }), [minValue, maxValue, step]);
+  let restrictValues = useCallback(
+    (values: number[]) =>
+      values?.map((val, idx) => {
+        let min = idx === 0 ? minValue : val[idx - 1];
+        let max = idx === values.length - 1 ? maxValue : val[idx + 1];
+
+        return snapValueToStep(val, min, max, step);
+      }),
+    [minValue, maxValue, step]
+  );
 
   let value = useMemo(() => restrictValues(convertValue(props.value)), [props.value]);
   let defaultValue = useMemo(() => restrictValues(convertValue(props.defaultValue) ?? [minValue]), [props.defaultValue, minValue]);
+
   let onChange = createOnChange(props.value, props.defaultValue, props.onChange);
   let onChangeEnd = createOnChange(props.value, props.defaultValue, props.onChangeEnd);
 
-  const [values, setValuesState] = useControlledState<number[]>(
-    value,
-    defaultValue,
-    onChange
-  );
+  const [values, setValuesState] = useControlledState<number[]>(value, defaultValue, onChange);
   const [isDraggings, setDraggingsState] = useState<boolean[]>(new Array(values.length).fill(false));
+
   const isEditablesRef = useRef<boolean[]>(new Array(values.length).fill(true));
+
   const [focusedIndex, setFocusedIndex] = useState<number | undefined>(undefined);
 
   const valuesRef = useRef<number[]>(values);
@@ -229,15 +242,20 @@ export function useSliderState<T extends number | number[]>(props: SliderStateOp
   }
 
   function updateValue(index: number, value: number) {
-    if (isDisabled || !isThumbEditable(index)) {
+    let controlIndex = index;
+
+    if (isDisabled || !isThumbEditable(controlIndex)) {
       return;
     }
-    const thisMin = getThumbMinValue(index);
-    const thisMax = getThumbMaxValue(index);
+
+    const thisMin = getThumbMinValue(controlIndex);
+    const thisMax = getThumbMaxValue(controlIndex);
 
     // Round value to multiple of step, clamp value between min and max
     value = snapValueToStep(value, thisMin, thisMax, step);
-    let newValues = replaceIndex(valuesRef.current, index, value);
+
+    let newValues = replaceIndex(valuesRef.current, controlIndex, value);
+
     setValues(newValues);
   }
 
@@ -250,7 +268,12 @@ export function useSliderState<T extends number | number[]>(props: SliderStateOp
     }
 
     const wasDragging = isDraggingsRef.current[index];
-    isDraggingsRef.current = replaceIndex(isDraggingsRef.current, index, dragging);
+
+    isDraggingsRef.current = replaceIndex(
+      isDraggingsRef.current,
+      index,
+      dragging
+    );
     setDraggings(isDraggingsRef.current);
 
     // Call onChangeEnd if no handles are dragging.
@@ -273,17 +296,26 @@ export function useSliderState<T extends number | number[]>(props: SliderStateOp
 
   function getPercentValue(percent: number) {
     const val = percent * (maxValue - minValue) + minValue;
+
     return clamp(getRoundedValue(val), minValue, maxValue);
   }
 
   function incrementThumb(index: number, stepSize: number = 1) {
     let s = Math.max(stepSize, step);
-    updateValue(index, snapValueToStep(values[index] + s, minValue, maxValue, step));
+
+    updateValue(
+      index,
+      snapValueToStep(values[index] + s, minValue, maxValue, step)
+    );
   }
 
   function decrementThumb(index: number, stepSize: number = 1) {
     let s = Math.max(stepSize, step);
-    updateValue(index, snapValueToStep(values[index] - s, minValue, maxValue, step));
+
+    updateValue(
+      index,
+      snapValueToStep(values[index] - s, minValue, maxValue, step)
+    );
   }
 
   return {
@@ -309,7 +341,8 @@ export function useSliderState<T extends number | number[]>(props: SliderStateOp
     step,
     pageSize,
     orientation,
-    isDisabled
+    isDisabled,
+    swapEnabled: allowSwap
   };
 }
 

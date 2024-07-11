@@ -13,12 +13,13 @@
 import {AriaSliderProps} from '@react-types/slider';
 import {clamp, mergeProps, useGlobalListeners} from '@react-aria/utils';
 import {DOMAttributes} from '@react-types/shared';
-import {getSliderThumbId, sliderData} from './utils';
+import {getSliderThumbId, getStuckThumbsIndexes, sliderData} from './utils';
 import React, {LabelHTMLAttributes, OutputHTMLAttributes, RefObject, useRef} from 'react';
 import {setInteractionModality, useMove} from '@react-aria/interactions';
 import {SliderState} from '@react-stately/slider';
 import {useLabel} from '@react-aria/label';
 import {useLocale} from '@react-aria/i18n';
+
 
 export interface SliderAria {
   /** Props for the label element. */
@@ -70,51 +71,129 @@ export function useSlider<T extends number | number[]>(
   // It is set onMouseDown/onTouchDown; see trackProps below.
   const realTimeTrackDraggingIndex = useRef<number | null>(null);
 
+  const isBeingStuckBeforeDragging = useRef<boolean | undefined>(undefined);
+
   const reverseX = direction === 'rtl';
-  const currentPosition = useRef<number>(null);
+  const currentPosition = useRef<number | null>(null);
   const {moveProps} = useMove({
     onMoveStart() {
       currentPosition.current = null;
     },
     onMove({deltaX, deltaY}) {
+      const {
+        getThumbPercent, 
+        getThumbValue,
+        getPercentValue, 
+        isThumbEditable, 
+        setThumbPercent, 
+        setThumbDragging, 
+        setFocusedThumb,
+        swapEnabled
+      } = state;
+
       let {height, width} = trackRef.current.getBoundingClientRect();
       let size = isVertical ? height : width;
 
+      let controlledThumbIndex = realTimeTrackDraggingIndex.current;
+
       if (currentPosition.current == null) {
-        currentPosition.current = state.getThumbPercent(realTimeTrackDraggingIndex.current) * size;
+        currentPosition.current = getThumbPercent(controlledThumbIndex) * size;
       }
 
       let delta = isVertical ? deltaY : deltaX;
+
       if (isVertical || reverseX) {
         delta = -delta;
       }
 
       currentPosition.current += delta;
 
-      if (realTimeTrackDraggingIndex.current != null && trackRef.current) {
-        const percent = clamp(currentPosition.current / size, 0, 1);
-        state.setThumbPercent(realTimeTrackDraggingIndex.current, percent);
+      const percent = clamp(currentPosition.current / size, 0, 1);
+
+      const value = getThumbValue(controlledThumbIndex);
+
+      const isValueMustBeDecreasing = getPercentValue(percent) < value;
+      const isValueMustBeChanged = getPercentValue(percent) !== value;
+
+      const stuckThumbsIndexes = getStuckThumbsIndexes(state, controlledThumbIndex);
+      const isNeededToSwap = stuckThumbsIndexes !== null;
+
+      if (isNeededToSwap && isValueMustBeChanged) {
+        const possibleIndexesForSwap = stuckThumbsIndexes.filter((i) => 
+            isValueMustBeDecreasing
+              ? i < controlledThumbIndex && isThumbEditable(i)
+              : i > controlledThumbIndex && isThumbEditable(i)
+        );
+
+        // Select the most initial thumb or the most recent one from the array of stuck ones
+        // (depending on the increase or decrease in value)
+        // so that the order of thumbs works correctly
+        const indexForSwap = isValueMustBeDecreasing
+            ? possibleIndexesForSwap[0]
+            : possibleIndexesForSwap[possibleIndexesForSwap.length - 1];
+
+        if (indexForSwap !== undefined && swapEnabled) {
+          controlledThumbIndex = indexForSwap;
+        }
+  
+        // This allows to select the controlled thumb once and when it gets stuck again 
+        // as you move in other thumbs, then control will remain over it.
+        if (!swapEnabled && isBeingStuckBeforeDragging.current) {
+          controlledThumbIndex = indexForSwap ?? controlledThumbIndex;
+          isBeingStuckBeforeDragging.current = false;
+        }
+      }
+
+      if (
+        realTimeTrackDraggingIndex.current !== null &&
+        realTimeTrackDraggingIndex.current !== controlledThumbIndex
+      ) {
+        setThumbDragging(controlledThumbIndex, true);
+        setThumbDragging(realTimeTrackDraggingIndex.current, false);
+
+        setFocusedThumb(controlledThumbIndex);
+
+        realTimeTrackDraggingIndex.current = controlledThumbIndex;
+      }
+
+      if (controlledThumbIndex !== null && trackRef.current && isValueMustBeChanged) {
+        setThumbPercent(controlledThumbIndex, percent);
       }
     },
     onMoveEnd() {
-      if (realTimeTrackDraggingIndex.current != null) {
-        state.setThumbDragging(realTimeTrackDraggingIndex.current, false);
+      const controlledThumbIndex = realTimeTrackDraggingIndex.current;
+
+      if (controlledThumbIndex !== null) {
         realTimeTrackDraggingIndex.current = null;
+        isBeingStuckBeforeDragging.current = undefined;
+
+        state.setThumbDragging(controlledThumbIndex, false);
       }
     }
   });
 
   let currentPointer = useRef<number | null | undefined>(undefined);
-  let onDownTrack = (e: React.UIEvent, id: number, clientX: number, clientY: number) => {
+  let onDownTrack = (
+    e: React.UIEvent,
+    id: number,
+    clientX: number,
+    clientY: number
+  ) => {
     // We only trigger track-dragging if the user clicks on the track itself and nothing is currently being dragged.
-    if (trackRef.current && !props.isDisabled && state.values.every((_, i) => !state.isThumbDragging(i))) {
-      let {height, width, top, left} = trackRef.current.getBoundingClientRect();
+    if (
+      trackRef.current &&
+      !props.isDisabled &&
+      !state.values.some((_, i) => state.isThumbDragging(i))
+    ) {
+      let {height, width, top, left} =
+        trackRef.current.getBoundingClientRect();
       let size = isVertical ? height : width;
       // Find the closest thumb
       const trackPosition = isVertical ? top : left;
       const clickPosition = isVertical ? clientY : clientX;
       const offset = clickPosition - trackPosition;
       let percent = offset / size;
+
       if (direction === 'rtl' || isVertical) {
         percent = 1 - percent;
       }
@@ -122,14 +201,18 @@ export function useSlider<T extends number | number[]>(
 
       // to find the closet thumb we split the array based on the first thumb position to the "right/end" of the click.
       let closestThumb;
-      let split = state.values.findIndex(v => value - v < 0);
-      if (split === 0) { // If the index is zero then the closetThumb is the first one
+      let split = state.values.findIndex((v) => value - v < 0);
+
+      if (split === 0) {
+        // If the index is zero then the closetThumb is the first one
         closestThumb = split;
-      } else if (split === -1) { // If no index is found they've clicked past all the thumbs
+      } else if (split === -1) {
+        // If no index is found they've clicked past all the thumbs
         closestThumb = state.values.length - 1;
       } else {
         let lastLeft = state.values[split - 1];
         let firstRight = state.values[split];
+
         // Pick the last left/start thumb, unless they are stacked on top of each other, then pick the right/end one
         if (Math.abs(lastLeft - value) < Math.abs(firstRight - value)) {
           closestThumb = split - 1;
@@ -142,10 +225,12 @@ export function useSlider<T extends number | number[]>(
       if (closestThumb >= 0 && state.isThumbEditable(closestThumb)) {
         // Don't unfocus anything
         e.preventDefault();
-
         realTimeTrackDraggingIndex.current = closestThumb;
         state.setFocusedThumb(closestThumb);
         currentPointer.current = id;
+
+        isBeingStuckBeforeDragging.current =
+            getStuckThumbsIndexes(state, realTimeTrackDraggingIndex.current) !== null;
 
         state.setThumbDragging(realTimeTrackDraggingIndex.current, true);
         state.setThumbValue(closestThumb, value);
@@ -155,16 +240,20 @@ export function useSlider<T extends number | number[]>(
         addGlobalListener(window, 'pointerup', onUpTrack, false);
       } else {
         realTimeTrackDraggingIndex.current = null;
+        isBeingStuckBeforeDragging.current = undefined;
       }
     }
   };
 
   let onUpTrack = (e) => {
     let id = e.pointerId ?? e.changedTouches?.[0].identifier;
+
     if (id === currentPointer.current) {
       if (realTimeTrackDraggingIndex.current != null) {
         state.setThumbDragging(realTimeTrackDraggingIndex.current, false);
         realTimeTrackDraggingIndex.current = null;
+
+        isBeingStuckBeforeDragging.current = undefined;
       }
 
       removeGlobalListener(window, 'mouseup', onUpTrack, false);
@@ -196,27 +285,43 @@ export function useSlider<T extends number | number[]>(
       role: 'group',
       ...fieldProps
     },
-    trackProps: mergeProps({
-      onMouseDown(e: React.MouseEvent) {
-        if (e.button !== 0 || e.altKey || e.ctrlKey || e.metaKey) {
-          return;
+    trackProps: mergeProps(
+      {
+        onMouseDown(e: React.MouseEvent) {
+          if (e.button !== 0 || e.altKey || e.ctrlKey || e.metaKey) {
+            return;
+          }
+
+          onDownTrack(e, undefined, e.clientX, e.clientY);
+        },
+        onPointerDown(e: React.PointerEvent) {
+          if (
+            e.pointerType === 'mouse' &&
+            (e.button !== 0 || e.altKey || e.ctrlKey || e.metaKey)
+          ) {
+            return;
+          }
+          onDownTrack(e, e.pointerId, e.clientX, e.clientY);
+        },
+        onTouchStart(e: React.TouchEvent) {
+          onDownTrack(
+            e,
+            e.changedTouches[0].identifier,
+            e.changedTouches[0].clientX,
+            e.changedTouches[0].clientY
+          );
+        },
+        style: {
+          position: 'relative',
+          touchAction: 'none'
         }
-        onDownTrack(e, undefined, e.clientX, e.clientY);
       },
-      onPointerDown(e: React.PointerEvent) {
-        if (e.pointerType === 'mouse' && (e.button !== 0 || e.altKey || e.ctrlKey || e.metaKey)) {
-          return;
-        }
-        onDownTrack(e, e.pointerId, e.clientX, e.clientY);
-      },
-      onTouchStart(e: React.TouchEvent) { onDownTrack(e, e.changedTouches[0].identifier, e.changedTouches[0].clientX, e.changedTouches[0].clientY); },
-      style: {
-        position: 'relative',
-        touchAction: 'none'
-      }
-    }, moveProps),
+      moveProps
+    ),
     outputProps: {
-      htmlFor: state.values.map((_, index) => getSliderThumbId(state, index)).join(' '),
+      htmlFor: state.values
+        .map((_, index) => getSliderThumbId(state, index))
+        .join(' '),
       'aria-live': 'off'
     }
   };

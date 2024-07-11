@@ -305,6 +305,22 @@ function RangeSlider(props) {
 
 The following examples show how to use the `Slider` and `RangeSlider` components created in the above examples.
 
+### Swap multi thumb
+
+By default, thumbs cannot pass through each other.
+In order to allow the thumb to pass through each other, you can use the `allowSwap` prop.
+
+```tsx example export=true
+<RangeSlider
+  label="Price Range"
+  formatOptions={{style: 'currency', currency: 'USD'}}
+  maxValue={500}
+  defaultValue={[100, 350]}
+  step={10} 
+  allowSwap
+/>
+```
+
 ### Vertical orientation
 
 Sliders are horizontally oriented by default. The `orientation` prop can be set to `"vertical"` to create a vertical slider.

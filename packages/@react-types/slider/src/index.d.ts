@@ -41,7 +41,11 @@ export interface SliderProps<T = number | number[]> extends RangeInputBase<numbe
    * The slider's step value.
    * @default 1
    */
-  step?: number
+  step?: number,
+  /** The behavior of swapping thumbs when stuck.  
+   * @default false
+   */
+  allowSwap?: boolean
 }
 
 export interface SliderThumbProps extends FocusableProps, LabelableProps {
