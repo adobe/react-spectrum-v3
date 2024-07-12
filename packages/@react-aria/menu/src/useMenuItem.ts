@@ -11,11 +11,11 @@
  */
 
 import {DOMAttributes, DOMProps, FocusableElement, FocusEvents, HoverEvents, Key, KeyboardEvents, PressEvent, PressEvents, RouterOptions} from '@react-types/shared';
-import {filterDOMProps, mergeProps, useLinkProps, useRouter, useSlotId} from '@react-aria/utils';
+import {filterDOMProps, mergeProps, shouldClientNavigate, useLinkProps, useRouter, useSlotId} from '@react-aria/utils';
 import {getItemCount} from '@react-stately/collections';
 import {isFocusVisible, useFocus, useHover, useKeyboard, usePress} from '@react-aria/interactions';
 import {menuData} from './useMenu';
-import {RefObject} from 'react';
+import React, {RefObject} from 'react';
 import {TreeState} from '@react-stately/tree';
 import {useSelectableItem} from '@react-aria/selection';
 
@@ -127,7 +127,7 @@ export function useMenuItem<T>(props: AriaMenuItemProps, state: TreeState<T>, re
   let item = state.collection.getItem(key);
   let onClose = props.onClose || data.onClose;
   let router = useRouter();
-  let performAction = (e: PressEvent) => {
+  let performAction = () => {
     if (isTrigger) {
       return;
     }
@@ -140,10 +140,6 @@ export function useMenuItem<T>(props: AriaMenuItemProps, state: TreeState<T>, re
       // Must reassign to variable otherwise `this` binding gets messed up. Something to do with WeakMap.
       let onAction = data.onAction;
       onAction(key);
-    }
-
-    if (e.target instanceof HTMLAnchorElement) {
-      router.open(e.target, e, item.props.href, item.props.routerOptions as RouterOptions);
     }
   };
 
@@ -183,7 +179,7 @@ export function useMenuItem<T>(props: AriaMenuItemProps, state: TreeState<T>, re
 
   let onPressStart = (e: PressEvent) => {
     if (e.pointerType === 'keyboard') {
-      performAction(e);
+      performAction();
     }
 
     pressStartProp?.(e);
@@ -191,7 +187,7 @@ export function useMenuItem<T>(props: AriaMenuItemProps, state: TreeState<T>, re
 
   let onPressUp = (e: PressEvent) => {
     if (e.pointerType !== 'keyboard') {
-      performAction(e);
+      performAction();
 
       // Pressing a menu item should close by default in single selection mode but not multiple
       // selection mode, except if overridden by the closeOnSelect prop.
@@ -279,7 +275,24 @@ export function useMenuItem<T>(props: AriaMenuItemProps, state: TreeState<T>, re
     menuItemProps: {
       ...ariaProps,
       ...mergeProps(domProps, linkProps, isTrigger ? {onFocus: itemProps.onFocus, 'data-key': itemProps['data-key']} : itemProps, pressProps, hoverProps, keyboardProps, focusProps),
-      tabIndex: itemProps.tabIndex != null ? -1 : undefined
+      tabIndex: itemProps.tabIndex != null ? -1 : undefined,
+      onClick: (e: React.MouseEvent<HTMLElement>) => {
+        pressProps.onClick?.(e);
+
+        // If a custom router is provided, prevent default and forward if this link should client navigate.
+        if (
+          !router.isNative &&
+          e.currentTarget instanceof HTMLAnchorElement &&
+          e.currentTarget.href &&
+          // If props are applied to a router Link component, it may have already prevented default.
+          !e.isDefaultPrevented() &&
+          shouldClientNavigate(e.currentTarget, e) &&
+          item.props.href
+        ) {
+          e.preventDefault();
+          router.open(e.currentTarget, e, item.props.href, item.props.routerOptions as RouterOptions);
+        }
+      }
     },
     labelProps: {
       id: labelId
