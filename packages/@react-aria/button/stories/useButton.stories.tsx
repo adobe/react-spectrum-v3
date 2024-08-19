@@ -11,7 +11,8 @@
  */
 
 import {AriaButtonProps} from '@react-types/button';
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+import styles from './index.css';
 import {useButton} from '../';
 
 export default {
@@ -37,5 +38,54 @@ function InputButton(props: InputButtonProps) {
 
   return (
     <input ref={ref} value={value} style={{background: isPressed ? 'darkred' : 'red'}} {...buttonProps} />
+  );
+}
+
+export const SubmitTypeButton = {
+  render: SubmitButton,
+  name: 'submit type button'
+};
+
+const defaultMessage = 'Either click the submit button or press \'Enter\' key while the focus is on the input.';
+
+function SubmitButton() {
+  let ref = useRef<HTMLButtonElement>(null);
+  let [inputRef, setInputRef] = useState<HTMLInputElement|null>(null);
+  let [message, setMessage] = useState(defaultMessage);
+  let {buttonProps} = useButton({
+    type: 'submit', 
+    onPress: () => setMessage('Submit button clicked by the user. Check if the focus has moved to the button.')
+  }, ref);
+
+  useEffect(() => {
+    function onKeyUp(e: KeyboardEvent) {
+      if (document.activeElement === inputRef && e.key === 'Enter') {
+        setMessage('Implicit form submission detected. Check if the focus is still on the input.');
+      }
+    }
+    function onInputClick() {
+      setMessage(msg => msg !== defaultMessage ? defaultMessage : msg);
+    }
+    document.addEventListener('keyup', onKeyUp);
+    inputRef?.addEventListener('click', onInputClick);
+    return () => {
+      document.removeEventListener('keyup', onKeyUp);
+      inputRef?.removeEventListener('click', onInputClick);
+    };
+  }, [inputRef]);
+
+  return (
+    <div className={styles.submitButtonExample}>
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+        }}>
+        <input ref={setInputRef} type="text" />
+        <button {...buttonProps} ref={ref}>
+          Submit
+        </button>
+      </form>
+      <p>{message}</p>
+    </div>
   );
 }
