@@ -195,7 +195,7 @@
     "sharp": "^0.31.2",
     "sinon": "^7.3.1",
     "storybook": "^7.6.19",
-    "storybook-builder-parcel": "https://gitpkg.vercel.app/mischnic/storybook-parcel/packages/storybook-builder-parcel?master",
+    "storybook-builder-parcel": "patch:storybook-builder-parcel@https%3A//gitpkg.vercel.app/mischnic/storybook-parcel/packages/storybook-builder-parcel?master#~/.yarn/patches/storybook-builder-parcel-https-7ea26540e8.patch",
     "storybook-dark-mode": "^3.0.3",
     "storybook-react-parcel": "https://gitpkg.vercel.app/mischnic/storybook-parcel/packages/storybook-react-parcel?master",
     "tailwind-variants": "^0.1.18",

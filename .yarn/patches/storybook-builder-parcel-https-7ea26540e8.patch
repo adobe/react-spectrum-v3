@@ -1,0 +1,52 @@
+diff --git a/gen-preview-modern.js b/gen-preview-modern.js
+index a1fe3d1ce6b748e533200f5af69a0481e5809c6c..56a1b50d2421e93822cb684d6769ba007680063e 100644
+--- a/gen-preview-modern.js
++++ b/gen-preview-modern.js
+@@ -8,8 +8,12 @@ const {
+ const { logger } = require("@storybook/node-logger");
+ const { promise: glob } = require("glob-promise");
+ 
+-const absoluteToSpecifier = (generatedEntries, abs) =>
+-  "./" + path.relative(generatedEntries, abs);
++const absoluteToSpecifier = (generatedEntries, abs) => {
++  let relativePath = path.relative(generatedEntries, abs);
++  relativePath = relativePath.replaceAll(path.sep, path.posix.sep);
++
++  return  "./" + relativePath;
++}
+ 
+ module.exports.generatePreviewModern = async function generatePreviewModern(
+   options,
+@@ -152,7 +156,8 @@ function toImportPath(relativePath) {
+ async function toImportFn(stories, generatedEntries) {
+   const objectEntries = stories.map((file) => {
+     const ext = path.extname(file);
+-    const relativePath = /*normalizePath*/ path.relative(process.cwd(), file);
++    let relativePath = /*normalizePath*/ path.relative(process.cwd(), file);
++    relativePath = relativePath.replaceAll(path.sep, path.posix.sep);
+     if (![".js", ".jsx", ".ts", ".tsx", ".mdx"].includes(ext)) {
+       logger.warn(
+         `Cannot process ${ext} file with storyStoreV7: ${relativePath}`
+diff --git a/preset.js b/preset.js
+index b2076be6b23131344605501f218ce8bda0d00ba0..26ada93a146d3f7ccd16f6aa3bfae91586aba10b 100644
+--- a/preset.js
++++ b/preset.js
+@@ -119,10 +119,14 @@ async function createParcel(options, isDev = false) {
+         resolveFrom: __filename,
+       },
+     ],
+-    defaultTargetOptions: {
+-      distDir: options.outputDir,
+-      publicUrl: "./",
+-      shouldScopeHoist: isDev ? false : true,
++    targets: {
++      storybook: {
++        distDir: options.outputDir,
++        publicUrl: "./",
++        engines: {
++          browsers: ['last 2 Chrome version', 'last 2 Safari versions', 'last 2 Edge version', 'last 2 Firefox versions'],
++        },
++      },
+     },
+   });
+ }

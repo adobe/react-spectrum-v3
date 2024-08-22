@@ -29123,7 +29123,7 @@ __metadata:
     sharp: "npm:^0.31.2"
     sinon: "npm:^7.3.1"
     storybook: "npm:^7.6.19"
-    storybook-builder-parcel: "https://gitpkg.vercel.app/mischnic/storybook-parcel/packages/storybook-builder-parcel?master"
+    storybook-builder-parcel: "patch:storybook-builder-parcel@https%3A//gitpkg.vercel.app/mischnic/storybook-parcel/packages/storybook-builder-parcel?master#~/.yarn/patches/storybook-builder-parcel-https-7ea26540e8.patch"
     storybook-dark-mode: "npm:^3.0.3"
     storybook-react-parcel: "https://gitpkg.vercel.app/mischnic/storybook-parcel/packages/storybook-react-parcel?master"
     tailwind-variants: "npm:^0.1.18"
@@ -31334,6 +31334,19 @@ __metadata:
     "@parcel/core": ^2.0.0
     react: "*"
   checksum: 10c0/3802d0f850c7c8319f4c8802bedecae7e23fcef8b055a2a7c9b1e3cccfa3584124039016115b459abdbfa9356a838f2ae84bd88add5c18846200fd2388335e0e
+  languageName: node
+  linkType: hard
+
+"storybook-builder-parcel@patch:storybook-builder-parcel@https%3A//gitpkg.vercel.app/mischnic/storybook-parcel/packages/storybook-builder-parcel?master#~/.yarn/patches/storybook-builder-parcel-https-7ea26540e8.patch":
+  version: 0.0.0
+  resolution: "storybook-builder-parcel@patch:storybook-builder-parcel@https%3A//gitpkg.vercel.app/mischnic/storybook-parcel/packages/storybook-builder-parcel?master#~/.yarn/patches/storybook-builder-parcel-https-7ea26540e8.patch::version=0.0.0&hash=7269c7"
+  dependencies:
+    "@storybook/core-common": "npm:7.6.4"
+    http-proxy-middleware: "npm:^2.0.6"
+  peerDependencies:
+    "@parcel/core": ^2.0.0
+    react: "*"
+  checksum: 10c0/69e83da5615128b8dfea33ba1037c25dec7d4827b18d0701a6d91999054443d7caf3132f74ada7c4ddfd9470323b96f9030083dddb27d686066c3c940306285e
   languageName: node
   linkType: hard
 
