@@ -34,6 +34,24 @@ const many = [
   {name: 'Eleven'}
 ];
 
+const grouped = [
+  {
+    name: 'One',
+    children: [
+      {name: 'Child 1'},
+      {name: 'Child 2'}
+    ]
+  },
+  {name: 'Two', children: [{name: 'Child 0'}]},
+  {
+    name: 'Three',
+    children: [
+      {name: 'Child 1'}
+    ]
+  }
+];
+
+
 let getKey = (item) => item.name;
 let filter = (item, text) => item.name.includes(text);
 
@@ -800,5 +818,14 @@ describe('useListData', function () {
 
     expect(result.current.items).toHaveLength(1);
     expect(result.current.items[0]).toEqual({name: 'David'});
+  });
+
+  it('should support filtering items across sections', function () {
+    let {result} = renderHook(() => useListData({initialItems: grouped, getKey, filter, initialFilterText: 'Child 1', filterKey: 'children'}));
+
+    expect(result.current.items).toEqual([
+      {name: 'One', children: [{name: 'Child 1'}]},
+      {name: 'Three', children: [{name: 'Child 1'}]}
+    ]);
   });
 });

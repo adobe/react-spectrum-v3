@@ -23,7 +23,9 @@ export interface ListOptions<T> {
   /** A function that returns a unique key for an item object. */
   getKey?: (item: T) => Key,
   /** A function that returns whether a item matches the current filter text. */
-  filter?: (item: T, filterText: string) => boolean
+  filter?: (item: T, filterText: string) => boolean,
+  /** The key of the item that contains the nested items it should filter. */
+  filterKey?: string
 }
 
 export interface ListData<T> {
@@ -142,6 +144,7 @@ export function useListData<T>(options: ListOptions<T>): ListData<T> {
     initialSelectedKeys,
     getKey = (item: any) => item.id ?? item.key,
     filter,
+    filterKey,
     initialFilterText = ''
   } = options;
 
@@ -152,9 +155,28 @@ export function useListData<T>(options: ListOptions<T>): ListData<T> {
     filterText: initialFilterText
   });
 
+  const filterItems = (items: T[], filterText: string, key: string): T[] => {
+    return items.reduce((acc: T[], item: any) => {
+      if (item[key]) {
+        if (filter(item, filterText)) {
+          acc.push(item);
+        } else {
+          const children = filterItems(item[key], filterText, key);
+          if (children.length > 0) {
+            acc.push({...item, children});
+          }
+        }
+      } else if (filter(item, filterText)) {
+        acc.push(item);
+      }
+      return acc;
+    }, []);
+  };
+
   let filteredItems = useMemo(
-    () => filter ? state.items.filter(item => filter(item, state.filterText)) : state.items,
-    [state.items, state.filterText, filter]);
+    () => (filter ? filterItems(state.items, state.filterText, filterKey) : state.items),
+    [state.items, state.filterText, filter]
+  );
 
   return {
     ...state,

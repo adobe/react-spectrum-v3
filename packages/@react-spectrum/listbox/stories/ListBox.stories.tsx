@@ -11,7 +11,7 @@
  */
 
 import {action} from '@storybook/addon-actions';
-import {ActionGroup, AlertDialog, Avatar, Button, DialogContainer, Flex, Text} from '@adobe/react-spectrum';
+import {ActionGroup, AlertDialog, Avatar, Button, DialogContainer, Flex, Text, useFilter} from '@adobe/react-spectrum';
 import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
 import AlignLeft from '@spectrum-icons/workflow/AlignLeft';
 import AlignRight from '@spectrum-icons/workflow/AlignRight';
@@ -26,7 +26,7 @@ import {Label} from '@react-spectrum/label';
 import Paste from '@spectrum-icons/workflow/Paste';
 import React, {useRef, useState} from 'react';
 import {TranslateListBox} from './../chromatic/ListBoxLanguages.stories';
-import {useAsyncList, useTreeData} from '@react-stately/data';
+import {useAsyncList, useListData, useTreeData} from '@react-stately/data';
 
 let iconMap = {
   AlignCenter,
@@ -1043,3 +1043,36 @@ export const WithAvatars = {
     </StoryDecorator>
   )]
 };
+
+
+export const FilterableListBox = {
+  render: () => <SearchableListBox />,
+  decorators: null,
+  name: 'filterable listbox'
+};
+
+function SearchableListBox() {
+
+  const {contains} = useFilter({sensitivity: 'base'});
+
+  const list = useListData({
+    initialItems: withSection,
+    filterKey: 'children',
+    filter: (item, text) => {
+      return contains(item.name, text);
+    }
+  });
+
+  return (
+    <>
+      <input type="text" onChange={(e) => list.setFilterText(e.target.value)} />
+      <ListBox width="150px" items={list.items} aria-labelledby="labelSearchableListBox">
+        {(item) => (
+          <Section key={item.name} items={item.children} title={item.name}>
+            {(item) => <Item key={item.name}>{item.name}</Item>}
+          </Section>
+        )}
+      </ListBox >
+    </>
+  );
+}
