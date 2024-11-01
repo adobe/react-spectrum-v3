@@ -518,4 +518,28 @@ describe('RadioGroup', () => {
     expect(inputRef.current).toBe(radio);
     expect(contextInputRef.current).toBe(radio);
   });
+
+  it('can have numeric values', async () => {
+    let onChangeSpy = jest.fn();
+    let {getAllByRole} = render(
+      <RadioGroup onChange={onChangeSpy}>
+        <Label>Test</Label>
+        <Radio value={0}>Radio </Radio>
+        <Radio value={1}>Radio 1</Radio>
+      </RadioGroup>
+    );
+
+    let radios = getAllByRole('radio');
+    expect(radios[0]).toHaveAttribute('value', '0');
+    expect(radios[1]).toHaveAttribute('value', '1');
+
+    await user.click(radios[0]);
+    expect(onChangeSpy).toHaveBeenCalledWith(0);
+    expect(radios[0]).toBeChecked();
+    expect(radios[1]).not.toBeChecked();
+
+    await user.click(radios[1]);
+    expect(onChangeSpy).toHaveBeenCalledWith(1);
+    expect(radios[1]).toBeChecked();
+  });
 });

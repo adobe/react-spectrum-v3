@@ -32,8 +32,8 @@ export const RadioGroupExample = () => {
 };
 
 export const RadioGroupControlledExample = () => {
-  let [selected, setSelected] = useState<string|null>(null);
-  
+  let [selected, setSelected] = useState<string | number | null>(null);
+
   return (
     <RadioGroup
       data-testid="radio-group-example"

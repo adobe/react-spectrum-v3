@@ -33,11 +33,11 @@ export interface SegmentedControlProps extends AriaLabelingProps, StyleProps, Sl
    */
   isDisabled?: boolean,
   /** The id of the currently selected item (controlled). */
-  selectedKey?: string | null,
+  selectedKey?: string | number | null,
   /** The id of the initial selected item (uncontrolled). */
-  defaultSelectedKey?: string,
+  defaultSelectedKey?: string | number,
   /** Handler that is called when the selection changes. */
-  onSelectionChange?: (id: string) => void
+  onSelectionChange?: (id: string | number) => void
 }
 export interface SegmentedControlItemProps extends AriaLabelingProps, StyleProps {
   /**
@@ -129,8 +129,8 @@ interface InternalSegmentedControlContextProps {
 }
 
 interface DefaultSelectionTrackProps {
-  defaultValue?: string | null,
-  value?: string | null,
+  defaultValue?: string | number | null,
+  value?: string | number | null,
   children?: ReactNode,
   prevRef: RefObject<DOMRect | null>,
   currentSelectedRef: RefObject<HTMLDivElement | null>
@@ -150,18 +150,18 @@ function SegmentedControl(props: SegmentedControlProps, ref: DOMRef<HTMLDivEleme
   let prevRef = useRef<DOMRect>(null);
   let currentSelectedRef = useRef<HTMLDivElement>(null);
 
-  let onChange = (value: string) => {
+  let onChange = (value: string | number) => {
     if (currentSelectedRef.current) {
       prevRef.current = currentSelectedRef?.current.getBoundingClientRect();
     }
-    
+
     if (onSelectionChange) {
       onSelectionChange(value);
     }
   };
 
   return (
-    <RadioGroup 
+    <RadioGroup
       {...props}
       value={selectedKey}
       defaultValue={defaultSelectedKey}
@@ -194,7 +194,7 @@ function DefaultSelectionTracker(props: DefaultSelectionTrackProps) {
     <Provider
       values={[
         [InternalSegmentedControlContext, {register: register, prevRef: props.prevRef, currentSelectedRef: props.currentSelectedRef}]
-      ]}> 
+      ]}>
       {props.children}
     </Provider>
   );
@@ -239,17 +239,17 @@ function SegmentedControlItem(props: SegmentedControlItemProps, ref: FocusableRe
   }, [isSelected]);
 
   return (
-    <Radio 
+    <Radio
       {...props}
       value={props.id}
-      ref={domRef} 
+      ref={domRef}
       inputRef={inputRef}
       style={props.UNSAFE_style}
       className={renderProps => (props.UNSAFE_className || '') + controlItem({...renderProps}, props.styles)} >
       {({isSelected, isFocusVisible, isPressed, isDisabled}) => (
         <>
           {isSelected && <div className={slider({isFocusVisible, isDisabled})} ref={currentSelectedRef} />}
-          <Provider 
+          <Provider
             values={[
               [IconContext, {
                 render: centerBaseline({slot: 'icon', styles: style({order: 0, flexShrink: 0})})

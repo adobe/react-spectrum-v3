@@ -59,7 +59,7 @@ Alternatively, a controlled value can be provided using the `value` prop.
 
 ```tsx example
 function Example() {
-  let [selected, setSelected] = React.useState('yes');
+  let [selected, setSelected] = React.useState<string | number>('yes');
 
   return (
     <Flex gap="size-300">
@@ -133,7 +133,7 @@ The example below uses `onChange` to log how the user is interacting with the co
 
 ```tsx example
 function Example() {
-  let [selected, setSelected] = React.useState('');
+  let [selected, setSelected] = React.useState<string | number>('');
 
   return (
     <>
@@ -218,7 +218,7 @@ Both a description and an error message can be supplied to a RadioGroup. The des
 
 ```tsx example
 function Example() {
-  let [selected, setSelected] = React.useState('dogs');
+  let [selected, setSelected] = React.useState<string | number>('dogs');
   let isValid = selected === 'dogs';
 
   return (

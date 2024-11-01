@@ -29,7 +29,7 @@ import {
 } from '@react-types/shared';
 import {ReactElement, ReactNode} from 'react';
 
-export interface RadioGroupProps extends ValueBase<string|null, string>, InputBase, InputDOMProps, Validation<string | null>, LabelableProps, HelpTextProps, FocusEvents {
+export interface RadioGroupProps extends ValueBase<string | number | null, string | number>, InputBase, InputDOMProps, Validation<string | number | null>, LabelableProps, HelpTextProps, FocusEvents {
   /**
    * The axis the Radio Button(s) should align with.
    * @default 'vertical'
@@ -42,7 +42,7 @@ export interface RadioProps extends FocusableProps {
    * The value of the radio button, used when submitting an HTML form.
    * See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio#Value).
    */
-  value: string,
+  value: string | number,
   /**
    * The label for the Radio. Accepts any renderable node.
    */

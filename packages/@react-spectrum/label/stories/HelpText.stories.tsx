@@ -117,7 +117,7 @@ export let AriaLabelWithDynamicHelpText: HelpTextStory = {
 
 function TextFieldWithValidationState(props: SpectrumTextFieldProps) {
   let [value, setValue] = useState('');
-  let [valid, setValid] = useState<string | undefined>(undefined);
+  let [valid, setValid] = useState<string | number | undefined>(undefined);
 
   let validState;
   if (value.length) {
@@ -150,7 +150,7 @@ function TextFieldWithValidationState(props: SpectrumTextFieldProps) {
 
 function TextFieldWithAriaLabelAndDynamicHelpText(props: SpectrumTextFieldProps) {
   let [value, setValue] = useState('');
-  
+
   return (
     <TextField
       {...props}

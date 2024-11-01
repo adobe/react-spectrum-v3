@@ -221,7 +221,7 @@ function renderFormControl() {
 
 function renderWithDescriptionErrorMessageAndValidation(props) {
   function Example() {
-    let [selected, setSelected] = useState('dogs');
+    let [selected, setSelected] = useState<string | number>('dogs');
     let isValid = selected === 'dogs';
 
     return (
@@ -255,7 +255,7 @@ function renderWithDescriptionErrorMessageAndValidation(props) {
 }
 
 export const ControlledRovingTab = () => {
-  const [selected, setSelected] = useState('1');
+  const [selected, setSelected] = useState<string | number>('1');
 
   return (
     <Flex direction="column" gap="16px" alignItems="center" margin="16px">

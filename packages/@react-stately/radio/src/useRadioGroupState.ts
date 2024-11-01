@@ -43,16 +43,16 @@ export interface RadioGroupState extends FormValidationState {
   readonly isInvalid: boolean,
 
   /** The currently selected value. */
-  readonly selectedValue: string | null,
+  readonly selectedValue: string | number | null,
 
   /** Sets the selected value. */
-  setSelectedValue(value: string | null): void,
+  setSelectedValue(value: string | number | null): void,
 
   /** The value of the last focused radio. */
-  readonly lastFocusedValue: string | null,
+  readonly lastFocusedValue: string | number | null,
 
   /** Sets the last focused value. */
-  setLastFocusedValue(value: string | null): void
+  setLastFocusedValue(value: string | number | null): void
 }
 
 let instance = Math.round(Math.random() * 10000000000);
@@ -66,7 +66,7 @@ export function useRadioGroupState(props: RadioGroupProps): RadioGroupState  {
   // Preserved here for backward compatibility. React Aria now generates the name instead of stately.
   let name = useMemo(() => props.name || `radio-group-${instance}-${++i}`, [props.name]);
   let [selectedValue, setSelected] = useControlledState(props.value, props.defaultValue ?? null, props.onChange);
-  let [lastFocusedValue, setLastFocusedValue] = useState<string | null>(null);
+  let [lastFocusedValue, setLastFocusedValue] = useState<string | number | null>(null);
 
   let validation = useFormValidationState({
     ...props,

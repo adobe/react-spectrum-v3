@@ -141,6 +141,7 @@
           "./packages/@react-types/numberfield",
           "./packages/@react-types/progress",
           "./packages/@react-types/searchfield",
+          "./packages/@react-types/radio",
           "./packages/@react-types/shared",
           "./packages/@react-types/statuslight",
           "./packages/@react-types/tabs",
