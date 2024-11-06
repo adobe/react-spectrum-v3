@@ -1,7 +1,7 @@
-diff --git a/node_modules/@parcel/core/lib/loadParcelPlugin.js b/node_modules/@parcel/core/lib/loadParcelPlugin.js
-index 2401047..2f655e3 100644
---- a/node_modules/@parcel/core/lib/loadParcelPlugin.js
-+++ b/node_modules/@parcel/core/lib/loadParcelPlugin.js
+diff --git a/lib/loadParcelPlugin.js b/lib/loadParcelPlugin.js
+index 2401047d24ff79aa61c8139937623fd5531acf0f..4c232b9a417e7a18e4e985507c4bb3ba0f295584 100644
+--- a/lib/loadParcelPlugin.js
++++ b/lib/loadParcelPlugin.js
 @@ -69,25 +69,25 @@ async function loadPlugin(pluginName, configPath, keyPath, options) {
        var _configPkg$config$par;
        // If not in the config's dependencies, the plugin will be auto installed with
@@ -44,13 +44,13 @@ index 2401047..2f655e3 100644
 +      //     }
 +      //   });
 +      // }
- 
+
        // Resolve from project root if not in the config's dependencies.
        resolveFrom = _path().default.join(options.projectRoot, 'index');
-diff --git a/node_modules/@parcel/core/lib/requests/EntryRequest.js b/node_modules/@parcel/core/lib/requests/EntryRequest.js
+diff --git a/lib/requests/EntryRequest.js b/lib/requests/EntryRequest.js
 index 9254caf..069cd1c 100644
---- a/node_modules/@parcel/core/lib/requests/EntryRequest.js
-+++ b/node_modules/@parcel/core/lib/requests/EntryRequest.js
+--- a/lib/requests/EntryRequest.js
++++ b/lib/requests/EntryRequest.js
 @@ -195,8 +195,8 @@ class EntryResolver {
                        ...(0, _diagnostic().getJSONSourceLocation)(pkg.map.pointers[keyPath], 'value')
                      }

@@ -1,7 +1,7 @@
-diff --git a/node_modules/@storybook/types/dist/index.d.ts b/node_modules/@storybook/types/dist/index.d.ts
-index 1df952a..227cfce 100644
---- a/node_modules/@storybook/types/dist/index.d.ts
-+++ b/node_modules/@storybook/types/dist/index.d.ts
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 1df952a5ef45faa5cd97909342385839fc9bd45e..b5298366244683323c39bfd4787849256cfa41b3 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
 @@ -1,4 +1,4 @@
 -import { ReactElement, ReactNode, WeakValidationMap, ValidationMap, FC, PropsWithChildren } from 'react';
 +import { ReactElement, ReactNode, FC, PropsWithChildren } from 'react';

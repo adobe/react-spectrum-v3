@@ -1,7 +1,7 @@
-diff --git a/node_modules/@types/storybook__react/index.d.ts b/node_modules/@types/storybook__react/index.d.ts
-index 41de749..9a33396 100644
---- a/node_modules/@types/storybook__react/index.d.ts
-+++ b/node_modules/@types/storybook__react/index.d.ts
+diff --git a/index.d.ts b/index.d.ts
+index 41de7498b3558c6259843a25f849f5b8b266c248..9a333969d9bd14eff4ed81b544bf714981994263 100644
+--- a/index.d.ts
++++ b/index.d.ts
 @@ -8,7 +8,7 @@
  
  /// <reference types="webpack-env" />

@@ -1,54 +1,47 @@
 diff --git a/gen-preview-modern.js b/gen-preview-modern.js
-index a1fe3d1ce6b748e533200f5af69a0481e5809c6c..aeed09de7dbaddd4606ac3579a86cb2ba389eb2f 100644
+index a1fe3d1ce6b748e533200f5af69a0481e5809c6c..558abf406db48990431430713ea264769d2d312d 100644
 --- a/gen-preview-modern.js
 +++ b/gen-preview-modern.js
-@@ -7,9 +7,16 @@ const {
- } = require("@storybook/core-common");
- const { logger } = require("@storybook/node-logger");
+@@ -9,7 +9,7 @@ const { logger } = require("@storybook/node-logger");
  const { promise: glob } = require("glob-promise");
-+const isMingw = require('is-mingw');
  
--const absoluteToSpecifier = (generatedEntries, abs) =>
+ const absoluteToSpecifier = (generatedEntries, abs) =>
 -  "./" + path.relative(generatedEntries, abs);
-+const absoluteToSpecifier = (generatedEntries, abs) => {
-+  let relativePath = path.relative(generatedEntries, abs);
-+  if (isMingw()) {
-+    relativePath = relativePath.replace(/\\/g, '/');
-+  }
-+
-+  return  "./" + relativePath;
-+}
++  ("./" + path.relative(generatedEntries, abs)).replaceAll('/', path.sep);
  
  module.exports.generatePreviewModern = async function generatePreviewModern(
    options,
-@@ -66,7 +73,7 @@ module.exports.generatePreviewModern = async function generatePreviewModern(
-    */
-   const code = `
-   import { composeConfigs, PreviewWeb, ClientApi } from '@storybook/preview-api';
--  
-+
-   // generateAddonSetupCode
-   import { createBrowserChannel } from '@storybook/channels';
-   import { addons } from '@storybook/preview-api';
-@@ -94,7 +101,7 @@ module.exports.generatePreviewModern = async function generatePreviewModern(
-   window.__STORYBOOK_CLIENT_API__ = new ClientApi({ storyStore: preview.storyStore });
- 
-   preview.initialize({ importFn, getProjectAnnotations });
--  
-+
-   `;
-   // ${generateHMRHandler(frameworkName)};
-   return code;
-@@ -152,7 +159,11 @@ function toImportPath(relativePath) {
+@@ -152,7 +152,7 @@ function toImportPath(relativePath) {
  async function toImportFn(stories, generatedEntries) {
    const objectEntries = stories.map((file) => {
      const ext = path.extname(file);
 -    const relativePath = /*normalizePath*/ path.relative(process.cwd(), file);
-+    let relativePath = /*normalizePath*/ path.relative(process.cwd(), file);
-+    if (isMingw()) {
-+      relativePath = relativePath.replace(/\\/g, '/');
-+    }
-+
++    const relativePath = /*normalizePath*/ path.relative(process.cwd(), file).replaceAll('/', path.sep);
      if (![".js", ".jsx", ".ts", ".tsx", ".mdx"].includes(ext)) {
        logger.warn(
          `Cannot process ${ext} file with storyStoreV7: ${relativePath}`
+diff --git a/preset.js b/preset.js
+index b2076be6b23131344605501f218ce8bda0d00ba0..7d949d441d60a8b1c10bcc46fb30f9454e2d5efd 100644
+--- a/preset.js
++++ b/preset.js
+@@ -119,10 +119,15 @@ async function createParcel(options, isDev = false) {
+         resolveFrom: __filename,
+       },
+     ],
+-    defaultTargetOptions: {
+-      distDir: options.outputDir,
+-      publicUrl: "./",
+-      shouldScopeHoist: isDev ? false : true,
+-    },
++    targets: {
++      storybook: {
++        distDir: options.outputDir,
++        publicUrl: "./",
++        scopeHoist: isDev ? false : true,
++        engines: {
++          browsers: ['last 2 Chrome version', 'last 2 Safari versions', 'last 2 Edge version', 'last 2 Firefox versions']
++        }
++      }
++    }
+   });
+ }

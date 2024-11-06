@@ -1,7 +1,7 @@
-diff --git a/node_modules/@types/mdx/index.d.ts b/node_modules/@types/mdx/index.d.ts
-index 9417601..492e317 100755
---- a/node_modules/@types/mdx/index.d.ts
-+++ b/node_modules/@types/mdx/index.d.ts
+diff --git a/index.d.ts b/index.d.ts
+index 9417601a5ee02461253e12172c7448656dd841d5..492e31763a6364ca77d00b2936d8608e68b925fd 100755
+--- a/index.d.ts
++++ b/index.d.ts
 @@ -55,6 +55,7 @@
  declare module '*.mdx' {
      // tslint:disable-next-line: no-self-import
@@ -10,10 +10,10 @@ index 9417601..492e317 100755
  
      /**
       * An function component which renders the MDX content using JSX.
-diff --git a/node_modules/@types/mdx/types.d.ts b/node_modules/@types/mdx/types.d.ts
-index f600c01..483e8f7 100755
---- a/node_modules/@types/mdx/types.d.ts
-+++ b/node_modules/@types/mdx/types.d.ts
+diff --git a/types.d.ts b/types.d.ts
+index f600c014a173615e5e2b631b662f0c806ff32b2b..483e8f7f7dac1dc1c908cee5ee944ad97691560e 100755
+--- a/types.d.ts
++++ b/types.d.ts
 @@ -1,5 +1,5 @@
  // Internal helper types
 -

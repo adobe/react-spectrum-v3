@@ -1,0 +1,13 @@
+diff --git a/lib/printer.js b/lib/printer.js
+index 9bedd42e89db78c2fbb3848ba294eee5d3883ffe..33941b0b9be27f4efcaeb67573d104c189ff96f2 100644
+--- a/lib/printer.js
++++ b/lib/printer.js
+@@ -2199,7 +2199,7 @@ function printFunctionParams(path, options, print) {
+ function maybePrintImportAssertions(path, options, print) {
+     var n = path.getValue();
+     if (n.assertions && n.assertions.length > 0) {
+-        var parts = [" assert {"];
++        var parts = [" with {"];
+         var printed = path.map(print, "assertions");
+         var flat = (0, lines_1.fromString)(", ").join(printed);
+         if (flat.length > 1 || flat.getLineLength(1) > options.wrapColumn) {

@@ -1,7 +1,7 @@
-diff --git a/node_modules/parcel-resolver-storybook/StorybookResolver.js b/node_modules/parcel-resolver-storybook/StorybookResolver.js
-index f8374c4..da45365 100644
---- a/node_modules/parcel-resolver-storybook/StorybookResolver.js
-+++ b/node_modules/parcel-resolver-storybook/StorybookResolver.js
+diff --git a/StorybookResolver.js b/StorybookResolver.js
+index f8374c4ca730575eaf396ad166c15d4778747e31..da45365ef204c697a35ff9267b814aeb36cc2193 100644
+--- a/StorybookResolver.js
++++ b/StorybookResolver.js
 @@ -3,11 +3,13 @@ const { Resolver } = require("@parcel/plugin");
  const reactVersion = require("react-dom/package.json").version;
  const { default: NodeResolver } = require("@parcel/node-resolver-core");

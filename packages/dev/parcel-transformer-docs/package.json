@@ -14,7 +14,7 @@
     "doctrine": "^3.0.0"
   },
   "devDependencies": {
-    "@parcel/core": "2.0.0-dev.1599",
+    "@parcel/core": "patch:@parcel/core@npm%3A2.0.0-dev.1599#~/.yarn/patches/@parcel-core-npm-2.0.0-dev.1599-d62d699a7e.patch",
     "@parcel/fs": "2.0.0-dev.1601"
   }
 }

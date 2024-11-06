@@ -55,7 +55,6 @@ async function build() {
         .filter(([name]) =>
           name.startsWith('@parcel') ||
           name === 'parcel' ||
-          name === 'patch-package' ||
           name.startsWith('@spectrum-css') ||
           name.startsWith('postcss') ||
           name.startsWith('@adobe') ||
@@ -69,8 +68,7 @@ async function build() {
     resolutions: packageJSON.resolutions,
     browserslist: packageJSON.browserslist,
     scripts: {
-      build: 'yarn parcel build packages/@react-spectrum/actiongroup',
-      postinstall: 'patch-package'
+      build: 'yarn parcel build packages/@react-spectrum/actiongroup'
     }
   };
 
@@ -88,7 +86,6 @@ async function build() {
         .filter(([name]) =>
           name.startsWith('@parcel') ||
           name === 'parcel' ||
-          name === 'patch-package' ||
           name.startsWith('@spectrum-css') ||
           name.startsWith('postcss') ||
           name.startsWith('@adobe') ||
@@ -101,8 +98,7 @@ async function build() {
     resolutions: packageJSON.resolutions,
     browserslist: packageJSON.browserslist,
     scripts: {
-      build: 'yarn parcel build packages/@react-spectrum/actiongroup',
-      postinstall: 'patch-package'
+      build: 'yarn parcel build packages/@react-spectrum/actiongroup'
     }
   };
 
@@ -165,11 +161,6 @@ async function build() {
   fs.copySync(path.join(__dirname, '..', 'postcss.config.js'), path.join(dir, 'postcss.config.js'));
   fs.copySync(path.join(__dirname, '..', 'lib'), path.join(dir, 'lib'));
   fs.copySync(path.join(__dirname, '..', 'CONTRIBUTING.md'), path.join(dir, 'CONTRIBUTING.md'));
-
-  // Only copy babel patch over
-  let patches = fs.readdirSync(path.join(__dirname, '..', 'patches'));
-  let babelPatch = patches.find(name => name.startsWith('@babel'));
-  fs.copySync(path.join(__dirname, '..', 'patches', babelPatch), path.join(dir, 'patches', babelPatch));
 
   // Copy package.json for each package into docs dir so we can find the correct version numbers
   console.log('moving over from node_modules');

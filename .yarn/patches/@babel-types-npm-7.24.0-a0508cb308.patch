@@ -1,7 +1,7 @@
-diff --git a/node_modules/@babel/types/lib/retrievers/getBindingIdentifiers.js b/node_modules/@babel/types/lib/retrievers/getBindingIdentifiers.js
-index 86b4d1d..8dc0869 100644
---- a/node_modules/@babel/types/lib/retrievers/getBindingIdentifiers.js
-+++ b/node_modules/@babel/types/lib/retrievers/getBindingIdentifiers.js
+diff --git a/lib/retrievers/getBindingIdentifiers.js b/lib/retrievers/getBindingIdentifiers.js
+index 86b4d1d2e4e280d24fae8ce8b46e7828b6d39a1f..8dc08699fe5cb0d2a1bbcea268d14671dd66ec5f 100644
+--- a/lib/retrievers/getBindingIdentifiers.js
++++ b/lib/retrievers/getBindingIdentifiers.js
 @@ -62,6 +62,13 @@ getBindingIdentifiers.keys = {
    InterfaceDeclaration: ["id"],
    TypeAlias: ["id"],

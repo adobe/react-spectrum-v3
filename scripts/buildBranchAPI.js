@@ -80,8 +80,7 @@ async function build() {
     resolutions: packageJSON.resolutions,
     browserslist: packageJSON.browserslist,
     scripts: {
-      build: 'yarn parcel build packages/@react-spectrum/actiongroup',
-      postinstall: 'patch-package'
+      build: 'yarn parcel build packages/@react-spectrum/actiongroup'
     }
   };
 
@@ -114,11 +113,6 @@ async function build() {
 
   fs.copySync(path.join(__dirname, '..', '.yarn'), path.join(dir, '.yarn'));
   fs.copySync(path.join(__dirname, '..', '.yarnrc.yml'), path.join(dir, '.yarnrc.yml'));
-
-  // Only copy babel patch over
-  let patches = fs.readdirSync(path.join(srcDir, 'patches'));
-  let babelPatch = patches.find(name => name.startsWith('@babel'));
-  fs.copySync(path.join(srcDir, 'patches', babelPatch), path.join(dir, 'patches', babelPatch));
 
   let excludeList = ['@react-spectrum/story-utils'];
   // Copy packages over to temp dir

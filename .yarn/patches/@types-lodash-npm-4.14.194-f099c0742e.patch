@@ -1,7 +1,7 @@
-diff --git a/node_modules/@types/lodash/index.d.ts b/node_modules/@types/lodash/index.d.ts
-index 8d1ec9f..0d4b05f 100755
---- a/node_modules/@types/lodash/index.d.ts
-+++ b/node_modules/@types/lodash/index.d.ts
+diff --git a/index.d.ts b/index.d.ts
+index 8d1ec9f418759170fc7da9e5c080fc446cd2e6ac..0d4b05fa07ff2e93a70a9ce96c360c68b00fbbd3 100755
+--- a/index.d.ts
++++ b/index.d.ts
 @@ -31,15 +31,3 @@ declare namespace _ {
      // tslint:disable-next-line no-empty-interface (This will be augmented)
      interface LoDashStatic {}

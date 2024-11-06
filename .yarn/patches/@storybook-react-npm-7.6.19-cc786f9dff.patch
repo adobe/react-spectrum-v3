@@ -1,7 +1,7 @@
-diff --git a/node_modules/@storybook/react/dist/index.d.ts b/node_modules/@storybook/react/dist/index.d.ts
-index 4d065a3..e2d4c50 100644
---- a/node_modules/@storybook/react/dist/index.d.ts
-+++ b/node_modules/@storybook/react/dist/index.d.ts
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 4d065a3eb77d7dd73743a62bca53aa0ad42a43e1..e2d4c50c55fd1810742017cfe50083da4a7c3cac 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
 @@ -2,7 +2,7 @@ import * as _storybook_types from '@storybook/types';
  import { Addon_ClientStoryApi, Addon_Loadable, Args, ComponentAnnotations, AnnotatedStoryFn, ArgsStoryFn, ArgsFromMeta, StoryAnnotations, DecoratorFunction, StrictArgs, LoaderFunction, StoryContext as StoryContext$1, ProjectAnnotations, StoryAnnotationsOrFn, Store_CSFExports, StoriesWithPartialProps } from '@storybook/types';
  export { ArgTypes, Args, Parameters, StrictArgs } from '@storybook/types';

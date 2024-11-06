@@ -47,7 +47,6 @@ async function build() {
         .filter(([name]) =>
           name.startsWith('@parcel') ||
           name === 'parcel' ||
-          name === 'patch-package' ||
           name.startsWith('@spectrum-css') ||
           name.startsWith('postcss') ||
           name === 'sharp' ||
@@ -77,8 +76,7 @@ async function build() {
     browserslist: packageJSON.browserslist,
     scripts: {
       // Add a public url if provided via arg (for verdaccio prod doc website build since we want a commit hash)
-      build: `DOCS_ENV=production PARCEL_WORKER_BACKEND=process GIT_HASH=${gitHash} parcel build 'docs/*/*/docs/*.mdx' 'docs/react-aria-components/docs/**/*.mdx' 'packages/dev/docs/pages/**/*.mdx' ${publicUrlFlag}`,
-      postinstall: 'patch-package'
+      build: `DOCS_ENV=production PARCEL_WORKER_BACKEND=process GIT_HASH=${gitHash} parcel build 'docs/*/*/docs/*.mdx' 'docs/react-aria-components/docs/**/*.mdx' 'packages/dev/docs/pages/**/*.mdx' ${publicUrlFlag}`
     },
     '@parcel/transformer-css': packageJSON['@parcel/transformer-css']
   };
@@ -131,7 +129,7 @@ async function build() {
   fs.copySync(path.join(__dirname, '..', 'CONTRIBUTING.md'), path.join(dir, 'CONTRIBUTING.md'));
   fs.copySync(path.join(__dirname, '..', '.browserslistrc'), path.join(dir, '.browserslistrc'));
   fs.copySync(path.join(__dirname, '..', 'starters'), path.join(dir, 'starters'));
-  fs.copySync(path.join(__dirname, '..', '.yarn', 'releases'), path.join(dir, '.yarn', 'releases'));
+  fs.copySync(path.join(__dirname, '..', '.yarn'), path.join(dir, '.yarn'));
   fs.copySync(path.join(__dirname, '..', '.yarnrc.yml'), path.join(dir, '.yarnrc.yml'));
 
   // Delete mdx files from dev/docs that shouldn't go out yet.
@@ -142,12 +140,6 @@ async function build() {
     if (m && !semver.gt(devPkg.version, m[1])) {
       fs.removeSync(path.join(dir, file));
     }
-  }
-
-  // Only copy babel and parcel patches over
-  let patches = fs.readdirSync(path.join(__dirname, '..', 'patches')).filter(name => name.startsWith('@babel') || name.startsWith('@parcel') || name.startsWith('@spectrum-css') || name.startsWith('postcss'));
-  for (let patch of patches) {
-    fs.copySync(path.join(__dirname, '..', 'patches', patch), path.join(dir, 'patches', patch));
   }
 
   // Install dependencies from npm

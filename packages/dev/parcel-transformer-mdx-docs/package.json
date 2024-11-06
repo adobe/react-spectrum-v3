@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@mdx-js/mdx": "next",
-    "@mdx-js/react": "next",
+    "@mdx-js/react": "patch:@mdx-js/react@npm%3A2.0.0-rc.2#~/.yarn/patches/@mdx-js-react-npm-2.0.0-rc.2-c2f79f46aa.patch",
     "@parcel/core": "2.0.0-dev.1599",
     "@parcel/plugin": "2.0.0-dev.1601",
     "dprint-node": "^1.0.7",

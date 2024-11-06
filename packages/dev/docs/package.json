@@ -5,7 +5,7 @@
   "source": "src/index.js",
   "dependencies": {
     "@adobe/spectrum-css-temp": "3.0.0-alpha.1",
-    "@mdx-js/react": "next",
+    "@mdx-js/react": "patch:@mdx-js/react@npm%3A2.0.0-rc.2#~/.yarn/patches/@mdx-js-react-npm-2.0.0-rc.2-c2f79f46aa.patch",
     "@react-aria/aria-modal-polyfill": "^3.1.0",
     "@react-aria/interactions": "^3.1.0",
     "@react-aria/visually-hidden": "^3.1.0",

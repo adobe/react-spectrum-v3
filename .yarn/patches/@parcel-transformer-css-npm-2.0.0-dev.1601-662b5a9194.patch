@@ -1,7 +1,7 @@
-diff --git a/node_modules/@parcel/transformer-css/lib/CSSTransformer.js b/node_modules/@parcel/transformer-css/lib/CSSTransformer.js
-index b8dd9f2..0bad8ab 100644
---- a/node_modules/@parcel/transformer-css/lib/CSSTransformer.js
-+++ b/node_modules/@parcel/transformer-css/lib/CSSTransformer.js
+diff --git a/lib/CSSTransformer.js b/lib/CSSTransformer.js
+index b8dd9f29a047b8f568255a9cdb621894df94647e..fa16ba22fe3bd3a6e1f0280ca90a5b6c3f47e965 100644
+--- a/lib/CSSTransformer.js
++++ b/lib/CSSTransformer.js
 @@ -88,6 +88,9 @@ var _default = exports.default = new (_plugin().Transformer)({
      } else if (Array.isArray(contents === null || contents === void 0 || (_contents$cssModules4 = contents.cssModules) === null || _contents$cssModules4 === void 0 ? void 0 : _contents$cssModules4.exclude)) {
        contents.cssModules.exclude = contents.cssModules.exclude.map(exclude => typeof exclude === 'string' ? (0, _utils().globToRegex)(exclude) : exclude);

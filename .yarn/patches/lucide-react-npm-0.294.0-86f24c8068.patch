@@ -1,7 +1,7 @@
-diff --git a/node_modules/lucide-react/dist/lucide-react.d.ts b/node_modules/lucide-react/dist/lucide-react.d.ts
-index f1e74c8..c518db7 100644
---- a/node_modules/lucide-react/dist/lucide-react.d.ts
-+++ b/node_modules/lucide-react/dist/lucide-react.d.ts
+diff --git a/dist/lucide-react.d.ts b/dist/lucide-react.d.ts
+index f1e74c8efbca69ffc601dbdafd5dda570913056d..c518db78d7cd957a74a18b5583b1cd09afdc9b2c 100644
+--- a/dist/lucide-react.d.ts
++++ b/dist/lucide-react.d.ts
 @@ -1,6 +1,7 @@
 -import { ReactSVG, ForwardRefExoticComponent, RefAttributes, SVGProps } from 'react';
 +import { SVGElementType, ForwardRefExoticComponent, RefAttributes, SVGProps } from 'react';

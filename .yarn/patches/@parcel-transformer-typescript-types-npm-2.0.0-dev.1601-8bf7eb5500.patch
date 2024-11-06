@@ -1,7 +1,7 @@
-diff --git a/node_modules/@parcel/transformer-typescript-types/lib/TSModuleGraph.js b/node_modules/@parcel/transformer-typescript-types/lib/TSModuleGraph.js
-index 78d0e8f..7b0f454 100644
---- a/node_modules/@parcel/transformer-typescript-types/lib/TSModuleGraph.js
-+++ b/node_modules/@parcel/transformer-typescript-types/lib/TSModuleGraph.js
+diff --git a/lib/TSModuleGraph.js b/lib/TSModuleGraph.js
+index 78d0e8f37f5535ab46061dbfc07b5986fa848cfa..2cea4cffdeb4cc626b547b9c704e4f49e0a60be1 100644
+--- a/lib/TSModuleGraph.js
++++ b/lib/TSModuleGraph.js
 @@ -138,7 +138,7 @@ class TSModuleGraph {
      for (let e of module.exports) {
        if (e.name === name) {
