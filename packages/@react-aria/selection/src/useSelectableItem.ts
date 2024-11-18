@@ -11,7 +11,7 @@
  */
 
 import {DOMAttributes, FocusableElement, Key, LongPressEvent, PressEvent, RefObject} from '@react-types/shared';
-import {focusSafely} from '@react-aria/focus';
+import {focusSafely, getFocusableTreeWalker} from '@react-aria/focus';
 import {isCtrlKeyPressed, isNonContiguousSelectionModifier} from './utils';
 import {mergeProps, openLink, useRouter} from '@react-aria/utils';
 import {MultipleSelectionManager} from '@react-stately/selection';
@@ -68,7 +68,19 @@ export interface SelectableItemOptions {
    * - 'none': links are disabled for both selection and actions (e.g. handled elsewhere).
    * @default 'action'
    */
-  linkBehavior?: 'action' | 'selection' | 'override' | 'none'
+  linkBehavior?: 'action' | 'selection' | 'override' | 'none',
+  /**
+   * Whether last focus was caused by keyboard or not.
+   */
+  isKeyboard?: RefObject<boolean>,
+  /**
+   * Whether tabbing backwards or forwards.
+   */
+  isForwardTab?: RefObject<boolean>,
+  /**
+   * Whether focus is contained or not.
+   */
+  isFocusWithin?: RefObject<boolean>
 }
 
 export interface SelectableItemStates {
@@ -117,7 +129,10 @@ export function useSelectableItem(options: SelectableItemOptions): SelectableIte
     isDisabled,
     onAction,
     allowsDifferentPressOrigin,
-    linkBehavior = 'action'
+    linkBehavior = 'action',
+    isKeyboard,
+    isForwardTab,
+    isFocusWithin
   } = options;
   let router = useRouter();
 
@@ -164,6 +179,21 @@ export function useSelectableItem(options: SelectableItemOptions): SelectableIte
     if (isFocused && manager.isFocused && !shouldUseVirtualFocus) {
       if (focus) {
         focus();
+      } else if (
+          isForwardTab && !isForwardTab.current &&
+          isFocusWithin && !isFocusWithin?.current &&
+          isKeyboard && isKeyboard?.current) {
+        let walker = getFocusableTreeWalker(ref.current, {tabbable: true});
+        let next: FocusableElement;
+        let last: FocusableElement;
+        do {
+          last = walker.lastChild() as FocusableElement;
+          if (last) {
+            next = last;
+          }
+        } while (last);
+
+        focusSafely(next);
       } else if (document.activeElement !== ref.current) {
         focusSafely(ref.current);
       }

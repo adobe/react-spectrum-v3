@@ -93,7 +93,11 @@ export interface AriaSelectableCollectionOptions {
 
 export interface SelectableCollectionAria {
   /** Props for the collection element. */
-  collectionProps: DOMAttributes
+  collectionProps: DOMAttributes,
+
+  isKeyboard: RefObject<boolean>,
+  isForwardTab: RefObject<boolean>,
+  isFocusWithin: RefObject<boolean>
 }
 
 /**
@@ -274,7 +278,43 @@ export function useSelectableCollection(options: AriaSelectableCollectionOptions
         }
         break;
       case 'Tab': {
-        if (!allowsTabNavigation) {
+        if (allowsTabNavigation) {
+          let item = document.activeElement?.closest('[data-key]');
+          let walker = getFocusableTreeWalker(item, {tabbable: true});
+          let next: FocusableElement;
+          let last: FocusableElement;
+
+          do {
+            last = walker.lastChild() as FocusableElement;
+            if (last) {
+              next = last;
+            }
+          } while (last);
+
+          // tab behind item boundary
+          if (!e.shiftKey && document.activeElement === next) {
+            let walker = getFocusableTreeWalker(ref.current, {tabbable: true});
+            let next: FocusableElement;
+            let last: FocusableElement;
+
+            do {
+              last = walker.lastChild() as FocusableElement;
+              if (last) {
+                next = last;
+              }
+            } while (last);
+
+            focusWithoutScrolling(next);
+          }
+
+          // tab before item boundary
+          if (e.shiftKey && document.activeElement === item) {
+            let walker = getFocusableTreeWalker(ref.current, {tabbable: true});
+            let before = walker.firstChild() as FocusableElement;
+
+            focusWithoutScrolling(before);
+          }
+        } else {
           // There may be elements that are "tabbable" inside a collection (e.g. in a grid cell).
           // However, collections should be treated as a single tab stop, with arrow key navigation internally.
           // We don't control the rendering of these, so we can't override the tabIndex to prevent tabbing.
@@ -298,8 +338,8 @@ export function useSelectableCollection(options: AriaSelectableCollectionOptions
               focusWithoutScrolling(next);
             }
           }
-          break;
         }
+        break;
       }
     }
   };
@@ -314,18 +354,15 @@ export function useSelectableCollection(options: AriaSelectableCollectionOptions
     };
   });
 
+  let isKeyboard = useRef(false);
+  let isForwardTab = useRef(true);
+  let isFocusWithin = useRef(false);
   let onFocus = (e: FocusEvent) => {
-    if (manager.isFocused) {
-      // If a focus event bubbled through a portal, reset focus state.
-      if (!e.currentTarget.contains(e.target)) {
+    // If a focus event bubbled through a portal, reset focus state and ignore.
+    if (!e.currentTarget.contains(e.target)) {
+      if (manager.isFocused) {
         manager.setFocused(false);
       }
-
-      return;
-    }
-
-    // Focus events can bubble through portals. Ignore these events.
-    if (!e.currentTarget.contains(e.target)) {
       return;
     }
 
@@ -355,21 +392,14 @@ export function useSelectableCollection(options: AriaSelectableCollectionOptions
       scrollRef.current.scrollLeft = scrollPos.current.left;
     }
 
-    if (manager.focusedKey != null) {
-      // Refocus and scroll the focused item into view if it exists within the scrollable region.
-      let element = scrollRef.current.querySelector(`[data-key="${CSS.escape(manager.focusedKey.toString())}"]`) as HTMLElement;
-      if (element) {
-        // This prevents a flash of focus on the first/last element in the collection, or the collection itself.
-        if (!element.contains(document.activeElement)) {
-          focusWithoutScrolling(element);
-        }
-
-        let modality = getInteractionModality();
-        if (modality === 'keyboard') {
-          scrollIntoViewport(element, {containingElement: ref.current});
-        }
-      }
-    }
+    isForwardTab.current = Boolean(
+      e.relatedTarget && (e.currentTarget.compareDocumentPosition(e.relatedTarget) &
+      Node.DOCUMENT_POSITION_PRECEDING));
+      
+    isFocusWithin.current = ref.current.contains(e.relatedTarget);
+      
+    let modality = getInteractionModality();
+    isKeyboard.current = modality === 'keyboard';
   };
 
   let onBlur = (e) => {
@@ -482,6 +512,9 @@ export function useSelectableCollection(options: AriaSelectableCollectionOptions
   }
 
   return {
+    isKeyboard,
+    isForwardTab,
+    isFocusWithin,
     collectionProps: {
       ...handlers,
       tabIndex
