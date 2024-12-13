@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import React from 'react';
 import {ToggleButton} from '../';
 import userEvent from '@testing-library/user-event';

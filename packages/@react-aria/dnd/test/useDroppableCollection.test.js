@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, pointerMap, render, waitFor, within} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, pointerMap, renderv3 as render, waitFor, within} from '@react-spectrum/test-utils-internal';
 import {DataTransfer, DragEvent} from './mocks';
 import {Draggable} from './examples';
 import {DroppableGridExample} from '../stories/DroppableGrid';

@@ -16,7 +16,7 @@ jest.mock('@react-aria/live-announcer');
 import {announce} from '@react-aria/live-announcer';
 import {Calendar} from '../';
 import {CalendarDate, isWeekend} from '@internationalized/date';
-import {pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import React from 'react';
 import {useLocale} from '@react-aria/i18n';
 import userEvent from '@testing-library/user-event';

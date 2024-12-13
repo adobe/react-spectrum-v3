@@ -13,9 +13,9 @@
 import {AriaLabelingProps, DOMProps, StyleProps} from '@react-types/shared';
 import {classNames, useSlotProps, useStyleProps} from '@react-spectrum/utils';
 import {filterDOMProps} from '@react-aria/utils';
-import {ProviderContext, useProvider} from '@react-spectrum/provider';
 import React, {ReactElement} from 'react';
 import styles from '@adobe/spectrum-css-temp/components/icon/vars.css';
+import {useProvider} from '@react-spectrum/provider';
 
 export interface UIIconProps extends DOMProps, AriaLabelingProps, StyleProps {
   children: ReactElement<any>,
@@ -38,15 +38,9 @@ export function UIIcon(props: UIIconProps) {
   } = props;
 
   let {styleProps} = useStyleProps(otherProps);
-  let provider: undefined | ProviderContext;
-  try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    provider = useProvider();
-  } catch {
-    // ignore
-  }
+  let provider = useProvider();
   let scale = 'M';
-  if (provider != null) {
+  if (provider !== null) {
     scale = provider.scale === 'large' ? 'L' : 'M';
   }
 

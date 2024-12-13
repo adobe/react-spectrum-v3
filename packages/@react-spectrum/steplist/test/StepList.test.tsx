@@ -13,7 +13,7 @@
 import {act} from '@testing-library/react';
 import {DOMRefValue} from '@react-types/shared';
 import {Item} from '@react-stately/collections';
-import {pointerMap, render, within} from '@react-spectrum/test-utils-internal';
+import {pointerMap, renderv3 as render, within} from '@react-spectrum/test-utils-internal';
 import {Provider} from '@react-spectrum/provider';
 import React from 'react';
 import {StepList} from '../';

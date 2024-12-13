@@ -12,7 +12,7 @@
 
 import {Meter} from '../';
 import React from 'react';
-import {render} from '@react-spectrum/test-utils-internal';
+import {renderv3 as render} from '@react-spectrum/test-utils-internal';
 
 describe('Meter', function () {
   it('handles defaults', function () {

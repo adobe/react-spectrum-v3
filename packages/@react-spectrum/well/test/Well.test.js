@@ -11,7 +11,7 @@
  */
 
 import React, {useRef} from 'react';
-import {render} from '@react-spectrum/test-utils-internal';
+import {renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {Well} from '../';
 
 let refExists = (ComponentToCheck, children, props) => {

@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, render, screen} from '@react-spectrum/test-utils-internal';
+import {act, renderv3 as render, screen} from '@react-spectrum/test-utils-internal';
 import {Cell, Column, Row, TableBody, TableHeader, TableView} from '../';
 import {Provider} from '@react-spectrum/provider';
 import React, {useState} from 'react';

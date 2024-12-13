@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, render, waitFor} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, renderv3 as render, waitFor} from '@react-spectrum/test-utils-internal';
 import {Dialog} from '@react-spectrum/dialog';
 import {Provider} from '@react-spectrum/provider';
 import React from 'react';

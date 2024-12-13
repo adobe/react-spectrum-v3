@@ -11,7 +11,7 @@
  */
 
 import {AlertDialog} from '../';
-import {pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {Provider} from '@react-spectrum/provider';
 import React from 'react';
 import {theme} from '@react-spectrum/theme-default';

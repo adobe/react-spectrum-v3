@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, mockClickDefault, pointerMap, render, within} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, mockClickDefault, pointerMap, renderv3 as render, within} from '@react-spectrum/test-utils-internal';
 import Bell from '@spectrum-icons/workflow/Bell';
 import {Dialog, DialogTrigger} from '@react-spectrum/dialog';
 import {Item, Menu, Section} from '../';

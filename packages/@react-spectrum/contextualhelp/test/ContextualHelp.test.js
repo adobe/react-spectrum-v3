@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, pointerMap, render, simulateDesktop} from '@react-spectrum/test-utils-internal';
+import {act, pointerMap, renderv3 as render, simulateDesktop} from '@react-spectrum/test-utils-internal';
 import {Content, Footer, Header} from '@react-spectrum/view';
 import {ContextualHelp} from '../';
 import {Link} from '@react-spectrum/link';

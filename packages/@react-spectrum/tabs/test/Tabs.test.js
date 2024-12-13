@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, createEvent, fireEvent, mockImplementation, pointerMap, render, waitFor, within} from '@react-spectrum/test-utils-internal';
+import {act, createEvent, fireEvent, mockImplementation, pointerMap, renderv3 as render, waitFor, within} from '@react-spectrum/test-utils-internal';
 import {Item, TabList, TabPanels, Tabs} from '../src';
 import {Links as LinksExample} from '../stories/Tabs.stories';
 import {Provider} from '@react-spectrum/provider';

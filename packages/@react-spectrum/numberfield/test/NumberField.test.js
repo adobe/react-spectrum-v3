@@ -11,10 +11,11 @@
  */
 
 jest.mock('@react-aria/live-announcer');
-import {act, fireEvent, pointerMap, render, within} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, pointerMap, renderv3 as render, within} from '@react-spectrum/test-utils-internal';
 import {announce} from '@react-aria/live-announcer';
 import {Button} from '@react-spectrum/button';
 import {chain} from '@react-aria/utils';
+import {defaultTheme} from '@adobe/react-spectrum';
 import {Form} from '@react-spectrum/form';
 import messages from '../../../@react-aria/numberfield/intl/*.json';
 import {NumberField} from '../';
@@ -54,7 +55,7 @@ describe('NumberField', function () {
 
   function renderNumberField(props = {}, providerProps = {}) {
     let {locale = 'en-US', scale = 'medium'} = providerProps;
-    let {container, debug, rerender} = render(<Provider theme={theme} scale={scale} locale={locale}><NumberField aria-label="labelled" {...props} /></Provider>);
+    let {container, debug} = render(<NumberField aria-label="labelled" {...props} />, undefined, {theme, scale, locale});
 
     let root = props.label ? container.firstChild.firstChild : undefined;
     container = within(container).queryByRole('group');
@@ -69,8 +70,7 @@ describe('NumberField', function () {
       buttons,
       incrementButton,
       decrementButton,
-      debug,
-      rerender: (props = {}, locale) => rerender(<Provider theme={theme} locale={locale}><NumberField aria-label="labelled" {...props} /></Provider>)
+      debug
     };
   }
 
@@ -867,10 +867,11 @@ describe('NumberField', function () {
     Name
     ${'NumberField'}
   `('$Name properly formats value when formatter changes', () => {
-    let {textField, rerender} = renderNumberField({defaultValue: 10, formatOptions: {style: 'currency', currency: 'EUR'}});
+    let {container, rerender} = render(<Provider theme={defaultTheme}><NumberField aria-label="labelled" {...{defaultValue: 10, formatOptions: {style: 'currency', currency: 'EUR'}}} /></Provider>);
+    let textField = within(container).queryByRole('textbox');
 
     expect(textField).toHaveAttribute('value', '€10.00');
-    rerender({defaultValue: 10, formatOptions: {style: 'currency', currency: 'USD'}});
+    rerender(<Provider theme={defaultTheme}><NumberField aria-label="labelled" {...{defaultValue: 10, formatOptions: {style: 'currency', currency: 'USD'}}} /></Provider>);
     expect(textField).toHaveAttribute('value', '$10.00');
   });
 
@@ -1772,9 +1773,7 @@ describe('NumberField', function () {
       let {onChange} = props;
       let [value, setValue] = useState(10);
       return (
-        <Provider theme={theme} scale="medium" locale="en-US">
-          <NumberField {...props} label="you shall not change" formatOptions={{style: 'currency', currency: 'EUR'}} value={value} onChange={chain(setValue, onChange)} />
-        </Provider>
+        <NumberField {...props} label="you shall not change" formatOptions={{style: 'currency', currency: 'EUR'}} value={value} onChange={chain(setValue, onChange)} />
       );
     }
     let {container, getByRole} = render(<NumberFieldControlled onChange={onChangeSpy} />);
@@ -2261,7 +2260,7 @@ describe('NumberField', function () {
       );
     }
     let resetSpy = jest.fn();
-    let {getByText, getByRole} = render(<NumberFieldControlled onChange={resetSpy} />);
+    let {getByText, getByRole} = render(<NumberFieldControlled onChange={resetSpy} />, undefined, {theme, scale: 'medium', locale: 'en-US'});
     let textField = getByRole('textbox');
     let resetButton = getByText('Reset');
 
@@ -2272,13 +2271,15 @@ describe('NumberField', function () {
   });
 
   it('supports form value', () => {
-    let {textField, rerender} = renderNumberField({name: 'age', value: 30});
+    let {container, rerender} = render(<Provider theme={defaultTheme}><NumberField aria-label="labelled" {...{name: 'age', value: 30}} /></Provider>);
+    container = within(container).queryByRole('group');
+    let textField = within(container).queryByRole('textbox');
     expect(textField).not.toHaveAttribute('name');
     let hiddenInput = document.querySelector('input[type=hidden]');
     expect(hiddenInput).toHaveAttribute('name', 'age');
     expect(hiddenInput).toHaveValue('30');
 
-    rerender({name: 'age', value: null});
+    rerender(<Provider theme={defaultTheme}><NumberField aria-label="labelled" {...{name: 'age', value: null}} /></Provider>);
     expect(hiddenInput).toHaveValue('');
   });
 

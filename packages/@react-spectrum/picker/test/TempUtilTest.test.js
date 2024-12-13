@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, pointerMap, render, screen, simulateDesktop, simulateMobile, waitFor, waitForElementToBeRemoved, within} from '@react-spectrum/test-utils-internal';
+import {act, pointerMap, renderv3 as render, screen, simulateDesktop, simulateMobile, waitFor, waitForElementToBeRemoved, within} from '@react-spectrum/test-utils-internal';
 import {Button, Label, ListBox, ListBoxItem, Popover, Select, SelectValue, Text} from 'react-aria-components';
 import {Item, Picker} from '../src';
 import {Provider} from '@react-spectrum/provider';

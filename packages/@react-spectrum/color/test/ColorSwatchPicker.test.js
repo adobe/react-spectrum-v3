@@ -11,7 +11,7 @@
  */
 
 import {ColorSwatch, ColorSwatchPicker, parseColor} from '../src';
-import {pointerMap, render, within} from '@react-spectrum/test-utils-internal';
+import {pointerMap, renderv3 as render, within} from '@react-spectrum/test-utils-internal';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 

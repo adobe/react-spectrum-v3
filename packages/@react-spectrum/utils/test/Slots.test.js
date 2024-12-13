@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import React, {useRef} from 'react';
 import {SlotProvider, useSlotProps} from '../';
 import {useId, useSlotId} from '@react-aria/utils';

@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, render} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {Button} from '@react-spectrum/button';
 import {Content} from '@react-spectrum/view';
 import {DataTransfer, DataTransferItem, DragEvent} from '@react-aria/dnd/test/mocks';
@@ -41,7 +41,7 @@ describe('DropZone', () => {
 
     let dropzone = tree.getByTestId('bar');
     let button = tree.getByTestId('foo');
-    expect(dropzone).toBe(tree.container.firstChild);
+    expect(dropzone).toBe(tree.container.firstChild.firstChild);
     expect(dropzoneRef.current.UNSAFE_getDOMNode()).toBe(dropzone);
     expect(dropzone).not.toBe(button);
   });

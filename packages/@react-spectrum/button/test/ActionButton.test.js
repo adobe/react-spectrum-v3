@@ -11,7 +11,7 @@
  */
 
 import {ActionButton} from '../';
-import {pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 

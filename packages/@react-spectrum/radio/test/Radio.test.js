@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {act, pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {Button} from '@react-spectrum/button';
 import {Form} from '@react-spectrum/form';
 import {Provider} from '@react-spectrum/provider';
@@ -602,14 +602,12 @@ describe('Radios', function () {
       ${'(up/down arrows, rtl + vertical) RadioGroup'}      | ${{locale: 'ar-AE'}}                            | ${[{action: tab, result: () => expectedFocus.radio1Focused}, {action: pressArrowDown, result: radioBehavior.forward}, {action: pressArrowUp, result: radioBehavior.backward}, {action: pressArrowUp, result: radioBehavior.backward}]}
     `('$Name default keyboard navigation with wrapping', async ({props, orders}) => {
       let {getAllByRole} = render(
-        <Provider theme={theme} locale={props.locale}>
-          <RadioGroup aria-label="favorite pet" orientation={props.orientation}>
-            <Radio value="dogs">Dogs</Radio>
-            <Radio value="cats">Cats</Radio>
-            <Radio value="dragons">Dragons</Radio>
-          </RadioGroup>
-        </Provider>
-      );
+        <RadioGroup aria-label="favorite pet" orientation={props.orientation}>
+          <Radio value="dogs">Dogs</Radio>
+          <Radio value="cats">Cats</Radio>
+          <Radio value="dragons">Dragons</Radio>
+        </RadioGroup>
+      , undefined, {locale: props.locale});
 
       let radios = getAllByRole('radio');
 
@@ -634,14 +632,12 @@ describe('Radios', function () {
       ${'rtl 1&2 disabled'}    | ${{locale: 'ar-AE'}} | ${[0, 1]}     | ${[{action: tab, result: () => [und, und, '0']}, {action: pressArrowRight, result: () => [und, und, '0']}, {action: pressArrowRight, result: () => [und, und, '0']}, {action: pressArrowLeft, result: () => [und, und, '0']}, {action: pressArrowLeft, result: () => [und, und, '0']}]}
     `('$Name skips disabled radios', async function ({Name, props, disabledKeys, orders}) {
       let tree = render(
-        <Provider theme={theme} locale={props.locale}>
-          <RadioGroup aria-label="favorite pet" orientation="horizontal">
-            <Radio value="dogs" isDisabled={disabledKeys.includes(0)}>Dogs</Radio>
-            <Radio value="cats" isDisabled={disabledKeys.includes(1)}>Cats</Radio>
-            <Radio value="dragons" isDisabled={disabledKeys.includes(2)}>Dragons</Radio>
-          </RadioGroup>
-        </Provider>
-      );
+        <RadioGroup aria-label="favorite pet" orientation="horizontal">
+          <Radio value="dogs" isDisabled={disabledKeys.includes(0)}>Dogs</Radio>
+          <Radio value="cats" isDisabled={disabledKeys.includes(1)}>Cats</Radio>
+          <Radio value="dragons" isDisabled={disabledKeys.includes(2)}>Dragons</Radio>
+        </RadioGroup>
+      , undefined, {locale: props.locale});
 
       let radios = tree.getAllByRole('radio');
 
@@ -659,15 +655,13 @@ describe('Radios', function () {
       ${'rtl middle two disabled'} | ${{locale: 'de-DE'}} | ${[1, 2]}    | ${[{action: tab, result: () => ['0', und, und, '-1']}, {action: pressArrowRight, result: () => ['-1', und, und, '0']}, {action: pressArrowRight, result: () => ['0', und, und, '-1']}, {action: pressArrowLeft, result: () => ['-1', und, und, '0']}, {action: pressArrowLeft, result: () => ['0', und, und, '-1']}]}
     `('$Name skips multiple disabled radios', async function ({Name, props, disabledKeys, orders}) {
       let tree = render(
-        <Provider theme={theme} locale={props.locale}>
-          <RadioGroup aria-label="favorite pet" orientation="horizontal">
-            <Radio value="dogs" isDisabled={disabledKeys.includes(0)}>Dogs</Radio>
-            <Radio value="cats" isDisabled={disabledKeys.includes(1)}>Cats</Radio>
-            <Radio value="dragons" isDisabled={disabledKeys.includes(2)}>Dragons</Radio>
-            <Radio value="unicorns" isDisabled={disabledKeys.includes(3)}>Unicorns</Radio>
-          </RadioGroup>
-        </Provider>
-      );
+        <RadioGroup aria-label="favorite pet" orientation="horizontal">
+          <Radio value="dogs" isDisabled={disabledKeys.includes(0)}>Dogs</Radio>
+          <Radio value="cats" isDisabled={disabledKeys.includes(1)}>Cats</Radio>
+          <Radio value="dragons" isDisabled={disabledKeys.includes(2)}>Dragons</Radio>
+          <Radio value="unicorns" isDisabled={disabledKeys.includes(3)}>Unicorns</Radio>
+        </RadioGroup>
+      , undefined, {locale: props.locale});
 
       let radios = tree.getAllByRole('radio');
 

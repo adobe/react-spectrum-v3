@@ -11,18 +11,15 @@
  */
 
 jest.mock('@react-aria/utils/src/scrollIntoView');
-import {act, fireEvent, pointerMap, render, within} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, pointerMap, renderv3 as render, within} from '@react-spectrum/test-utils-internal';
 import {Card, CardView, GalleryLayout, GridLayout, WaterfallLayout} from '../';
 import {composeStories} from '@storybook/react';
 import {Content} from '@react-spectrum/view';
 import {Heading, Text} from '@react-spectrum/text';
 import {Image} from '@react-spectrum/image';
-import {Provider} from '@react-spectrum/provider';
 import React, {useMemo} from 'react';
-import scaleMedium from '@adobe/spectrum-css-temp/vars/spectrum-medium-unique.css';
 import {scrollIntoView} from '@react-aria/utils';
 import * as stories from '../stories/GridCardView.stories';
-import themeLight from '@adobe/spectrum-css-temp/vars/spectrum-light-unique.css';
 import {useCollator} from '@react-aria/i18n';
 import userEvent from '@testing-library/user-event';
 
@@ -30,11 +27,6 @@ let isOldReact = parseInt(React.version, 10) < 18;
 
 let {falsyItems} = stories;
 let {FalsyIds} = composeStories(stories);
-
-let theme = {
-  light: themeLight,
-  medium: scaleMedium
-};
 
 let defaultItems = [
   {width: 1001, height: 381, src: 'https://i.imgur.com/Z7AzH2c.jpg', title: 'Title 1'},
@@ -77,33 +69,30 @@ function StaticCardView(props) {
   let {
     layout = gridLayout,
     selectionMode = 'multiple',
-    locale = 'en-US',
     ...otherProps
   } = props;
 
   return (
-    <Provider theme={theme} locale={locale}>
-      <CardView onSelectionChange={onSelectionChange} {...otherProps} selectionMode={selectionMode} layout={layout} width="100%" height="100%" aria-label="Test CardView">
-        <Card width={1001} height={381} textValue="Title  1">
-          <Image src="https://i.imgur.com/Z7AzH2c.jpg" />
-          <Heading>Title  1</Heading>
-          <Text slot="detail">PNG</Text>
-          <Content>Description</Content>
-        </Card>
-        <Card width={640} height={640} textValue="Title  1">
-          <Image src="https://i.imgur.com/DhygPot.jpg" />
-          <Heading>Title  1</Heading>
-          <Text slot="detail">PNG</Text>
-          <Content>Description</Content>
-        </Card>
-        <Card width={182} height={1009} textValue="Title  1">
-          <Image src="https://i.imgur.com/L7RTlvI.png" />
-          <Heading>Title  1</Heading>
-          <Text slot="detail">PNG</Text>
-          <Content>Description</Content>
-        </Card>
-      </CardView>
-    </Provider>
+    <CardView onSelectionChange={onSelectionChange} {...otherProps} selectionMode={selectionMode} layout={layout} width="100%" height="100%" aria-label="Test CardView">
+      <Card width={1001} height={381} textValue="Title  1">
+        <Image src="https://i.imgur.com/Z7AzH2c.jpg" />
+        <Heading>Title  1</Heading>
+        <Text slot="detail">PNG</Text>
+        <Content>Description</Content>
+      </Card>
+      <Card width={640} height={640} textValue="Title  1">
+        <Image src="https://i.imgur.com/DhygPot.jpg" />
+        <Heading>Title  1</Heading>
+        <Text slot="detail">PNG</Text>
+        <Content>Description</Content>
+      </Card>
+      <Card width={182} height={1009} textValue="Title  1">
+        <Image src="https://i.imgur.com/L7RTlvI.png" />
+        <Heading>Title  1</Heading>
+        <Text slot="detail">PNG</Text>
+        <Content>Description</Content>
+      </Card>
+    </CardView>
   );
 }
 
@@ -115,23 +104,20 @@ function DynamicCardView(props) {
     layout = gridLayout,
     selectionMode = 'multiple',
     items = defaultItems,
-    locale = 'en-US',
     ...otherProps
   } = props;
 
   return (
-    <Provider theme={theme} locale={locale}>
-      <CardView onSelectionChange={onSelectionChange} {...otherProps} selectionMode={selectionMode} items={items} layout={layout} width="100%" height="100%" aria-label="Test CardView">
-        {(item) => (
-          <Card key={item.title} textValue={item.title} width={item.width} height={item.height}>
-            <Image src={item.src} />
-            <Heading>{item.title}</Heading>
-            <Text slot="detail">PNG</Text>
-            <Content>Description</Content>
-          </Card>
+    <CardView onSelectionChange={onSelectionChange} {...otherProps} selectionMode={selectionMode} items={items} layout={layout} width="100%" height="100%" aria-label="Test CardView">
+      {(item) => (
+        <Card key={item.title} textValue={item.title} width={item.width} height={item.height}>
+          <Image src={item.src} />
+          <Heading>{item.title}</Heading>
+          <Text slot="detail">PNG</Text>
+          <Content>Description</Content>
+        </Card>
         )}
-      </CardView>
-    </Provider>
+    </CardView>
   );
 }
 
@@ -225,9 +211,7 @@ describe('CardView', function () {
     ${'Waterfall layout'} | ${WaterfallLayout}
   `('$Name CardView supports falsy ids', function ({layout}) {
     let tree = render(
-      <Provider theme={theme} locale="en-US">
-        <FalsyIds items={falsyItems} aria-label="test falsy" layout={layout} />
-      </Provider>
+      <FalsyIds items={falsyItems} aria-label="test falsy" layout={layout} />
     );
     act(() => {
       jest.runAllTimers();
@@ -394,7 +378,7 @@ describe('CardView', function () {
         ${'Grid layout'}      | ${GridLayout}
         ${'Gallery layout'}   | ${GalleryLayout}
       `('$Name CardView should move focus via Arrow Left (RTL)', async function ({Name, layout}) {
-        let tree = render(<DynamicCardView locale="ar-AE" layout={layout} />);
+        let tree = render(<DynamicCardView layout={layout} />, undefined, {locale: 'ar-AE'});
         act(() => {
           jest.runAllTimers();
         });
@@ -460,7 +444,7 @@ describe('CardView', function () {
         ${'Grid layout'}      | ${GridLayout}
         ${'Gallery layout'}   | ${GalleryLayout}
       `('$Name CardView should move focus via Arrow Right (RTL)', async function ({Name, layout}) {
-        let tree = render(<DynamicCardView locale="ar-AE" layout={layout} />);
+        let tree = render(<DynamicCardView layout={layout} />, undefined, {locale: 'ar-AE'});
         act(() => {
           jest.runAllTimers();
         });
@@ -842,7 +826,7 @@ describe('CardView', function () {
       });
 
       it('should move focus via Arrow Left (RTL)', async function () {
-        let tree = render(<DynamicCardView locale="ar-AE" layout={WaterfallLayout} />);
+        let tree = render(<DynamicCardView layout={WaterfallLayout} />, undefined, {locale: 'ar-AE'});
         act(() => {
           jest.runAllTimers();
         });
@@ -899,7 +883,7 @@ describe('CardView', function () {
       });
 
       it('should move focus via Arrow Right (RTL)', async function () {
-        let tree = render(<DynamicCardView locale="ar-AE" layout={WaterfallLayout} />);
+        let tree = render(<DynamicCardView layout={WaterfallLayout} />, undefined, {locale: 'ar-AE'});
         act(() => {
           jest.runAllTimers();
         });

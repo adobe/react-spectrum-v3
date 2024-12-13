@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, getAllByRole as getAllByRoleInContainer, pointerMap, render as render_, waitFor, within} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, getAllByRole as getAllByRoleInContainer, pointerMap, renderv3 as render_, waitFor, within} from '@react-spectrum/test-utils-internal';
 import {Button} from '@react-spectrum/button';
 import {CalendarDate, CalendarDateTime, getLocalTimeZone, toCalendarDateTime, today} from '@internationalized/date';
 import {DateRangePicker} from '../';
@@ -626,9 +626,9 @@ describe('DateRangePicker', function () {
         } else {
           let localTime = today(getLocalTimeZone());
           expect(onChange).toHaveBeenCalledTimes(1);
-           
+
           expectPlaceholder(startDate, `${localTime.month}/1/${localTime.year}, 12:00 AM`);
-           
+
           expectPlaceholder(endDate, `${localTime.month}/2/${localTime.year}, 12:00 AM`);
         }
 

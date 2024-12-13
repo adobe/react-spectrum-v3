@@ -1,6 +1,6 @@
 import {Avatar} from '../';
 import React from 'react';
-import {render, screen} from '@react-spectrum/test-utils-internal';
+import {renderv3 as render, screen} from '@react-spectrum/test-utils-internal';
 
 let isOldReact = parseInt(React.version, 10) < 18;
 

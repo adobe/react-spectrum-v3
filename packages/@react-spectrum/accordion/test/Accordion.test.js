@@ -11,7 +11,7 @@
  */
 
 import {Accordion, Disclosure, DisclosurePanel, DisclosureTitle} from '../src';
-import {act, pointerMap, render, within} from '@react-spectrum/test-utils-internal';
+import {act, pointerMap, renderv3 as render, within} from '@react-spectrum/test-utils-internal';
 import {Provider} from '@react-spectrum/provider';
 import React from 'react';
 import {theme} from '@react-spectrum/theme-default';

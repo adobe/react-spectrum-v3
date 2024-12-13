@@ -11,7 +11,7 @@
  */
 
 jest.mock('@react-aria/utils/src/scrollIntoView');
-import {act, fireEvent, mockClickDefault, pointerMap, render, simulateDesktop, within} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, mockClickDefault, pointerMap, renderv3 as render, simulateDesktop, within} from '@react-spectrum/test-utils-internal';
 import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
 import AlignLeft from '@spectrum-icons/workflow/AlignLeft';
 import AlignRight from '@spectrum-icons/workflow/AlignRight';

@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, pointerMap, render, waitFor} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, pointerMap, renderv3 as render, waitFor} from '@react-spectrum/test-utils-internal';
 import {Button} from '@react-spectrum/button';
 import Checkmark from '@spectrum-icons/workflow/Checkmark';
 import {Form} from '@react-spectrum/form';
@@ -53,7 +53,7 @@ describe('Shared TextField behavior', () => {
     ${'v3 SearchField'} | ${SearchField}    | ${{UNSAFE_className: 'custom-class-name', 'aria-label': 'mandatory label'}}
   `('$Name supports appending custom classnames onto the root element', ({Component, props}) => {
     let tree = renderComponent(Component, props);
-    expect(tree.container.querySelector('body>div> .custom-class-name')).toBeTruthy();
+    expect(tree.container.querySelector('.custom-class-name')).toBeTruthy();
   });
 
   it.each`

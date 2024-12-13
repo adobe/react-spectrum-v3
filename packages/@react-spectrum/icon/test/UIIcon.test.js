@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import {render} from '@react-spectrum/test-utils-internal';
+import {renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {UIIcon} from '../';
 
 let FakeIcon = (props) => <svg {...props}><path d="M 10,150 L 70,10 L 130,150 z" /></svg>;

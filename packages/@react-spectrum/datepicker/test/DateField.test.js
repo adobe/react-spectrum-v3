@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, pointerMap, render as render_, within} from '@react-spectrum/test-utils-internal';
+import {act, pointerMap, renderv3 as render_, within} from '@react-spectrum/test-utils-internal';
 import {Button} from '@react-spectrum/button';
 import {CalendarDate, CalendarDateTime, ZonedDateTime} from '@internationalized/date';
 import {DateField} from '../';

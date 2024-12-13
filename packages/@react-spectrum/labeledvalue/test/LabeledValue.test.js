@@ -13,7 +13,7 @@
 import {CalendarDate, CalendarDateTime, Time, ZonedDateTime} from '@internationalized/date';
 import {LabeledValue} from '../src';
 import React from 'react';
-import {render, within} from '@react-spectrum/test-utils-internal';
+import {renderv3 as render, within} from '@react-spectrum/test-utils-internal';
 
 describe('LabeledValue', function () {
   it('renders a label', function () {

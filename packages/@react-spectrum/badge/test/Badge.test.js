@@ -13,7 +13,7 @@
 import {Badge} from '../';
 import CheckmarkCircle from '@spectrum-icons/workflow/CheckmarkCircle';
 import React from 'react';
-import {render} from '@react-spectrum/test-utils-internal';
+import {renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {Text} from '@react-spectrum/text';
 import {within} from '@testing-library/dom';
 

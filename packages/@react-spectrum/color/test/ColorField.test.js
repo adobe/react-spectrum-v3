@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {Button} from '@react-spectrum/button';
 import {chain} from '@react-aria/utils';
 import {ColorField} from '../';

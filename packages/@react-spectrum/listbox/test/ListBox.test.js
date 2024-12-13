@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, mockClickDefault, pointerMap, render, within} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, mockClickDefault, pointerMap, renderv3 as render, within} from '@react-spectrum/test-utils-internal';
 import Bell from '@spectrum-icons/workflow/Bell';
 import {FocusExample} from '../stories/ListBox.stories';
 import {Item, ListBox, Section} from '../';

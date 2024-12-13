@@ -14,7 +14,7 @@ import {act} from 'react-dom/test-utils';
 import {Button} from '@react-spectrum/button';
 import {Checkbox} from '../';
 import {Form} from '@react-spectrum/form';
-import {pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {Provider} from '@react-spectrum/provider';
 import React from 'react';
 import {theme} from '@react-spectrum/theme-default';

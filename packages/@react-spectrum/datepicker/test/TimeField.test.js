@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, pointerMap, render as render_, within} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, pointerMap, renderv3 as render_, within} from '@react-spectrum/test-utils-internal';
 import {Button} from '@react-spectrum/button';
 import {Form} from '@react-spectrum/form';
 import {parseZonedDateTime, Time} from '@internationalized/date';

@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, installMouseEvent, pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, installMouseEvent, pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {press, testKeypresses} from './utils';
 import {Provider} from '@adobe/react-spectrum';
 import React, {useCallback, useState} from 'react';
@@ -280,10 +280,8 @@ describe('Slider', function () {
       ${'(home/end, rtl)'}                 | ${{locale: 'ar-AE'}}                  | ${[{left: press.Home, result: -50}, {left: press.End, result: +100}]}
     `('$Name moves the slider in the correct direction', function ({props, commands}) {
       let tree = render(
-        <Provider theme={theme} {...props}>
-          <Slider label="Label" defaultValue={50} minValue={0} maxValue={100} />
-        </Provider>
-      );
+        <Slider label="Label" defaultValue={50} minValue={0} maxValue={100} />
+      , undefined, props);
       let slider = tree.getByRole('slider');
       testKeypresses([slider, slider], commands);
     });
@@ -301,10 +299,8 @@ describe('Slider', function () {
       ${'(home/end, rtl)'}                 | ${{locale: 'ar-AE'}}                  | ${[{left: press.Home, result: -50}, {left: press.End, result: +100}]}
     `('$Name moves the slider in the correct direction orientation vertical', function ({props, commands}) {
       let tree = render(
-        <Provider theme={theme} {...props}>
-          <Slider label="Label" defaultValue={50} minValue={0} maxValue={100} orientation="vertical" />
-        </Provider>
-      );
+        <Slider label="Label" defaultValue={50} minValue={0} maxValue={100} orientation="vertical" />
+      , undefined, props);
       let slider = tree.getByRole('slider');
       testKeypresses([slider, slider], commands);
     });
@@ -317,10 +313,8 @@ describe('Slider', function () {
       ${'(page up/down, rtl)'}      | ${{locale: 'ar-AE'}}  | ${[{left: press.PageUp, result: +20}, {left: press.PageDown, result: -20}]}
     `('$Name respects the step size', function ({props, commands}) {
       let tree = render(
-        <Provider theme={theme} {...props}>
-          <Slider label="Label" step={20} defaultValue={40} />
-        </Provider>
-      );
+        <Slider label="Label" step={20} defaultValue={40} />
+      , undefined, props);
       let slider = tree.getByRole('slider');
       testKeypresses([slider, slider], commands);
     });
@@ -333,10 +327,8 @@ describe('Slider', function () {
       ${'(page up/down, rtl)'}      | ${{locale: 'ar-AE'}}  | ${[{left: press.PageUp, result: +20}, {left: press.PageDown, result: -20}]}
     `('$Name sets page size to a multiple of step', function ({props, commands}) {
       let tree = render(
-        <Provider theme={theme} {...props}>
-          <Slider label="Label" minValue={0} maxValue={230} defaultValue={50} step={10} />
-        </Provider>
-      );
+        <Slider label="Label" minValue={0} maxValue={230} defaultValue={50} step={10} />
+      , undefined, props);
       // The slider page size should be initially calulated as 230/10 = 23 and then snapped to 20 so it is a multiple of the step
       let slider = tree.getByRole('slider');
       testKeypresses([slider, slider], commands);
@@ -350,10 +342,8 @@ describe('Slider', function () {
       ${'(page up/down, rtl)'}      | ${{locale: 'ar-AE'}}  | ${[{left: press.PageUp, result: +2}, {left: press.PageDown, result: -2}]}
     `('$Name sets page size to a multiple of step (scenario: step is less than min)', function ({props, commands}) {
       let tree = render(
-        <Provider theme={theme} {...props}>
-          <Slider label="Label" minValue={50} maxValue={75} defaultValue={60} step={2} />
-        </Provider>
-      );
+        <Slider label="Label" minValue={50} maxValue={75} defaultValue={60} step={2} />
+      , undefined, props);
       // The slider page size should be initially calulated as 25/10 = 2.5, snaps to 2
       let slider = tree.getByRole('slider');
       testKeypresses([slider, slider], commands);
@@ -367,10 +357,8 @@ describe('Slider', function () {
       ${'(page up/down, rtl)'}      | ${{locale: 'ar-AE'}}  | ${[{left: press.PageUp, result: +4}, {left: press.PageDown, result: -4}]}
     `('$Name sets page size to a multiple of step (scenario: step is greater than max)', function ({props, commands}) {
       let tree = render(
-        <Provider theme={theme} {...props}>
-          <Slider label="Label" minValue={-50} maxValue={-15} defaultValue={-40} step={2} />
-        </Provider>
-      );
+        <Slider label="Label" minValue={-50} maxValue={-15} defaultValue={-40} step={2} />
+      , undefined, props);
       // The slider page size should be initially calulated as 35/10 = 3.5, snaps to 4
       let slider = tree.getByRole('slider');
       testKeypresses([slider, slider], commands);
@@ -385,7 +373,7 @@ describe('Slider', function () {
         <Provider theme={theme} {...props}>
           <Slider label="Label" minValue={-1} defaultValue={0} maxValue={1} />
         </Provider>
-      );
+      , undefined, props);
       let slider = tree.getByRole('slider');
       testKeypresses([slider, slider], commands);
     });

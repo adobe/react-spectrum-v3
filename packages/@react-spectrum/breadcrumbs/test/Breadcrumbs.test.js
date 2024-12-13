@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, pointerMap, render, within} from '@react-spectrum/test-utils-internal';
+import {act, pointerMap, renderv3 as render, within} from '@react-spectrum/test-utils-internal';
 import {Breadcrumbs} from '../';
 import {Item} from '@react-stately/collections';
 import {Provider} from '@react-spectrum/provider';

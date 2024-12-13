@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import {render} from '@react-spectrum/test-utils-internal';
+import {renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {StatusLight} from '../';
 
 

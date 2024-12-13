@@ -16,7 +16,7 @@ import {Content, Header} from '@react-spectrum/view';
 import {ContextualHelp} from '@react-spectrum/contextualhelp';
 import {Form} from '../';
 import {Item, Picker} from '@react-spectrum/picker';
-import {pointerMap, render, simulateMobile} from '@react-spectrum/test-utils-internal';
+import {pointerMap, renderv3 as render, simulateMobile} from '@react-spectrum/test-utils-internal';
 import {Provider} from '@react-spectrum/provider';
 import React from 'react';
 import {TextField} from '@react-spectrum/textfield';

@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {fireEvent, pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {fireEvent, pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {press, testKeypresses} from './utils';
 import {Provider} from '@adobe/react-spectrum';
 import {RangeSlider} from '../';
@@ -288,10 +288,8 @@ describe('RangeSlider', function () {
       ${'(left/right arrows, isDisabled)'} | ${{locale: 'de-DE', isDisabled: true}}| ${[{left: press.ArrowRight, result: 0}, {left: press.ArrowLeft, result: 0}, {right: press.ArrowRight, result: 0}, {right: press.ArrowLeft, result: 0}]}
     `('$Name moves the slider in the correct direction', function ({props, commands}) {
       let tree = render(
-        <Provider theme={theme} {...props}>
-          <RangeSlider label="Label" defaultValue={{start: 20, end: 50}} minValue={0} maxValue={100} />
-        </Provider>
-      );
+        <RangeSlider label="Label" defaultValue={{start: 20, end: 50}} minValue={0} maxValue={100} />
+      , undefined, props);
       let sliders = tree.getAllByRole('slider') as [HTMLInputElement, HTMLInputElement];
       testKeypresses(sliders, commands);
     });
@@ -302,10 +300,8 @@ describe('RangeSlider', function () {
       ${'(left/right arrows, rtl)'} | ${{locale: 'ar-AE'}}  | ${[{left: press.ArrowRight, result: -10}, {left: press.ArrowLeft, result: +10}, {right: press.ArrowRight, result: -10}, {right: press.ArrowLeft, result: +10}]}
     `('$Name respects the step size', function ({props, commands}) {
       let tree = render(
-        <Provider theme={theme} {...props}>
-          <RangeSlider label="Label" step={10} defaultValue={{start: 20, end: 50}} />
-        </Provider>
-      );
+        <RangeSlider label="Label" step={10} defaultValue={{start: 20, end: 50}} />
+      , undefined, props);
       let sliders = tree.getAllByRole('slider') as [HTMLInputElement, HTMLInputElement];
       testKeypresses(sliders, commands);
     });
@@ -316,10 +312,8 @@ describe('RangeSlider', function () {
       ${'(left/right arrows, rtl)'} | ${{locale: 'ar-AE'}}  | ${[{left: press.ArrowRight, result: -1}, {left: press.ArrowRight, result: 0}, {right: press.ArrowLeft, result: +1}, {right: press.ArrowLeft, result: 0}]}
     `('$Name is clamped by min/max', function ({props, commands}) {
       let tree = render(
-        <Provider theme={theme} {...props}>
-          <RangeSlider label="Label" minValue={-5} defaultValue={{start: -4, end: 4}} maxValue={5} />
-        </Provider>
-      );
+        <RangeSlider label="Label" minValue={-5} defaultValue={{start: -4, end: 4}} maxValue={5} />
+      , undefined, props);
       let sliders = tree.getAllByRole('slider') as [HTMLInputElement, HTMLInputElement];
       testKeypresses(sliders, commands);
     });

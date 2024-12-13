@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, pointerMap, render} from '@react-spectrum/test-utils-internal';
+import {act, pointerMap, renderv3 as render} from '@react-spectrum/test-utils-internal';
 import {ClearButton} from '../';
 import React from 'react';
 import userEvent from '@testing-library/user-event';

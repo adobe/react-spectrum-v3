@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, pointerMap, render, within} from '@react-spectrum/test-utils-internal';
+import {act, fireEvent, render as noProviderRender, pointerMap, renderv3 as render, within} from '@react-spectrum/test-utils-internal';
 import {Calendar, RangeCalendar} from '../';
 import {CalendarDate, GregorianCalendar, today} from '@internationalized/date';
 import {Provider} from '@react-spectrum/provider';
@@ -268,10 +268,8 @@ describe('CalendarBase', () => {
       ${'v3 RangeCalendar'}  | ${RangeCalendar}
     `('$Name should handle minimum dates in a calendar system', ({Calendar}) => {
       let {getByRole, getAllByRole} = render(
-        <Provider theme={theme} locale="en-US-u-ca-japanese">
-          <Calendar defaultFocusedValue={new CalendarDate(1868, 9, 12)} />
-        </Provider>
-      );
+        <Calendar defaultFocusedValue={new CalendarDate(1868, 9, 12)} />
+      , undefined, {locale: 'en-US-u-ca-japanese'});
 
       let grid = getByRole('grid');
       let headers = within(grid).getAllByRole('columnheader', {hidden: true});
@@ -752,7 +750,7 @@ describe('CalendarBase', () => {
       ${'v3 RangeCalendar'}  | ${RangeCalendar} | ${{defaultValue: {start: new CalendarDate(2019, 6, 5), end: new CalendarDate(2019, 6, 10)}}}
     `('$Name should mirror arrow key movement in an RTL locale', async ({Calendar, props}) => {
       // LTR
-      let {getByRole, getAllByRole, rerender} = render(
+      let {getByRole, getAllByRole, rerender} = noProviderRender(
         <Provider theme={theme} locale="en-US">
           <Calendar {...props} autoFocus />
         </Provider>
