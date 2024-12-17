@@ -16,6 +16,8 @@ import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
 import stylistic from "@stylistic/eslint-plugin-ts";
+import reactCompiler from "eslint-plugin-react-compiler";
+console.log('reactCompiler', reactCompiler);
 
 import rulesDirPlugin from "eslint-plugin-rulesdir";
 rulesDirPlugin.RULES_DIR = './bin';
@@ -64,6 +66,7 @@ export default [{
         jest,
         monorepo,
         "rsp-rules": rspRules,
+        "react-compiler": reactCompiler
     },
 
     languageOptions: {
@@ -183,6 +186,7 @@ export default [{
         "no-multiple-empty-lines": ERROR,
         "no-unneeded-ternary": ERROR,
         "no-duplicate-imports": ERROR,
+        "react-compiler/react-compiler": "error",
         "react/display-name": OFF,
         "react/jsx-curly-spacing": [ERROR, "never"],
         "react/jsx-indent-props": [ERROR, ERROR],
@@ -224,7 +228,6 @@ export default [{
         "rsp-rules/sort-imports": [ERROR],
         "rulesdir/imports": [ERROR],
         "rulesdir/useLayoutEffectRule": [ERROR],
-        "rulesdir/pure-render": [ERROR],
         "jsx-a11y/accessible-emoji": ERROR,
         "jsx-a11y/alt-text": ERROR,
         "jsx-a11y/anchor-has-content": ERROR,
@@ -330,6 +333,7 @@ export default [{
         monorepo,
         jsdoc,
         "@stylistic": stylistic,
+        "react-compiler": reactCompiler
     },
 
     languageOptions: {

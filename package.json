@@ -153,6 +153,7 @@
     "eslint-plugin-jsdoc": "^50.4.1",
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-react": "^7.37.1",
+    "eslint-plugin-react-compiler": "beta",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-rulesdir": "^0.2.2",
     "fast-check": "^2.19.0",
@@ -213,13 +214,6 @@
     "yargs": "^17.2.1"
   },
   "resolutions": {
-    "@babel/cli": "7.24.1",
-    "@babel/core": "7.24.3",
-    "@babel/parser": "7.24.4",
-    "@babel/runtime": "7.24.4",
-    "@babel/preset-env": "7.24.4",
-    "@babel/traverse": "7.24.1",
-    "@babel/types": "7.24.0",
     "postcss": "8.4.24",
     "postcss-custom-properties": "13.2.0",
     "postcss-import": "15.1.0",
