@@ -36,7 +36,7 @@ export function cssModuleToSlots(cssModule) {
 
 export function SlotProvider(props) {
   const emptyObj = useMemo(() => ({}), []);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   let parentSlots = useContext(SlotContext) || emptyObj;
   let {slots = emptyObj, children} = props;
 

@@ -1930,12 +1930,6 @@ export let tableTests = () => {
       }
     };
 
-    let pressWithKeyboard = (element, key = ' ') => {
-      fireEvent.keyDown(element, {key});
-      act(() => {element.focus();});
-      fireEvent.keyUp(element, {key});
-    };
-
     describe('row selection', function () {
       it('should select a row from checkbox', async function () {
         let onSelectionChange = jest.fn();
@@ -1976,39 +1970,44 @@ export let tableTests = () => {
         checkSelectAll(tree);
       });
 
-      it('should select a row by pressing the Enter key on a row', function () {
+      it('should select a row by pressing the Enter key on a row', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
         let row = tree.getAllByRole('row')[1];
-        expect(row).toHaveAttribute('aria-selected', 'false');
-        fireEvent.keyDown(row, {key: 'Enter'});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        await user.keyboard('{Enter}');
 
         checkSelection(onSelectionChange, ['Foo 1']);
         expect(row).toHaveAttribute('aria-selected', 'true');
         checkSelectAll(tree);
       });
 
-      it('should select a row by pressing the Space key on a cell', function () {
+      it('should select a row by pressing the Space key on a cell', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
         let row = tree.getAllByRole('row')[1];
         expect(row).toHaveAttribute('aria-selected', 'false');
-        fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: ' '});
+        await user.tab();
+        await user.keyboard('{ArrowRight}{ArrowRight}');
+        await user.keyboard(' ');
 
         checkSelection(onSelectionChange, ['Foo 1']);
         expect(row).toHaveAttribute('aria-selected', 'true');
         checkSelectAll(tree);
       });
 
-      it('should select a row by pressing the Enter key on a cell', function () {
+      it('should select a row by pressing the Enter key on a cell', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
         let row = tree.getAllByRole('row')[1];
         expect(row).toHaveAttribute('aria-selected', 'false');
-        fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: 'Enter'});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        await user.keyboard('{Enter}');
 
         checkSelection(onSelectionChange, ['Foo 1']);
         expect(row).toHaveAttribute('aria-selected', 'true');
@@ -2049,7 +2048,7 @@ export let tableTests = () => {
         checkSelectAll(tree, 'indeterminate');
       });
 
-      it('should support selecting multiple with the Space key', function () {
+      it('should support selecting multiple with the Space key', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
@@ -2057,7 +2056,9 @@ export let tableTests = () => {
 
         let rows = tree.getAllByRole('row');
         checkRowSelection(rows.slice(1), false);
-        pressWithKeyboard(getCell(tree, 'Baz 1'));
+        await user.tab();
+        await user.keyboard('{ArrowRight}{ArrowRight}');
+        await user.keyboard(' ');
 
         checkSelection(onSelectionChange, ['Foo 1']);
         expect(rows[1]).toHaveAttribute('aria-selected', 'true');
@@ -2065,7 +2066,8 @@ export let tableTests = () => {
         checkSelectAll(tree, 'indeterminate');
 
         onSelectionChange.mockReset();
-        pressWithKeyboard(getCell(tree, 'Baz 2'));
+        await user.keyboard('{ArrowDown}');
+        await user.keyboard(' ');
 
         checkSelection(onSelectionChange, ['Foo 1', 'Foo 2']);
         expect(rows[1]).toHaveAttribute('aria-selected', 'true');
@@ -2075,7 +2077,7 @@ export let tableTests = () => {
 
         // Deselect
         onSelectionChange.mockReset();
-        pressWithKeyboard(getCell(tree, 'Baz 2'));
+        await user.keyboard(' ');
 
         checkSelection(onSelectionChange, ['Foo 1']);
         expect(rows[1]).toHaveAttribute('aria-selected', 'true');
@@ -2113,14 +2115,16 @@ export let tableTests = () => {
         expect(checkbox.checked).toBeFalsy();
       });
 
-      it('should not allow the user to select a disabled row via keyboard', function () {
+      it('should not allow the user to select a disabled row via keyboard', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange, disabledKeys: ['Foo 1']});
 
         let row = tree.getAllByRole('row')[1];
         expect(row).toHaveAttribute('aria-selected', 'false');
-        act(() => {fireEvent.keyDown(row, {key: ' '});});
-        act(() => {fireEvent.keyDown(row, {key: 'Enter'});});
+
+        await user.tab();
+        await user.keyboard(' ');
+        await user.keyboard('{Enter}');
 
         expect(onSelectionChange).not.toHaveBeenCalled();
         expect(row).toHaveAttribute('aria-selected', 'false');
@@ -2130,7 +2134,7 @@ export let tableTests = () => {
       });
 
       describe('Space key with focus on a link within a cell', () => {
-        it('should toggle selection and prevent scrolling of the table', () => {
+        it('should toggle selection and prevent scrolling of the table', async () => {
           let tree = render(
             <TableView aria-label="Table" selectionMode="multiple">
               <TableHeader columns={columns}>
@@ -2152,22 +2156,18 @@ export let tableTests = () => {
           let link = within(row).getAllByRole('link')[0];
           expect(link.textContent).toBe('Foo 1');
 
-          act(() => {
-            link.focus();
-            fireEvent.keyDown(link, {key: ' '});
-            fireEvent.keyUp(link, {key: ' '});
-            jest.runAllTimers();
-          });
+          await user.tab();
+          await user.keyboard('{ArrowRight}');
+          await user.keyboard('{ArrowRight}');
+          expect(document.activeElement).toBe(link);
+          await user.keyboard(' ');
+          act(() => {jest.runAllTimers();});
 
           row = tree.getAllByRole('row')[1];
           expect(row).toHaveAttribute('aria-selected', 'true');
 
-          act(() => {
-            link.focus();
-            fireEvent.keyDown(link, {key: ' '});
-            fireEvent.keyUp(link, {key: ' '});
-            jest.runAllTimers();
-          });
+          await user.keyboard(' ');
+          act(() => {jest.runAllTimers();});
 
           row = tree.getAllByRole('row')[1];
           link = within(row).getAllByRole('link')[0];
@@ -2240,7 +2240,7 @@ export let tableTests = () => {
         checkRowSelection(rows.slice(11), false);
       });
 
-      it('should extend a selection with Shift + ArrowDown', function () {
+      it('should extend a selection with Shift + ArrowDown', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
@@ -2248,10 +2248,13 @@ export let tableTests = () => {
 
         let rows = tree.getAllByRole('row');
         checkRowSelection(rows.slice(1), false);
-        pressWithKeyboard(getCell(tree, 'Baz 10'));
+        await user.tab();
+        await user.keyboard('{ArrowRight}{ArrowRight}{ArrowRight}');
+        await user.keyboard('{ArrowDown}'.repeat(9));
+        await user.keyboard(' ');
 
         onSelectionChange.mockReset();
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: 'ArrowDown', shiftKey: true});
+        await user.keyboard('{Shift>}{ArrowDown}{/Shift}');
 
         checkSelection(onSelectionChange, ['Foo 10', 'Foo 11']);
         checkRowSelection(rows.slice(1, 10), false);
@@ -2259,7 +2262,7 @@ export let tableTests = () => {
         checkRowSelection(rows.slice(12), false);
       });
 
-      it('should extend a selection with Shift + ArrowUp', function () {
+      it('should extend a selection with Shift + ArrowUp', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
@@ -2267,10 +2270,13 @@ export let tableTests = () => {
 
         let rows = tree.getAllByRole('row');
         checkRowSelection(rows.slice(1), false);
-        pressWithKeyboard(getCell(tree, 'Baz 10'));
+        await user.tab();
+        await user.keyboard('{ArrowRight}{ArrowRight}{ArrowRight}');
+        await user.keyboard('{ArrowDown}'.repeat(9));
+        await user.keyboard(' ');
 
         onSelectionChange.mockReset();
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: 'ArrowUp', shiftKey: true});
+        await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
 
         checkSelection(onSelectionChange, ['Foo 9', 'Foo 10']);
         checkRowSelection(rows.slice(1, 9), false);
@@ -2278,7 +2284,7 @@ export let tableTests = () => {
         checkRowSelection(rows.slice(11), false);
       });
 
-      it('should extend a selection with Ctrl + Shift + Home', function () {
+      it('should extend a selection with Ctrl + Shift + Home', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
@@ -2286,10 +2292,13 @@ export let tableTests = () => {
 
         let rows = tree.getAllByRole('row');
         checkRowSelection(rows.slice(1), false);
-        pressWithKeyboard(getCell(tree, 'Baz 10'));
+        await user.tab();
+        await user.keyboard('{ArrowRight}{ArrowRight}{ArrowRight}');
+        await user.keyboard('{ArrowDown}'.repeat(9));
+        await user.keyboard(' ');
 
         onSelectionChange.mockReset();
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: 'Home', shiftKey: true, ctrlKey: true});
+        await user.keyboard('{Shift>}{Control>}{Home}{/Control}{/Shift}');
 
         checkSelection(onSelectionChange, [
           'Foo 1', 'Foo 2', 'Foo 3', 'Foo 4', 'Foo 5',
@@ -2300,7 +2309,7 @@ export let tableTests = () => {
         checkRowSelection(rows.slice(11), false);
       });
 
-      it('should extend a selection with Ctrl + Shift + End', function () {
+      it('should extend a selection with Ctrl + Shift + End', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
@@ -2308,10 +2317,13 @@ export let tableTests = () => {
 
         let rows = tree.getAllByRole('row');
         checkRowSelection(rows.slice(1), false);
-        pressWithKeyboard(getCell(tree, 'Baz 10'));
+        await user.tab();
+        await user.keyboard('{ArrowRight}{ArrowRight}{ArrowRight}');
+        await user.keyboard('{ArrowDown}'.repeat(9));
+        await user.keyboard(' ');
 
         onSelectionChange.mockReset();
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: 'End', shiftKey: true, ctrlKey: true});
+        await user.keyboard('{Shift>}{Control>}{End}{/Control}{/Shift}');
 
         let expected = [];
         for (let i = 10; i <= 100; i++) {
@@ -2321,7 +2333,7 @@ export let tableTests = () => {
         checkSelection(onSelectionChange, expected);
       });
 
-      it('should extend a selection with Shift + PageDown', function () {
+      it('should extend a selection with Shift + PageDown', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
@@ -2329,10 +2341,13 @@ export let tableTests = () => {
 
         let rows = tree.getAllByRole('row');
         checkRowSelection(rows.slice(1), false);
-        pressWithKeyboard(getCell(tree, 'Baz 10'));
+        await user.tab();
+        await user.keyboard('{ArrowRight}{ArrowRight}{ArrowRight}');
+        await user.keyboard('{ArrowDown}'.repeat(9));
+        await user.keyboard(' ');
 
         onSelectionChange.mockReset();
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: 'PageDown', shiftKey: true});
+        await user.keyboard('{Shift>}{PageDown}{/Shift}');
 
         let expected = [];
         for (let i = 10; i <= 34; i++) {
@@ -2342,7 +2357,7 @@ export let tableTests = () => {
         checkSelection(onSelectionChange, expected);
       });
 
-      it('should extend a selection with Shift + PageUp', function () {
+      it('should extend a selection with Shift + PageUp', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
@@ -2350,10 +2365,13 @@ export let tableTests = () => {
 
         let rows = tree.getAllByRole('row');
         checkRowSelection(rows.slice(1), false);
-        pressWithKeyboard(getCell(tree, 'Baz 10'));
+        await user.tab();
+        await user.keyboard('{ArrowRight}{ArrowRight}{ArrowRight}');
+        await user.keyboard('{ArrowDown}'.repeat(9));
+        await user.keyboard(' ');
 
         onSelectionChange.mockReset();
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: 'PageUp', shiftKey: true});
+        await user.keyboard('{Shift>}{PageUp}{/Shift}');
 
         checkSelection(onSelectionChange, [
           'Foo 1', 'Foo 2', 'Foo 3', 'Foo 4', 'Foo 5',
@@ -2412,7 +2430,7 @@ export let tableTests = () => {
         checkSelectAll(tree, 'checked');
       });
 
-      it('should support selecting all via ctrl + A', function () {
+      it('should support selecting all via ctrl + A', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
@@ -2421,14 +2439,16 @@ export let tableTests = () => {
         let rows = tree.getAllByRole('row');
         checkRowSelection(rows.slice(1), false);
 
-        fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: 'a', ctrlKey: true});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        await user.keyboard('{Control>}a{/Control}');
 
         expect(onSelectionChange).toHaveBeenCalledTimes(1);
         expect(onSelectionChange.mock.calls[0][0]).toEqual('all');
         checkRowSelection(rows.slice(1), true);
         checkSelectAll(tree, 'checked');
 
-        fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: 'a', ctrlKey: true});
+        await user.keyboard('{Control>}a{/Control}');
 
         expect(onSelectionChange).toHaveBeenCalledTimes(1);
         expect(onSelectionChange.mock.calls[0][0]).toEqual('all');
@@ -2516,7 +2536,8 @@ export let tableTests = () => {
         checkSelectAll(tree, 'indeterminate');
 
         onSelectionChange.mockReset();
-        fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: 'Escape'});
+        await user.keyboard('{ArrowLeft}');
+        await user.keyboard('{Escape}');
 
         expect(onSelectionChange).toHaveBeenCalledTimes(1);
         expect(new Set(onSelectionChange.mock.calls[0][0])).toEqual(new Set());
@@ -2529,7 +2550,9 @@ export let tableTests = () => {
         let tree = renderTable({onSelectionChange});
 
         checkSelectAll(tree, 'unchecked');
-        fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: 'Escape'});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        await user.keyboard('{Escape}');
         expect(onSelectionChange).not.toHaveBeenCalled();
 
         await user.click(tree.getByLabelText('Select All'));
@@ -2537,7 +2560,8 @@ export let tableTests = () => {
         expect(onSelectionChange).toHaveBeenLastCalledWith('all');
 
         onSelectionChange.mockReset();
-        fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: 'Escape'});
+        await user.keyboard('{ArrowDown}{ArrowRight}{ArrowRight}');
+        await user.keyboard('{Escape}');
         expect(new Set(onSelectionChange.mock.calls[0][0])).toEqual(new Set());
       });
 
@@ -2871,22 +2895,22 @@ export let tableTests = () => {
         });
       });
 
-      it('should trigger onAction when pressing Enter', function () {
+      it('should trigger onAction when pressing Enter', async function () {
         let onSelectionChange = jest.fn();
         let onAction = jest.fn();
         let tree = renderTable({onSelectionChange, onAction});
         let rows = tree.getAllByRole('row');
 
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: 'Enter'});
-        fireEvent.keyUp(getCell(tree, 'Baz 10'), {key: 'Enter'});
+        await user.tab();
+        await user.keyboard('{ArrowDown}'.repeat(9));
+        await user.keyboard('{Enter}');
         expect(onSelectionChange).not.toHaveBeenCalled();
         expect(onAction).toHaveBeenCalledTimes(1);
         expect(onAction).toHaveBeenLastCalledWith('Foo 10');
         checkRowSelection(rows.slice(1), false);
 
         onAction.mockReset();
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: ' '});
-        fireEvent.keyUp(getCell(tree, 'Baz 10'), {key: ' '});
+        await user.keyboard(' ');
         expect(onSelectionChange).toHaveBeenCalledTimes(1);
         expect(onAction).not.toHaveBeenCalled();
         checkRowSelection([rows[10]], true);
@@ -3191,22 +3215,24 @@ export let tableTests = () => {
         });
       });
 
-      it('should support Enter to perform onAction with keyboard', function () {
+      it('should support Enter to perform onAction with keyboard', async function () {
         let onSelectionChange = jest.fn();
         let onAction = jest.fn();
-        let tree = renderTable({onSelectionChange, selectionStyle: 'highlight', onAction});
+        renderTable({onSelectionChange, selectionStyle: 'highlight', onAction});
 
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: ' '});
-        fireEvent.keyUp(getCell(tree, 'Baz 10'), {key: ' '});
+        await user.tab();
+        await user.keyboard('{ArrowDown}'.repeat(8));
+        await user.keyboard('{ArrowRight}{ArrowRight}');
+        onSelectionChange.mockReset();
+        await user.keyboard('{ArrowDown}');
         checkSelection(onSelectionChange, ['Foo 10']);
-        // screen reader automatically handles this one
-        expect(announce).not.toHaveBeenCalled();
         expect(onAction).not.toHaveBeenCalled();
 
-        announce.mockReset();
         onSelectionChange.mockReset();
-        fireEvent.keyDown(getCell(tree, 'Baz 5'), {key: 'Enter'});
-        fireEvent.keyUp(getCell(tree, 'Baz 5'), {key: 'Enter'});
+        await user.keyboard('{ArrowUp}'.repeat(5));
+        onSelectionChange.mockReset();
+        announce.mockReset();
+        await user.keyboard('{Enter}');
         expect(onSelectionChange).not.toHaveBeenCalled();
         expect(announce).not.toHaveBeenCalled();
         expect(onAction).toHaveBeenCalledTimes(1);
@@ -3236,20 +3262,17 @@ export let tableTests = () => {
 
         announce.mockReset();
         onSelectionChange.mockReset();
-        fireEvent.keyDown(document.activeElement, {key: 'ArrowDown'});
-        fireEvent.keyUp(document.activeElement, {key: 'ArrowDown'});
+        await user.keyboard('{ArrowDown}');
         expect(announce).toHaveBeenCalledWith('Foo 6 selected.');
         checkSelection(onSelectionChange, ['Foo 6']);
 
         onSelectionChange.mockReset();
-        fireEvent.keyDown(document.activeElement, {key: 'ArrowUp'});
-        fireEvent.keyUp(document.activeElement, {key: 'ArrowUp'});
+        await user.keyboard('{ArrowUp}');
         expect(announce).toHaveBeenCalledWith('Foo 5 selected.');
         checkSelection(onSelectionChange, ['Foo 5']);
 
         onSelectionChange.mockReset();
-        fireEvent.keyDown(document.activeElement, {key: 'ArrowDown', shiftKey: true});
-        fireEvent.keyUp(document.activeElement, {key: 'ArrowDown', shiftKey: true});
+        await user.keyboard('{Shift>}{ArrowDown}{/Shift}');
         expect(announce).toHaveBeenCalledWith('Foo 6 selected. 2 items selected.');
         checkSelection(onSelectionChange, ['Foo 5', 'Foo 6']);
       });
@@ -3265,15 +3288,13 @@ export let tableTests = () => {
 
         announce.mockReset();
         onSelectionChange.mockReset();
-        fireEvent.keyDown(document.activeElement, {key: 'ArrowDown', shiftKey: true});
-        fireEvent.keyUp(document.activeElement, {key: 'ArrowDown', shiftKey: true});
+        await user.keyboard('{Shift>}{ArrowDown}{/Shift}');
         expect(announce).toHaveBeenCalledWith('Foo 6 selected. 2 items selected.');
         checkSelection(onSelectionChange, ['Foo 5', 'Foo 6']);
 
         announce.mockReset();
         onSelectionChange.mockReset();
-        fireEvent.keyDown(document.activeElement, {key: 'ArrowDown'});
-        fireEvent.keyUp(document.activeElement, {key: 'ArrowDown'});
+        await user.keyboard('{ArrowDown}');
         expect(announce).toHaveBeenCalledWith('Foo 7 selected. 1 item selected.');
         checkSelection(onSelectionChange, ['Foo 7']);
       });
@@ -3316,22 +3337,23 @@ export let tableTests = () => {
         checkSelection(onSelectionChange, ['Foo 7']);
       });
 
-      it('should not call onSelectionChange when hitting Space/Enter on the currently selected row', function () {
+      it('should not call onSelectionChange when hitting Space/Enter on the currently selected row', async function () {
         let onSelectionChange = jest.fn();
         let onAction = jest.fn();
-        let tree = renderTable({onSelectionChange, selectionStyle: 'highlight', onAction});
+        renderTable({onSelectionChange, selectionStyle: 'highlight', onAction});
 
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: ' '});
-        fireEvent.keyUp(getCell(tree, 'Baz 10'), {key: ' '});
+        await user.tab();
+        await user.keyboard('{ArrowDown}'.repeat(8));
+        await user.keyboard('{ArrowRight}{ArrowRight}');
+        onSelectionChange.mockReset();
+        await user.keyboard('{ArrowDown}');
         checkSelection(onSelectionChange, ['Foo 10']);
         expect(onAction).not.toHaveBeenCalled();
 
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: ' '});
-        fireEvent.keyUp(getCell(tree, 'Baz 10'), {key: ' '});
+        await user.keyboard(' ');
         expect(onSelectionChange).toHaveBeenCalledTimes(1);
 
-        fireEvent.keyDown(getCell(tree, 'Baz 10'), {key: 'Enter'});
-        fireEvent.keyUp(getCell(tree, 'Baz 10'), {key: 'Enter'});
+        await user.keyboard('{Enter}');
         expect(onAction).toHaveBeenCalledTimes(1);
         expect(onAction).toHaveBeenCalledWith('Foo 10');
         expect(onSelectionChange).toHaveBeenCalledTimes(1);
@@ -3348,15 +3370,13 @@ export let tableTests = () => {
 
         announce.mockReset();
         onSelectionChange.mockReset();
-        fireEvent.keyDown(document.activeElement, {key: 'a', ctrlKey: true});
-        fireEvent.keyUp(document.activeElement, {key: 'a', ctrlKey: true});
+        await user.keyboard('{Control>}a{/Control}');
         expect(onSelectionChange.mock.calls[0][0]).toEqual('all');
         expect(announce).toHaveBeenCalledWith('All items selected.');
 
         announce.mockReset();
         onSelectionChange.mockReset();
-        fireEvent.keyDown(document.activeElement, {key: 'ArrowDown'});
-        fireEvent.keyUp(document.activeElement, {key: 'ArrowDown'});
+        await user.keyboard('{ArrowDown}');
         expect(announce).toHaveBeenCalledWith('Foo 6 selected. 1 item selected.');
         checkSelection(onSelectionChange, ['Foo 6']);
       });
@@ -3392,14 +3412,6 @@ export let tableTests = () => {
       }
     };
 
-    let pressWithKeyboard = (element, key = ' ') => {
-      act(() => {
-        fireEvent.keyDown(element, {key});
-        element.focus();
-        fireEvent.keyUp(element, {key});
-      });
-    };
-
     describe('row selection', function () {
       it('should select a row from checkbox', async function () {
         let onSelectionChange = jest.fn();
@@ -3425,49 +3437,57 @@ export let tableTests = () => {
         expect(row).toHaveAttribute('aria-selected', 'true');
       });
 
-      it('should select a row by pressing the Space key on a row', function () {
+      it('should select a row by pressing the Space key on a row', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
         let row = tree.getAllByRole('row')[1];
         expect(row).toHaveAttribute('aria-selected', 'false');
-        act(() => {fireEvent.keyDown(row, {key: ' '});});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        await user.keyboard(' ');
 
         checkSelection(onSelectionChange, ['Foo 1']);
         expect(row).toHaveAttribute('aria-selected', 'true');
       });
 
-      it('should select a row by pressing the Enter key on a row', function () {
+      it('should select a row by pressing the Enter key on a row', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
         let row = tree.getAllByRole('row')[1];
         expect(row).toHaveAttribute('aria-selected', 'false');
-        act(() => {fireEvent.keyDown(row, {key: 'Enter'});});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        await user.keyboard('{Enter}');
 
         checkSelection(onSelectionChange, ['Foo 1']);
         expect(row).toHaveAttribute('aria-selected', 'true');
       });
 
-      it('should select a row by pressing the Space key on a cell', function () {
+      it('should select a row by pressing the Space key on a cell', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
         let row = tree.getAllByRole('row')[1];
         expect(row).toHaveAttribute('aria-selected', 'false');
-        act(() => {fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: ' '});});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        await user.keyboard('{Enter}');
 
         checkSelection(onSelectionChange, ['Foo 1']);
         expect(row).toHaveAttribute('aria-selected', 'true');
       });
 
-      it('should select a row by pressing the Enter key on a cell', function () {
+      it('should select a row by pressing the Enter key on a cell', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
         let row = tree.getAllByRole('row')[1];
         expect(row).toHaveAttribute('aria-selected', 'false');
-        act(() => {fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: 'Enter'});});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        await user.keyboard('{Enter}');
 
         checkSelection(onSelectionChange, ['Foo 1']);
         expect(row).toHaveAttribute('aria-selected', 'true');
@@ -3535,13 +3555,15 @@ export let tableTests = () => {
         checkRowSelection(rows.slice(2), false);
       });
 
-      it('should support selecting single row only with the Space key', function () {
+      it('should support selecting single row only with the Space key', async function () {
         let onSelectionChange = jest.fn();
         let tree = renderTable({onSelectionChange});
 
         let rows = tree.getAllByRole('row');
         checkRowSelection(rows.slice(1), false);
-        pressWithKeyboard(getCell(tree, 'Baz 1'));
+        await user.tab();
+        await user.keyboard('{ArrowRight}{ArrowRight}');
+        await user.keyboard(' ');
 
         checkSelection(onSelectionChange, ['Foo 1']);
         expect(rows[1]).toHaveAttribute('aria-selected', 'true');
@@ -3549,7 +3571,8 @@ export let tableTests = () => {
         checkRowSelection(rows.slice(2), false);
 
         onSelectionChange.mockReset();
-        pressWithKeyboard(getCell(tree, 'Baz 2'));
+        await user.keyboard('{ArrowDown}');
+        await user.keyboard(' ');
 
         checkSelection(onSelectionChange, ['Foo 2']);
         expect(rows[1]).toHaveAttribute('aria-selected', 'false');
@@ -3558,7 +3581,7 @@ export let tableTests = () => {
 
         // Deselect
         onSelectionChange.mockReset();
-        pressWithKeyboard(getCell(tree, 'Baz 2'));
+        await user.keyboard(' ');
 
         checkSelection(onSelectionChange, []);
         expect(rows[1]).toHaveAttribute('aria-selected', 'false');
@@ -3574,9 +3597,11 @@ export let tableTests = () => {
         expect(row).toHaveAttribute('aria-selected', 'false');
         await user.click(within(row).getByRole('checkbox'));
         await user.click(getCell(tree, 'Baz 1'));
-        fireEvent.keyDown(row, {key: ' '});
-        fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: ' '});
-        fireEvent.keyDown(getCell(tree, 'Bar 1'), {key: 'Enter'});
+        await user.keyboard('{ArrowLeft}{ArrowLeft}{ArrowLeft}');
+        await user.keyboard(' ');
+        await user.keyboard('{ArrowRight}{ArrowRight}');
+        await user.keyboard(' ');
+        await user.keyboard('{Enter}');
 
         expect(row).toHaveAttribute('aria-selected', 'false');
         expect(onSelectionChange).not.toHaveBeenCalled();
@@ -4687,13 +4712,11 @@ export let tableTests = () => {
       await user.click(column2Button);
       act(() => {jest.runAllTimers();});
       expect(tree.queryAllByRole('menuitem')).toBeTruthy();
-      fireEvent.keyDown(document.activeElement, {key: 'Escape'});
-      fireEvent.keyUp(document.activeElement, {key: 'Escape'});
+      await user.keyboard('{Escape}');
       act(() => {jest.runAllTimers();});
       act(() => {jest.runAllTimers();});
       expect(document.activeElement).toBe(column2Button);
-      fireEvent.keyDown(document.activeElement, {key: 'ArrowLeft', code: 37, charCode: 37});
-      fireEvent.keyUp(document.activeElement, {key: 'ArrowLeft', code: 37, charCode: 37});
+      await user.keyboard('{ArrowLeft}');
       expect(document.activeElement).toBe(column1Button);
 
       await user.click(toggleButton);
