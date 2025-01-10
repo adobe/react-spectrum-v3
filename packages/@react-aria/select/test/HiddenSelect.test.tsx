@@ -3,6 +3,7 @@ import {Item} from 'react-stately';
 import {pointerMap} from '@react-spectrum/test-utils-internal';
 import React, {useRef} from 'react';
 import {render, screen} from '@testing-library/react';
+import {Select} from '../stories/example';
 import {SelectProps, useSelectState} from '@react-stately/select';
 import userEvent from '@testing-library/user-event';
 
@@ -81,5 +82,25 @@ describe('<HiddenSelect />', () => {
     );
 
     expect(screen.getByTestId('hidden-select-container')).toHaveAttribute('data-react-aria-prevent-focus');
+  });
+
+  it('should trigger onChange when select option is changed', async () => {
+    const onChangeSpy = jest.fn();
+    const {getByRole} = render(
+      <form onChange={onChangeSpy}>
+        <Select isOpen data-testid={'select-onchange'} label={'Example'}>
+          <Item key={'1'}>Item 1</Item>
+          <Item key={'2'}>Item 2</Item>
+          <Item key={'3'}>Item 3</Item>
+        </Select>
+      </form>
+    );
+
+    // Simulate user selecting an option
+    const option = getByRole('option', {name: 'Item 1'});
+    await user.click(option);
+
+    // Check if the form's onChange event was called
+    expect(onChangeSpy).toHaveBeenCalled();
   });
 });

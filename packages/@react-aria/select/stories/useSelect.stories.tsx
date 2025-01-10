@@ -34,3 +34,17 @@ const Template = () => (
 export const ScrollTesting = {
   render: Template
 };
+
+
+export const ChangeEventPropagation = {
+  render: () => {
+    const onChange = (e) => {
+      console.log(e);
+    };
+    return (
+      <form onChange={onChange}>
+        <Template />
+      </form>
+    );
+  }
+};
