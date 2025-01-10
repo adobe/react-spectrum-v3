@@ -934,7 +934,15 @@ function isOverTarget(point: EventPoint, target: Element) {
 
 function shouldPreventDefaultDown(target: Element) {
   // We cannot prevent default if the target is a draggable element.
-  return !(target instanceof HTMLElement) || !target.hasAttribute('draggable');
+  if (!(target instanceof HTMLElement)) {
+    return true;
+  }
+
+  if (target.tagName === 'A' && target.getAttribute('draggable') !== 'false') {
+    return false;
+  }
+
+  return !target.hasAttribute('draggable');
 }
 
 function shouldPreventDefaultUp(target: Element) {
