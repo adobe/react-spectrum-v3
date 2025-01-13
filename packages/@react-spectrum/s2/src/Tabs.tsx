@@ -32,13 +32,13 @@ import {createContext, forwardRef, Fragment, ReactNode, useCallback, useContext,
 import {focusRing, size, style} from '../style' with {type: 'macro'};
 import {getAllowedOverrides, StyleProps, StylesPropWithHeight, UnsafeStyles} from './style-utils' with {type: 'macro'};
 import {IconContext} from './Icon';
+import {inertValue, useEffectEvent, useLayoutEffect, useResizeObserver} from '@react-aria/utils';
 // @ts-ignore
 import intlMessages from '../intl/*.json';
 import {Picker, PickerItem} from './TabsPicker';
 import {Text, TextContext} from './Content';
 import {useControlledState} from '@react-stately/utils';
 import {useDOMRef} from '@react-spectrum/utils';
-import {useEffectEvent, useLayoutEffect, useResizeObserver} from '@react-aria/utils';
 import {useLocale, useLocalizedStringFormatter} from '@react-aria/i18n';
 import {useSpectrumContextProps} from './useSpectrumContextProps';
 
@@ -455,7 +455,7 @@ let HiddenTabs = function (props: {
   return (
     <div
       // @ts-ignore
-      inert="true"
+      inert={inertValue(true)}
       ref={listRef}
       className={style({
         display: '[inherit]',

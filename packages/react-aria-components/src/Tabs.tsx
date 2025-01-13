@@ -15,7 +15,7 @@ import {AriaTabListProps, AriaTabPanelProps, mergeProps, Orientation, useFocusRi
 import {Collection, CollectionBuilder, createHideableComponent, createLeafComponent} from '@react-aria/collections';
 import {CollectionProps, CollectionRendererContext, DefaultCollectionRenderer, usePersistedKeys} from './Collection';
 import {ContextValue, Provider, RenderProps, SlotProps, StyleRenderProps, useContextProps, useRenderProps, useSlottedContext} from './utils';
-import {filterDOMProps, useObjectRef} from '@react-aria/utils';
+import {filterDOMProps, inertValue, useObjectRef} from '@react-aria/utils';
 import {Collection as ICollection, Node, TabListState, useTabListState} from 'react-stately';
 import React, {createContext, ForwardedRef, forwardRef, JSX, useContext, useMemo} from 'react';
 
@@ -323,7 +323,7 @@ export const TabPanel = /*#__PURE__*/ createHideableComponent(function TabPanel(
       data-focused={isFocused || undefined}
       data-focus-visible={isFocusVisible || undefined}
       // @ts-ignore
-      inert={!isSelected ? 'true' : undefined}
+      inert={inertValue(!isSelected)}
       data-inert={!isSelected ? 'true' : undefined}>
       <Provider
         values={[

@@ -20,7 +20,7 @@ import {ContentContext, FooterContext, TextContext} from './Content';
 import {createContext, CSSProperties, forwardRef, ReactNode, useContext} from 'react';
 import {DividerContext} from './Divider';
 import {DOMProps, DOMRef, DOMRefValue} from '@react-types/shared';
-import {filterDOMProps} from '@react-aria/utils';
+import {filterDOMProps, inertValue} from '@react-aria/utils';
 import {focusRing, lightDark, space, style} from '../style' with {type: 'macro'};
 import {getAllowedOverrides, StyleProps, UnsafeStyles} from './style-utils' with {type: 'macro'};
 import {IllustrationContext} from './Icon';
@@ -421,7 +421,7 @@ export const Card = forwardRef(function Card(props: CardProps, ref: DOMRef<HTMLD
         {...filterDOMProps(otherProps)}
         id={id != null ? String(id) : undefined}
         // @ts-ignore - React < 19 compat
-        inert={isSkeleton ? 'true' : undefined}
+        inert={inertValue(isSkeleton)}
         ref={domRef}
         className={UNSAFE_className + card({size, density, variant, isCardView: ElementType !== 'div'}, styles)}
         style={UNSAFE_style}>
