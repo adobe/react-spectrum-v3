@@ -95,6 +95,55 @@ SliderCSS.argTypes = {
   }
 };
 
+interface SliderCustomFormatProps<T = number | number[]> extends SliderProps<T> {
+  fahrenheit: boolean,
+  showAlternative: boolean
+}
+
+function temperatureUnitFormat(fahrenheit: boolean): Intl.NumberFormatOptions {
+  return {
+    style: 'unit',
+    unit: fahrenheit ? 'fahrenheit' : 'celsius',
+    maximumFractionDigits: 1
+  };
+}
+
+export const SliderCustomFormat = ({fahrenheit, showAlternative, ...props}: SliderCustomFormatProps) => {
+  const mainFormat = temperatureUnitFormat(fahrenheit);
+  let format: Intl.NumberFormatOptions | ((value: number, locale: string) => string) = mainFormat;
+
+  if (showAlternative) {
+    format = (value, locale) => {
+      const formatter = new Intl.NumberFormat(locale, mainFormat);
+      const altValue = fahrenheit ? value * 9 / 5 + 32 : (value - 32) * 5 / 9;
+      const altFormat = temperatureUnitFormat(!fahrenheit);
+      const altFormatter = new Intl.NumberFormat(locale, altFormat);
+      return `${formatter.format(value)} (${altFormatter.format(altValue)})`;
+    };
+  }
+
+  return (
+    <Slider {...props} defaultValue={32} className={styles.slider} format={format}>
+      <div className={styles.label}>
+        <Label>Temperature</Label>
+        <SliderOutput />
+      </div>
+      <SliderTrack className={styles.track}>
+        <SliderThumb className={styles.thumb} />
+      </SliderTrack>
+    </Slider>
+  );
+};
+
+SliderCustomFormat.args = {
+  fahrenheit: false,
+  showAlternative: false,
+  isDisabled: false,
+  minValue: 0,
+  maxValue: 100,
+  step: 1
+};
+
 const CustomThumb = ({index, children}: {index: number, children: React.ReactNode}) => {
   return (
     <SliderThumb
