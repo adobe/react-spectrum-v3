@@ -72,7 +72,12 @@ export interface ComboBoxProps<T> extends CollectionBase<T>, Omit<SingleSelectio
 
 export interface AriaComboBoxProps<T> extends ComboBoxProps<T>, DOMProps, InputDOMProps, AriaLabelingProps {
   /** Whether keyboard navigation is circular. */
-  shouldFocusWrap?: boolean
+  shouldFocusWrap?: boolean,
+  /**
+   * Whether the combobox listbox should focus on hover.
+   * @default true
+   */
+  shouldFocusOnHover?: boolean
 }
 
 export interface SpectrumComboBoxProps<T> extends SpectrumTextInputBase, Omit<AriaComboBoxProps<T>, 'menuTrigger' | 'isInvalid' | 'validationState'>, SpectrumFieldValidation<ComboBoxValidationValue>, SpectrumLabelableProps, StyleProps, Omit<AsyncLoadable, 'isLoading'> {
