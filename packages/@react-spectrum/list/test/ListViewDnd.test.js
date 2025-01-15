@@ -1914,12 +1914,14 @@ describe('ListView', function () {
         expect(row).toHaveAttribute('draggable', 'true');
 
         await user.tab();
+        await user.tab();
         let draghandle = within(cell).getAllByRole('button')[0];
         expect(draghandle).toBeTruthy();
         expect(draghandle).toHaveAttribute('draggable', 'true');
 
-        fireEvent.keyDown(draghandle, {key: 'Enter'});
-        fireEvent.keyUp(draghandle, {key: 'Enter'});
+        await user.keyboard('{ArrowRight}');
+        expect(document.activeElement).toBe(draghandle);
+        await user.keyboard('{Enter}');
 
         expect(onDragStart).toHaveBeenCalledTimes(1);
         expect(onDragStart).toHaveBeenCalledWith({
@@ -1931,8 +1933,7 @@ describe('ListView', function () {
 
         act(() => jest.runAllTimers());
         expect(document.activeElement).toBe(droppable);
-        fireEvent.keyDown(droppable, {key: 'Enter'});
-        fireEvent.keyUp(droppable, {key: 'Enter'});
+        await user.keyboard('{Enter}');
 
         expect(onDrop).toHaveBeenCalledTimes(1);
         expect(await onDrop.mock.calls[0][0].items[0].getText('text/plain')).toBe('Adobe Photoshop');
@@ -1953,6 +1954,8 @@ describe('ListView', function () {
           <DraggableListView listViewProps={{selectedKeys: ['a', 'b', 'c', 'd']}} />
       );
 
+        await user.tab();
+
         let droppable = getByText('Drop here');
         let rows = getAllByRole('row');
 
@@ -1971,13 +1974,13 @@ describe('ListView', function () {
         let cellD = within(rows[3]).getByRole('gridcell');
         expect(cellD).toHaveTextContent('Adobe InDesign');
         expect(rows[3]).toHaveAttribute('draggable', 'true');
-
-        await user.tab();
         let draghandle = within(cellA).getAllByRole('button')[0];
         expect(draghandle).toBeTruthy();
 
-        fireEvent.keyDown(draghandle, {key: 'Enter'});
-        fireEvent.keyUp(draghandle, {key: 'Enter'});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        expect(document.activeElement).toBe(draghandle);
+        await user.keyboard('{Enter}');
 
         expect(onDragStart).toHaveBeenCalledTimes(1);
         expect(onDragStart).toHaveBeenCalledWith({
@@ -1989,8 +1992,7 @@ describe('ListView', function () {
 
         act(() => jest.runAllTimers());
         expect(document.activeElement).toBe(droppable);
-        fireEvent.keyDown(droppable, {key: 'Enter'});
-        fireEvent.keyUp(droppable, {key: 'Enter'});
+        await user.keyboard('{Enter}');
 
         expect(onDrop).toHaveBeenCalledTimes(1);
 
@@ -2025,8 +2027,10 @@ describe('ListView', function () {
         let draghandle = within(cellA).getAllByRole('button')[0];
         expect(draghandle).toBeTruthy();
 
-        fireEvent.keyDown(draghandle, {key: 'Enter'});
-        fireEvent.keyUp(draghandle, {key: 'Enter'});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        expect(document.activeElement).toBe(draghandle);
+        await user.keyboard('{Enter}');
 
         let dndState = globalDndState;
         expect(dndState).toEqual({draggingCollectionRef: expect.any(Object), draggingKeys: new Set(['a', 'b', 'c', 'd'])});
@@ -2034,8 +2038,7 @@ describe('ListView', function () {
         act(() => jest.runAllTimers());
 
         expect(document.activeElement).toBe(droppable);
-        fireEvent.keyDown(droppable, {key: 'Enter'});
-        fireEvent.keyUp(droppable, {key: 'Enter'});
+        await user.keyboard('{Enter}');
 
         dndState = globalDndState;
         expect(dndState).toEqual({draggingKeys: new Set()});
@@ -2063,8 +2066,10 @@ describe('ListView', function () {
         let draghandle = within(cellA).getAllByRole('button')[0];
         expect(draghandle).toBeTruthy();
 
-        fireEvent.keyDown(draghandle, {key: 'Enter'});
-        fireEvent.keyUp(draghandle, {key: 'Enter'});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        expect(document.activeElement).toBe(draghandle);
+        await user.keyboard('{Enter}');
 
         let dndState = globalDndState;
         expect(dndState).toEqual({draggingCollectionRef: expect.any(Object), draggingKeys: new Set(['a', 'b', 'c', 'd'])});
@@ -2072,8 +2077,7 @@ describe('ListView', function () {
         act(() => jest.runAllTimers());
 
         expect(document.activeElement).toBe(droppable);
-        fireEvent.keyDown(droppable, {key: 'Escape'});
-        fireEvent.keyUp(droppable, {key: 'Escape'});
+        await user.keyboard('{Escape}');
 
         dndState = globalDndState;
         expect(dndState).toEqual({draggingKeys: new Set()});
@@ -2092,8 +2096,9 @@ describe('ListView', function () {
         let draghandle = within(cell).getAllByRole('button')[0];
         expect(draghandle).toBeTruthy();
         expect(draghandle).toHaveAttribute('draggable', 'true');
-        fireEvent.keyDown(draghandle, {key: 'Enter'});
-        fireEvent.keyUp(draghandle, {key: 'Enter'});
+        await user.keyboard('{ArrowRight}');
+        expect(document.activeElement).toBe(draghandle);
+        await user.keyboard('{Enter}');
         act(() => jest.runAllTimers());
 
         // First drop target should be an internal folder, hence setting dropCollectionRef
@@ -2101,8 +2106,7 @@ describe('ListView', function () {
         expect(dndState.dropCollectionRef.current).toBe(list);
 
         // Canceling the drop operation should clear dropCollectionRef before onDragEnd fires, resulting in isInternal = false
-        fireEvent.keyDown(document.body, {key: 'Escape'});
-        fireEvent.keyUp(document.body, {key: 'Escape'});
+        await user.keyboard('{Escape}');
         dndState = globalDndState;
         expect(dndState.dropCollectionRef).toBeFalsy();
         expect(onDragEnd).toHaveBeenCalledTimes(1);
@@ -2128,8 +2132,9 @@ describe('ListView', function () {
           let draghandle = within(cell).getAllByRole('button')[0];
           expect(draghandle).toBeTruthy();
           expect(draghandle).toHaveAttribute('draggable', 'true');
-          fireEvent.keyDown(draghandle, {key: 'Enter'});
-          fireEvent.keyUp(draghandle, {key: 'Enter'});
+          await user.keyboard('{ArrowRight}');
+          expect(document.activeElement).toBe(draghandle);
+          await user.keyboard('{Enter}');
           act(() => jest.runAllTimers());
         }
 
@@ -2424,20 +2429,19 @@ describe('ListView', function () {
 
           await beginDrag(tree);
           await user.tab();
-          fireEvent.keyDown(document.activeElement, {key: 'ArrowDown'});
-          fireEvent.keyUp(document.activeElement, {key: 'ArrowDown'});
+          await user.keyboard('{ArrowDown}');
           // Should allow insert since we provide all handlers
           expect(document.activeElement).toHaveAttribute('aria-label', 'Insert before Pictures');
-          fireEvent.keyDown(document.activeElement, {key: 'Escape'});
-          fireEvent.keyUp(document.activeElement, {key: 'Escape'});
+          await user.keyboard('{Escape}');
 
           tree.rerender(<DragBetweenListsComplex secondListDnDOptions={{...mockUtilityOptions, onRootDrop: null, onInsert: null}} />);
+          await user.tab({shift: true});
+          await user.tab({shift: true});
           await beginDrag(tree);
           await user.tab();
           // Should automatically jump to the folder target since we didn't provide onRootDrop and onInsert
           expect(document.activeElement).toHaveAttribute('aria-label', 'Drop on Pictures');
-          fireEvent.keyDown(document.activeElement, {key: 'ArrowDown'});
-          fireEvent.keyUp(document.activeElement, {key: 'ArrowDown'});
+          await user.keyboard('{ArrowDown}');
           expect(document.activeElement).toHaveAttribute('aria-label', 'Drop on Apps');
         });
 
@@ -3124,24 +3128,20 @@ describe('ListView', function () {
       let rows = getAllByRole('row');
       expect(rows).toHaveLength(9);
       let droppable = rows[8];
-      moveFocus('ArrowDown');
-      fireEvent.keyDown(document.activeElement, {key: 'Enter'});
-      fireEvent.keyUp(document.activeElement, {key: 'Enter'});
-      moveFocus('ArrowDown');
-      fireEvent.keyDown(document.activeElement, {key: 'Enter'});
-      fireEvent.keyUp(document.activeElement, {key: 'Enter'});
-      moveFocus('ArrowDown');
-      fireEvent.keyDown(document.activeElement, {key: 'Enter'});
-      fireEvent.keyUp(document.activeElement, {key: 'Enter'});
+      await user.keyboard('{ArrowDown}');
+      await user.keyboard('{Enter}');
+      await user.keyboard('{ArrowDown}');
+      await user.keyboard('{Enter}');
+      await user.keyboard('{ArrowDown}');
+      await user.keyboard('{Enter}');
 
       expect(new Set(onSelectionChange.mock.calls[2][0])).toEqual(new Set(['1', '2', '3']));
       let draghandle = within(rows[3]).getAllByRole('button')[0];
       expect(draghandle).toBeTruthy();
       expect(draghandle).toHaveAttribute('draggable', 'true');
 
-      moveFocus('ArrowRight');
-      fireEvent.keyDown(draghandle, {key: 'Enter'});
-      fireEvent.keyUp(draghandle, {key: 'Enter'});
+      await user.keyboard('{ArrowRight}');
+      await user.keyboard('{Enter}');
 
       expect(onDragStart).toHaveBeenCalledTimes(1);
       expect(onDragStart).toHaveBeenCalledWith({
@@ -3155,8 +3155,7 @@ describe('ListView', function () {
       let droppableButton = await within(droppable).findByLabelText('Drop on Folder 2', {hidden: true});
       expect(document.activeElement).toBe(droppableButton);
 
-      fireEvent.keyDown(droppableButton, {key: 'Enter'});
-      fireEvent.keyUp(droppableButton, {key: 'Enter'});
+      await user.keyboard('{Enter}');
       await act(async () => Promise.resolve());
       act(() => jest.runAllTimers());
 
@@ -3178,18 +3177,18 @@ describe('ListView', function () {
       expect(rows).toHaveLength(6);
 
       // Select the folder and perform a drag. Drag start shouldn't include the previously selected items
-      moveFocus('ArrowDown');
-      fireEvent.keyDown(droppable, {key: 'Enter'});
-      fireEvent.keyUp(droppable, {key: 'Enter'});
+      await user.keyboard('{ArrowDown}');
+      await user.keyboard('{Enter}');
       // Selection change event still has all keys
       expect(new Set(onSelectionChange.mock.calls[0][0])).toEqual(new Set(['1', '2', '3', '8']));
 
       draghandle = within(rows[0]).getAllByRole('button')[0];
       expect(draghandle).toBeTruthy();
       expect(draghandle).toHaveAttribute('draggable', 'true');
-      moveFocus('ArrowRight');
-      fireEvent.keyDown(draghandle, {key: 'Enter'});
-      fireEvent.keyUp(draghandle, {key: 'Enter'});
+      await user.keyboard('{ArrowUp}'.repeat(5));
+      await user.keyboard('{ArrowRight}');
+      expect(document.activeElement).toBe(draghandle);
+      await user.keyboard('{Enter}');
       act(() => jest.runAllTimers());
 
       expect(onDragStart).toHaveBeenCalledTimes(1);
@@ -3200,8 +3199,7 @@ describe('ListView', function () {
         y: 25
       });
 
-      fireEvent.keyDown(document.body, {key: 'Escape'});
-      fireEvent.keyUp(document.body, {key: 'Escape'});
+      await user.keyboard('{Escape}');
     });
 
     it('should automatically focus the newly added dropped item', async function () {
@@ -3305,13 +3303,14 @@ describe('ListView', function () {
       await user.tab();
       let draghandle = within(cell).getAllByRole('button')[0];
 
-      fireEvent.keyDown(draghandle, {key: 'Enter'});
-      fireEvent.keyUp(draghandle, {key: 'Enter'});
+      await user.tab();
+      await user.keyboard('{ArrowRight}');
+      expect(document.activeElement).toBe(draghandle);
+      await user.keyboard('{Enter}');
 
       act(() => jest.runAllTimers());
       expect(document.activeElement).toBe(droppable);
-      fireEvent.keyDown(droppable, {key: 'Enter'});
-      fireEvent.keyUp(droppable, {key: 'Enter'});
+      await user.keyboard('{Enter}');
 
       expect(getAllowedDropOperations).toHaveBeenCalledTimes(1);
 
@@ -3372,7 +3371,7 @@ describe('ListView', function () {
         expect(dragButtonD).toHaveAttribute('aria-label', 'Drag 3 selected items');
       });
 
-      it('disabled rows and invalid drop targets should become aria-hidden when keyboard drag session starts', function () {
+      it('disabled rows and invalid drop targets should become aria-hidden when keyboard drag session starts', async function () {
         let {getAllByRole} = render(
           <ReorderExample listViewProps={{disabledKeys: ['2']}} />
         );
@@ -3386,8 +3385,10 @@ describe('ListView', function () {
         let cell = within(row).getByRole('gridcell');
         let draghandle = within(cell).getAllByRole('button')[0];
         expect(row).toHaveAttribute('draggable', 'true');
-        fireEvent.keyDown(draghandle, {key: 'Enter'});
-        fireEvent.keyUp(draghandle, {key: 'Enter'});
+        await user.tab();
+        await user.keyboard('{ArrowRight}');
+        expect(document.activeElement).toBe(draghandle);
+        await user.keyboard('{Enter}');
         act(() => jest.runAllTimers());
 
         for (let [index, row] of rows.entries()) {
@@ -3403,8 +3404,7 @@ describe('ListView', function () {
           }
         }
 
-        fireEvent.keyDown(document.body, {key: 'Escape'});
-        fireEvent.keyUp(document.body, {key: 'Escape'});
+        await user.keyboard('{Escape}');
       });
     });
   });

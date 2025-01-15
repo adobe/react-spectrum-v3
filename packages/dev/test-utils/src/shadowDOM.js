@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Adobe. All rights reserved.
+ * Copyright 2024 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy
  * of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -10,13 +10,9 @@
  * governing permissions and limitations under the License.
  */
 
-/// <reference types="css-module-types" />
-
-export * from './testSSR';
-export * from './renderOverride';
-export * from './StrictModeWrapper';
-export * from './mockImplementation';
-export * from './events';
-export * from './shadowDOM';
-export * from './types';
-export * from '@react-spectrum/test-utils';
+export function createShadowRoot(attachTo = document.body) {
+  const div = document.createElement('div');
+  attachTo.appendChild(div);
+  const shadowRoot = div.attachShadow({mode: 'open'});
+  return {shadowHost: div, shadowRoot, cleanup: () => attachTo.removeChild(div)};
+}
