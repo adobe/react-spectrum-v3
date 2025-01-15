@@ -108,6 +108,19 @@ class NumberParserImpl {
 
   constructor(locale: string, options: Intl.NumberFormatOptions = {}) {
     this.locale = locale;
+    // see https://tc39.es/ecma402/#sec-setnfdigitoptions, when using roundingIncrement, the maximumFractionDigits and minimumFractionDigits must be equal
+    // by default, they are 0 and 3 respectively, so we set them to 0 if neither are set
+    if (options.roundingIncrement !== 1 && options.roundingIncrement != null) {
+      if (options.maximumFractionDigits == null && options.minimumFractionDigits == null) {
+        options.maximumFractionDigits = 0;
+        options.minimumFractionDigits = 0;
+      } else if (options.maximumFractionDigits == null) {
+        options.maximumFractionDigits = options.minimumFractionDigits;
+      } else if (options.minimumFractionDigits == null) {
+        options.minimumFractionDigits = options.maximumFractionDigits;
+      }
+      // if both are specified, let the normal Range Error be thrown
+    }
     this.formatter = new Intl.NumberFormat(locale, options);
     this.options = this.formatter.resolvedOptions();
     this.symbols = getSymbols(locale, this.formatter, this.options, options);

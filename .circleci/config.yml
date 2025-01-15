@@ -19,14 +19,14 @@ orbs:
 executors:
   rsp:
     docker:
-      - image: cimg/node:18.20.3
+      - image: cimg/node:20.15.0
     environment:
       CACHE_VERSION: v1
     working_directory: ~/react-spectrum
 
   rsp-large:
     docker:
-      - image: cimg/node:18.20.3
+      - image: cimg/node:20.15.0
     resource_class: large
     environment:
       CACHE_VERSION: v1
@@ -34,7 +34,7 @@ executors:
 
   rsp-xlarge:
     docker:
-      - image: cimg/node:18.20.3
+      - image: cimg/node:20.15.0
     resource_class: xlarge
     environment:
       CACHE_VERSION: v1
@@ -647,9 +647,6 @@ workflows:
           requires:
             - install
       - docs-verdaccio:
-          filters:
-            branches:
-              only: main
           requires:
             - install
       - deploy:

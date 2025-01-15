@@ -148,7 +148,11 @@ function enforceWorkspaceDependencies({Yarn}) {
 function enforceCSS({Yarn}) {
   for (const workspace of Yarn.workspaces()) {
     let name = workspace.ident;
-    if (!name.startsWith('@react-spectrum/docs') && !name.startsWith('@react-spectrum/test-utils') && name.startsWith('@react-spectrum') && workspace.pkg.dependencies?.has('@adobe/spectrum-css-temp')) {
+    if (!name.startsWith('@react-spectrum/docs')
+      && !name.startsWith('@react-spectrum/test-utils')
+      && name.startsWith('@react-spectrum')
+      && workspace.pkg.dependencies?.has('@adobe/spectrum-css-temp')) {
+
       workspace.set('targets', {
         main: {includeNodeModules: ['@adobe/spectrum-css-temp']},
         module: {includeNodeModules: ['@adobe/spectrum-css-temp']}
