@@ -649,7 +649,7 @@ workflows:
       - docs-verdaccio:
           filters:
             branches:
-              only: main
+              only: main, /^gh-readonly-queue\/.*$/
           requires:
             - install
       - deploy:

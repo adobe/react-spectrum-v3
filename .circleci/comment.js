@@ -41,8 +41,10 @@ async function run() {
             break;
           }
         }
-      } else if (process.env.CIRCLE_BRANCH === 'main') {
-        //If it isn't a PR commit, then we are on main. Create a comment for the test app and docs build
+      } else if (process.env.CIRCLE_BRANCH === 'main' || process.env.CIRCLE_BRANCH.startsWith('gh-readonly-queue')) {
+        // If it isn't a PR commit, then we are on main or merge queue. Create a comment for the test app and docs build.
+        // If we're in merge queue, now we'll be able to run all of these builds before the PR is merged to main.
+        // While it may slow merge velocity, I think it's a win overall to know that the entire build passes before main.
         await octokit.repos.createCommitComment({
           owner: 'adobe',
           repo: 'react-spectrum',
