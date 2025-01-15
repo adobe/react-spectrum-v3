@@ -141,7 +141,6 @@ html {
 }
 
 .field {
-  display: inline-flex;
   padding: 2px 4px;
   border-radius: 2px;
   border: 1px solid gray;

@@ -181,6 +181,9 @@ export function useDateField<T extends DateValue>(props: AriaDateFieldOptions<T>
         if (props.onKeyUp) {
           props.onKeyUp(e);
         }
+      },
+      style: {
+        unicodeBidi: 'isolate'
       }
     }),
     inputProps,

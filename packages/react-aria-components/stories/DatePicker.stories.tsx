@@ -92,11 +92,11 @@ export const DateRangePickerExample = () => (
     <Label style={{display: 'block'}}>Date</Label>
     <Group style={{display: 'inline-flex'}}>
       <div className={styles.field}>
-        <DateInput data-testid="date-range-picker-date-input" slot="start" style={{display: 'inline-flex'}}>
+        <DateInput data-testid="date-range-picker-date-input" slot="start" style={{display: 'inline'}}>
           {segment => <DateSegment segment={segment} className={clsx(styles.segment, {[styles.placeholder]: segment.isPlaceholder})} />}
         </DateInput>
         <span aria-hidden="true" style={{padding: '0 4px'}}>–</span>
-        <DateInput slot="end" style={{display: 'inline-flex'}}>
+        <DateInput slot="end" style={{display: 'inline'}}>
           {segment => <DateSegment segment={segment} className={clsx(styles.segment, {[styles.placeholder]: segment.isPlaceholder})} />}
         </DateInput>
       </div>
@@ -131,11 +131,11 @@ export const DateRangePickerTriggerWidthExample = () => (
     <Label style={{display: 'block'}}>Date</Label>
     <Group style={{display: 'inline-flex', width: 300}}>
       <div className={styles.field} style={{flex: 1}}>
-        <DateInput data-testid="date-range-picker-date-input" slot="start" style={{display: 'inline-flex'}}>
+        <DateInput data-testid="date-range-picker-date-input" slot="start" style={{display: 'inline'}}>
           {segment => <DateSegment segment={segment} className={clsx(styles.segment, {[styles.placeholder]: segment.isPlaceholder})} />}
         </DateInput>
         <span aria-hidden="true" style={{padding: '0 4px'}}>–</span>
-        <DateInput slot="end" style={{display: 'inline-flex'}}>
+        <DateInput slot="end" style={{display: 'inline'}}>
           {segment => <DateSegment segment={segment} className={clsx(styles.segment, {[styles.placeholder]: segment.isPlaceholder})} />}
         </DateInput>
       </div>

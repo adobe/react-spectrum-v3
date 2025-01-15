@@ -42,7 +42,7 @@ function getTextValue(el) {
     return '';
   }
 
-  return [...el.childNodes].map(el => el.nodeType === 3 ? el.textContent : getTextValue(el)).join('');
+  return [...el.childNodes].map(el => el.nodeType === 3 ? el.textContent.replace(/[\u2066-\u2069]/g, '') : getTextValue(el)).join('');
 }
 
 function expectPlaceholder(el, placeholder) {

@@ -37,7 +37,7 @@ describe('TimeField', () => {
     );
 
     let input = getByRole('group');
-    expect(input).toHaveTextContent('––:–– AM');
+    expect(input.textContent.replace(' ', ' ').replace(/[\u2066-\u2069]/g, '')).toBe('––:–– AM');
     expect(input).toHaveAttribute('class', 'react-aria-DateInput');
     expect(input).toHaveAttribute('data-bar', 'foo');
 

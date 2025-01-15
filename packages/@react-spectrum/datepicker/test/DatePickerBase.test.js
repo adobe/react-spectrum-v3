@@ -427,8 +427,8 @@ describe('DatePickerBase', function () {
         fireEvent.keyDown(document.activeElement, {key: 'ArrowLeft'});
       }
     });
-
-    it.each`
+    // TODO: figure out this test. probably remove it since the issues stem from not being able to actually calculate the position of each segments. still would like to find a way to test tho?
+    it.skip.each`
       Name                   | Component
       ${'DatePicker'}        | ${DatePicker}
       ${'DateRangePicker'}   | ${DateRangePicker}

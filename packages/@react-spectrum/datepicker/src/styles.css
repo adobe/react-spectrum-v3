@@ -34,7 +34,7 @@
 }
 
 .react-spectrum-Datepicker-field.react-spectrum-Datepicker-field {
-  width: auto;
+  width: 100%;
 }
 
 .react-spectrum-Datepicker-field .react-spectrum-DateField-Input {
@@ -77,8 +77,8 @@
 }
 
 .react-spectrum-Datepicker-inputSized {
-  display: flex;
-  height: 100%;
+  display: inline;
+  /* height: 100%; */
   align-items: center;
 }
 
@@ -89,7 +89,7 @@
 }
 
 .react-spectrum-Datepicker-segments {
-  display: flex;
+  display: inline;
   align-items: center;
 }
 
