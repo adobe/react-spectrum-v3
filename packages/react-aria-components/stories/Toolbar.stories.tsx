@@ -25,7 +25,7 @@ export const ToolbarExample = (props: ToolbarProps) => {
     <div>
       <label htmlFor="before">Input Before Toolbar</label>
       <input id="before" type="text" />
-      <Toolbar {...props}>
+      <Toolbar {...props} style={{position: 'relative'}}>
         <div role="group" aria-label="Text style">
           <ToggleButton className={classNames(styles, 'toggleButtonExample')}><strong>B</strong></ToggleButton>
           <ToggleButton className={classNames(styles, 'toggleButtonExample')}><div style={{textDecoration: 'underline'}}>U</div></ToggleButton>

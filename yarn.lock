@@ -6742,6 +6742,7 @@ __metadata:
   dependencies:
     "@react-aria/focus": "npm:^3.19.0"
     "@react-aria/i18n": "npm:^3.12.4"
+    "@react-aria/interactions": "npm:^3.22.5"
     "@react-aria/utils": "npm:^3.26.0"
     "@react-types/shared": "npm:^3.26.0"
     "@swc/helpers": "npm:^0.5.0"
