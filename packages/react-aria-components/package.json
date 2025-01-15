@@ -70,7 +70,7 @@
     "client-only": "^0.0.1",
     "react-aria": "^3.36.0",
     "react-stately": "^3.34.0",
-    "use-sync-external-store": "^1.2.0"
+    "use-sync-external-store": "^1.4.0"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1",
