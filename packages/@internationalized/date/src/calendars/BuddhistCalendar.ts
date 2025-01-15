@@ -27,15 +27,17 @@ const BUDDHIST_ERA_START = -543;
 export class BuddhistCalendar extends GregorianCalendar {
   identifier = 'buddhist';
 
-  fromJulianDay(jd: number): CalendarDate {
+  fromJulianDay(jd: number): AnyCalendarDate {
     let gregorianDate = super.fromJulianDay(jd);
     let year = getExtendedYear(gregorianDate.era, gregorianDate.year);
-    return new CalendarDate(
-      this,
-      year - BUDDHIST_ERA_START,
-      gregorianDate.month,
-      gregorianDate.day
-    );
+    
+    return {
+      calendar: this,
+      era: 'BE',  // Buddhist Era
+      year: year - BUDDHIST_ERA_START,
+      month: gregorianDate.month,
+      day: gregorianDate.day
+    };
   }
 
   toJulianDay(date: AnyCalendarDate) {

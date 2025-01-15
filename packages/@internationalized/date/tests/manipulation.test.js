@@ -228,6 +228,7 @@ describe('CalendarDate manipulation', function () {
 
       it('should constrain when reaching year 9377', function () {
         let date = new CalendarDate(new PersianCalendar(), 9377, 12, 10);
+        console.log(date);
         expect(date.add({months: 1})).toEqual(new CalendarDate(new PersianCalendar(), 9377, 12, 31));
       });
     });
