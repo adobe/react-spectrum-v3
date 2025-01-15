@@ -21,7 +21,11 @@ import {Toaster} from './Toaster';
 import {ToastOptions, ToastQueue, useToastQueue} from '@react-stately/toast';
 import {useSyncExternalStore} from 'use-sync-external-store/shim/index.js';
 
-export interface SpectrumToastContainerProps extends AriaToastRegionProps {}
+export type ToastPlacement = 'top start' | 'top' | 'top end' | 'bottom start' | 'bottom' | 'bottom end';
+
+export interface SpectrumToastContainerProps extends AriaToastRegionProps {
+  placement?: ToastPlacement
+}
 
 export interface SpectrumToastOptions extends Omit<ToastOptions, 'priority'>, DOMProps {
   /** A label for the action button within the toast. */

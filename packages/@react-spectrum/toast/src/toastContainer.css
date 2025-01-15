@@ -48,7 +48,7 @@
     --slide-to: translateY(0);
   }
 
-  &[data-placement=left] {
+  &[data-placement=start] {
     align-items: flex-start;
     --slide-from: translateX(-100%);
     --slide-to: translateX(0);
@@ -62,7 +62,7 @@
     align-items: center;
   }
 
-  &[data-placement=right] {
+  &[data-placement=end] {
     align-items: flex-end;
     --slide-from: translateX(100%);
     --slide-to: translateX(0);

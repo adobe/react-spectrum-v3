@@ -27,21 +27,26 @@ import {UNSTABLE_PortalProvider} from '@react-aria/overlays';
 export default {
   title: 'Toast',
   decorators: [
-    (story, {parameters}) => (
+    (story, {parameters, args}) => (
       <>
-        {!parameters.disableToastContainer && <ToastContainer />}
+        {!parameters.disableToastContainer && <ToastContainer placement={args.placement} />}
         <MainLandmark>{story()}</MainLandmark>
       </>
     )
   ],
   args: {
     shouldCloseOnAction: false,
-    timeout: null
+    timeout: null,
+    placement: undefined
   },
   argTypes: {
     timeout: {
       control: 'radio',
       options: [null, 5000]
+    },
+    placement: {
+      control: 'select',
+      options: [undefined, 'top start', 'top', 'top end', 'bottom start', 'bottom', 'bottom end']
     }
   }
 };
