@@ -68,13 +68,11 @@ export const DateRangePicker = React.forwardRef(function DateRangePicker<T exten
 
   let {isFocused, isFocusVisible, focusProps} = useFocusRing({
     within: true,
-    isTextInput: true,
     autoFocus
   });
 
   let {isFocused: isFocusedButton, focusProps: focusPropsButton} = useFocusRing({
     within: false,
-    isTextInput: false,
     autoFocus
   });
 
