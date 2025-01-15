@@ -52,7 +52,8 @@ module.exports = {
             node.type === 'IfStatement' &&
             node.test.type === 'BinaryExpression' &&
             (node.test.operator === '==' || node.test.operator === '===') &&
-            isMemberExpressionEqual(node.test.left, member)
+            (isMemberExpressionEqual(node.test.left, member) ||
+            isMemberExpressionEqual(node.test.right, member))
           ) {
             conditional = node.test;
           }
@@ -98,7 +99,7 @@ module.exports = {
               type: 'Identifier',
               name: 'undefined'
             };
-            if (isLiteralEqual(conditional.operator, init, conditional.right)) {
+            if (isLiteralEqual(conditional.operator, init, conditional.right) || isLiteralEqual(conditional.operator, init, conditional.left)) {
               return;
             }
           }
