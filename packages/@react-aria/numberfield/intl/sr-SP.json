@@ -1,5 +1,6 @@
 {
   "decrease": "Smanji {fieldLabel}",
   "increase": "Povećaj {fieldLabel}",
-  "numberField": "Polje broja"
+  "numberField": "Polje broja",
+  "pastedValue": "Pasted value: {value}"
 }

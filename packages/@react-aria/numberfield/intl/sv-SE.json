@@ -1,5 +1,6 @@
 {
   "decrease": "Minska {fieldLabel}",
   "increase": "Öka {fieldLabel}",
-  "numberField": "Nummerfält"
+  "numberField": "Nummerfält",
+  "pastedValue": "Pasted value: {value}"
 }

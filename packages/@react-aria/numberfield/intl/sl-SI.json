@@ -1,5 +1,6 @@
 {
   "decrease": "Upadati {fieldLabel}",
   "increase": "Povečajte {fieldLabel}",
-  "numberField": "Številčno polje"
+  "numberField": "Številčno polje",
+  "pastedValue": "Pasted value: {value}"
 }

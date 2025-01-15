@@ -182,4 +182,44 @@ describe('NumberField', () => {
     expect(input).not.toHaveAttribute('aria-describedby');
     expect(numberfield).not.toHaveAttribute('data-invalid');
   });
+
+  it('supports pasting value in another numbering system', async () => {
+    let {getByRole, rerender} = render(<TestNumberField />);
+    let input = getByRole('textbox');
+    act(() => {
+      input.focus();
+      input.setSelectionRange(0, input.value.length);
+    });
+    await userEvent.paste('3.000.000,25');
+    expect(input).toHaveValue('3,000,000.25');
+
+    act(() => {
+      input.setSelectionRange(0, input.value.length);
+    });
+    await userEvent.paste('3 000 000,25');
+    expect(input).toHaveValue('3,000,000.25');
+
+    rerender(<TestNumberField formatOptions={{style: 'currency', currency: 'USD'}} />);
+    act(() => {
+      input.setSelectionRange(0, input.value.length);
+    });
+    await userEvent.paste('3 000 000,256789');
+    expect(input).toHaveValue('$3,000,000.26');
+
+    act(() => {
+      input.setSelectionRange(0, input.value.length);
+    });
+    await userEvent.paste('1 000');
+    expect(input).toHaveValue('$1,000.00');
+
+    act(() => {
+      input.setSelectionRange(0, input.value.length);
+    });
+
+    await userEvent.paste('1,000');
+    expect(input).toHaveValue('$1,000.00', 'Ambiguous value should be parsed using the current locale');
+
+    await userEvent.paste('1.000');
+    expect(input).toHaveValue('$1.00', 'Ambiguous value should be parsed using the current locale');
+  });
 });

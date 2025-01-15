@@ -1,5 +1,6 @@
 {
   "decrease": "{fieldLabel} csökkentése",
   "increase": "{fieldLabel} növelése",
-  "numberField": "Számmező"
+  "numberField": "Számmező",
+  "pastedValue": "Pasted value: {value}"
 }

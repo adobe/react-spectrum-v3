@@ -1,5 +1,6 @@
 {
   "decrease": "Scădere {fieldLabel}",
   "increase": "Creștere {fieldLabel}",
-  "numberField": "Câmp numeric"
+  "numberField": "Câmp numeric",
+  "pastedValue": "Pasted value: {value}"
 }

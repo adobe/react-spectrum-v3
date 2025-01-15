@@ -6372,6 +6372,7 @@ __metadata:
   dependencies:
     "@react-aria/i18n": "npm:^3.12.4"
     "@react-aria/interactions": "npm:^3.22.5"
+    "@react-aria/live-announcer": "npm:^3.4.1"
     "@react-aria/spinbutton": "npm:^3.6.10"
     "@react-aria/textfield": "npm:^3.15.0"
     "@react-aria/utils": "npm:^3.26.0"
@@ -8626,6 +8627,7 @@ __metadata:
   resolution: "@react-stately/numberfield@workspace:packages/@react-stately/numberfield"
   dependencies:
     "@internationalized/number": "npm:^3.6.0"
+    "@react-aria/live-announcer": "npm:^3.4.1"
     "@react-stately/form": "npm:^3.1.0"
     "@react-stately/utils": "npm:^3.10.5"
     "@react-types/numberfield": "npm:^3.8.7"

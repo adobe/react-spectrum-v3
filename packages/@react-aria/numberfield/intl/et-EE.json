@@ -1,5 +1,6 @@
 {
   "decrease": "Vähenda {fieldLabel}",
   "increase": "Suurenda {fieldLabel}",
-  "numberField": "Numbri väli"
+  "numberField": "Numbri väli",
+  "pastedValue": "Pasted value: {value}"
 }

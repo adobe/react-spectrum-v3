@@ -1,5 +1,6 @@
 {
   "decrease": "縮小 {fieldLabel}",
   "increase": "放大 {fieldLabel}",
-  "numberField": "數字欄位"
+  "numberField": "數字欄位",
+  "pastedValue": "Pasted value: {value}"
 }

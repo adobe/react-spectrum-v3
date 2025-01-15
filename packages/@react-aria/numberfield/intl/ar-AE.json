@@ -1,5 +1,6 @@
 {
   "decrease": "خفض {fieldLabel}",
   "increase": "زيادة {fieldLabel}",
-  "numberField": "حقل رقمي"
+  "numberField": "حقل رقمي",
+  "pastedValue": "Pasted value: {value}"
 }

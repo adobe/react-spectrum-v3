@@ -59,7 +59,12 @@ export interface NumberFieldState extends FormValidationState {
   /** Sets the current value to the `maxValue` if any, and fires `onChange`. */
   incrementToMax(): void,
   /** Sets the current value to the `minValue` if any, and fires `onChange`. */
-  decrementToMin(): void
+  decrementToMin(): void,
+  /**
+   * Parses a string value in any supported locale to a number.
+   * This is useful when the user pastes a value that may be in a different locale.
+   */
+  parseValueInAnySupportedLocale(value: string): number
 }
 
 export interface NumberFieldStateOptions extends NumberFieldProps {
@@ -261,6 +266,8 @@ export function useNumberFieldState(
 
   let validate = (value: string) => numberParser.isValidPartialNumber(value, minValue, maxValue);
 
+  let parseValueInAnySupportedLocale = (value: string) => numberParser.parse(value);
+
   return {
     ...validation,
     validate,
@@ -276,7 +283,8 @@ export function useNumberFieldState(
     setNumberValue,
     setInputValue,
     inputValue,
-    commit
+    commit,
+    parseValueInAnySupportedLocale
   };
 }
 

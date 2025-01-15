@@ -1,5 +1,6 @@
 {
   "decrease": "Riduci {fieldLabel}",
   "increase": "Aumenta {fieldLabel}",
-  "numberField": "Campo numero"
+  "numberField": "Campo numero",
+  "pastedValue": "Pasted value: {value}"
 }

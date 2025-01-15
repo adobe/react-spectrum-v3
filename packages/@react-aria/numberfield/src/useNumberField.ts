@@ -10,11 +10,13 @@
  * governing permissions and limitations under the License.
  */
 
+import {announce} from '@react-aria/live-announcer';
 import {AriaButtonProps} from '@react-types/button';
 import {AriaNumberFieldProps} from '@react-types/numberfield';
 import {chain, filterDOMProps, isAndroid, isIOS, isIPhone, mergeProps, useFormReset, useId} from '@react-aria/utils';
-import {DOMAttributes, GroupDOMAttributes, TextInputDOMProps, ValidationResult} from '@react-types/shared';
 import {
+  type ClipboardEvent,
+  type ClipboardEventHandler,
   InputHTMLAttributes,
   LabelHTMLAttributes,
   RefObject,
@@ -22,6 +24,7 @@ import {
   useMemo,
   useState
 } from 'react';
+import {DOMAttributes, GroupDOMAttributes, TextInputDOMProps, ValidationResult} from '@react-types/shared';
 // @ts-ignore
 import intlMessages from '../intl/*.json';
 import {NumberFieldState} from '@react-stately/numberfield';
@@ -181,6 +184,30 @@ export function useNumberField(props: AriaNumberFieldProps, state: NumberFieldSt
     }
   };
 
+  let onPaste: ClipboardEventHandler<HTMLInputElement> = (e: ClipboardEvent<HTMLInputElement>) => {
+    props.onPaste?.(e);
+    let inputElement = e.target as HTMLInputElement;
+    if (
+      inputElement &&
+      (
+        ((inputElement.selectionEnd ?? -1) - (inputElement.selectionStart ?? 0)) === inputElement.value.length
+      )
+    ) {
+      e.preventDefault();
+      let pastedText = e.clipboardData?.getData?.('text/plain')?.trim() ?? '';
+      let value = state.parseValueInAnySupportedLocale(pastedText);
+      if (!isNaN(value)) {
+        let reformattedValue = numberFormatter.format(value);
+        if (state.validate(reformattedValue)) {
+          state.setInputValue(reformattedValue);
+          if (reformattedValue !== pastedText) {
+            announce(stringFormatter.format('pastedValue', {value: reformattedValue}), 'polite');
+          }
+        }
+      }
+    }
+  };
+
   let domProps = filterDOMProps(props);
   let onKeyDownEnter = useCallback((e) => {
     if (e.key === 'Enter') {
@@ -217,6 +244,7 @@ export function useNumberField(props: AriaNumberFieldProps, state: NumberFieldSt
     onFocusChange,
     onKeyDown: useMemo(() => chain(onKeyDownEnter, onKeyDown), [onKeyDownEnter, onKeyDown]),
     onKeyUp,
+    onPaste,
     description,
     errorMessage
   }, state, inputRef);

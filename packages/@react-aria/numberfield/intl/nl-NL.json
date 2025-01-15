@@ -1,5 +1,6 @@
 {
   "decrease": "{fieldLabel} verlagen",
   "increase": "{fieldLabel} verhogen",
-  "numberField": "Getalveld"
+  "numberField": "Getalveld",
+  "pastedValue": "Pasted value: {value}"
 }

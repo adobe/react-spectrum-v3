@@ -22,8 +22,64 @@ interface Symbols {
   index: (v: string) => string
 }
 
+let supportedLocales: string[] = [
+  'ar-AE', // Arabic (United Arab Emirates)
+  'bg-BG', // Bulgarian (Bulgaria)
+  'zh-CN', // Chinese (Simplified)
+  'zh-TW', // Chinese (Traditional)
+  'hr-HR', // Croatian (Croatia)
+  'cs-CZ', // Czech (Czech Republic)
+  'da-DK', // Danish (Denmark)
+  'nl-NL', // Dutch (Netherlands)
+  'en-GB', // English (Great Britain)
+  'en-US', // English (United States)
+  'et-EE', // Estonian (Estonia)
+  'fi-FI', // Finnish (Finland)
+  'fr-CA', // French (Canada)
+  'fr-FR', // French (France)
+  'de-DE', // German (Germany)
+  'el-GR', // Greek (Greece)
+  'he-IL', // Hebrew (Israel)
+  'hu-HU', // Hungarian (Hungary)
+  'it-IT', // Italian (Italy)
+  'ja-JP', // Japanese (Japan)
+  'ko-KR', // Korean (Korea)
+  'lv-LV', // Latvian (Latvia)
+  'lt-LT', // Lithuanian (Lithuania)
+  'no-NO', // Norwegian (Norway)
+  'pl-PL', // Polish (Poland)
+  'pt-BR', // Portuguese (Brazil)
+  'ro-RO', // Romanian (Romania)
+  'ru-RU', // Russian (Russia)
+  'sr-RS', // Serbian (Serbia)
+  'sk-SK', // Slovakian (Slovakia)
+  'sl-SI', // Slovenian (Slovenia)
+  'es-ES', // Spanish (Spain)
+  'sv-SE', // Swedish (Sweden)
+  'tr-TR', // Turkish (Turkey)
+  'uk-UA'  // Ukrainian (Ukraine)
+];
+
 const CURRENCY_SIGN_REGEX = new RegExp('^.*\\(.*\\).*$');
 const NUMBERING_SYSTEMS = ['latn', 'arab', 'hanidec', 'deva', 'beng'];
+const MINUS_SIGN_SYMBOLS = '\u002D\u2212';
+const MINUS_SIGN_REGEX = new RegExp(`[${MINUS_SIGN_SYMBOLS}]`, 'g');
+const AMBIGUOUS_SYMBOLS = ',.';
+const ARABIC_THOUSANDS_SEPARATOR = '\u066C';
+const ARABIC_DECIMAL_SEPARATOR = '\u066B';
+const LRM_RLM_REGEX = /[\u200E\u200F]/g;
+const DECIMAL_SYMBOLS = `${AMBIGUOUS_SYMBOLS}${ARABIC_DECIMAL_SEPARATOR}`;
+const NUMERALS_LATN = '0123456789';
+const NUMERALS_ARAB = '\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669';
+const NUMERALS_HANIDEC = '\u3007\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u4E03\u516B\u4E5D';
+const NUMERALS_PATTERN = `[${NUMERALS_LATN}]|[${NUMERALS_ARAB}]|[${NUMERALS_HANIDEC}]`;
+const NUMERALS_REGEX = new RegExp(NUMERALS_PATTERN, 'g');
+const NON_AMBIGUOUS_GROUPING_SYMBOLS = ` \u00A0\u202F${ARABIC_THOUSANDS_SEPARATOR}\u2019`;
+const NON_AMBIGUOUS_GROUPING_SYMBOLS_REGEX = new RegExp(`[${NON_AMBIGUOUS_GROUPING_SYMBOLS}]`, 'g');
+const GROUPING_SYMBOLS = `${AMBIGUOUS_SYMBOLS}${NON_AMBIGUOUS_GROUPING_SYMBOLS}`;
+const GROUPING_SYMBOLS_REGEX = new RegExp(`[${GROUPING_SYMBOLS}]`, 'g');
+const DECIMAL_PART_REGEX = new RegExp(`(?<part>(?:(?<symbol>(?:[${DECIMAL_SYMBOLS}]))(?<digits>(?:${NUMERALS_PATTERN})*)))?$`, 'u');
+const LEADING_ZERO_REGEX = /^[0\u0660\u3007]+/g;
 
 /**
  * A NumberParser can be used to perform locale-aware parsing of numbers from Unicode strings,
@@ -44,7 +100,31 @@ export class NumberParser {
    * Parses the given string to a number. Returns NaN if a valid number could not be parsed.
    */
   parse(value: string): number {
-    return getNumberParserImpl(this.locale, this.options, value).parse(value);
+    let parser = getNumberParserImpl(this.locale, this.options, value);
+    let number = parser.parse(value);
+
+    if (isNaN(number)) {
+      // If the number couldn't be parsed, try again using other locales.
+      for (let locale of supportedLocales.filter(l => l !== this.locale)) {
+        parser = getNumberParserImpl(locale, this.options, value);
+        number = parser.parse(value);
+        if (!isNaN(number)) {
+          return number;
+        }
+        // If the number still couldn't be parsed, try again using other numbering systems.
+        for (let numberingSystem of NUMBERING_SYSTEMS) {
+          locale = locale + (locale.includes('-u-') ? '-nu-' : '-u-nu-') + numberingSystem;
+          parser = getNumberParserImpl(locale, this.options, value);
+          number = parser.parse(value);
+          if (!isNaN(number)) {
+            return number;
+          }
+        }
+      }
+      // console.log(number, value, {locale: this.locale, options: this.options});
+    }
+
+    return number;
   }
 
   /**
@@ -147,13 +227,16 @@ class NumberParserImpl {
         fullySanitizedValue = `0.0${fullySanitizedValue}`;
       } else if (index - 2 === -2) {
         fullySanitizedValue = '0.00';
-      } else {
+      } else if (fullySanitizedValue.slice(index - 2) !== '') {
         fullySanitizedValue = `${fullySanitizedValue.slice(0, index - 2)}.${fullySanitizedValue.slice(index - 2)}`;
       }
       if (isNegative > -1) {
         fullySanitizedValue = `-${fullySanitizedValue}`;
       }
     }
+
+    // Remove LRM and RLM characters, which are used in some locales to control text direction.
+    fullySanitizedValue = fullySanitizedValue?.replace(LRM_RLM_REGEX, '');
 
     let newValue = fullySanitizedValue ? +fullySanitizedValue : NaN;
     if (isNaN(newValue)) {
@@ -180,34 +263,103 @@ class NumberParserImpl {
   }
 
   sanitize(value: string) {
+    let sanitizedValue = value.trim();
+
+    let numeralMatches = sanitizedValue.match(NUMERALS_REGEX);
+
+    if (numeralMatches) {
+      let lastNumeralMatch = numeralMatches[numeralMatches.length - 1];
+      let indexOfLastNumeral = sanitizedValue.lastIndexOf(lastNumeralMatch);
+      let afterAbs = sanitizedValue.slice(indexOfLastNumeral + 1);
+      let abs = sanitizedValue.slice(0, indexOfLastNumeral + 1);
+      // remove any non-ambiguous grouping symbols.
+      abs = abs.replace(NON_AMBIGUOUS_GROUPING_SYMBOLS_REGEX, '');
+      numeralMatches = abs.match(NUMERALS_REGEX);
+      let firstNumeralMatch = numeralMatches?.[0] ?? '';
+      let indexOfFirstNumeral = abs.indexOf(firstNumeralMatch);
+      indexOfLastNumeral = abs.length - 1;
+
+      let decimalPartMatches = abs.match(DECIMAL_PART_REGEX);
+      let groupSymbolMatch:Array<string> | undefined = abs.match(GROUPING_SYMBOLS_REGEX)?.filter((s: string) => abs.indexOf(s) >= indexOfFirstNumeral - 1);
+      if (decimalPartMatches?.groups?.symbol && groupSymbolMatch?.[groupSymbolMatch.length - 1] === decimalPartMatches.groups?.symbol) {
+        if (groupSymbolMatch.length === 1) {
+          groupSymbolMatch = undefined;
+        } else {
+          abs = replaceAll(abs, groupSymbolMatch[0], '');
+        }
+        decimalPartMatches = abs.match(DECIMAL_PART_REGEX);
+      }
+
+      let decimalPart: string | undefined = decimalPartMatches?.[0];
+      let integerPart: string | undefined = decimalPart && decimalPart !== '' ? abs.slice(0, abs.lastIndexOf(decimalPart)) : abs;
+      let beforeAbs: string = '';
+      if (decimalPart && indexOfFirstNumeral > integerPart.length - 1) {
+        beforeAbs = integerPart;
+        integerPart = '';
+      } else {
+        beforeAbs = integerPart.slice(0, indexOfFirstNumeral);
+        integerPart = integerPart.slice(indexOfFirstNumeral, integerPart.length);
+      }
+
+      integerPart = integerPart.replace(GROUPING_SYMBOLS_REGEX, '');
+
+      if (
+        decimalPartMatches?.groups?.digits &&
+        decimalPartMatches?.groups?.symbol !== (this.symbols.decimal ?? '.') &&
+        (
+          decimalPartMatches?.groups?.digits?.length < 3 ||
+          decimalPartMatches?.groups?.digits?.length > 3 ||
+          integerPart.length > 3 ||
+          (integerPart.length === 0 && decimalPartMatches?.groups?.digits?.length === 3) ||
+          (integerPart === '0' || integerPart === '\u0660' || integerPart === '\u3007')
+        )
+      ) {
+        decimalPart = decimalPart?.replace(decimalPartMatches?.groups?.symbol, this.symbols.decimal ?? '.') ?? '';
+      }
+
+      integerPart.replace(LEADING_ZERO_REGEX, '');
+
+      abs = `${integerPart}${decimalPart}`;
+
+      // With accounting, the number is negative if it's wrapped in parentheses,
+      // so we want to keep the parentheses and remove everything else after the last numeral.
+      sanitizedValue = `${
+        beforeAbs
+      }${
+        abs
+      }${
+        CURRENCY_SIGN_REGEX.test(value) ? afterAbs.replace(/[^)]/g, '') : afterAbs
+      }`;
+    }
+
     // Remove literals and whitespace, which are allowed anywhere in the string
-    value = value.replace(this.symbols.literals, '');
+    sanitizedValue = sanitizedValue.replace(this.symbols.literals, '');
 
     // Replace the ASCII minus sign with the minus sign used in the current locale
     // so that both are allowed in case the user's keyboard doesn't have the locale's minus sign.
     if (this.symbols.minusSign) {
-      value = value.replace('-', this.symbols.minusSign);
+      sanitizedValue = sanitizedValue.replace(MINUS_SIGN_REGEX, this.symbols.minusSign);
     }
 
     // In arab numeral system, their decimal character is 1643, but most keyboards don't type that
     // instead they use the , (44) character or apparently the (1548) character.
     if (this.options.numberingSystem === 'arab') {
       if (this.symbols.decimal) {
-        value = value.replace(',', this.symbols.decimal);
-        value = value.replace(String.fromCharCode(1548), this.symbols.decimal);
+        sanitizedValue = sanitizedValue.replace(',', this.symbols.decimal);
+        sanitizedValue = sanitizedValue.replace(String.fromCharCode(1548), this.symbols.decimal);
       }
       if (this.symbols.group) {
-        value = replaceAll(value, '.', this.symbols.group);
+        sanitizedValue = replaceAll(sanitizedValue, '.', this.symbols.group);
       }
     }
 
     // fr-FR group character is char code 8239, but that's not a key on the french keyboard,
     // so allow 'period' as a group char and replace it with a space
     if (this.options.locale === 'fr-FR') {
-      value = replaceAll(value, '.', String.fromCharCode(8239));
+      sanitizedValue = replaceAll(sanitizedValue, '.', String.fromCharCode(8239));
     }
 
-    return value;
+    return sanitizedValue;
   }
 
   isValidPartialNumber(value: string, minValue: number = -Infinity, maxValue: number = Infinity): boolean {

@@ -1,5 +1,6 @@
 {
   "decrease": "Μείωση {fieldLabel}",
   "increase": "Αύξηση {fieldLabel}",
-  "numberField": "Πεδίο αριθμού"
+  "numberField": "Πεδίο αριθμού",
+  "pastedValue": "Pasted value: {value}"
 }

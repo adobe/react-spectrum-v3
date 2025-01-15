@@ -1,5 +1,6 @@
 {
   "decrease": "Уменьшение {fieldLabel}",
   "increase": "Увеличение {fieldLabel}",
-  "numberField": "Числовое поле"
+  "numberField": "Числовое поле",
+  "pastedValue": "Pasted value: {value}"
 }

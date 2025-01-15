@@ -1,5 +1,6 @@
 {
   "decrease": "Vähennä {fieldLabel}",
   "increase": "Lisää {fieldLabel}",
-  "numberField": "Numerokenttä"
+  "numberField": "Numerokenttä",
+  "pastedValue": "Pasted value: {value}"
 }
