@@ -399,6 +399,8 @@ export function useDateFieldState<T extends DateValue = DateValue>(props: DateFi
         } else if (!isPM && shouldBePM) {
           value = displayValue.set({hour: displayValue.hour + 12});
         }
+      } else if (part === 'hour' && 'hour' in displayValue && displayValue.hour >= 12 && validSegments.dayPeriod) {
+        value = displayValue.set({hour: placeholder['hour'] + 12});
       } else if (part in displayValue) {
         value = displayValue.set({[part]: placeholder[part]});
       }
