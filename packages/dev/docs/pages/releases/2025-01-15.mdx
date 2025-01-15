@@ -1,0 +1,287 @@
+{/* Copyright 2025 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License. */}
+
+import {BlogPostLayout, Hero} from '@react-spectrum/docs';
+export default BlogPostLayout;
+
+---
+description: Happy New Year! Our first release of 2025 includes a new `firstDayOfWeek` prop for our calendar and date picker components, support for CSS transitions in our overlay components, a new `Autocomplete` component in alpha, and a new test utils package.
+date: 2025-01-15
+---
+
+# January 15, 2025 Release
+
+Happy New Year! Our first release of 2025 includes a new [firstDayOfWeek](../react-aria/Calendar.html#custom-first-day-of-week) prop for our calendar and date picker components, support for [CSS transitions](../react-aria/styling.html#animation) in our overlay components, a new [Autocomplete](../react-aria/Autocomplete.html) component in alpha, and a new [React Aria test utils](../react-aria/testing#react-aria-test-utils) package.
+As always, a huge shoutout to everyone in the community for their feedback and contributions!
+
+### firstDayOfWeek
+
+By default, our date picker components determine the first day of the week from the locale. However, a common request was for the ability to override this for certain use cases regardless of the locale. [Calendar](../react-aria/Calendar.html#custom-first-day-of-week), [RangeCalendar](../react-aria/RangeCalendar.html#custom-first-day-of-week), [DatePicker](../react-aria/DatePicker.html#custom-first-day-of-week), and [DateRangePicker](../react-aria/DateRangePicker#custom-first-day-of-week) now support a `firstDayOfWeek` prop to enable this. In addition, our [@internationalized/date](../internationalized/date/index.html) package now includes an option to override the locale in methods such as `startOfWeek`, `endOfWeek`, `getDayOfWeek`, and `getWeeksInMonth`.
+
+### CSS transitions
+
+Overlay components including `Modal`, `Popover`, and `Tooltip` now support CSS transitions for entry and exit animations, in addition to the existing support for keyframe animations. CSS transitions have the benefit of being *interruptible*. If the user opens and closes an overlay quickly, transitions will smoothly animate from their current position rather than jumping to the ending state of the animation before starting the new one. You can use CSS transitions using the existing `[data-entering]` and `[data-exiting]` states. See our [animation guide](../react-aria/styling.html#animation) for more details.
+
+### Autocomplete
+
+The new [Autocomplete](../react-aria/Autocomplete.html) component is now available in alpha! Similar to a [ComboBox](../react-aria/ComboBox.html), this component provides the ability to display a list of suggestions as the user types in a text input. However, it is more flexible, supporting use cases such as command palettes and searchable menus where the text input is a sibling of the suggestion list rather than a separate popover. It supports both [TextField](../react-aria/TextField.html) and [SearchField](../react-aria/SearchField.html) inputs, and both [ListBox](../react-aria/ListBox.html) and [Menu](../react-aria/Menu.html) collections, customizable filters, and arrow key navigation while keeping focus on the input element. There are more features to come in future releases, but we'd love your feedback on this initial alpha release!
+
+### React Aria Test Utils
+
+We are also excited to announce the alpha release of the [@react-aria/test-utils](https://www.npmjs.com/package/@react-aria/test-utils) package! This package features a set of utilities that aim to make writing tests against our components much simpler and less time consuming. It includes high level methods to interact with components implementing ARIA patterns, so you don't need to figure out how to manually fire the correct sequences of events or navigate the DOM structure. See the respective [React Aria](../react-aria/testing.html#react-aria-test-utils) and [React Spectrum](../react-spectrum/testing.html#react-spectrum-test-utils) testing pages for more details. It is still very much a work in progress so if you discover any issues or have any feedback, please feel free to report them via GitHub issues!
+
+## Enhancements
+
+- Calendar
+  - Add `firstDayOfWeek` prop to Calendar, RangeCalendar, DatePicker, and DateRangePicker - [@reidbarber](https://github.com/reidbarber) - [PR](https://github.com/adobe/react-spectrum/pull/7363)
+- Overlays
+  - Add support for CSS transitions in `Modal`, `Popover`, and `Tooltip` – [@devongovett](https://github.com/devongovett) – [PR](https://github.com/adobe/react-spectrum/pull/7488)
+- Misc
+  - Remove custom hit testing in `usePress` - [@devongovett](https://github.com/devongovett) - [PR](https://github.com/adobe/react-spectrum/pull/7427)
+
+## Fixes
+
+- Button
+  - Disable form submission in `isPending` state - [@snowystinger](https://github.com/snowystinger) - [PR](https://github.com/adobe/react-spectrum/pull/7498)
+- Date and Time
+  - Fix keyboard selection of an unavailable dates - [@richardbann](https://github.com/richardbann) - [PR](https://github.com/adobe/react-spectrum/pull/7455)
+  - Remove min/max limits for all segments in `@internationalized/date` `parseDuration` - [@limkhl](https://github.com/limkhl) - [PR](https://github.com/adobe/react-spectrum/pull/7064)
+- Form
+  - Skip native validation on disabled form elements - [@reidbarber](https://github.com/reidbarber) - [PR](https://github.com/adobe/react-spectrum/pull/7531)
+- Menu
+  - Fix Talkback focus cursor movement when inside dialogs - [@LFDanLu](https://github.com/LFDanLu) - [PR](https://github.com/adobe/react-spectrum/pull/7478)
+- Select
+  - Fix form `autoComplete` prop - [@nabanitabania](https://github.com/nabanitabania) - [PR](https://github.com/adobe/react-spectrum/pull/7452)
+- TagGroup
+  - Prevent disabled tags from being removed with keyboard navigation - [@minzzang144](https://github.com/minzzang144) - [PR](https://github.com/adobe/react-spectrum/pull/7394)
+- Overlays
+  - Prevent `Popover` from closing on scroll - [@jabrks](https://github.com/jabrks) - [PR](https://github.com/adobe/react-spectrum/pull/7541)
+  - Fix dismissing iOS keyboard when input in dialog has focus - [@devongovett](https://github.com/devongovett) - [PR](https://github.com/adobe/react-spectrum/pull/7479)
+  - Include scroll padding in `scrollIntoView` caclulations inside overlays - [@jeffijoe](https://github.com/jeffijoe) - [PR](https://github.com/adobe/react-spectrum/pull/7484)
+- Misc
+  - Skip elements with `contenteditable=false` in FocusScope - [@nwidynski](https://github.com/nwidynski) - [PR](https://github.com/adobe/react-spectrum/pull/7340)
+  - Fix `@react-aria/optimize-locales-plugin` path resolution on Windows - [@ohansFavour](https://github.com/ohansFavour) - [PR](https://github.com/adobe/react-spectrum/pull/7568)
+  - Reduce unnecessary re-renders in React Spectrum slot provider - [@mdwyer6](https://github.com/mdwyer6) - [PR](https://github.com/adobe/react-spectrum/pull/7485)
+
+## Docs
+
+- Prevent `Combobox` docs example from clearing `defaultInputValue` or controlled value on blur - [@snowystinger](https://github.com/snowystinger) - [PR](https://github.com/adobe/react-spectrum/pull/7439)
+- Improve RAC `Calendar` state example - [@nathanpower](https://github.com/nathanpower) - [PR](https://github.com/adobe/react-spectrum/pull/7473)
+- Fix broken links in docs - [@ktabors](https://github.com/ktabors) - [PR](https://github.com/adobe/react-spectrum/pull/7530)
+
+## Under Construction
+
+- Add `Autocomplete` component - [@LFDanLu](https://github.com/LFDanLu) - [PR](https://github.com/adobe/react-spectrum/pull/7181)
+
+## Released packages
+
+```
+ - @adobe/react-spectrum@3.39.0
+ - @internationalized/date@3.7.0
+ - @react-aria/accordion@3.0.0-alpha.37
+ - @react-aria/actiongroup@3.7.12
+ - @react-aria/autocomplete@3.0.0-alpha.37
+ - @react-aria/breadcrumbs@3.5.20
+ - @react-aria/button@3.11.1
+ - @react-aria/calendar@3.7.0
+ - @react-aria/checkbox@3.15.1
+ - @react-aria/collections@3.0.0-alpha.7
+ - @react-aria/color@3.0.3
+ - @react-aria/combobox@3.11.1
+ - @react-aria/datepicker@3.13.0
+ - @react-aria/dialog@3.5.21
+ - @react-aria/disclosure@3.0.1
+ - @react-aria/dnd@3.8.1
+ - @react-aria/focus@3.19.1
+ - @react-aria/form@3.0.12
+ - @react-aria/grid@3.11.1
+ - @react-aria/gridlist@3.10.1
+ - @react-aria/i18n@3.12.5
+ - @react-aria/interactions@3.23.0
+ - @react-aria/label@3.7.14
+ - @react-aria/landmark@3.0.0-beta.18
+ - @react-aria/link@3.7.8
+ - @react-aria/listbox@3.14.0
+ - @react-aria/menu@3.17.0
+ - @react-aria/meter@3.4.19
+ - @react-aria/numberfield@3.11.10
+ - @react-aria/overlays@3.25.0
+ - @react-aria/progress@3.4.19
+ - @react-aria/radio@3.10.11
+ - @react-aria/searchfield@3.8.0
+ - @react-aria/select@3.15.1
+ - @react-aria/selection@3.22.0
+ - @react-aria/separator@3.4.5
+ - @react-aria/slider@3.7.15
+ - @react-aria/spinbutton@3.6.11
+ - @react-aria/steplist@3.0.0-alpha.13
+ - @react-aria/switch@3.6.11
+ - @react-aria/table@3.16.1
+ - @react-aria/tabs@3.9.9
+ - @react-aria/tag@3.4.9
+ - @react-aria/test-utils@1.0.0-alpha.4
+ - @react-aria/textfield@3.16.0
+ - @react-aria/toast@3.0.0-beta.19
+ - @react-aria/toggle@3.10.11
+ - @react-aria/toolbar@3.0.0-beta.12
+ - @react-aria/tooltip@3.7.11
+ - @react-aria/tree@3.0.0-beta.3
+ - @react-aria/utils@3.27.0
+ - @react-aria/virtualizer@4.1.1
+ - @react-aria/visually-hidden@3.8.19
+ - @react-spectrum/accordion@3.0.2
+ - @react-spectrum/actionbar@3.6.3
+ - @react-spectrum/actiongroup@3.10.11
+ - @react-spectrum/autocomplete@3.0.0-alpha.39
+ - @react-spectrum/avatar@3.0.18
+ - @react-spectrum/badge@3.1.19
+ - @react-spectrum/breadcrumbs@3.9.13
+ - @react-spectrum/button@3.16.10
+ - @react-spectrum/buttongroup@3.6.18
+ - @react-spectrum/calendar@3.6.0
+ - @react-spectrum/card@3.0.0-alpha.39
+ - @react-spectrum/checkbox@3.9.12
+ - @react-spectrum/color@3.0.3
+ - @react-spectrum/combobox@3.14.1
+ - @react-spectrum/contextualhelp@3.6.17
+ - @react-spectrum/datepicker@3.12.0
+ - @react-spectrum/dialog@3.8.17
+ - @react-spectrum/divider@3.5.19
+ - @react-spectrum/dnd@3.5.1
+ - @react-spectrum/dropzone@3.0.7
+ - @react-spectrum/filetrigger@3.0.7
+ - @react-spectrum/form@3.7.11
+ - @react-spectrum/icon@3.8.1
+ - @react-spectrum/illustratedmessage@3.5.6
+ - @react-spectrum/image@3.5.7
+ - @react-spectrum/inlinealert@3.2.11
+ - @react-spectrum/label@3.16.11
+ - @react-spectrum/labeledvalue@3.1.19
+ - @react-spectrum/layout@3.6.11
+ - @react-spectrum/link@3.6.13
+ - @react-spectrum/list@3.9.1
+ - @react-spectrum/listbox@3.14.1
+ - @react-spectrum/menu@3.21.1
+ - @react-spectrum/meter@3.5.6
+ - @react-spectrum/numberfield@3.9.9
+ - @react-spectrum/overlays@5.7.1
+ - @react-spectrum/picker@3.15.5
+ - @react-spectrum/progress@3.7.12
+ - @react-spectrum/provider@3.10.1
+ - @react-spectrum/radio@3.7.12
+ - @react-spectrum/s2@0.6.0
+ - @react-spectrum/searchfield@3.8.12
+ - @react-spectrum/slider@3.7.1
+ - @react-spectrum/statuslight@3.5.18
+ - @react-spectrum/steplist@3.0.0-alpha.11
+ - @react-spectrum/switch@3.5.11
+ - @react-spectrum/table@3.15.1
+ - @react-spectrum/tabs@3.8.16
+ - @react-spectrum/tag@3.2.12
+ - @react-spectrum/test-utils@1.0.0-alpha.4
+ - @react-spectrum/text@3.5.11
+ - @react-spectrum/textfield@3.12.8
+ - @react-spectrum/theme-dark@3.5.15
+ - @react-spectrum/theme-default@3.5.15
+ - @react-spectrum/theme-express@3.0.0-alpha.17
+ - @react-spectrum/theme-light@3.4.15
+ - @react-spectrum/toast@3.0.0-beta.18
+ - @react-spectrum/tooltip@3.7.1
+ - @react-spectrum/tree@3.0.0-beta.3
+ - @react-spectrum/utils@3.12.1
+ - @react-spectrum/view@3.6.15
+ - @react-spectrum/well@3.4.19
+ - @react-stately/autocomplete@3.0.0-alpha.0
+ - @react-stately/calendar@3.7.0
+ - @react-stately/checkbox@3.6.11
+ - @react-stately/collections@3.12.1
+ - @react-stately/color@3.8.2
+ - @react-stately/combobox@3.10.2
+ - @react-stately/data@3.12.1
+ - @react-stately/datepicker@3.12.0
+ - @react-stately/disclosure@3.0.1
+ - @react-stately/dnd@3.5.1
+ - @react-stately/form@3.1.1
+ - @react-stately/grid@3.10.1
+ - @react-stately/layout@4.1.1
+ - @react-stately/list@3.11.2
+ - @react-stately/menu@3.9.1
+ - @react-stately/numberfield@3.9.9
+ - @react-stately/overlays@3.6.13
+ - @react-stately/radio@3.10.10
+ - @react-stately/searchfield@3.5.9
+ - @react-stately/select@3.6.10
+ - @react-stately/selection@3.19.0
+ - @react-stately/slider@3.6.1
+ - @react-stately/steplist@3.0.0-alpha.11
+ - @react-stately/table@3.13.1
+ - @react-stately/tabs@3.7.1
+ - @react-stately/toggle@3.8.1
+ - @react-stately/tooltip@3.5.1
+ - @react-stately/tree@3.8.7
+ - @react-stately/virtualizer@4.2.1
+ - @react-types/accordion@3.0.0-alpha.26
+ - @react-types/actionbar@3.1.12
+ - @react-types/actiongroup@3.4.14
+ - @react-types/autocomplete@3.0.0-alpha.28
+ - @react-types/avatar@3.0.12
+ - @react-types/badge@3.1.14
+ - @react-types/breadcrumbs@3.7.10
+ - @react-types/button@3.10.2
+ - @react-types/buttongroup@3.3.14
+ - @react-types/calendar@3.6.0
+ - @react-types/card@3.0.0-alpha.32
+ - @react-types/checkbox@3.9.1
+ - @react-types/color@3.0.2
+ - @react-types/combobox@3.13.2
+ - @react-types/contextualhelp@3.2.15
+ - @react-types/datepicker@3.10.0
+ - @react-types/dialog@3.5.15
+ - @react-types/divider@3.3.14
+ - @react-types/form@3.7.9
+ - @react-types/grid@3.2.11
+ - @react-types/illustratedmessage@3.3.14
+ - @react-types/image@3.4.6
+ - @react-types/label@3.9.8
+ - @react-types/layout@3.3.20
+ - @react-types/link@3.5.10
+ - @react-types/list@3.2.23
+ - @react-types/listbox@3.5.4
+ - @react-types/menu@3.9.14
+ - @react-types/meter@3.4.6
+ - @react-types/numberfield@3.8.8
+ - @react-types/overlays@3.8.12
+ - @react-types/progress@3.5.9
+ - @react-types/provider@3.8.6
+ - @react-types/radio@3.8.6
+ - @react-types/searchfield@3.5.11
+ - @react-types/select@3.9.9
+ - @react-types/shared@3.27.0
+ - @react-types/slider@3.7.8
+ - @react-types/statuslight@3.3.14
+ - @react-types/switch@3.5.8
+ - @react-types/table@3.10.4
+ - @react-types/tabs@3.3.12
+ - @react-types/text@3.3.14
+ - @react-types/textfield@3.11.0
+ - @react-types/tooltip@3.4.14
+ - @react-types/view@3.4.14
+ - @react-types/well@3.3.14
+ - @spectrum-icons/color@3.5.18
+ - @spectrum-icons/express@3.0.0-alpha.22
+ - @spectrum-icons/illustrations@3.6.18
+ - @spectrum-icons/ui@3.6.12
+ - @spectrum-icons/workflow@4.2.17
+ - @react-spectrum/codemods@0.4.0
+ - @react-aria/optimize-locales-plugin@1.1.4
+ - @react-spectrum/s2-icon-builder@0.2.1
+ - react-aria@3.37.0
+ - react-aria-components@1.6.0
+ - react-stately@3.35.0
+```

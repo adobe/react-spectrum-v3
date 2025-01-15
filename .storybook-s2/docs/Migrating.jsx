@@ -44,6 +44,17 @@ export function Migrating() {
           <li className={style({font: 'body', marginY: 8})}>Add <Code>allowsMultipleExpanded</Code> to allow multiple <Code>Disclosure</Code> components to be expanded at once (previously default behavior)</li>
         </ul>
 
+        <H3>ActionBar</H3>
+        <ul className="sb-unstyled">
+          <li className={style({font: 'body', marginY: 8})}>Remove <Code>ActionBarContainer</Code> and move <Code>ActionBar</Code> to <Code>renderActionBar</Code> prop of <Code>TableView</Code> or <Code>CardView</Code></li>
+          <li className={style({font: 'body', marginY: 8})}>Update <Code>Item</Code> to <Code>ActionButton</Code></li>
+          <li className={style({font: 'body', marginY: 8})}>Update root level <Code>onAction</Code> to be called via <Code>onPress</Code> on each <Code>ActionButton</Code></li>
+          <li className={style({font: 'body', marginY: 8})}>Apply <Code>isDisabled</Code> directly on each <Code>ActionButton</Code> or <Code>ToggleButton</Code> instead of root level <Code>disabledKeys</Code></li>
+          <li className={style({font: 'body', marginY: 8})}>Update <Code>key</Code> to be <Code>id</Code> (and keep <Code>key</Code> if rendered inside <Code>array.map</Code>)</li>
+          <li className={style({font: 'body', marginY: 8})}>Convert dynamic collections render function to <Code>items.map</Code></li>
+          <li className={style({font: 'body', marginY: 8})}>[PENDING] Comment out <Code>buttonLabelBehavior</Code> (it has not been implemented yet)</li>
+        </ul>
+
         <H3>ActionButton</H3>
         <P>No updates needed.</P>
 
