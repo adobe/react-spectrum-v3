@@ -571,7 +571,7 @@ describe('Tree', () => {
       await user.click(row);
       expect(row).toHaveAttribute('data-focused');
 
-      rerender(tree, <StaticTree treeProps={{selectionMode: 'multiple', disabledKeys: ['Projects']}} />);
+      rerender(tree, <StaticTree treeProps={{selectionMode: 'multiple', disabledKeys: ['Projects'], disabledBehavior: 'selection'}} />);
       row = tree.getAllByRole('row')[0];
       expect(row).not.toHaveAttribute('data-focus-visible');
 
@@ -1191,7 +1191,7 @@ describe('Tree', () => {
 
     it('should add a tab index to the chevron if the row isnt completely disabled', () => {
       let tree = render(
-        <TreeView aria-label="test tree" selectionMode="multiple">
+        <TreeView aria-label="test tree" selectionMode="multiple" disabledBehavior="selection">
           <TreeViewItem id="Test" textValue="Test" hasChildItems>
             <Text>Test</Text>
           </TreeViewItem>
@@ -1203,7 +1203,7 @@ describe('Tree', () => {
 
       rerender(
         tree,
-        <TreeView aria-label="test tree" selectionMode="multiple" disabledKeys={['Test']}>
+        <TreeView aria-label="test tree" selectionMode="multiple" disabledKeys={['Test']} disabledBehavior="selection">
           <TreeViewItem id="Test" textValue="Test" hasChildItems>
             <Text>Test</Text>
           </TreeViewItem>

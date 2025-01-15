@@ -7878,11 +7878,13 @@ __metadata:
   dependencies:
     "@adobe/spectrum-tokens": "npm:^13.0.0-beta.53"
     "@parcel/macros": "npm:^2.13.0"
+    "@react-aria/button": "npm:^3.11.0"
     "@react-aria/collections": "npm:3.0.0-alpha.6"
     "@react-aria/i18n": "npm:^3.12.4"
     "@react-aria/interactions": "npm:^3.22.5"
     "@react-aria/live-announcer": "npm:^3.4.1"
     "@react-aria/test-utils": "npm:1.0.0-alpha.3"
+    "@react-aria/tree": "npm:3.0.0-beta.2"
     "@react-aria/utils": "npm:^3.26.0"
     "@react-spectrum/utils": "npm:^3.12.0"
     "@react-stately/layout": "npm:^4.1.0"

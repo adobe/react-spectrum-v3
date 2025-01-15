@@ -129,10 +129,12 @@
     "jest": "^29.5.0"
   },
   "dependencies": {
+    "@react-aria/button": "^3.11.0",
     "@react-aria/collections": "3.0.0-alpha.6",
     "@react-aria/i18n": "^3.12.4",
     "@react-aria/interactions": "^3.22.5",
     "@react-aria/live-announcer": "^3.4.1",
+    "@react-aria/tree": "3.0.0-beta.2",
     "@react-aria/utils": "^3.26.0",
     "@react-spectrum/utils": "^3.12.0",
     "@react-stately/layout": "^4.1.0",

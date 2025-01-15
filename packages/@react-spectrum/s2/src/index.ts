@@ -76,6 +76,7 @@ export {TextArea, TextField, TextAreaContext, TextFieldContext} from './TextFiel
 export {ToggleButton, ToggleButtonContext} from './ToggleButton';
 export {ToggleButtonGroup, ToggleButtonGroupContext} from './ToggleButtonGroup';
 export {Tooltip, TooltipTrigger} from './Tooltip';
+export {TreeView, TreeViewItem} from './TreeView';
 
 export {pressScale} from './pressScale';
 
@@ -144,4 +145,5 @@ export type {TextFieldProps, TextAreaProps} from './TextField';
 export type {ToggleButtonProps} from './ToggleButton';
 export type {ToggleButtonGroupProps} from './ToggleButtonGroup';
 export type {TooltipProps} from './Tooltip';
+export type {TreeViewProps, TreeViewItemProps} from './TreeView';
 export type {FileTriggerProps, TooltipTriggerComponentProps as TooltipTriggerProps} from 'react-aria-components';

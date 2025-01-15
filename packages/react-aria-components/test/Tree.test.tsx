@@ -520,7 +520,7 @@ describe('Tree', () => {
     });
 
     it('should not update the press state if the row is not interactive', () => {
-      let {getAllByRole, rerender} = render(<StaticTree treeProps={{selectionMode: 'none'}} rowProps={{className: ({isPressed}) => isPressed ? 'pressed' : ''}} />);
+      let {getAllByRole, rerender} = render(<StaticTree treeProps={{selectionMode: 'none', disabledBehavior: 'selection'}} rowProps={{className: ({isPressed}) => isPressed ? 'pressed' : ''}} />);
 
       let row = getAllByRole('row')[0];
       expect(row).not.toHaveAttribute('data-pressed');
@@ -557,7 +557,7 @@ describe('Tree', () => {
     });
 
     it('should support focus', async () => {
-      let {getAllByRole, rerender} = render(<StaticTree treeProps={{selectionMode: 'multiple', disabledKeys: ['projects']}} rowProps={{className: ({isFocused}) => isFocused ? 'focus' : ''}} />);
+      let {getAllByRole, rerender} = render(<StaticTree treeProps={{selectionMode: 'multiple', disabledKeys: ['projects'], disabledBehavior: 'selection'}} rowProps={{className: ({isFocused}) => isFocused ? 'focus' : ''}} />);
 
       let row = getAllByRole('row')[0];
       expect(row).not.toHaveAttribute('data-focused');
@@ -567,7 +567,7 @@ describe('Tree', () => {
       expect(row).toHaveAttribute('data-focused');
       expect(row).toHaveClass('focus');
 
-      rerender(<StaticTree treeProps={{selectionMode: 'multiple', disabledKeys: ['projects']}} rowProps={{className: ({isFocusVisible}) => isFocusVisible ? 'focus-visible' : ''}} />);
+      rerender(<StaticTree treeProps={{selectionMode: 'multiple', disabledKeys: ['projects'], disabledBehavior: 'selection'}} rowProps={{className: ({isFocusVisible}) => isFocusVisible ? 'focus-visible' : ''}} />);
       row = getAllByRole('row')[0];
       expect(row).not.toHaveAttribute('data-focus-visible');
       expect(row).not.toHaveClass('focus-visible');
@@ -1211,7 +1211,7 @@ AriaTreeTests({
       </UNSTABLE_Tree>
     ),
     singleSelection: () => render(
-      <UNSTABLE_Tree aria-label="test tree" selectionMode="single" disabledKeys={['school']}>
+      <UNSTABLE_Tree aria-label="test tree" selectionMode="single" disabledKeys={['school']} disabledBehavior="selection">
         <StaticTreeItem id="Photos" textValue="Photos">Photos</StaticTreeItem>
         <StaticTreeItem id="projects" textValue="Projects" title="Projects">
           <StaticTreeItem id="projects-1" textValue="Projects-1" title="Projects-1">
@@ -1341,7 +1341,7 @@ AriaTreeTests({
       <ControlledDynamicTree />
     ),
     singleSelection: () => render(
-      <ControlledDynamicTree disabledKeys={['reports']} selectionMode="single" />
+      <ControlledDynamicTree disabledKeys={['reports']} selectionMode="single" disabledBehavior="selection" />
     ),
     allInteractionsDisabled: () => render(
       <ControlledDynamicTree disabledKeys={['reports']} selectionMode="single" disabledBehavior="all"  />

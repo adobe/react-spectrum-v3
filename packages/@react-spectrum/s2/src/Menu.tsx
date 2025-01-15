@@ -22,6 +22,7 @@ import {
   SubmenuTrigger as AriaSubmenuTrigger,
   SubmenuTriggerProps as AriaSubmenuTriggerProps,
   ContextValue,
+  DEFAULT_SLOT,
   Provider,
   Separator,
   SeparatorProps
@@ -490,6 +491,7 @@ export function MenuItem(props: MenuItemProps) {
                 }],
                 [TextContext, {
                   slots: {
+                    [DEFAULT_SLOT]: {styles: label({size})},
                     label: {styles: label({size})},
                     description: {styles: description({...renderProps, size})},
                     value: {styles: value}

@@ -87,7 +87,7 @@ const StaticTreeItem = (props: StaticTreeItemProps) => {
   );
 };
 
-export const TreeExampleStatic = (args) => (
+const TreeExampleStaticRender = (args) => (
   <UNSTABLE_Tree className={styles.tree} {...args} disabledKeys={['projects']} aria-label="test static tree" onExpandedChange={action('onExpandedChange')} onSelectionChange={action('onSelectionChange')}>
     <StaticTreeItem id="Photos" textValue="Photos">Photos</StaticTreeItem>
     <StaticTreeItem id="projects" textValue="Projects" title="Projects">
@@ -134,7 +134,8 @@ export const TreeExampleStatic = (args) => (
   </UNSTABLE_Tree>
 );
 
-TreeExampleStatic.story = {
+export const TreeExampleStatic = {
+  render: TreeExampleStaticRender,
   args: {
     selectionMode: 'none',
     selectionBehavior: 'toggle',
@@ -271,7 +272,7 @@ const DynamicTreeItem = (props: DynamicTreeItemProps) => {
 
 let defaultExpandedKeys = new Set(['projects', 'project-2', 'project-5', 'reports', 'reports-1', 'reports-1A', 'reports-1AB']);
 
-export const TreeExampleDynamic = (args: TreeProps<unknown>) => (
+const TreeExampleDynamicRender = (args: TreeProps<unknown>) => (
   <UNSTABLE_Tree {...args} defaultExpandedKeys={defaultExpandedKeys} disabledKeys={['reports-1AB']} className={styles.tree} aria-label="test dynamic tree" items={rows} onExpandedChange={action('onExpandedChange')} onSelectionChange={action('onSelectionChange')}>
     {(item) => (
       <DynamicTreeItem id={item.id} childItems={item.childItems} textValue={item.name}>
@@ -281,22 +282,22 @@ export const TreeExampleDynamic = (args: TreeProps<unknown>) => (
   </UNSTABLE_Tree>
 );
 
-TreeExampleDynamic.story = {
-  ...TreeExampleStatic.story,
+export const TreeExampleDynamic = {
+  ...TreeExampleStatic,
+  render: TreeExampleDynamicRender,
   parameters: null
 };
 
 export const WithActions = {
-  render: TreeExampleDynamic,
   ...TreeExampleDynamic,
   args: {
     onAction: action('onAction'),
-    ...TreeExampleDynamic.story.args
+    ...TreeExampleDynamic.args
   },
   name: 'UNSTABLE_Tree with actions'
 };
 
-export const WithLinks = (args: TreeProps<unknown>) => (
+const WithLinksRender = (args: TreeProps<unknown>) => (
   <UNSTABLE_Tree {...args} defaultExpandedKeys={defaultExpandedKeys} className={styles.tree} aria-label="test dynamic tree" items={rows} onExpandedChange={action('onExpandedChange')} onSelectionChange={action('onSelectionChange')}>
     {(item) => (
       <DynamicTreeItem href="https://adobe.com/" childItems={item.childItems} textValue={item.name}>
@@ -306,8 +307,9 @@ export const WithLinks = (args: TreeProps<unknown>) => (
   </UNSTABLE_Tree>
 );
 
-WithLinks.story = {
-  ...TreeExampleDynamic.story,
+export const WithLinks = {
+  ...TreeExampleDynamic,
+  render: WithLinksRender,
   name: 'UNSTABLE_Tree with links',
   parameters: {
     description: {
@@ -486,7 +488,7 @@ export const ButtonLoadingIndicatorStory = {
     }
   }
 };
-export function VirtualizedTree(args) {
+function VirtualizedTreeRender(args) {
   let layout = useMemo(() => {
     return new ListLayout({
       rowHeight: 30
@@ -495,9 +497,12 @@ export function VirtualizedTree(args) {
 
   return (
     <Virtualizer layout={layout}>
-      <TreeExampleDynamic {...args} />
+      <TreeExampleDynamicRender {...args} />
     </Virtualizer>
   );
 }
 
-VirtualizedTree.story = TreeExampleDynamic.story;
+export const VirtualizedTree = {
+  ...TreeExampleDynamic,
+  render: VirtualizedTreeRender
+};

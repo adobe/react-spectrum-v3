@@ -42,7 +42,7 @@ describe('style-macro', () => {
       @layer _.a, _.b, _.c, UNSAFE_overrides;
 
       @layer _.b {
-        .A-13alit4c {
+        .D-13alit4c {
           &:first-child {
             margin-top: 0.25rem;
           }
@@ -51,7 +51,7 @@ describe('style-macro', () => {
 
       @layer _.c.e {
         @media (min-width: 1024px) {
-          .A-13alit4ed {
+          .D-13alit4ed {
             &:first-child {
               margin-top: 0.5rem;
             }
@@ -61,7 +61,7 @@ describe('style-macro', () => {
 
       "
     `);
-    expect(js).toMatchInlineSnapshot('" . A-13alit4c A-13alit4ed"');
+    expect(js).toMatchInlineSnapshot('" . D-13alit4c D-13alit4ed"');
   });
 
   it('should support self references', () => {
@@ -77,48 +77,48 @@ describe('style-macro', () => {
       @layer _.a, _.b, UNSAFE_overrides;
 
       @layer _.a {
-        .uc {
+        .tc {
           border-top-width: 2px;
         }
 
 
-        .vc {
+        .uc {
           border-bottom-width: 2px;
         }
 
 
-        .s-375toy {
-          border-inline-start-width: var(--s);
+        .r-375tox {
+          border-inline-start-width: var(--r);
         }
 
 
-        .tc {
+        .sc {
           border-inline-end-width: 2px;
         }
 
 
-        .C-375tnm {
-          padding-inline-start: var(--C);
+        .F-375tnp {
+          padding-inline-start: var(--F);
         }
 
 
-        .DI {
-          padding-inline-end: calc(var(--k, var(--o)) * 3 / 8);
+        .GI {
+          padding-inline-end: calc(var(--j, var(--n)) * 3 / 8);
         }
 
 
-        .l-4s570k {
-          width: calc(200px - var(--s) - var(--C));
+        .k-4s570k {
+          width: calc(200px - var(--r) - var(--F));
         }
 
 
-        .-_375toy_s-c {
-          --s: 2px;
+        .-_375tox_r-c {
+          --r: 2px;
         }
 
 
-        .-_375tnm_C-I {
-          --C: calc(var(--k, var(--o)) * 3 / 8);
+        .-_375tnp_F-I {
+          --F: calc(var(--j, var(--n)) * 3 / 8);
         }
       }
 
