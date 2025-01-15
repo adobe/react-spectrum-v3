@@ -176,8 +176,7 @@ export const UnsafeClassName: Story = {
   render: (args) => {
     return (
       <div className={style({display: 'flex', gap: 8, justifyContent: 'center', overflow: 'auto'})}>
-        <ActionButton {...args} UNSAFE_className="unsafe1">Global unsafe does not apply</ActionButton>
-        <ActionButton {...args} UNSAFE_className="unsafe2">@layer UNSAFE_overrides works</ActionButton>
+        <ActionButton {...args} UNSAFE_className="unsafe2">UNSAFE_className works</ActionButton>
       </div>
     );
   },

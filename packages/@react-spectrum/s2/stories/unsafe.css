@@ -10,19 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-button {
-  /* This should not apply */
-  background: red;
-}
-
-html body .unsafe1 {
-  /* This should not apply */
-  background: red;
-}
-
-@layer UNSAFE_overrides {
-  .unsafe2 {
-    /* This one should work */
-    background: hotpink;
-  }
+.unsafe2 {
+  /* This one should work */
+  background: hotpink;
 }

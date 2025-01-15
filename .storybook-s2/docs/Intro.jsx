@@ -13,7 +13,7 @@ import {H2, H3, H4, P, Pre, Code, Strong, Link} from './typography';
 
 export function Docs() {
   return (
-    <div className={style({marginX: 'auto', marginY: 48})}>
+    <div className={'sb-unstyled ' + style({marginX: 'auto', marginY: 48})}>
       <header
         style={{
           backgroundImage: `url(${new URL('wallpaper_collaborative_S2_desktop.webp', import.meta.url).toString()})`,
@@ -228,7 +228,7 @@ import {ActionButton} from '@react-spectrum/s2';
         </ul>
         <H3>UNSAFE Style Overrides</H3>
         <P>We highly discourage overriding the styles of React Spectrum components because it may break at any time when we change our implementation, making it difficult for you to update in the future. Consider using <Link href="https://react-spectrum.adobe.com/react-aria/" target="_blank">React Aria Components</Link> with our <Link href="?path=/docs/style-macro--docs" target="_top">style macro</Link> to build a custom component with Spectrum styles instead.</P>
-        <P>That said, just like in React Spectrum v3, the <Code>UNSAFE_className</Code> and <Code>UNSAFE_style</Code> props are supported on Spectrum 2 components as last-resort escape hatches. However, unlike in v3, UNSAFE_classNames must be placed in a special <Code>UNSAFE_overrides</Code> <Link href="https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Cascade_layers" target="_blank">CSS cascade layer</Link>. This guarentees that your overrides will always win over other styles on the page, no matter the order or specificity of the selector.</P>
+        <P>That said, just like in React Spectrum v3, the <Code>UNSAFE_className</Code> and <Code>UNSAFE_style</Code> props are supported on Spectrum 2 components as last-resort escape hatches.</P>
         <Pre>{highlight(`/* YourComponent.tsx */
 import {Button} from '@react-spectrum/s2';
 import './YourComponent.css';
@@ -237,12 +237,10 @@ function YourComponent() {
   return <Button UNSAFE_className="your-unsafe-class">Button</Button>;
 }`)}</Pre>
         <Pre>{highlight(`/* YourComponent.css */
-@layer UNSAFE_overrides {
-  /* Wrap all UNSAFE_className rules in this layer. */
-  .your-unsafe-class {
-    background: red;
-  }
-}`, 'CSS')}</Pre>
+.your-unsafe-class {
+  background: red;
+}
+`, 'CSS')}</Pre>
       </main>
     </div>
   )

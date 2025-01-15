@@ -6,7 +6,7 @@ import {Colors} from './Colors';
 
 export function StyleMacro() {
   return (
-    <div className={style({marginX: 'auto'})}>
+    <div className={'sb-unstyled ' + style({marginX: 'auto'})}>
       <header
         className={style({
           paddingX: 48,

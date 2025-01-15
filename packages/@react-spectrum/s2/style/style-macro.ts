@@ -222,7 +222,7 @@ export function createTheme<T extends Theme>(theme: T): StyleFunction<ThemePrope
     // The :not(#a#b) raises the specificity of the selector by 2 ids,
     // which can never occur on a real element, and will win over other
     // selectors such as class and element selectors.
-    let css = '.\\.:not(#a#b) { all: revert-layer }\n\n';
+    let css = '';
 
     // Declare layers for each priority ahead of time so the order is always correct.
     css += '@layer ';
@@ -235,7 +235,7 @@ export function createTheme<T extends Theme>(theme: T): StyleFunction<ThemePrope
       }
       css += layerName(generateName(i, true));
     }
-    css += ', UNSAFE_overrides;\n\n';
+    css += ';\n\n';
 
     // If allowed overrides are provided, generate code to match the input override string and include only allowed classes.
     // Also generate a variable for each overridable property that overlaps with the style definition. If those are defined,
@@ -644,6 +644,12 @@ export function raw(this: MacroContext | void, css: string, layer = '_.a') {
   ${css}
   }
 }`;
+
+  // Ensure layer is always declared after the _ layer used by style macro.
+  if (!layer.startsWith('_.')) {
+    css = `@layer _, ${layer};\n` + css;
+  }
+
   if (this && typeof this.addAsset === 'function') {
     this.addAsset({
       type: 'css',

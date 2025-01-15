@@ -19,7 +19,7 @@ const mdxComponents = {
 
 export function MDXLayout({children}) {
   return (
-    <div className={style({marginX: 'auto'})}>
+    <div className={'sb-unstyled ' + style({marginX: 'auto'})}>
       <main className={style({marginX: 48})}>
         <MDXProvider components={mdxComponents}>
           {children}

@@ -82,7 +82,7 @@ export const loadingStyle = raw(`
   * {
     visibility: hidden;
   }
-`, 'UNSAFE_overrides');
+`, 'L'); // add to a separate layer so it overrides default style macro styles
 
 export function useSkeletonText(children: ReactNode, style: CSSProperties | undefined): [ReactNode, CSSProperties | undefined] {
   let isSkeleton = useContext(SkeletonContext);

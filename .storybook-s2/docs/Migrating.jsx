@@ -3,7 +3,7 @@ import {P, Code, Pre, H3, H2, Link} from './typography';
 
 export function Migrating() {
   return (
-    <div className={style({marginX: 'auto', fontFamily: 'sans'})}>
+    <div className={'sb-unstyled ' + style({marginX: 'auto', fontFamily: 'sans'})}>
       <div className={style({marginX: 48})}>
         <h1 className={style({font: 'heading-2xl', marginBottom: 48})}>
           Migrating to Spectrum 2

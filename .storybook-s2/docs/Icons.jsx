@@ -6,7 +6,7 @@ import {highlight} from './highlight' with {type: 'macro'};
 
 export function Icons() {
   return (
-    <div className={style({marginX: 'auto'})}>
+    <div className={'sb-unstyled ' + style({marginX: 'auto'})}>
       <div className={style({marginX: 48})}>
         <h1 className={style({font: 'heading-2xl', marginBottom: 48})}>
           Workflow icons
