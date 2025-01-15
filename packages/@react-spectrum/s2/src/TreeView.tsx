@@ -14,10 +14,10 @@ import {ActionButtonGroupContext} from './ActionButtonGroup';
 import {ActionMenuContext} from './ActionMenu';
 import {
   ButtonContext,
-  Collection,
   Provider,
   TreeItemProps as RACTreeItemProps,
   TreeProps as RACTreeProps,
+  TreeItemContentProps,
   UNSTABLE_ListLayout,
   UNSTABLE_Tree,
   UNSTABLE_TreeItem,
@@ -34,8 +34,8 @@ import {getAllowedOverrides, StylesPropWithHeight, UnsafeStyles} from './style-u
 import {IconContext} from './Icon';
 import {isAndroid} from '@react-aria/utils';
 import {raw} from '../style/style-macro' with {type: 'macro'};
-import React, {createContext, forwardRef, isValidElement, JSXElementConstructor, ReactElement, useContext, useMemo, useRef} from 'react';
-import {Text, TextContext} from './Content';
+import React, {createContext, forwardRef, JSXElementConstructor, ReactElement, ReactNode, useContext, useMemo, useRef} from 'react';
+import {TextContext} from './Content';
 import {useButton} from '@react-aria/button';
 import {useDOMRef} from '@react-spectrum/utils';
 import {useLocale} from '@react-aria/i18n';
@@ -64,10 +64,6 @@ interface TreeRendererContextValue {
   renderer?: (item) => ReactElement<any, string | JSXElementConstructor<any>>
 }
 const TreeRendererContext = createContext<TreeRendererContextValue>({});
-
-function useTreeRendererContext(): TreeRendererContextValue {
-  return useContext(TreeRendererContext)!;
-}
 
 
 let InternalTreeContext = createContext<{isDetached?: boolean, isEmphasized?: boolean}>({});
@@ -340,94 +336,79 @@ const treeRowFocusIndicator = raw(`
   }`
 );
 
+let TreeItemContext = createContext<{hasChildItems?: boolean}>({});
 
 export const TreeViewItem = <T extends object>(props: TreeViewItemProps<T>) => {
   let {
-    children,
-    childItems,
-    hasChildItems,
     href
   } = props;
-
-  let content;
-  let nestedRows;
-  let {renderer} = useTreeRendererContext();
   let {isDetached, isEmphasized} = useContext(InternalTreeContext);
-  // TODO alternative api is that we have a separate prop for the TreeItems contents and expect the child to then be
-  // a nested tree item
-
-  if (typeof children === 'string') {
-    content = <Text>{children}</Text>;
-  } else {
-    content = [];
-    nestedRows = [];
-    React.Children.forEach(children, node => {
-      if (isValidElement(node) && node.type === TreeViewItem) {
-        nestedRows.push(node);
-      } else {
-        content.push(node);
-      }
-    });
-  }
-
-  if (childItems != null && renderer) {
-    nestedRows = (
-      <Collection items={childItems}>
-        {renderer}
-      </Collection>
-    );
-  }
 
   return (
     // TODO right now all the tree rows have the various data attributes applied on their dom nodes, should they? Doesn't feel very useful
-    <UNSTABLE_TreeItem
-      {...props}
-      className={(renderProps) => treeRow({...renderProps, isLink: !!href, isEmphasized}) + (renderProps.isFocusVisible && !isDetached ? ' ' + treeRowFocusIndicator : '')}>
-      <UNSTABLE_TreeItemContent>
-        {({isExpanded, hasChildRows, selectionMode, selectionBehavior, isDisabled, isFocusVisible, isSelected, id, state}) => {
-          let isNextSelected = false;
-          let isNextFocused = false;
-          let keyAfter = state.collection.getKeyAfter(id);
-          if (keyAfter != null) {
-            isNextSelected = state.selectionManager.isSelected(keyAfter);
-          }
-          let isFirst = state.collection.getFirstKey() === id;
-          return (
-            <div className={treeCellGrid({isDisabled, isNextSelected, isSelected, isFirst, isNextFocused, isDetached})}>
-              {selectionMode !== 'none' && selectionBehavior === 'toggle' && (
-                // TODO: add transition?
-                <div className={treeCheckbox}>
-                  <Checkbox
-                    isEmphasized={isEmphasized}
-                    slot="selection" />
-                </div>
-              )}
-              <div
-                className={style({
-                  gridArea: 'level-padding',
-                  width: '[calc(calc(var(--tree-item-level, 0) - 1) * var(--indent))]'
-                })} />
-              {/* TODO: revisit when we do async loading, at the moment hasChildItems will only cause the chevron to be rendered, no aria/data attributes indicating the row's expandability are added */}
-              {(hasChildRows || hasChildItems) && <ExpandableRowChevron isDisabled={isDisabled} isExpanded={isExpanded} />}
-              <Provider
-                values={[
-                  [TextContext, {styles: treeContent}],
-                  [IconContext, {
-                    render: centerBaseline({slot: 'icon', styles: treeIcon}),
-                    styles: style({size: fontRelative(20), flexShrink: 0})
-                  }],
-                  [ActionButtonGroupContext, {styles: treeActions}],
-                  [ActionMenuContext, {styles: treeActionMenu, isQuiet: true, 'aria-label': 'Actions'}]
-                ]}>
-                {content}
-              </Provider>
-              {isFocusVisible && isDetached && <div role="presentation" className={style({...cellFocus, position: 'absolute', inset: 0})({isFocusVisible: true})} />}
-            </div>
-          );
-        }}
-      </UNSTABLE_TreeItemContent>
-      {nestedRows}
-    </UNSTABLE_TreeItem>
+    <TreeItemContext.Provider value={{hasChildItems: !!props.childItems}}>
+      <UNSTABLE_TreeItem
+        {...props}
+        className={(renderProps) => treeRow({
+          ...renderProps,
+          isLink: !!href, isEmphasized
+        }) + (renderProps.isFocusVisible && !isDetached ? ' ' + treeRowFocusIndicator : '')} />
+    </TreeItemContext.Provider>
+  );
+};
+
+export const TreeItemContent = (props: Omit<TreeItemContentProps, 'children'> & {children: ReactNode}) => {
+  let {
+    children
+  } = props;
+  let {isDetached, isEmphasized} = useContext(InternalTreeContext);
+  let {hasChildItems} = useContext(TreeItemContext);
+
+  return (
+    <UNSTABLE_TreeItemContent>
+      {({isExpanded, hasChildRows, selectionMode, selectionBehavior, isDisabled, isFocusVisible, isSelected, id, state}) => {
+        let isNextSelected = false;
+        let isNextFocused = false;
+        let keyAfter = state.collection.getKeyAfter(id);
+        if (keyAfter != null) {
+          isNextSelected = state.selectionManager.isSelected(keyAfter);
+        }
+        let isFirst = state.collection.getFirstKey() === id;
+        return (
+          <div className={treeCellGrid({isDisabled, isNextSelected, isSelected, isFirst, isNextFocused, isDetached})}>
+            {selectionMode !== 'none' && selectionBehavior === 'toggle' && (
+              // TODO: add transition?
+              <div className={treeCheckbox}>
+                <Checkbox
+                  isEmphasized={isEmphasized}
+                  slot="selection" />
+              </div>
+            )}
+            <div
+              className={style({
+                gridArea: 'level-padding',
+                width: '[calc(calc(var(--tree-item-level, 0) - 1) * var(--indent))]'
+              })} />
+            {/* TODO: revisit when we do async loading, at the moment hasChildItems will only cause the chevron to be rendered, no aria/data attributes indicating the row's expandability are added */}
+            {(hasChildRows || hasChildItems) && <ExpandableRowChevron isDisabled={isDisabled} isExpanded={isExpanded} />}
+            <Provider
+              values={[
+                [TextContext, {styles: treeContent}],
+                [IconContext, {
+                  render: centerBaseline({slot: 'icon', styles: treeIcon}),
+                  styles: style({size: fontRelative(20), flexShrink: 0})
+                }],
+                [ActionButtonGroupContext, {styles: treeActions}],
+                [ActionMenuContext, {styles: treeActionMenu, isQuiet: true, 'aria-label': 'Actions'}],
+                [TreeItemContext, {}]
+              ]}>
+              {children}
+            </Provider>
+            {isFocusVisible && isDetached && <div role="presentation" className={style({...cellFocus, position: 'absolute', inset: 0})({isFocusVisible: true})} />}
+          </div>
+        );
+      }}
+    </UNSTABLE_TreeItemContent>
   );
 };
 

@@ -12,8 +12,7 @@
 
 import {action} from '@storybook/addon-actions';
 import {ActionGroup, Item} from '@react-spectrum/actiongroup';
-import {ActionMenu} from '@react-spectrum/menu';
-import Add from '@spectrum-icons/workflow/Add';
+import {Collection} from 'react-aria-components';
 import {Content} from '@react-spectrum/view';
 import Delete from '@spectrum-icons/workflow/Delete';
 import Edit from '@spectrum-icons/workflow/Edit';
@@ -23,7 +22,7 @@ import {Heading, Text} from '@react-spectrum/text';
 import {IllustratedMessage} from '@react-spectrum/illustratedmessage';
 import {Link} from '@react-spectrum/link';
 import React from 'react';
-import {SpectrumTreeViewProps, TreeView, TreeViewItem} from '../src';
+import {SpectrumTreeViewProps, TreeItemContent, TreeView, TreeViewItem} from '../src';
 
 export default {
   title: 'TreeView',
@@ -49,34 +48,8 @@ export const TreeExampleStatic = (args: SpectrumTreeViewProps<unknown>) => (
   <div style={{width: '300px', resize: 'both', height: '90vh', overflow: 'auto'}}>
     <TreeView {...args} disabledKeys={['projects-1']} aria-label="test static tree" onExpandedChange={action('onExpandedChange')} onSelectionChange={action('onSelectionChange')}>
       <TreeViewItem id="Photos" textValue="Photos">
-        <Text>Photos</Text>
-        <Folder />
-        <ActionGroup onAction={action('onActionGroup action')}>
-          <Item key="edit">
-            <Edit />
-            <Text>Edit</Text>
-          </Item>
-          <Item key="delete">
-            <Delete />
-            <Text>Delete</Text>
-          </Item>
-        </ActionGroup>
-      </TreeViewItem>
-      <TreeViewItem id="projects" textValue="Projects">
-        <Text>Projects</Text>
-        <Folder />
-        <ActionGroup onAction={action('onActionGroup action')}>
-          <Item key="edit">
-            <Edit />
-            <Text>Edit</Text>
-          </Item>
-          <Item key="delete">
-            <Delete />
-            <Text>Delete</Text>
-          </Item>
-        </ActionGroup>
-        <TreeViewItem id="projects-1" textValue="Projects-1">
-          <Text>Projects-1</Text>
+        <TreeItemContent>
+          <Text>Photos</Text>
           <Folder />
           <ActionGroup onAction={action('onActionGroup action')}>
             <Item key="edit">
@@ -88,8 +61,58 @@ export const TreeExampleStatic = (args: SpectrumTreeViewProps<unknown>) => (
               <Text>Delete</Text>
             </Item>
           </ActionGroup>
+        </TreeItemContent>
+      </TreeViewItem>
+      <TreeViewItem id="projects" textValue="Projects">
+        <TreeItemContent>
+          <Text>Projects</Text>
+          <Folder />
+          <ActionGroup onAction={action('onActionGroup action')}>
+            <Item key="edit">
+              <Edit />
+              <Text>Edit</Text>
+            </Item>
+            <Item key="delete">
+              <Delete />
+              <Text>Delete</Text>
+            </Item>
+          </ActionGroup>
+        </TreeItemContent>
+        <TreeViewItem id="projects-1" textValue="Projects-1">
+          <TreeItemContent>
+            <Text>Projects-1</Text>
+            <Folder />
+            <ActionGroup onAction={action('onActionGroup action')}>
+              <Item key="edit">
+                <Edit />
+                <Text>Edit</Text>
+              </Item>
+              <Item key="delete">
+                <Delete />
+                <Text>Delete</Text>
+              </Item>
+            </ActionGroup>
+          </TreeItemContent>
           <TreeViewItem id="projects-1A" textValue="Projects-1A">
-            <Text>Projects-1A</Text>
+            <TreeItemContent>
+              <Text>Projects-1A</Text>
+              <FileTxt />
+              <ActionGroup onAction={action('onActionGroup action')}>
+                <Item key="edit">
+                  <Edit />
+                  <Text>Edit</Text>
+                </Item>
+                <Item key="delete">
+                  <Delete />
+                  <Text>Delete</Text>
+                </Item>
+              </ActionGroup>
+            </TreeItemContent>
+          </TreeViewItem>
+        </TreeViewItem>
+        <TreeViewItem id="projects-2" textValue="Projects-2">
+          <TreeItemContent>
+            <Text>Projects-2</Text>
             <FileTxt />
             <ActionGroup onAction={action('onActionGroup action')}>
               <Item key="edit">
@@ -101,35 +124,23 @@ export const TreeExampleStatic = (args: SpectrumTreeViewProps<unknown>) => (
                 <Text>Delete</Text>
               </Item>
             </ActionGroup>
-          </TreeViewItem>
-        </TreeViewItem>
-        <TreeViewItem id="projects-2" textValue="Projects-2">
-          <Text>Projects-2</Text>
-          <FileTxt />
-          <ActionGroup onAction={action('onActionGroup action')}>
-            <Item key="edit">
-              <Edit />
-              <Text>Edit</Text>
-            </Item>
-            <Item key="delete">
-              <Delete />
-              <Text>Delete</Text>
-            </Item>
-          </ActionGroup>
+          </TreeItemContent>
         </TreeViewItem>
         <TreeViewItem id="projects-3" textValue="Projects-3">
-          <Text>Projects-3</Text>
-          <FileTxt />
-          <ActionGroup onAction={action('onActionGroup action')}>
-            <Item key="edit">
-              <Edit />
-              <Text>Edit</Text>
-            </Item>
-            <Item key="delete">
-              <Delete />
-              <Text>Delete</Text>
-            </Item>
-          </ActionGroup>
+          <TreeItemContent>
+            <Text>Projects-3</Text>
+            <FileTxt />
+            <ActionGroup onAction={action('onActionGroup action')}>
+              <Item key="edit">
+                <Edit />
+                <Text>Edit</Text>
+              </Item>
+              <Item key="delete">
+                <Delete />
+                <Text>Delete</Text>
+              </Item>
+            </ActionGroup>
+          </TreeItemContent>
         </TreeViewItem>
       </TreeViewItem>
     </TreeView>
@@ -193,13 +204,14 @@ let rows = [
   ]}
 ];
 
-export const TreeExampleDynamic = (args: SpectrumTreeViewProps<unknown>) => (
-  <div style={{width: '300px', resize: 'both', height: '90vh', overflow: 'auto'}}>
-    <TreeView disabledKeys={['reports-1AB']} aria-label="test dynamic tree" items={rows} onExpandedChange={action('onExpandedChange')} onSelectionChange={action('onSelectionChange')} {...args}>
-      {(item: any) => (
-        <TreeViewItem childItems={item.childItems} textValue={item.name}>
-          <Text>{item.name}</Text>
-          {item.icon}
+const DynamicTreeItem = (props) => {
+  let {childItems, name, icon} = props;
+  return (
+    <>
+      <TreeViewItem id={props.id} childItems={childItems} textValue={name} href={props.href}>
+        <TreeItemContent>
+          <Text>{name}</Text>
+          {icon}
           <ActionGroup onAction={action('onActionGroup action')}>
             <Item key="edit">
               <Edit />
@@ -210,7 +222,35 @@ export const TreeExampleDynamic = (args: SpectrumTreeViewProps<unknown>) => (
               <Text>Delete</Text>
             </Item>
           </ActionGroup>
-        </TreeViewItem>
+        </TreeItemContent>
+        <Collection items={childItems}>
+          {(item: any) => (
+            <DynamicTreeItem
+              id={item.id}
+              icon={item.icon}
+              childItems={item.childItems}
+              textValue={item.name}
+              name={item.name}
+              href={props.href}>
+              {item.name}
+            </DynamicTreeItem>
+          )}
+        </Collection>
+      </TreeViewItem>
+    </>
+  );
+};
+
+export const TreeExampleDynamic = (args: SpectrumTreeViewProps<unknown>) => (
+  <div style={{width: '300px', resize: 'both', height: '90vh', overflow: 'auto'}}>
+    <TreeView disabledKeys={['reports-1AB']} aria-label="test dynamic tree" items={rows} onExpandedChange={action('onExpandedChange')} onSelectionChange={action('onSelectionChange')} {...args}>
+      {(item: any) => (
+        <DynamicTreeItem
+          id={item.id}
+          icon={item.icon}
+          childItems={item.childItems}
+          textValue={item.name}
+          name={item.name} />
       )}
     </TreeView>
   </div>
@@ -236,20 +276,13 @@ export const WithLinks = (args: SpectrumTreeViewProps<unknown>) => (
   <div style={{width: '300px', resize: 'both', height: '90vh', overflow: 'auto'}}>
     <TreeView {...args} disabledKeys={['reports-1AB']} aria-label="test dynamic tree" items={rows} onExpandedChange={action('onExpandedChange')} onSelectionChange={action('onSelectionChange')}>
       {(item) => (
-        <TreeViewItem href="https://adobe.com/" childItems={item.childItems} textValue={item.name}>
-          <Text>{item.name}</Text>
-          {item.icon}
-          <ActionGroup onAction={action('onActionGroup action')}>
-            <Item key="edit">
-              <Edit />
-              <Text>Edit</Text>
-            </Item>
-            <Item key="delete">
-              <Delete />
-              <Text>Delete</Text>
-            </Item>
-          </ActionGroup>
-        </TreeViewItem>
+        <DynamicTreeItem
+          id={item.id}
+          icon={item.icon}
+          childItems={item.childItems}
+          textValue={item.name}
+          name={item.name}
+          href="https://adobe.com/" />
       )}
     </TreeView>
   </div>
@@ -292,20 +325,12 @@ export const WithActionMenu = (args: SpectrumTreeViewProps<unknown>) => (
   <div style={{width: '300px', resize: 'both', height: '90vh', overflow: 'auto'}}>
     <TreeView {...args} disabledKeys={['reports-1AB']} aria-label="test dynamic tree" items={rows} onExpandedChange={action('onExpandedChange')} onSelectionChange={action('onSelectionChange')}>
       {(item) => (
-        <TreeViewItem childItems={item.childItems} textValue={item.name}>
-          <Text>{item.name}</Text>
-          {item.icon}
-          <ActionMenu onAction={action('actionMenuAction')}>
-            <Item key="add">
-              <Add />
-              <Text>Add</Text>
-            </Item>
-            <Item key="delete">
-              <Delete />
-              <Text>Delete</Text>
-            </Item>
-          </ActionMenu>
-        </TreeViewItem>
+        <DynamicTreeItem
+          id={item.id}
+          icon={item.icon}
+          childItems={item.childItems}
+          textValue={item.name}
+          name={item.name} />
       )}
     </TreeView>
   </div>

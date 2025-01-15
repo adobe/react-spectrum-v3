@@ -76,7 +76,7 @@ export {TextArea, TextField, TextAreaContext, TextFieldContext} from './TextFiel
 export {ToggleButton, ToggleButtonContext} from './ToggleButton';
 export {ToggleButtonGroup, ToggleButtonGroupContext} from './ToggleButtonGroup';
 export {Tooltip, TooltipTrigger} from './Tooltip';
-export {TreeView, TreeViewItem} from './TreeView';
+export {TreeView, TreeViewItem, TreeItemContent} from './TreeView';
 
 export {pressScale} from './pressScale';
 

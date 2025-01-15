@@ -19,7 +19,7 @@ import FileTxt from '@spectrum-icons/workflow/FileTxt';
 import Folder from '@spectrum-icons/workflow/Folder';
 import React from 'react';
 import {Text} from '@react-spectrum/text';
-import {TreeView, TreeViewItem} from '../src';
+import {TreeItemContent, TreeView, TreeViewItem} from '../src';
 
 export default {
   title: 'TreeView'
@@ -30,34 +30,8 @@ function TestTree(props) {
     <div style={{width: '300px', height: '800px'}}>
       <TreeView {...props} disabledKeys={['projects-1']} defaultExpandedKeys={['Photos', 'projects', 'projects-1']} aria-label="test static tree">
         <TreeViewItem href="https://adobe.com/" id="Photos" textValue="Photos">
-          <Text>Photos</Text>
-          <Folder />
-          <ActionGroup>
-            <Item key="edit">
-              <Edit />
-              <Text>Edit</Text>
-            </Item>
-            <Item key="delete">
-              <Delete />
-              <Text>Delete</Text>
-            </Item>
-          </ActionGroup>
-        </TreeViewItem>
-        <TreeViewItem id="projects" textValue="Projects">
-          <Text>Projects</Text>
-          <Folder />
-          <ActionMenu>
-            <Item key="add">
-              <Add />
-              <Text>Add</Text>
-            </Item>
-            <Item key="delete">
-              <Delete />
-              <Text>Delete</Text>
-            </Item>
-          </ActionMenu>
-          <TreeViewItem id="projects-1" textValue="Projects-1">
-            <Text>Projects-1</Text>
+          <TreeItemContent>
+            <Text>Photos</Text>
             <Folder />
             <ActionGroup>
               <Item key="edit">
@@ -69,38 +43,76 @@ function TestTree(props) {
                 <Text>Delete</Text>
               </Item>
             </ActionGroup>
-            <TreeViewItem id="projects-1A" textValue="Projects-1A">
-              <Text>Projects-1A</Text>
-              <FileTxt />
-              <ActionMenu>
-                <Item key="add">
-                  <Add />
-                  <Text>Add</Text>
-                </Item>
-                <Item key="delete">
-                  <Delete />
-                  <Text>Delete</Text>
-                </Item>
-              </ActionMenu>
-            </TreeViewItem>
-          </TreeViewItem>
-          <TreeViewItem id="projects-2" textValue="Projects-2">
-            <Text>Projects-2</Text>
-            <FileTxt />
-            <ActionGroup>
-              <Item key="edit">
-                <Edit />
-                <Text>Edit</Text>
+          </TreeItemContent>
+        </TreeViewItem>
+        <TreeViewItem id="projects" textValue="Projects">
+          <TreeItemContent>
+            <Text>Projects</Text>
+            <Folder />
+            <ActionMenu>
+              <Item key="add">
+                <Add />
+                <Text>Add</Text>
               </Item>
               <Item key="delete">
                 <Delete />
                 <Text>Delete</Text>
               </Item>
-            </ActionGroup>
+            </ActionMenu>
+          </TreeItemContent>
+          <TreeViewItem id="projects-1" textValue="Projects-1">
+            <TreeItemContent>
+              <Text>Projects-1</Text>
+              <Folder />
+              <ActionGroup>
+                <Item key="edit">
+                  <Edit />
+                  <Text>Edit</Text>
+                </Item>
+                <Item key="delete">
+                  <Delete />
+                  <Text>Delete</Text>
+                </Item>
+              </ActionGroup>
+            </TreeItemContent>
+            <TreeViewItem id="projects-1A" textValue="Projects-1A">
+              <TreeItemContent>
+                <Text>Projects-1A</Text>
+                <FileTxt />
+                <ActionMenu>
+                  <Item key="add">
+                    <Add />
+                    <Text>Add</Text>
+                  </Item>
+                  <Item key="delete">
+                    <Delete />
+                    <Text>Delete</Text>
+                  </Item>
+                </ActionMenu>
+              </TreeItemContent>
+            </TreeViewItem>
+          </TreeViewItem>
+          <TreeViewItem id="projects-2" textValue="Projects-2">
+            <TreeItemContent>
+              <Text>Projects-2</Text>
+              <FileTxt />
+              <ActionGroup>
+                <Item key="edit">
+                  <Edit />
+                  <Text>Edit</Text>
+                </Item>
+                <Item key="delete">
+                  <Delete />
+                  <Text>Delete</Text>
+                </Item>
+              </ActionGroup>
+            </TreeItemContent>
           </TreeViewItem>
           <TreeViewItem id="projects-3" textValue="Projects-3">
-            <Text>Projects-3</Text>
-            <FileTxt />
+            <TreeItemContent>
+              <Text>Projects-3</Text>
+              <FileTxt />
+            </TreeItemContent>
           </TreeViewItem>
         </TreeViewItem>
       </TreeView>

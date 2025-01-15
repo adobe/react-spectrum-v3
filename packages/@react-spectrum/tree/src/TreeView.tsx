@@ -11,16 +11,15 @@
  */
 
 import {AriaTreeGridListProps} from '@react-aria/tree';
-import {ButtonContext, Collection, TreeItemContentRenderProps, TreeItemProps, TreeItemRenderProps, TreeRenderProps, UNSTABLE_Tree, UNSTABLE_TreeItem, UNSTABLE_TreeItemContent, useContextProps} from 'react-aria-components';
+import {ButtonContext, TreeItemContentProps, TreeItemContentRenderProps, TreeItemProps, TreeItemRenderProps, TreeRenderProps, UNSTABLE_Tree, UNSTABLE_TreeItem, UNSTABLE_TreeItemContent, useContextProps} from 'react-aria-components';
 import {Checkbox} from '@react-spectrum/checkbox';
 import ChevronLeftMedium from '@spectrum-icons/ui/ChevronLeftMedium';
 import ChevronRightMedium from '@spectrum-icons/ui/ChevronRightMedium';
 import {DOMRef, Expandable, Key, SelectionBehavior, SpectrumSelectionProps, StyleProps} from '@react-types/shared';
 import {isAndroid} from '@react-aria/utils';
-import React, {createContext, isValidElement, JSX, JSXElementConstructor, ReactElement, ReactNode, useContext, useRef} from 'react';
+import React, {createContext, JSX, JSXElementConstructor, ReactElement, ReactNode, useContext, useRef} from 'react';
 import {SlotProvider, useDOMRef, useStyleProps} from '@react-spectrum/utils';
 import {style} from '@react-spectrum/style-macro-s1' with {type: 'macro'};
-import {Text} from '@react-spectrum/text';
 import {useButton} from '@react-aria/button';
 import {useLocale} from '@react-aria/i18n';
 
@@ -51,10 +50,6 @@ interface TreeRendererContextValue {
   renderer?: (item) => ReactElement<any, string | JSXElementConstructor<any>>
 }
 const TreeRendererContext = createContext<TreeRendererContextValue>({});
-
-function useTreeRendererContext(): TreeRendererContextValue {
-  return useContext(TreeRendererContext)!;
-}
 
 // TODO: add animations for rows appearing and disappearing
 
@@ -224,89 +219,73 @@ const treeRowOutline = style({
   }
 });
 
+let TreeItemContext = createContext<{hasChildItems?: boolean}>({});
+
 export const TreeViewItem = <T extends object>(props: SpectrumTreeViewItemProps<T>) => {
   let {
-    children,
-    childItems,
-    hasChildItems,
     href
   } = props;
 
-  let content;
-  let nestedRows;
-  let {renderer} = useTreeRendererContext();
-  // TODO alternative api is that we have a separate prop for the TreeItems contents and expect the child to then be
-  // a nested tree item
-
-  if (typeof children === 'string') {
-    content = <Text>{children}</Text>;
-  } else {
-    content = [];
-    nestedRows = [];
-    React.Children.forEach(children, node => {
-      if (isValidElement(node) && node.type === TreeViewItem) {
-        nestedRows.push(node);
-      } else {
-        content.push(node);
-      }
-    });
-  }
-
-  if (childItems != null && renderer) {
-    nestedRows = (
-      <Collection items={childItems}>
-        {renderer}
-      </Collection>
-    );
-  }
-
   return (
     // TODO right now all the tree rows have the various data attributes applied on their dom nodes, should they? Doesn't feel very useful
-    <UNSTABLE_TreeItem
-      {...props}
-      className={renderProps => treeRow({
-        ...renderProps,
-        isLink: !!href
-      })}>
-      <UNSTABLE_TreeItemContent>
-        {({isExpanded, hasChildRows, level, selectionMode, selectionBehavior, isDisabled, isSelected, isFocusVisible}) => (
-          <div className={treeCellGrid({isDisabled})}>
-            {selectionMode !== 'none' && selectionBehavior === 'toggle' && (
+    <TreeItemContext.Provider value={{hasChildItems: !!props.childItems || props.hasChildItems}}>
+      <UNSTABLE_TreeItem
+        {...props}
+        className={renderProps => treeRow({
+          ...renderProps,
+          isLink: !!href
+        })} />
+    </TreeItemContext.Provider>
+  );
+};
+
+
+export const TreeItemContent = (props: Omit<TreeItemContentProps, 'children'> & {children: ReactNode}) => {
+  let {
+    children
+  } = props;
+  let {hasChildItems} = useContext(TreeItemContext);
+
+  return (
+    <UNSTABLE_TreeItemContent>
+      {({isExpanded, hasChildRows, level, selectionMode, selectionBehavior, isDisabled, isSelected, isFocusVisible}) => (
+        <div className={treeCellGrid({isDisabled})}>
+          {selectionMode !== 'none' && selectionBehavior === 'toggle' && (
               // TODO: add transition?
-              <Checkbox
-                isEmphasized
-                UNSAFE_className={treeCheckbox()}
-                UNSAFE_style={{paddingInlineEnd: '0px'}}
-                slot="selection" />
+          <Checkbox
+            isEmphasized
+            UNSAFE_className={treeCheckbox()}
+            UNSAFE_style={{paddingInlineEnd: '0px'}}
+            slot="selection" />
             )}
-            <div style={{gridArea: 'level-padding', marginInlineEnd: `calc(${level - 1} * var(--spectrum-global-dimension-size-200))`}} />
-            {/* TODO: revisit when we do async loading, at the moment hasChildItems will only cause the chevron to be rendered, no aria/data attributes indicating the row's expandability are added */}
-            {(hasChildRows || hasChildItems) && <ExpandableRowChevron isDisabled={isDisabled} isExpanded={isExpanded} />}
-            <SlotProvider
-              slots={{
-                text: {UNSAFE_className: treeContent({isDisabled})},
+          <div style={{gridArea: 'level-padding', marginInlineEnd: `calc(${level - 1} * var(--spectrum-global-dimension-size-200))`}} />
+          {/* TODO: revisit when we do async loading, at the moment hasChildItems will only cause the chevron to be rendered, no aria/data attributes indicating the row's expandability are added */}
+          {(hasChildRows || hasChildItems) && <ExpandableRowChevron isDisabled={isDisabled} isExpanded={isExpanded} />}
+          <SlotProvider
+            slots={{
+              text: {UNSAFE_className: treeContent({isDisabled})},
                 // Note there is also an issue here where these icon props are making into the action menu's icon. Resolved by 8ab0ffb276ff437a65b365c9a3be0323a1b24656
                 // but could crop up later for other components
-                icon: {UNSAFE_className: treeIcon(), size: 'S'},
-                actionButton: {UNSAFE_className: treeActions(), isQuiet: true},
-                actionGroup: {
-                  UNSAFE_className: treeActions(),
-                  isQuiet: true,
-                  density: 'compact',
-                  buttonLabelBehavior: 'hide',
-                  isDisabled,
-                  overflowMode: 'collapse'
-                },
-                actionMenu: {UNSAFE_className: treeActionMenu(), UNSAFE_style: {marginInlineEnd: '.5rem'}, isQuiet: true}
-              }}>
-              {content}
-            </SlotProvider>
-            <div className={treeRowOutline({isFocusVisible, isSelected})} />
-          </div>
+              icon: {UNSAFE_className: treeIcon(), size: 'S'},
+              actionButton: {UNSAFE_className: treeActions(), isQuiet: true},
+              actionGroup: {
+                UNSAFE_className: treeActions(),
+                isQuiet: true,
+                density: 'compact',
+                buttonLabelBehavior: 'hide',
+                isDisabled,
+                overflowMode: 'collapse'
+              },
+              actionMenu: {UNSAFE_className: treeActionMenu(), UNSAFE_style: {marginInlineEnd: '.5rem'}, isQuiet: true}
+            }}>
+            <TreeItemContext.Provider value={{}}>
+              {children}
+            </TreeItemContext.Provider>
+          </SlotProvider>
+          <div className={treeRowOutline({isFocusVisible, isSelected})} />
+        </div>
         )}
-      </UNSTABLE_TreeItemContent>
-      {nestedRows}
-    </UNSTABLE_TreeItem>
+    </UNSTABLE_TreeItemContent>
   );
 };
 
