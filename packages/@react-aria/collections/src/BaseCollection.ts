@@ -224,7 +224,7 @@ export class BaseCollection<T> implements ICollection<Node<T>> {
         let clonedSection: Mutable<CollectionNode<T>> = (node as CollectionNode<T>).clone();
         let lastChildInSection: Mutable<CollectionNode<T>> | null = null;
         for (let child of this.getChildren(node.key)) {
-          if (filterFn(child.textValue) || child.type === 'header') {
+          if (shouldKeepNode(child, filterFn, this, newCollection)) {
             let clonedChild: Mutable<CollectionNode<T>> = (child as CollectionNode<T>).clone();
             // eslint-disable-next-line max-depth
             if (lastChildInSection == null) {
@@ -284,22 +284,25 @@ export class BaseCollection<T> implements ICollection<Node<T>> {
           lastNode = clonedSeparator;
           newCollection.addNode(clonedSeparator);
         }
-      } else if (filterFn(node.textValue)) {
+      } else {
+        // At this point, the node is either a subdialogtrigger node or a standard row/item
         let clonedNode: Mutable<CollectionNode<T>> = (node as CollectionNode<T>).clone();
-        if (newCollection.firstKey == null) {
-          newCollection.firstKey = clonedNode.key;
-        }
+        if (shouldKeepNode(clonedNode, filterFn, this, newCollection)) {
+          if (newCollection.firstKey == null) {
+            newCollection.firstKey = clonedNode.key;
+          }
 
-        if (lastNode != null && (lastNode.type !== 'section' && lastNode.type !== 'separator') && lastNode.parentKey === clonedNode.parentKey) {
-          lastNode.nextKey = clonedNode.key;
-          clonedNode.prevKey = lastNode.key;
-        } else {
-          clonedNode.prevKey = null;
-        }
+          if (lastNode != null && (lastNode.type !== 'section' && lastNode.type !== 'separator') && lastNode.parentKey === clonedNode.parentKey) {
+            lastNode.nextKey = clonedNode.key;
+            clonedNode.prevKey = lastNode.key;
+          } else {
+            clonedNode.prevKey = null;
+          }
 
-        clonedNode.nextKey = null;
-        newCollection.addNode(clonedNode);
-        lastNode = clonedNode;
+          clonedNode.nextKey = null;
+          newCollection.addNode(clonedNode);
+          lastNode = clonedNode;
+        }
       }
     }
 
@@ -316,5 +319,24 @@ export class BaseCollection<T> implements ICollection<Node<T>> {
     newCollection.lastKey = lastNode?.key || null;
 
     return newCollection;
+  }
+}
+
+function shouldKeepNode<T>(node: Node<T>, filterFn: (nodeValue: string) => boolean, oldCollection: BaseCollection<T>, newCollection: BaseCollection<T>): boolean {
+  if (node.type === 'subdialogtrigger' || node.type === 'submenutrigger') {
+    // Subdialog wrapper should only have one child, if it passes the filter add it to the new collection since we don't need to
+    // do any extra handling for its first/next key
+    let triggerChild = [...oldCollection.getChildren(node.key)][0];
+    if (triggerChild && filterFn(triggerChild.textValue)) {
+      let clonedChild: Mutable<CollectionNode<T>> = (triggerChild as CollectionNode<T>).clone();
+      newCollection.addNode(clonedChild);
+      return true;
+    } else {
+      return false;
+    }
+  } else if (node.type === 'header') {
+    return true;
+  } else {
+    return filterFn(node.textValue);
   }
 }

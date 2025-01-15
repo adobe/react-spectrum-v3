@@ -15,6 +15,7 @@ import {DOMAttributes, FocusableElement, RefObject} from '@react-types/shared';
 import {filterDOMProps, useSlotId} from '@react-aria/utils';
 import {focusSafely} from '@react-aria/focus';
 import {useEffect, useRef} from 'react';
+import {useKeyboard} from '@react-aria/interactions';
 import {useOverlayFocusContain} from '@react-aria/overlays';
 
 export interface DialogAria {
@@ -30,7 +31,11 @@ export interface DialogAria {
  * A dialog is an overlay shown above other content in an application.
  */
 export function useDialog(props: AriaDialogProps, ref: RefObject<FocusableElement | null>): DialogAria {
-  let {role = 'dialog'} = props;
+  let {
+    role = 'dialog',
+    onKeyUp,
+    onKeyDown
+  } = props;
   let titleId: string | undefined = useSlotId();
   titleId = props['aria-label'] ? undefined : titleId;
 
@@ -62,6 +67,8 @@ export function useDialog(props: AriaDialogProps, ref: RefObject<FocusableElemen
   }, [ref]);
 
   useOverlayFocusContain();
+  // TODO: keep in mind this will stop propagation and prevent the Esc handler in useOverlay from firing I believe
+  let {keyboardProps} = useKeyboard({onKeyDown, onKeyUp});
 
   // We do not use aria-modal due to a Safari bug which forces the first focusable element to be focused
   // on mount when inside an iframe, no matter which element we programmatically focus.
@@ -71,6 +78,7 @@ export function useDialog(props: AriaDialogProps, ref: RefObject<FocusableElemen
   return {
     dialogProps: {
       ...filterDOMProps(props, {labelable: true}),
+      ...keyboardProps,
       role,
       tabIndex: -1,
       'aria-labelledby': props['aria-labelledby'] || titleId,

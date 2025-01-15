@@ -38,7 +38,9 @@ export interface AriaSubmenuTriggerProps {
    * The delay time in milliseconds for the submenu to appear after hovering over the trigger.
    * @default 200
    */
-  delay?: number
+  delay?: number,
+  /** Whether the submenu trigger uses virtual focus. */
+  isVirtualFocus?: boolean
 }
 
 interface SubmenuTriggerProps extends Omit<AriaMenuItemProps, 'key'> {
@@ -67,7 +69,7 @@ export interface SubmenuTriggerAria<T> {
  * @param ref - Ref to the submenu trigger element.
  */
 export function useSubmenuTrigger<T>(props: AriaSubmenuTriggerProps, state: SubmenuTriggerState, ref: RefObject<FocusableElement | null>): SubmenuTriggerAria<T> {
-  let {parentMenuRef, submenuRef, type = 'menu', isDisabled, delay = 200} = props;
+  let {parentMenuRef, submenuRef, type = 'menu', isDisabled, delay = 200, isVirtualFocus} = props;
   let submenuTriggerId = useId();
   let overlayId = useId();
   let {direction} = useLocale();
@@ -101,14 +103,18 @@ export function useSubmenuTrigger<T>(props: AriaSubmenuTriggerProps, state: Subm
         if (direction === 'ltr' && e.currentTarget.contains(e.target as Element)) {
           e.stopPropagation();
           onSubmenuClose();
-          ref.current?.focus();
+          if (!isVirtualFocus) {
+            ref.current?.focus();
+          }
         }
         break;
       case 'ArrowRight':
         if (direction === 'rtl' && e.currentTarget.contains(e.target as Element)) {
           e.stopPropagation();
           onSubmenuClose();
-          ref.current?.focus();
+          if (!isVirtualFocus) {
+            ref.current?.focus();
+          }
         }
         break;
       case 'Escape':
@@ -118,10 +124,22 @@ export function useSubmenuTrigger<T>(props: AriaSubmenuTriggerProps, state: Subm
     }
   };
 
+  let subDialogKeyDown = (e: KeyboardEvent) => {
+    switch (e.key) {
+      case 'Escape':
+        onSubmenuClose();
+        if (!isVirtualFocus) {
+          ref.current?.focus();
+        }
+        break;
+    }
+  };
+
   let submenuProps = {
     id: overlayId,
     'aria-labelledby': submenuTriggerId,
     submenuLevel: state.submenuLevel,
+    onKeyDown: type === 'dialog' ? subDialogKeyDown : undefined,
     ...(type === 'menu' && {
       onClose: state.closeAll,
       autoFocus: state.focusStrategy ?? undefined,
@@ -236,7 +254,7 @@ export function useSubmenuTrigger<T>(props: AriaSubmenuTriggerProps, state: Subm
     submenuProps,
     popoverProps: {
       isNonModal: true,
-      disableFocusManagement: true,
+      disableFocusManagement: type === 'menu' && !isVirtualFocus,
       shouldCloseOnInteractOutside
     }
   };

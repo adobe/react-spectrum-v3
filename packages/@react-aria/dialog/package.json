@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@react-aria/focus": "^3.19.0",
+    "@react-aria/interactions": "^3.22.5",
     "@react-aria/overlays": "^3.24.0",
     "@react-aria/utils": "^3.26.0",
     "@react-types/dialog": "^3.5.14",

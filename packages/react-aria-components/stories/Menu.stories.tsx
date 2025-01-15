@@ -11,10 +11,11 @@
  */
 
 import {action} from '@storybook/addon-actions';
-import {Button, Header, Keyboard, Menu, MenuSection, MenuTrigger, Popover, Separator, SubmenuTrigger, Text} from 'react-aria-components';
+import {Button, Dialog, Header, Heading, Keyboard, Menu, MenuSection, MenuTrigger, Popover, Separator, SubmenuTrigger, Text} from 'react-aria-components';
 import {MyMenuItem} from './utils';
 import React from 'react';
 import styles from '../example/index.css';
+import {SubdialogTrigger} from '../src/Menu';
 
 export default {
   title: 'React Aria Components'
@@ -279,6 +280,44 @@ export const SubmenuSectionsExample = (args) => (
   </MenuTrigger>
 );
 
+export const SubdialogExample = (args) => (
+  <MenuTrigger>
+    <Button aria-label="Menu">☰</Button>
+    <Popover>
+      <Menu className={styles.menu} onAction={action('onAction')}>
+        <MyMenuItem id="Foo">Foo</MyMenuItem>
+        <SubdialogTrigger {...args}>
+          <MyMenuItem id="Bar">Bar</MyMenuItem>
+          <Popover
+            style={{
+              background: 'Canvas',
+              color: 'CanvasText',
+              border: '1px solid gray',
+              padding: 5
+            }}>
+            <Dialog>
+              <form style={{display: 'flex', flexDirection: 'column'}}>
+                <Heading slot="title">Sign up</Heading>
+                <label>
+                  First Name: <input placeholder="John" />
+                </label>
+                <label>
+                  Last Name: <input placeholder="Smith" />
+                </label>
+                <Button onPress={close} style={{marginTop: 10}}>
+                  Submit
+                </Button>
+              </form>
+            </Dialog>
+          </Popover>
+        </SubdialogTrigger>
+        <MyMenuItem id="Baz">Baz</MyMenuItem>
+        <MyMenuItem id="Google" href="https://google.com">Google</MyMenuItem>
+      </Menu>
+    </Popover>
+  </MenuTrigger>
+);
+
 let submenuArgs = {
   args: {
     delay: 200
@@ -294,3 +333,4 @@ SubmenuExample.story = {...submenuArgs};
 SubmenuNestedExample.story = {...submenuArgs};
 SubmenuManyItemsExample.story = {...submenuArgs};
 SubmenuDisabledExample.story = {...submenuArgs};
+SubdialogExample.story = {...submenuArgs};
