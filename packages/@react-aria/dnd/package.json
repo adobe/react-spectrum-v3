@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@internationalized/string": "^3.2.5",
+    "@react-aria/collections": "3.0.0-alpha.7",
     "@react-aria/i18n": "^3.12.5",
     "@react-aria/interactions": "^3.23.0",
     "@react-aria/live-announcer": "^3.4.1",

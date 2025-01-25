@@ -11,7 +11,7 @@
  */
 
 import {act, fireEvent, installPointerEvent, mockClickDefault, pointerMap, render, triggerLongPress, within} from '@react-spectrum/test-utils-internal';
-import {Button, Cell, Checkbox, Collection, Column, ColumnResizer, Dialog, DialogTrigger, DropIndicator, Label, Modal, ResizableTableContainer, Row, Table, TableBody, TableHeader, UNSTABLE_TableLayout as TableLayout, useDragAndDrop, useTableOptions, UNSTABLE_Virtualizer as Virtualizer} from '../';
+import {Button, Cell, Checkbox, Collection, Column, ColumnResizer, Dialog, DialogTrigger, DropIndicator, Label, Modal, ResizableTableContainer, Row, Table, TableBody, TableHeader, UNSTABLE_TableLayout as TableLayout, Tag, TagGroup, TagList, useDragAndDrop, useTableOptions, UNSTABLE_Virtualizer as Virtualizer} from '../';
 import {composeStories} from '@storybook/react';
 import {DataTransfer, DragEvent} from '@react-aria/dnd/test/mocks';
 import React, {useMemo, useRef, useState} from 'react';
@@ -63,7 +63,7 @@ function MyRow({id, columns, children, ...otherProps}) {
   let {selectionBehavior, allowsDragging} = useTableOptions();
 
   return (
-    <Row id={id} {...otherProps}>
+    <Row id={id} {...otherProps} columns={columns}>
       {allowsDragging && (
         <Cell>
           <Button slot="drag">≡</Button>
@@ -119,6 +119,31 @@ let TestTable = ({tableProps, tableHeaderProps, columnProps, tableBodyProps, row
         <Cell {...cellProps}>bootmgr</Cell>
         <Cell {...cellProps}>System file</Cell>
         <Cell {...cellProps}>11/20/2010</Cell>
+      </MyRow>
+    </TableBody>
+  </Table>
+);
+
+let EditableTable = ({tableProps, tableHeaderProps, columnProps, tableBodyProps, rowProps, cellProps}) => (
+  <Table aria-label="Files" {...tableProps}>
+    <MyTableHeader {...tableHeaderProps}>
+      <MyColumn id="name" isRowHeader {...columnProps}>Name</MyColumn>
+      <MyColumn {...columnProps}>Type</MyColumn>
+      <MyColumn {...columnProps}>Actions</MyColumn>
+    </MyTableHeader>
+    <TableBody {...tableBodyProps}>
+      <MyRow id="1" textValue="Edit" {...rowProps}>
+        <Cell {...cellProps}>Games</Cell>
+        <Cell {...cellProps}>File folder</Cell>
+        <Cell {...cellProps}>
+          <TagGroup aria-label="Tag group">
+            <TagList>
+              <Tag id="1">Tag 1</Tag>
+              <Tag id="2">Tag 2</Tag>
+              <Tag id="3">Tag 3</Tag>
+            </TagList>
+          </TagGroup>
+        </Cell>
       </MyRow>
     </TableBody>
   </Table>
@@ -893,6 +918,20 @@ describe('Table', () => {
     rows = getAllByRole('row');
     expect(rows).toHaveLength(9);
     expect(rows.map(r => r.textContent)).toEqual(['FooBar', 'Foo 7Bar 7', 'Foo 8Bar 8', 'Foo 9Bar 9', 'Foo 10Bar 10', 'Foo 11Bar 11', 'Foo 12Bar 12', 'Foo 13Bar 13', 'Foo 49Bar 49']);
+  });
+
+  it('should support nested collections with colliding keys', async () => {
+    let {container} = render(<EditableTable />);
+
+    let itemMap = new Map();
+    let items = container.querySelectorAll('[data-key]');
+
+    for (let item of items) {
+      if (item instanceof HTMLElement) {
+        expect(itemMap.has(item.dataset.key)).toBe(false);
+        itemMap.set(item.dataset.key, item);
+      }
+    }
   });
 
   describe('drag and drop', () => {

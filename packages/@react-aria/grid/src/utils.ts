@@ -15,6 +15,7 @@ import type {GridState} from '@react-stately/grid';
 import type {Key, KeyboardDelegate} from '@react-types/shared';
 
 interface GridMapShared {
+  id: string,
   keyboardDelegate: KeyboardDelegate,
   actions: {
     onRowAction?: (key: Key) => void,

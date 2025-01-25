@@ -77,11 +77,11 @@ export const TagGroup = React.forwardRef(function TagGroup<T extends object>(pro
       : new ListCollection([...state.collection])) as Collection<Node<T>>;
     return new ListKeyboardDelegate({
       collection,
-      ref: domRef,
+      ref: tagsRef,
       direction,
       orientation: 'horizontal'
     });
-  }, [direction, isCollapsed, state.collection, tagState.visibleTagCount, domRef]) as ListKeyboardDelegate<T>;
+  }, [direction, isCollapsed, state.collection, tagState.visibleTagCount, tagsRef]) as ListKeyboardDelegate<T>;
   // Remove onAction from props so it doesn't make it into useGridList.
   delete props.onAction;
   let {gridProps, labelProps, descriptionProps, errorMessageProps} = useTagGroup({...props, keyboardDelegate}, state, tagsRef);

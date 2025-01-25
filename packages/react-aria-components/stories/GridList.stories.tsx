@@ -180,6 +180,7 @@ export function TagGroupInsideGridList() {
     <GridList
       className={styles.menu}
       aria-label="Grid list with tag group"
+      keyboardNavigationBehavior="tab"
       style={{
         width: 300,
         height: 300
@@ -194,8 +195,19 @@ export function TagGroupInsideGridList() {
           </TagList>
         </TagGroup>
       </MyGridListItem>
-      <MyGridListItem>1,2 <Button>Actions</Button></MyGridListItem>
-      <MyGridListItem>1,3 <Button>Actions</Button></MyGridListItem>
+      <MyGridListItem>
+        1,2 <Button>Actions</Button>
+      </MyGridListItem>
+      <MyGridListItem>
+        1,3         
+        <TagGroup aria-label="Tag group">
+          <TagList style={{display: 'flex', gap: 10}}>
+            <Tag key="1">Tag 1</Tag>
+            <Tag key="2">Tag 2</Tag>
+            <Tag key="3">Tag 3</Tag>
+          </TagList>
+        </TagGroup>
+      </MyGridListItem>
     </GridList>
   );
 }

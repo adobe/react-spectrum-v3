@@ -386,7 +386,7 @@ function MyRow<T extends object>({id, columns, children, ...otherProps}: RowProp
   let {selectionBehavior, allowsDragging} = useTableOptions();
 
   return (
-    <Row id={id} {...otherProps}>
+    <Row id={id} {...otherProps} columns={columns}>
       {allowsDragging && <Cell><Button slot="drag">≡</Button></Cell>}
       {selectionBehavior === 'toggle' && <Cell><MyCheckbox slot="selection" /></Cell>}
       <Collection items={columns}>

@@ -11,6 +11,7 @@
  */
 
 import {cloneElement, ReactElement, ReactNode, useMemo} from 'react';
+import {getNodeKey} from './utils';
 import {Key} from '@react-types/shared';
 
 export interface CachedChildrenOptions<T> {
@@ -51,7 +52,7 @@ export function useCachedChildren<T extends object>(props: CachedChildrenOptions
           }
            
           if (idScope) {
-            key = idScope + ':' + key;
+            key = getNodeKey(key, idScope);
           }
           // Note: only works if wrapped Item passes through id...
           rendered = cloneElement(

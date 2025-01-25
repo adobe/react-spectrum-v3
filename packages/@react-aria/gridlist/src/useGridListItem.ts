@@ -14,6 +14,7 @@ import {chain, getScrollParent, mergeProps, scrollIntoViewport, useSlotId, useSy
 import {DOMAttributes, FocusableElement, Key, RefObject, Node as RSNode} from '@react-types/shared';
 import {focusSafely, getFocusableTreeWalker} from '@react-aria/focus';
 import {getLastItem} from '@react-stately/collections';
+import {getNodeKey} from '@react-aria/collections';
 import {getRowId, listMap} from './utils';
 import {HTMLAttributes, KeyboardEvent as ReactKeyboardEvent, useRef} from 'react';
 import {isFocusVisible} from '@react-aria/interactions';
@@ -67,7 +68,7 @@ export function useGridListItem<T>(props: AriaGridListItemOptions, state: ListSt
 
   // let stringFormatter = useLocalizedStringFormatter(intlMessages, '@react-aria/gridlist');
   let {direction} = useLocale();
-  let {onAction, linkBehavior, keyboardNavigationBehavior} = listMap.get(state)!;
+  let {id, onAction, linkBehavior, keyboardNavigationBehavior} = listMap.get(state)!;
   let descriptionId = useSlotId();
 
   // We need to track the key of the item at the time it was last focused so that we force
@@ -271,10 +272,11 @@ export function useGridListItem<T>(props: AriaGridListItemOptions, state: ListSt
     onFocus,
     // 'aria-label': [(node.textValue || undefined), rowAnnouncement].filter(Boolean).join(', '),
     'aria-label': node.textValue || undefined,
-    'aria-selected': state.selectionManager.canSelectItem(node.key) ? state.selectionManager.isSelected(node.key) : undefined,
-    'aria-disabled': state.selectionManager.isDisabled(node.key) || undefined,
+    'aria-selected': itemStates.allowsSelection ? itemStates.isSelected : undefined,
+    'aria-disabled': itemStates.isDisabled || undefined,
     'aria-labelledby': descriptionId && node.textValue ? `${getRowId(state, node.key)} ${descriptionId}` : undefined,
-    id: getRowId(state, node.key)
+    id: getRowId(state, node.key),
+    'data-key': getNodeKey(node.key, id)
   });
 
   if (isVirtualized) {
