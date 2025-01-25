@@ -57,6 +57,11 @@ export interface GridListRenderProps {
 }
 
 export interface GridListProps<T> extends Omit<AriaGridListProps<T>, 'children'>, CollectionProps<T>, StyleRenderProps<GridListRenderProps>, SlotProps, ScrollableProps<HTMLDivElement> {
+  /**
+   * Whether typeahead navigation is disabled.
+   * @default false
+   */
+  disallowTypeAhead?: boolean,
   /** How multiple selection should behave in the collection. */
   selectionBehavior?: SelectionBehavior,
   /** The drag and drop hooks returned by `useDragAndDrop` used to enable drag and drop behavior for the GridList. */
@@ -120,7 +125,7 @@ function GridListInner<T extends object>({props, collection, gridListRef: ref}: 
     })
   ), [collection, ref, layout, disabledKeys, disabledBehavior, layoutDelegate, collator, direction]);
 
-  let {gridProps} = useGridList({
+  let {gridProps: {id, ...gridProps}} = useGridList({
     ...props,
     keyboardDelegate,
     // Only tab navigation is supported in grid layout.
@@ -218,7 +223,7 @@ function GridListInner<T extends object>({props, collection, gridListRef: ref}: 
       <div
         {...filterDOMProps(props)}
         {...renderProps}
-        {...mergeProps(gridProps, focusProps, droppableCollection?.collectionProps, emptyStatePropOverrides)}
+        {...mergeProps(gridProps, focusProps, droppableCollection?.collectionProps, emptyStatePropOverrides, {id})}
         ref={ref}
         slot={props.slot || undefined}
         onScroll={props.onScroll}

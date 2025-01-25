@@ -6132,6 +6132,7 @@ __metadata:
   resolution: "@react-aria/dnd@workspace:packages/@react-aria/dnd"
   dependencies:
     "@internationalized/string": "npm:^3.2.5"
+    "@react-aria/collections": "npm:3.0.0-alpha.7"
     "@react-aria/i18n": "npm:^3.12.5"
     "@react-aria/interactions": "npm:^3.23.0"
     "@react-aria/live-announcer": "npm:^3.4.1"
@@ -6187,6 +6188,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-aria/grid@workspace:packages/@react-aria/grid"
   dependencies:
+    "@react-aria/collections": "npm:3.0.0-alpha.7"
     "@react-aria/focus": "npm:^3.19.1"
     "@react-aria/i18n": "npm:^3.12.5"
     "@react-aria/interactions": "npm:^3.23.0"
@@ -6210,6 +6212,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-aria/gridlist@workspace:packages/@react-aria/gridlist"
   dependencies:
+    "@react-aria/collections": "npm:3.0.0-alpha.7"
     "@react-aria/focus": "npm:^3.19.1"
     "@react-aria/grid": "npm:^3.11.1"
     "@react-aria/i18n": "npm:^3.12.5"
@@ -6507,6 +6510,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-aria/selection@workspace:packages/@react-aria/selection"
   dependencies:
+    "@react-aria/collections": "npm:3.0.0-alpha.7"
     "@react-aria/focus": "npm:^3.19.1"
     "@react-aria/i18n": "npm:^3.12.5"
     "@react-aria/interactions": "npm:^3.23.0"

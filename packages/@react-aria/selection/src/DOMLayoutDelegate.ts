@@ -10,6 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
+import {getNodeKey} from '@react-aria/collections';
 import {Key, LayoutDelegate, Rect, RefObject, Size} from '@react-types/shared';
 
 export class DOMLayoutDelegate implements LayoutDelegate {
@@ -24,7 +25,8 @@ export class DOMLayoutDelegate implements LayoutDelegate {
     if (!container) {
       return null;
     }
-    let item = key != null ? container.querySelector(`[data-key="${CSS.escape(key.toString())}"]`) : null;
+    let idScope = this.ref.current?.dataset['scope'];
+    let item = key != null ? container.querySelector(`[data-key="${CSS.escape(getNodeKey(key, idScope))}"]`) : null;
     if (!item) {
       return null;
     }

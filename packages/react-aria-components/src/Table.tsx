@@ -365,7 +365,7 @@ function TableInner({props, forwardedRef: ref, selectionState, collection}: Tabl
 
   let {isVirtualized, layoutDelegate, dropTargetDelegate: ctxDropTargetDelegate, CollectionRoot} = useContext(CollectionRendererContext);
   let {dragAndDropHooks} = props;
-  let {gridProps} = useTable({
+  let {gridProps: {id, ...gridProps}} = useTable({
     ...props,
     layoutDelegate,
     isVirtualized
@@ -471,7 +471,7 @@ function TableInner({props, forwardedRef: ref, selectionState, collection}: Tabl
         <ElementType
           {...filterDOMProps(props)}
           {...renderProps}
-          {...mergeProps(gridProps, focusProps, droppableCollection?.collectionProps)}
+          {...mergeProps(gridProps, focusProps, droppableCollection?.collectionProps, {id})}
           style={style}
           ref={ref}
           slot={props.slot || undefined}
@@ -1137,9 +1137,11 @@ export const Row = /*#__PURE__*/ createBranchComponent(
       throw new Error('No id detected for the Row element. The Row element requires a id to be provided to it when the cells are rendered dynamically.');
     }
 
+    let scope = props.columns ? props.id : undefined;
     let dependencies = [props.value].concat(props.dependencies);
+
     return (
-      <Collection dependencies={dependencies} items={props.columns} idScope={props.id}>
+      <Collection dependencies={dependencies} items={props.columns} idScope={scope}>
         {props.children}
       </Collection>
     );

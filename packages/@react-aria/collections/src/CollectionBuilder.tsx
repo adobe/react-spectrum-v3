@@ -15,6 +15,7 @@ import {BaseNode, Document, ElementNode} from './Document';
 import {CachedChildrenOptions, useCachedChildren} from './useCachedChildren';
 import {createPortal} from 'react-dom';
 import {forwardRefType, Node} from '@react-types/shared';
+import {getNodeKey} from './utils';
 import {Hidden} from './Hidden';
 import React, {createContext, ForwardedRef, forwardRef, JSX, ReactElement, ReactNode, useCallback, useContext, useMemo, useRef, useState} from 'react';
 import {useIsSSR} from '@react-aria/ssr';
@@ -199,7 +200,7 @@ const CollectionContext = createContext<CachedChildrenOptions<unknown> | null>(n
 export function Collection<T extends object>(props: CollectionProps<T>): JSX.Element {
   let ctx = useContext(CollectionContext)!;
   let dependencies = (ctx?.dependencies || []).concat(props.dependencies);
-  let idScope = props.idScope || ctx?.idScope;
+  let idScope = props.idScope && ctx?.idScope ? getNodeKey(props.idScope, ctx.idScope) : (props.idScope || ctx?.idScope);
   let children = useCollectionChildren({
     ...props,
     idScope,
