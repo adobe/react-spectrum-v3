@@ -112,7 +112,7 @@ const ActionBarInner = forwardRef(function ActionBarInner(props: ActionBarProps 
   if ((selectedItemCount === 'all' || selectedItemCount > 0) && selectedItemCount !== lastCount) {
     setLastCount(selectedItemCount);
   }
-    
+
   // Measure the width of the collection's scrollbar and offset the action bar by that amount.
   let scrollRef = props.scrollRef;
   let [scrollbarWidth, setScrollbarWidth] = useState(0);

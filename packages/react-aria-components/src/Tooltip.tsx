@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {AriaLabelingProps, FocusableElement, forwardRefType, RefObject} from '@react-types/shared';
+import {AnimationProps, AriaLabelingProps, FocusableElement, forwardRefType, RefObject} from '@react-types/shared';
 import {AriaPositionProps, mergeProps, OverlayContainer, Placement, PlacementAxis, PositionProps, useOverlayPosition, useTooltip, useTooltipTrigger} from 'react-aria';
 import {ContextValue, Provider, RenderProps, useContextProps, useRenderProps} from './utils';
 import {FocusableProvider} from '@react-aria/focus';
@@ -23,21 +23,13 @@ export interface TooltipTriggerComponentProps extends TooltipTriggerProps {
   children: ReactNode
 }
 
-export interface TooltipProps extends PositionProps, Pick<AriaPositionProps, 'arrowBoundaryOffset'>, OverlayTriggerProps, AriaLabelingProps, RenderProps<TooltipRenderProps> {
+export interface TooltipProps extends PositionProps, Pick<AriaPositionProps, 'arrowBoundaryOffset'>, OverlayTriggerProps, AriaLabelingProps, RenderProps<TooltipRenderProps>, AnimationProps {
   /**
    * The ref for the element which the tooltip positions itself with respect to.
    *
    * When used within a TooltipTrigger this is set automatically. It is only required when used standalone.
    */
   triggerRef?: RefObject<Element | null>,
-  /**
-   * Whether the tooltip is currently performing an entry animation.
-   */
-  isEntering?: boolean,
-  /**
-   * Whether the tooltip is currently performing an exit animation.
-   */
-  isExiting?: boolean,
   /**
    * The container element in which the overlay portal will be placed. This may have unknown behavior depending on where it is portalled to.
    * @default document.body
@@ -106,7 +98,7 @@ export const Tooltip = /*#__PURE__*/ (forwardRef as forwardRefType)(function Too
   let contextState = useContext(TooltipTriggerStateContext);
   let localState = useTooltipTriggerState(props);
   let state = props.isOpen != null || props.defaultOpen != null || !contextState ? localState : contextState;
-  let isExiting = useExitAnimation(ref, state.isOpen) || props.isExiting || false;
+  let isExiting = useExitAnimation(ref, state.isOpen, props.onExitComplete) || props.isExiting || false;
   if (!state.isOpen && !isExiting) {
     return null;
   }
@@ -144,7 +136,7 @@ function TooltipInner(props: TooltipProps & {isExiting: boolean, tooltipRef: Ref
     onClose: () => state.close(true)
   });
 
-  let isEntering = useEnterAnimation(props.tooltipRef, !!placement) || props.isEntering || false;
+  let isEntering = useEnterAnimation(props.tooltipRef, !!placement, props.onEnterComplete) || props.isEntering || false;
   let renderProps = useRenderProps({
     ...props,
     defaultClassName: 'react-aria-Tooltip',

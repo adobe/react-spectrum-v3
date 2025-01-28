@@ -10,17 +10,17 @@
  * governing permissions and limitations under the License.
  */
 
+import {AnimationProps, forwardRefType, RefObject} from '@react-types/shared';
 import {AriaPopoverProps, DismissButton, Overlay, PlacementAxis, PositionProps, usePopover} from 'react-aria';
 import {ContextValue, RenderProps, SlotProps, useContextProps, useRenderProps} from './utils';
 import {filterDOMProps, mergeProps, useEnterAnimation, useExitAnimation, useLayoutEffect} from '@react-aria/utils';
-import {forwardRefType, RefObject} from '@react-types/shared';
 import {OverlayArrowContext} from './OverlayArrow';
 import {OverlayTriggerProps, OverlayTriggerState, useOverlayTriggerState} from 'react-stately';
 import {OverlayTriggerStateContext} from './Dialog';
 import React, {createContext, ForwardedRef, forwardRef, useContext, useRef, useState} from 'react';
 import {useIsHidden} from '@react-aria/collections';
 
-export interface PopoverProps extends Omit<PositionProps, 'isOpen'>, Omit<AriaPopoverProps, 'popoverRef' | 'triggerRef' | 'offset' | 'arrowSize'>, OverlayTriggerProps, RenderProps<PopoverRenderProps>, SlotProps {
+export interface PopoverProps extends Omit<PositionProps, 'isOpen'>, Omit<AriaPopoverProps, 'popoverRef' | 'triggerRef' | 'offset' | 'arrowSize'>, OverlayTriggerProps, RenderProps<PopoverRenderProps>, SlotProps, AnimationProps {
   /**
    * The name of the component that triggered the popover. This is reflected on the element
    * as the `data-trigger` attribute, and can be used to provide specific
@@ -34,14 +34,6 @@ export interface PopoverProps extends Omit<PositionProps, 'isOpen'>, Omit<AriaPo
    * this is set automatically. It is only required when used standalone.
    */
   triggerRef?: RefObject<Element | null>,
-  /**
-   * Whether the popover is currently performing an entry animation.
-   */
-  isEntering?: boolean,
-  /**
-   * Whether the popover is currently performing an exit animation.
-   */
-  isExiting?: boolean,
   /**
    * The container element in which the overlay portal will be placed. This may have unknown behavior depending on where it is portalled to.
    * @default document.body
@@ -88,7 +80,7 @@ export const Popover = /*#__PURE__*/ (forwardRef as forwardRefType)(function Pop
   let contextState = useContext(OverlayTriggerStateContext);
   let localState = useOverlayTriggerState(props);
   let state = props.isOpen != null || props.defaultOpen != null || !contextState ? localState : contextState;
-  let isExiting = useExitAnimation(ref, state.isOpen) || props.isExiting || false;
+  let isExiting = useExitAnimation(ref, state.isOpen, props.onExitComplete) || props.isExiting || false;
   let isHidden = useIsHidden();
 
   // If we are in a hidden tree, we still need to preserve our children.
@@ -121,7 +113,7 @@ export const Popover = /*#__PURE__*/ (forwardRef as forwardRefType)(function Pop
   );
 });
 
-interface PopoverInnerProps extends AriaPopoverProps, RenderProps<PopoverRenderProps>, SlotProps {
+interface PopoverInnerProps extends AriaPopoverProps, RenderProps<PopoverRenderProps>, SlotProps, AnimationProps {
   state: OverlayTriggerState,
   isEntering?: boolean,
   isExiting: boolean,
@@ -147,7 +139,7 @@ function PopoverInner({state, isExiting, UNSTABLE_portalContainer, ...props}: Po
   }, state);
 
   let ref = props.popoverRef as RefObject<HTMLDivElement | null>;
-  let isEntering = useEnterAnimation(ref, !!placement) || props.isEntering || false;
+  let isEntering = useEnterAnimation(ref, !!placement, props.onEnterComplete) || props.isEntering || false;
   let renderProps = useRenderProps({
     ...props,
     defaultClassName: 'react-aria-Popover',

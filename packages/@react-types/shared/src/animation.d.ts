@@ -10,18 +10,21 @@
  * governing permissions and limitations under the License.
  */
 
-export * from './animation';
-export * from './dom';
-export * from './inputs';
-export * from './selection';
-export * from './dnd';
-export * from './collections';
-export * from './removable';
-export * from './events';
-export * from './dna';
-export * from './style';
-export * from './refs';
-export * from './labelable';
-export * from './orientation';
-export * from './locale';
-export * from './key';
+export interface AnimationProps {
+  /**
+   * Whether the popover is currently performing an entry animation.
+   */
+  isEntering?: boolean,
+  /**
+   * Whether the popover is currently performing an exit animation.
+   */
+  isExiting?: boolean,
+  /**
+   * A callback that will be called when the enter animation is completed.
+   */
+  onEnterComplete?: () => void,
+  /**
+   * A callback that will be called when the exit animation is completed.
+   */
+  onExitComplete?: () => void
+}
