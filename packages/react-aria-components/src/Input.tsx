@@ -61,7 +61,6 @@ export const Input = /*#__PURE__*/ createHideableComponent(function Input(props:
 
   let {hoverProps, isHovered} = useHover(props);
   let {isFocused, isFocusVisible, focusProps} = useFocusRing({
-    isTextInput: true,
     autoFocus: props.autoFocus
   });
 
