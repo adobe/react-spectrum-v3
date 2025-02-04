@@ -10,6 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
+import {createShadowTreeWalker, getOwnerDocument} from '@react-aria/utils';
+
 // Keeps a ref count of all hidden elements. Added to when hiding an element, and
 // subtracted from when showing it again. When it reaches zero, aria-hidden is removed.
 let refCountMap = new WeakMap<Element, number>();
@@ -59,7 +61,8 @@ export function ariaHideOutside(targets: Element[], root = document.body) {
       return NodeFilter.FILTER_ACCEPT;
     };
 
-    let walker = document.createTreeWalker(
+    let walker = createShadowTreeWalker(
+      getOwnerDocument(root),
       root,
       NodeFilter.SHOW_ELEMENT,
       {acceptNode}
@@ -103,7 +106,10 @@ export function ariaHideOutside(targets: Element[], root = document.body) {
     observerStack[observerStack.length - 1].disconnect();
   }
 
+  let startTime = Date.now();
   walk(root);
+  let endTime = Date.now();
+  console.log(`walk took ${endTime - startTime}ms`);
 
   let observer = new MutationObserver(changes => {
     for (let change of changes) {

@@ -11,7 +11,9 @@
  */
 export {useId, mergeIds, useSlotId} from './useId';
 export {chain} from './chain';
-export {getOwnerDocument, getOwnerWindow} from './domHelpers';
+export {createShadowTreeWalker, ShadowTreeWalker} from './shadowdom/ShadowTreeWalker';
+export {getActiveElement, getEventTarget, nodeContains} from './shadowdom/DOMFunctions';
+export {getOwnerDocument, getOwnerWindow, isShadowRoot} from './domHelpers';
 export {mergeProps} from './mergeProps';
 export {mergeRefs} from './mergeRefs';
 export {filterDOMProps} from './filterDOMProps';

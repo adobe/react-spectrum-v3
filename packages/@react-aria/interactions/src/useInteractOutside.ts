@@ -116,19 +116,25 @@ function isValidEvent(event, ref) {
   if (event.button > 0) {
     return false;
   }
-
   if (event.target) {
     // if the event target is no longer in the document, ignore
     const ownerDocument = event.target.ownerDocument;
     if (!ownerDocument || !ownerDocument.documentElement.contains(event.target)) {
       return false;
     }
-
     // If the target is within a top layer element (e.g. toasts), ignore.
     if (event.target.closest('[data-react-aria-top-layer]')) {
       return false;
     }
   }
 
-  return ref.current && !ref.current.contains(event.target);
+  if (!ref.current) {
+    return false;
+  }
+
+  // When the event source is inside a Shadow DOM, event.target is just the shadow root.
+  // Using event.composedPath instead means we can get the actual element inside the shadow root.
+  // This only works if the shadow root is open, there is no way to detect if it is closed.
+  // If the event composed path contains the ref, interaction is inside.
+  return !event.composedPath().includes(ref.current);
 }
