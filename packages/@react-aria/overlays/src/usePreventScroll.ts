@@ -122,6 +122,13 @@ function preventScrollMobileSafari() {
   };
 
   let onTouchMove = (e: TouchEvent) => {
+    if (e.touches.length === 2) {
+      // If there are two touch points, the user is likely trying to zoom. As we
+      // don't want to  prevent pinch zooming by calling `e.preventDefault()`,
+      // we return early here.
+      return;
+    }
+
     // Prevent scrolling the window.
     if (!scrollable || scrollable === document.documentElement || scrollable === document.body) {
       e.preventDefault();
