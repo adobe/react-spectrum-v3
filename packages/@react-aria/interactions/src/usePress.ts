@@ -400,7 +400,7 @@ export function usePress(props: PressHookProps): PressResult {
     if (typeof PointerEvent !== 'undefined') {
       pressProps.onPointerDown = (e) => {
         // Only handle left clicks, and ignore events that bubbled through portals.
-        if (e.button !== 0 || !e.currentTarget.contains(e.target as Element)) {
+        if (e.button !== 0  || (e.button === 0 && e.ctrlKey) || !e.currentTarget.contains(e.target as Element)) {
           return;
         }
 
