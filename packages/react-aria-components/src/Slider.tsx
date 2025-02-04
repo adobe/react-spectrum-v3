@@ -22,6 +22,11 @@ export interface SliderProps<T = number | number[]> extends Omit<AriaSliderProps
   /**
    * The display format of the value label.
    */
+  format?: Intl.NumberFormatOptions | ((value: number, locale: string) => string),
+  /**
+   * The display format of the value label.
+   * @deprecated Use `format` instead.
+   */
   formatOptions?: Intl.NumberFormatOptions
 }
 
@@ -53,7 +58,7 @@ export interface SliderRenderProps {
 export const Slider = /*#__PURE__*/ (forwardRef as forwardRefType)(function Slider<T extends number | number[]>(props: SliderProps<T>, ref: ForwardedRef<HTMLDivElement>) {
   [props, ref] = useContextProps(props, ref, SliderContext);
   let trackRef = useRef<HTMLDivElement>(null);
-  let numberFormatter = useNumberFormatter(props.formatOptions);
+  let numberFormatter = useNumberFormatter(props.format ?? props.formatOptions);
   let state = useSliderState({...props, numberFormatter});
   let [labelRef, label] = useSlot(
     !props['aria-label'] && !props['aria-labelledby']

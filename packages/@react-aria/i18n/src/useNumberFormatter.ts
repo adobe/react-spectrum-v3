@@ -14,12 +14,24 @@ import {NumberFormatOptions, NumberFormatter} from '@internationalized/number';
 import {useLocale} from './context';
 import {useMemo} from 'react';
 
+export type NumberFormatFunction = (value: number, locale: string) => string;
+
+export type CustomNumberFormat = {format(value: number): string};
+
 /**
  * Provides localized number formatting for the current locale. Automatically updates when the locale changes,
  * and handles caching of the number formatter for performance.
- * @param options - Formatting options.
+ * @param format - Formatting options or function.
  */
-export function useNumberFormatter(options: NumberFormatOptions = {}): Intl.NumberFormat {
+export function useNumberFormatter(format?: NumberFormatOptions): Intl.NumberFormat
+export function useNumberFormatter(format?: NumberFormatOptions | NumberFormatFunction): CustomNumberFormat
+export function useNumberFormatter(format: NumberFormatOptions | NumberFormatFunction = {}): CustomNumberFormat {
   let {locale} = useLocale();
-  return useMemo(() => new NumberFormatter(locale, options), [locale, options]);
+  return useMemo(
+    () =>
+      typeof format === 'function'
+        ? {format: (value) => format(value, locale)}
+        : new NumberFormatter(locale, format),
+    [locale, format]
+  );
 }
