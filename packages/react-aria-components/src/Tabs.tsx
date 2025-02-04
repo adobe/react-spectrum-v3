@@ -10,8 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
-import {AriaLabelingProps, forwardRefType, HoverEvents, Key, LinkDOMProps, RefObject} from '@react-types/shared';
-import {AriaTabListProps, AriaTabPanelProps, mergeProps, Orientation, useFocusRing, useHover, useTab, useTabList, useTabPanel} from 'react-aria';
+import {AriaLabelingProps, forwardRefType, HoverEvents, Key, LinkDOMProps, PressEvents, RefObject} from '@react-types/shared';
+import {AriaTabListProps, AriaTabPanelProps, mergeProps, Orientation, useFocusRing, useHover, usePress, useTab, useTabList, useTabPanel} from 'react-aria';
 import {Collection, CollectionBuilder, createHideableComponent, createLeafComponent} from '@react-aria/collections';
 import {CollectionProps, CollectionRendererContext, DefaultCollectionRenderer, usePersistedKeys} from './Collection';
 import {ContextValue, Provider, RenderProps, SlotProps, StyleRenderProps, useContextProps, useRenderProps, useSlottedContext} from './utils';
@@ -43,7 +43,7 @@ export interface TabListRenderProps {
   state: TabListState<unknown>
 }
 
-export interface TabProps extends RenderProps<TabRenderProps>, AriaLabelingProps, LinkDOMProps, HoverEvents {
+export interface TabProps extends RenderProps<TabRenderProps>, AriaLabelingProps, LinkDOMProps, HoverEvents, PressEvents {
   /** The unique id of the tab. */
   id?: Key,
   /** Whether the tab is disabled. */
@@ -251,6 +251,14 @@ export const Tab = /*#__PURE__*/ createLeafComponent('item', (props: TabProps, f
     onHoverEnd: props.onHoverEnd,
     onHoverChange: props.onHoverChange
   });
+  let {pressProps} = usePress({
+    isDisabled,
+    onPress: props.onPress,
+    onPressChange: props.onPressChange,
+    onPressEnd: props.onPressEnd,
+    onPressStart: props.onPressStart,
+    onPressUp: props.onPressUp
+  });
 
   let renderProps = useRenderProps({
     ...props,
@@ -271,7 +279,7 @@ export const Tab = /*#__PURE__*/ createLeafComponent('item', (props: TabProps, f
 
   return (
     <ElementType
-      {...mergeProps(tabProps, focusProps, hoverProps, renderProps)}
+      {...mergeProps(tabProps, focusProps, hoverProps, pressProps, renderProps)}
       ref={ref}
       data-selected={isSelected || undefined}
       data-disabled={isDisabled || undefined}
