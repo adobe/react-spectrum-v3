@@ -10,7 +10,14 @@
  * governing permissions and limitations under the License.
  */
 
-import {Link} from 'react-aria-components';
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useHref,
+  useNavigate
+} from 'react-router';
+import {Link, RouterProvider} from 'react-aria-components';
 import React from 'react';
 
 export default {
@@ -19,8 +26,75 @@ export default {
 
 export const LinkExample = () => {
   return (
-    <Link data-testid="link-example" href="https://www.imdb.com/title/tt6348138/" hrefLang="en"  target="_blank">
+    <Link
+      data-testid="link-example"
+      href="https://www.imdb.com/title/tt6348138/"
+      hrefLang="en"
+      target="_blank">
       The missing link
     </Link>
+  );
+};
+
+const LinkReactRouterExternalInner = () => {
+  const navigate = useNavigate();
+
+  return (
+    <RouterProvider navigate={navigate} useHref={useHref}>
+      <Routes>
+        <Route
+          path="/iframe.html"
+          index
+          element={
+            <Link
+              data-testid="link-example"
+              href="https://www.imdb.com/title/tt6348138/"
+              hrefLang="en"
+              target="_blank">
+              The missing link
+            </Link>
+          } />
+      </Routes>
+    </RouterProvider>
+  );
+};
+
+export const LinkReactRouterExternal = () => {
+  return (
+    <BrowserRouter>
+      <LinkReactRouterExternalInner />
+    </BrowserRouter>
+  );
+};
+
+const LinkReactRouterNested = () => {
+  return (
+    <>
+      <Link href="next_nested">The next nested Link</Link>
+      <Routes>
+        <Route path="next_nested" element={'The end of the links'} />
+      </Routes>
+    </>
+  );
+};
+
+const LinkReactRouterInternalInner = () => {
+  const navigate = useNavigate();
+
+  return (
+    <RouterProvider navigate={navigate} useHref={useHref}>
+      <Link href="nested">The nested link</Link>
+      <Routes>
+        <Route path="nested/*" element={<LinkReactRouterNested />} />
+      </Routes>
+    </RouterProvider>
+  );
+};
+
+export const LinkReactRouterInternal = () => {
+  return (
+    <BrowserRouter>
+      <LinkReactRouterInternalInner />
+    </BrowserRouter>
   );
 };
