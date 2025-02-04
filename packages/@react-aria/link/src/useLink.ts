@@ -87,10 +87,10 @@ export function useLink(props: AriaLinkOptions, ref: RefObject<FocusableElement 
           // If props are applied to a router Link component, it may have already prevented default.
           !e.isDefaultPrevented() &&
           shouldClientNavigate(e.currentTarget, e) &&
-          routerLinkProps.href
+          props.href
         ) {
           e.preventDefault();
-          router.open(e.currentTarget, e, routerLinkProps.href, props.routerOptions);
+          router.open(e.currentTarget, e, props.href, props.routerOptions);
         }
       }
     })
