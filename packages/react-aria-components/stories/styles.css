@@ -398,3 +398,29 @@
     align-items: center
   }
 }
+
+
+:global(.react-aria-Navigation) {
+  width: fit-content;
+
+  :global(.react-aria-NavigationList) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style-type: none;
+    padding: 0;
+
+    [data-current] {
+      font-weight: bold;
+      opacity: 1;
+    }
+
+    &[data-orientation=horizontal] {
+      flex-direction: row;
+    }
+  }
+
+  &[data-disabled], [data-disabled] {
+    opacity: 0.4;
+  }
+}
