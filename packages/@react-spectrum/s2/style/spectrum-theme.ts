@@ -320,19 +320,6 @@ const borderWidth = {
   4: getToken('border-width-400')
 };
 
-const borderColor = createColorProperty({
-  ...color,
-  negative: {
-    default: colorToken('negative-border-color-default'),
-    isHovered: colorToken('negative-border-color-hover'),
-    isFocusVisible: colorToken('negative-border-color-key-focus'),
-    isPressed: colorToken('negative-border-color-down')
-  },
-  disabled: colorToken('disabled-border-color')
-    // forcedColors: 'GrayText'
-
-});
-
 const radius = {
   none: getToken('corner-radius-none'), // 0px
   sm: pxToRem(getToken('corner-radius-small-default')), // 4px
@@ -598,7 +585,17 @@ export const style = createTheme({
       pasteboard: weirdColorToken('background-pasteboard-color'),
       elevated: weirdColorToken('background-elevated-color')
     }),
-
+    borderColor: createColorProperty({
+      ...color,
+      negative: {
+        default: colorToken('negative-border-color-default'),
+        isHovered: colorToken('negative-border-color-hover'),
+        isFocusVisible: colorToken('negative-border-color-key-focus'),
+        isPressed: colorToken('negative-border-color-down')
+      },
+      disabled: colorToken('disabled-border-color')
+        // forcedColors: 'GrayText'
+    }),
     outlineColor: createColorProperty({
       ...color,
       'focus-ring': {
@@ -672,10 +669,6 @@ export const style = createTheme({
     borderEndWidth: createRenamedProperty('borderInlineEndWidth', borderWidth),
     borderTopWidth: borderWidth,
     borderBottomWidth: borderWidth,
-    borderInlineStartColor: borderColor, // don't know why i can't use renamed
-    borderInlineEndColor: borderColor,
-    borderTopColor: borderColor,
-    borderBottomColor: borderColor,
     borderStyle: ['solid', 'dashed', 'dotted', 'double', 'hidden', 'none'] as const,
     strokeWidth: {
       0: '0',
@@ -990,7 +983,6 @@ export const style = createTheme({
     scrollMarginX: ['scrollMarginStart', 'scrollMarginEnd'] as const,
     scrollMarginY: ['scrollMarginTop', 'scrollMarginBottom'] as const,
     borderWidth: ['borderTopWidth', 'borderBottomWidth', 'borderStartWidth', 'borderEndWidth'] as const,
-    borderColor: ['borderTopColor', 'borderBottomColor', 'borderInlineStartColor', 'borderInlineEndColor'] as const,
     borderXWidth: ['borderStartWidth', 'borderEndWidth'] as const,
     borderYWidth: ['borderTopWidth', 'borderBottomWidth'] as const,
     borderRadius: ['borderTopStartRadius', 'borderTopEndRadius', 'borderBottomStartRadius', 'borderBottomEndRadius'] as const,

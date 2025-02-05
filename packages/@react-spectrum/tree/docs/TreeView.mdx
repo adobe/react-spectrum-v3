@@ -26,7 +26,7 @@ import Image from '@spectrum-icons/workflow/Image';
 import Edit from '@spectrum-icons/workflow/Edit';
 import Delete from '@spectrum-icons/workflow/Delete';
 import {Text} from '@react-spectrum/text';
-import {TreeView, TreeViewItem} from '@react-spectrum/tree';
+import {Collection, TreeView, TreeViewItem, TreeItemContent} from '@react-spectrum/tree';
 import {JSX} from "react";
 import {Key} from "@react-types/shared";
 import {ActionGroup, Item} from '@react-spectrum/actiongroup';
@@ -52,41 +52,59 @@ keywords: [tree, grid]
 ## Example
 
 ```tsx example
-<TreeView aria-label="Example tree with static contents" defaultExpandedKeys={new Set(['documents', 'photos'])} height="size-4600" maxWidth="size-6000">
+<TreeView aria-label="Example tree with static contents" defaultExpandedKeys={['documents', 'photos']} height="size-4600" maxWidth="size-6000">
   <TreeViewItem id="documents" textValue="Documents">
-    <Text>Documents</Text>
-    <Folder />
-    <TreeViewItem id="project-a" textValue="Project A">
-      <Text>Project A</Text>
+    <TreeItemContent>
+      <Text>Documents</Text>
       <Folder />
+    </TreeItemContent>
+    <TreeViewItem id="project-a" textValue="Project A">
+      <TreeItemContent>
+        <Text>Project A</Text>
+        <Folder />
+      </TreeItemContent>
       <TreeViewItem id="weekly-report" textValue="Weekly-Report">
-        <Text>Weekly Report</Text>
-        <FileTxt />
+        <TreeItemContent>
+          <Text>Weekly Report</Text>
+          <FileTxt />
+        </TreeItemContent>
       </TreeViewItem>
     </TreeViewItem>
     <TreeViewItem id="document-1" textValue="Document 1">
-      <Text>Document 1</Text>
-      <FileTxt />
+      <TreeItemContent>
+        <Text>Document 1</Text>
+        <FileTxt />
+      </TreeItemContent>
     </TreeViewItem>
     <TreeViewItem id="document-2" textValue="Document 2">
-      <Text>Document 2</Text>
-      <FileTxt />
+      <TreeItemContent>
+        <Text>Document 2</Text>
+        <FileTxt />
+      </TreeItemContent>
     </TreeViewItem>
   </TreeViewItem>
   <TreeViewItem id="photos" textValue="Photos">
-    <Text>Photos</Text>
-    <Folder />
+    <TreeItemContent>
+      <Text>Photos</Text>
+      <Folder />
+    </TreeItemContent>
     <TreeViewItem id="image-1" textValue="Image 1">
-      <Text>Image 1</Text>
-      <Image />
+      <TreeItemContent>
+        <Text>Image 1</Text>
+        <Image />
+      </TreeItemContent>
     </TreeViewItem>
     <TreeViewItem id="image-2" textValue="Image 2">
-      <Text>Image 2</Text>
-      <Image />
+      <TreeItemContent>
+        <Text>Image 2</Text>
+        <Image />
+      </TreeItemContent>
     </TreeViewItem>
     <TreeViewItem id="image-3" textValue="Image 3">
-      <Text>Image 3</Text>
-      <Image />
+      <TreeItemContent>
+        <Text>Image 3</Text>
+        <Image />
+      </TreeItemContent>
     </TreeViewItem>
   </TreeViewItem>
 </TreeView>
@@ -124,14 +142,41 @@ let items: MyItem[] = [
   ]}
 ];
 
+const DynamicTreeItem = (props) => {
+  return (
+    <>
+      <TreeViewItem id={props.id} childItems={props.childItems} textValue={props.name}>
+        <TreeItemContent>
+          <Text>{props.name}</Text>
+          {props.icon}
+        </TreeItemContent>
+        <Collection items={props.childItems}>
+          {(item: any) => (
+            <DynamicTreeItem
+              id={item.id}
+              icon={item.icon}
+              childItems={item.childItems}
+              textValue={item.name}
+              name={item.name}>
+              {item.name}
+            </DynamicTreeItem>
+          )}
+        </Collection>
+      </TreeViewItem>
+    </>
+  );
+};
+
 function ExampleTree(props) {
   return (
     <TreeView aria-label="Example tree with dynamic content" height="size-3000" maxWidth="size-6000" items={items} {...props}>
       {(item: MyItem) => (
-        <TreeViewItem childItems={item.childItems} textValue={item.name}>
-          <Text>{item.name}</Text>
-          {item.icon}
-        </TreeViewItem>
+        <DynamicTreeItem
+          id={item.id}
+          icon={item.icon}
+          childItems={item.childItems}
+          textValue={item.name}
+          name={item.name} />
       )}
     </TreeView>
   );
@@ -340,19 +385,27 @@ Tree items may also be links to another page or website. This can be achieved by
 ```tsx example
 <TreeView aria-label="Example tree with links" defaultExpandedKeys={new Set(['bookmarks'])} height="size-2000" maxWidth="size-6000">
   <TreeViewItem id="bookmarks" textValue="Bookmarks">
-    <Text>Bookmarks</Text>
-    <Folder />
+    <TreeItemContent>
+      <Text>Bookmarks</Text>
+      <Folder />
+    </TreeItemContent>
     <TreeViewItem href="https://adobe.com/" target="_blank" id="adobe" textValue="Adobe">
-      <Text>Adobe</Text>
-      <GlobeOutline />
+      <TreeItemContent>
+        <Text>Adobe</Text>
+        <GlobeOutline />
+      </TreeItemContent>
     </TreeViewItem>
     <TreeViewItem href="https://google.com/" target="_blank" id="google" textValue="Google">
-      <Text>Google</Text>
-      <GlobeOutline />
+      <TreeItemContent>
+        <Text>Google</Text>
+        <GlobeOutline />
+      </TreeItemContent>
     </TreeViewItem>
     <TreeViewItem href="https://nytimes.com/" target="_blank" id="nytimes" textValue="New York Times">
-      <Text>New York Times</Text>
-      <GlobeOutline />
+      <TreeItemContent>
+        <Text>New York Times</Text>
+        <GlobeOutline />
+      </TreeItemContent>
     </TreeViewItem>
   </TreeViewItem>
 </TreeView>
@@ -368,18 +421,20 @@ The `<TreeViewItem>` component works with frameworks and client side routers lik
 <TreeView aria-label="Example tree with action groups" height="size-3000" maxWidth="size-6000" items={items}>
   {(item: MyItem) => (
     <TreeViewItem childItems={item.childItems} textValue={item.name}>
-      <Text>{item.name}</Text>
-      {item.icon}
-      <ActionGroup onAction={(key) => alert(`Item: ${item.id}, Action: ${key}`)}>
-        <Item key="edit" textValue="Edit">
-          <Edit />
-          <Text>Edit</Text>
-        </Item>
-        <Item key="delete" textValue="Delete">
-          <Delete />
-          <Text>Delete</Text>
-        </Item>
-      </ActionGroup>
+      <TreeItemContent>
+        <Text>{item.name}</Text>
+        {item.icon}
+        <ActionGroup onAction={(key) => alert(`Item: ${item.id}, Action: ${key}`)}>
+          <Item key="edit" textValue="Edit">
+            <Edit />
+            <Text>Edit</Text>
+          </Item>
+          <Item key="delete" textValue="Delete">
+            <Delete />
+            <Text>Delete</Text>
+          </Item>
+        </ActionGroup>
+      </TreeItemContent>
     </TreeViewItem>
   )}
 </TreeView>
@@ -391,18 +446,20 @@ The `<TreeViewItem>` component works with frameworks and client side routers lik
 <TreeView aria-label="Example tree with action menus" height="size-3000" maxWidth="size-6000" items={items}>
   {(item: MyItem) => (
     <TreeViewItem childItems={item.childItems} textValue={item.name}>
-      <Text>{item.name}</Text>
-      {item.icon}
-      <ActionMenu onAction={(key) => alert(`Item: ${item.id}, Action: ${key}`)}>
-        <Item key="edit" textValue="Edit">
-          <Edit />
-          <Text>Edit</Text>
-        </Item>
-        <Item key="delete" textValue="Delete">
-          <Delete />
-          <Text>Delete</Text>
-        </Item>
-      </ActionMenu>
+      <TreeItemContent>
+        <Text>{item.name}</Text>
+        {item.icon}
+        <ActionMenu onAction={(key) => alert(`Item: ${item.id}, Action: ${key}`)}>
+          <Item key="edit" textValue="Edit">
+            <Edit />
+            <Text>Edit</Text>
+          </Item>
+          <Item key="delete" textValue="Delete">
+            <Delete />
+            <Text>Delete</Text>
+          </Item>
+        </ActionMenu>
+      </TreeItemContent>
     </TreeViewItem>
   )}
 </TreeView>
@@ -413,6 +470,10 @@ The `<TreeViewItem>` component works with frameworks and client side routers lik
 ### TreeView props
 
 <PropTable component={docs.exports.TreeView} links={docs.links} style={{marginBottom: '40px'}} />
+
+### TreeItemContent props
+
+<PropTable component={docs.exports.TreeItemContent} links={docs.links} style={{marginBottom: '40px'}} />
 
 ### TreeViewItem props
 
