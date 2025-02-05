@@ -13,7 +13,7 @@
 import {AriaLabelingProps, DOMProps, DOMRef, DOMRefValue} from '@react-types/shared';
 import {centerBaseline} from './CenterBaseline';
 import {centerPadding, getAllowedOverrides, StyleProps} from './style-utils' with {type: 'macro'};
-import {ContextValue, Provider, SlotProps} from 'react-aria-components';
+import {ContextValue, Provider, TextContext as RACTextContext, SlotProps} from 'react-aria-components';
 import {filterDOMProps} from '@react-aria/utils';
 import {fontRelative, lightDark, style} from '../style' with {type: 'macro'};
 import {IconContext} from './Icon';
@@ -210,14 +210,15 @@ export const Badge = forwardRef(function Badge(props: BadgeProps, ref: DOMRef<HT
       values={[
         [TextContext, {
           styles: style({
-            paddingY: '--labelPadding', 
-            order: 1, 
-            overflowX: 'hidden', 
-            overflowY: 'hidden', 
-            textOverflow: 'ellipsis', 
+            paddingY: '--labelPadding',
+            order: 1,
+            overflowX: 'hidden',
+            overflowY: 'hidden',
+            textOverflow: 'ellipsis',
             whiteSpace: {overflowMode: {truncate: 'nowrap', wrap: 'normal'}}
           })({overflowMode})
         }],
+        [RACTextContext, {}],
         [IconContext, {
           render: centerBaseline({slot: 'icon', styles: style({order: 0})}),
           styles: style({size: fontRelative(20), marginStart: '--iconMargin', flexShrink: 0})
