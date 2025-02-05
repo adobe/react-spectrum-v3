@@ -53,7 +53,7 @@ import {IconContext} from './Icon';
 // @ts-ignore
 import intlMessages from '../intl/*.json';
 import {LayoutNode} from '@react-stately/layout';
-import {Menu, MenuItem, MenuTrigger} from './Menu';
+import {Menu, MenuItem, MenuSection, MenuTrigger} from './Menu';
 import {mergeStyles} from '../style/runtime';
 import Nubbin from '../ui-icons/S2_MoveHorizontalTableWidget.svg';
 import {ProgressCircle} from './ProgressCircle';
@@ -469,7 +469,7 @@ const columnStyles = style({
   },
   paddingX: {
     default: 16,
-    isColumnResizable: 0
+    isMenu: 0
   },
   textAlign: {
     align: {
@@ -496,7 +496,7 @@ const columnStyles = style({
   borderStartWidth: 0,
   borderEndWidth: {
     default: 0,
-    isColumnResizable: 1
+    isMenu: 1
   },
   borderStyle: 'solid',
   forcedColorAdjust: 'none'
@@ -513,7 +513,8 @@ export interface ColumnProps extends RACColumnProps {
    */
   align?: 'start' | 'center' | 'end',
   /** The content to render as the column header. */
-  children: ReactNode
+  children: ReactNode,
+  menu?: ReactNode
 }
 
 /**
@@ -524,19 +525,20 @@ export const Column = forwardRef(function Column(props: ColumnProps, ref: DOMRef
   let {isQuiet} = useContext(InternalTableContext);
   let {allowsResizing, children, align = 'start'} = props;
   let domRef = useDOMRef(ref);
-  let isColumnResizable = allowsResizing;
+  let isMenu = allowsResizing || !!props.menu;
+
 
   return (
-    <RACColumn {...props} ref={domRef} style={{borderInlineEndColor: 'transparent'}} className={renderProps => columnStyles({...renderProps, isColumnResizable, align, isQuiet})}>
+    <RACColumn {...props} ref={domRef} style={{borderInlineEndColor: 'transparent'}} className={renderProps => columnStyles({...renderProps, isMenu, align, isQuiet})}>
       {({allowsSorting, sortDirection, isFocusVisible, sort, startResize, isHovered}) => (
         <>
           {/* Note this is mainly for column's without a dropdown menu. If there is a dropdown menu, the button is styled to have a focus ring for simplicity
           (no need to juggle showing this focus ring if focus is on the menu button and not if it is on the resizer) */}
           {/* Separate absolutely positioned element because appyling the ring on the column directly via outline means the ring's required borderRadius will cause the bottom gray border to curve as well */}
           {isFocusVisible && <CellFocusRing />}
-          {isColumnResizable ?
+          {isMenu ?
             (
-              <ResizableColumnContents allowsSorting={allowsSorting} sortDirection={sortDirection} sort={sort} startResize={startResize} isHovered={isHeaderRowHovered || isHovered} align={align}>
+              <ResizableColumnContents isColumnResizable={allowsResizing} menu={props.menu} allowsSorting={allowsSorting} sortDirection={sortDirection} sort={sort} startResize={startResize} isHovered={isHeaderRowHovered || isHovered} align={align}>
                 {children}
               </ResizableColumnContents>
             ) : (
@@ -709,10 +711,13 @@ const nubbin = style({
   }
 });
 
-interface ResizableColumnContentProps extends Pick<ColumnRenderProps, 'allowsSorting' | 'sort' | 'sortDirection' | 'startResize' | 'isHovered'>, Pick<ColumnProps, 'align' | 'children'> {}
+interface ResizableColumnContentProps extends Pick<ColumnRenderProps, 'allowsSorting' | 'sort' | 'sortDirection' | 'startResize' | 'isHovered'>, Pick<ColumnProps, 'align' | 'children'> {
+  isColumnResizable?: boolean,
+  menu?: ReactNode
+}
 
 function ResizableColumnContents(props: ResizableColumnContentProps) {
-  let {allowsSorting, sortDirection, sort, startResize, children, isHovered, align} = props;
+  let {allowsSorting, sortDirection, sort, startResize, children, isHovered, align, isColumnResizable, menu} = props;
   let {setIsInResizeMode, isInResizeMode} = useContext(InternalTableContext);
   let stringFormatter = useLocalizedStringFormatter(intlMessages, '@react-spectrum/s2');
   const onMenuSelect = (key) => {
@@ -731,12 +736,13 @@ function ResizableColumnContents(props: ResizableColumnContentProps) {
   };
 
   let items = useMemo(() => {
-    let options = [
-      {
+    let options: Array<{label: string, id: string}> = [];
+    if (isColumnResizable) {
+      options = [{
         label: stringFormatter.format('table.resizeColumn'),
         id: 'resize'
-      }
-    ];
+      }];
+    }
     if (allowsSorting) {
       options = [
         {
@@ -752,7 +758,7 @@ function ResizableColumnContents(props: ResizableColumnContentProps) {
     }
     return options;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allowsSorting]);
+  }, [allowsSorting, isColumnResizable]);
 
   let buttonAlignment = 'start';
   let menuAlign = 'start' as 'start' | 'end';
@@ -784,20 +790,29 @@ function ResizableColumnContents(props: ResizableColumnContentProps) {
           </div>
           <Chevron size="M" className={chevronIcon} />
         </Button>
-        <Menu onAction={onMenuSelect} items={items} styles={style({minWidth: 128})}>
-          {(item) => <MenuItem>{item?.label}</MenuItem>}
+        <Menu onAction={onMenuSelect} styles={style({minWidth: 128})}>
+          {items.length > 0 && (
+            <MenuSection aria-label="Sort or resize?">
+              <Collection items={items}>
+                {(item) => <MenuItem>{item?.label}</MenuItem>}
+              </Collection>
+            </MenuSection>
+          )}
+          {menu}
         </Menu>
       </MenuTrigger>
-      <div data-react-aria-prevent-focus="true">
-        <ColumnResizer data-react-aria-prevent-focus="true" className={({resizableDirection, isResizing}) => resizerHandleContainer({resizableDirection, isResizing, isHovered: isInResizeMode || isHovered})}>
-          {({isFocusVisible, isResizing}) => (
-            <>
-              <ResizerIndicator isInResizeMode={isInResizeMode} isFocusVisible={isFocusVisible} isHovered={isHovered} isResizing={isResizing} />
-              {(isFocusVisible || isInResizeMode) && isResizing && <div className={nubbin}><Nubbin /></div>}
-            </>
-        )}
-        </ColumnResizer>
-      </div>
+      {isColumnResizable && (
+        <div data-react-aria-prevent-focus="true">
+          <ColumnResizer data-react-aria-prevent-focus="true" className={({resizableDirection, isResizing}) => resizerHandleContainer({resizableDirection, isResizing, isHovered: isInResizeMode || isHovered})}>
+            {({isFocusVisible, isResizing}) => (
+              <>
+                <ResizerIndicator isInResizeMode={isInResizeMode} isFocusVisible={isFocusVisible} isHovered={isHovered} isResizing={isResizing} />
+                {(isFocusVisible || isInResizeMode) && isResizing && <div className={nubbin}><Nubbin /></div>}
+              </>
+          )}
+          </ColumnResizer>
+        </div>
+      )}
     </>
   );
 }
