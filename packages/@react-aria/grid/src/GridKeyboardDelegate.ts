@@ -13,7 +13,7 @@
 import {Direction, DisabledBehavior, Key, KeyboardDelegate, LayoutDelegate, Node, Rect, RefObject, Size} from '@react-types/shared';
 import {DOMLayoutDelegate} from '@react-aria/selection';
 import {getChildNodes, getFirstItem, getLastItem, getNthItem} from '@react-stately/collections';
-import {GridCollection} from '@react-types/grid';
+import {GridCollection, GridNode} from '@react-types/grid';
 
 export interface GridKeyboardDelegateOptions<C> {
   collection: C,
@@ -103,6 +103,35 @@ export class GridKeyboardDelegate<T, C extends GridCollection<T>> implements Key
     return null;
   }
 
+  protected getKeyForItemInRowByIndex(key: Key, index: number = 0): Key | null {
+    if (index < 0) {
+      return null;
+    }
+
+    let item = this.collection.getItem(key);
+    if (!item) {
+      return null;
+    }
+
+    let i = 0;
+    for (let child of getChildNodes(item, this.collection) as Iterable<GridNode<T>>) {
+      if (child.colspan && child.colspan + i > index) {
+        return child.key ?? null;
+      }
+
+      if (child.colspan) {
+        i = i + child.colspan - 1;
+      }
+
+      if (i === index) {
+        return child.key ?? null;
+      }
+
+      i++;
+    }
+    return null;
+  }
+
   getKeyBelow(fromKey: Key) {
     let key: Key | null = fromKey;
     let startItem = this.collection.getItem(key);
@@ -123,11 +152,8 @@ export class GridKeyboardDelegate<T, C extends GridCollection<T>> implements Key
     if (key != null) {
       // If focus was on a cell, focus the cell with the same index in the next row.
       if (this.isCell(startItem)) {
-        let item = this.collection.getItem(key);
-        if (!item) {
-          return null;
-        }
-        return getNthItem(getChildNodes(item, this.collection), startItem.index ?? 0)?.key ?? null;
+        let startIndex = startItem.colIndex ? startItem.colIndex : startItem.index;
+        return this.getKeyForItemInRowByIndex(key, startIndex);
       }
 
       // Otherwise, focus the next row
@@ -158,11 +184,8 @@ export class GridKeyboardDelegate<T, C extends GridCollection<T>> implements Key
     if (key != null) {
       // If focus was on a cell, focus the cell with the same index in the previous row.
       if (this.isCell(startItem)) {
-        let item = this.collection.getItem(key);
-        if (!item) {
-          return null;
-        }
-        return getNthItem(getChildNodes(item, this.collection), startItem.index ?? 0)?.key || null;
+        let startIndex = startItem.colIndex ? startItem.colIndex : startItem.index;
+        return this.getKeyForItemInRowByIndex(key, startIndex);
       }
 
       // Otherwise, focus the previous row

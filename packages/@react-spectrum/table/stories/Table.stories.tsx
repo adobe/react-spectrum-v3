@@ -423,6 +423,105 @@ export const DynamicNestedColumnsWithResizing: TableStory = {
   name: 'dynamic with nested columns with resizing'
 };
 
+
+let timeTableColumns = [
+  {name: 'Time', key: 'time', isRowHeader: true},
+  {name: 'Monday', key: 'monday'},
+  {name: 'Tuesday', key: 'tuesday'},
+  {name: 'Wednesday', key: 'wednesday'},
+  {name: 'Thursday', key: 'thursday'},
+  {name: 'Friday', key: 'friday'}
+];
+
+
+let timeTableRows = [
+  {id: 9, time: '09:00 - 10:00', name: 'Break', type: 'break'},
+  {id: 1, time: '08:00 - 09:00', monday: 'Math', tuesday: 'History', wednesday: 'Science', thursday: 'English', friday: 'Art'},
+  {id: 2, time: '09:00 - 10:00', name: 'Break', type: 'break'},
+  {id: 3, time: '10:00 - 11:00', monday: 'Math', tuesday: 'History', wednesday: 'Science', thursday: 'English', friday: 'Art'},
+  {id: 4, time: '11:00 - 12:00', monday: 'Math', tuesday: 'History', wednesday: 'Science', thursday: 'English', friday: 'Art'},
+  {id: 5, time: '12:00 - 13:00', name: 'Break', type: 'break'},
+  {id: 6, time: '13:00 - 14:00', monday: 'History', tuesday: 'Math', wednesday: 'English', thursday: 'Science', friday: 'Art'}
+];
+
+export const TableColSpanExample = () => {
+  return (
+    <TableView aria-label="Timetable">
+      <TableHeader columns={timeTableColumns}>
+        {(column) => (
+          <Column isRowHeader={column.isRowHeader}>{column.name}</Column>
+        )}
+      </TableHeader>
+      <TableBody items={timeTableRows}>
+        {(item) => (
+          <Row key={item.id}>
+            {item.type === 'break' ? (
+            [
+              <Cell>{item.time}</Cell>,
+              <Cell colSpan={5}>{item.name}</Cell>
+            ]) : ([
+              <Cell>{item.time}</Cell>,
+              <Cell>{item.monday}</Cell>,
+              <Cell>{item.tuesday}</Cell>,
+              <Cell>{item.wednesday}</Cell>,
+              <Cell>{item.thursday}</Cell>,
+              <Cell>{item.friday}</Cell>]
+            )}
+          </Row>
+        )}
+      </TableBody>
+    </TableView>
+  );
+};
+
+export const TableCellColSpanWithVariousSpansExample = () => {
+  return (
+    <TableView aria-label="Table with various colspans">
+      <TableHeader>
+        <Column isRowHeader>Col 1</Column>
+        <Column >Col 2</Column>
+        <Column >Col 3</Column>
+        <Column >Col 4</Column>
+      </TableHeader>
+      <TableBody>
+        <Row>
+          <Cell>Cell</Cell>
+          <Cell colSpan={2}>Span 2</Cell>
+          <Cell>Cell</Cell>
+        </Row>
+        <Row>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+        </Row>
+        <Row>
+          <Cell colSpan={4}>Span 4</Cell>
+        </Row>
+        <Row>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+        </Row>
+        <Row>
+          <Cell colSpan={3}>Span 3</Cell>
+          <Cell>Cell</Cell>
+        </Row>
+        <Row>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+        </Row>
+        <Row>
+          <Cell>Cell</Cell>
+          <Cell colSpan={3}>Span 3</Cell>
+        </Row>
+      </TableBody>
+    </TableView>
+  );
+};
 export const FocusableCells: TableStory = {
   args: {
     'aria-label': 'TableView with focusable cells',

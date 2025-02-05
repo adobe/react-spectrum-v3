@@ -209,6 +209,106 @@ export const TableDynamicExample = () => {
   );
 };
 
+let timeTableColumns = [
+  {name: 'Time', id: 'time', isRowHeader: true},
+  {name: 'Monday', id: 'monday'},
+  {name: 'Tuesday', id: 'tuesday'},
+  {name: 'Wednesday', id: 'wednesday'},
+  {name: 'Thursday', id: 'thursday'},
+  {name: 'Friday', id: 'friday'}
+];
+
+let timeTableRows = [
+  {id: 1, time: '08:00 - 09:00', monday: 'Math', tuesday: 'History', wednesday: 'Science', thursday: 'English', friday: 'Art'},
+  {id: 2, time: '09:00 - 10:00', name: 'Break', type: 'break'},
+  {id: 3, time: '10:00 - 11:00', monday: 'Math', tuesday: 'History', wednesday: 'Science', thursday: 'English', friday: 'Art'},
+  {id: 4, time: '11:00 - 12:00', monday: 'Math', tuesday: 'History', wednesday: 'Science', thursday: 'English', friday: 'Art'},
+  {id: 5, time: '12:00 - 13:00', name: 'Break', type: 'break'},
+  {id: 6, time: '13:00 - 14:00', monday: 'History', tuesday: 'Math', wednesday: 'English', thursday: 'Science', friday: 'Art'}
+];
+
+export const TableCellColSpanExample = () => {
+  return (
+    <Table aria-label="Timetable">
+      <TableHeader columns={timeTableColumns}>
+        {(column) => (
+          <Column isRowHeader={column.isRowHeader}>{column.name}</Column>
+        )}
+      </TableHeader>
+      <TableBody items={timeTableRows}>
+        {(item) => (
+          <Row columns={columns}>
+            {item.type === 'break' ? (
+              <>
+                <Cell>{item.time}</Cell>
+                <Cell colSpan={5}>{item.name}</Cell>
+              </>
+            ) : (
+              <>
+                <Cell>{item.time}</Cell>
+                <Cell>{item.monday}</Cell>
+                <Cell>{item.tuesday}</Cell>
+                <Cell>{item.wednesday}</Cell>
+                <Cell>{item.thursday}</Cell>
+                <Cell>{item.friday}</Cell>
+              </>
+            )}
+          </Row>
+        )}
+      </TableBody>
+    </Table>
+  );
+};
+
+export const TableCellColSpanWithVariousSpansExample = () => {
+  return (
+    <Table aria-label="Table with various colspans">
+      <TableHeader>
+        <Column isRowHeader>Col 1</Column>
+        <Column >Col 2</Column>
+        <Column >Col 3</Column>
+        <Column >Col 4</Column>
+      </TableHeader>
+      <TableBody>
+        <Row>
+          <Cell>Cell</Cell>
+          <Cell colSpan={2}>Span 2</Cell>
+          <Cell>Cell</Cell>
+        </Row>
+        <Row>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+        </Row>
+        <Row>
+          <Cell colSpan={4}>Span 4</Cell>
+        </Row>
+        <Row>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+        </Row>
+        <Row>
+          <Cell colSpan={3}>Span 3</Cell>
+          <Cell>Cell</Cell>
+        </Row>
+        <Row>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+          <Cell>Cell</Cell>
+        </Row>
+        <Row>
+          <Cell>Cell</Cell>
+          <Cell colSpan={3}>Span 3</Cell>
+        </Row>
+      </TableBody>
+    </Table>
+  );
+};
+
 const MyColumn = (props: ColumnProps) => {
   return (
     <Column {...props}>

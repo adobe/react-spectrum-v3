@@ -153,7 +153,9 @@ export interface CellProps {
   /** The contents of the cell. */
   children: ReactNode,
   /** A string representation of the cell's contents, used for features like typeahead. */
-  textValue?: string
+  textValue?: string,
+  /** Indicates how many columns the data cell spans. */
+  colSpan?: number
 }
 
 export type CellElement = ReactElement<CellProps>;

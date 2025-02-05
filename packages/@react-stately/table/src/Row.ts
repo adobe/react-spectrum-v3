@@ -90,10 +90,6 @@ Row.getCollectionNode = function* getCollectionNode<T>(props: RowProps<T>, conte
           }
         });
 
-        if (cells.length !== context.columns.length) {
-          throw new Error(`Cell count must match column count. Found ${cells.length} cells and ${context.columns.length} columns.`);
-        }
-
         yield* cells;
         yield* childRows;
       }

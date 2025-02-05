@@ -589,6 +589,134 @@ export let tableTests = () => {
     }
   });
 
+  it('renders a static table with colspans', function () {
+    let {getByRole} = render(
+      <TableView aria-label="Timetable">
+        <TableHeader>
+          <Column isRowHeader>Col 1</Column>
+          <Column >Col 2</Column>
+          <Column >Col 3</Column>
+          <Column >Col 4</Column>
+        </TableHeader>
+        <TableBody>
+          <Row>
+            <Cell>Cell</Cell>
+            <Cell colSpan={2}>Span 2</Cell>
+            <Cell>Cell</Cell>
+          </Row>
+          <Row>
+            <Cell>Cell</Cell>
+            <Cell>Cell</Cell>
+            <Cell>Cell</Cell>
+            <Cell>Cell</Cell>
+          </Row>
+          <Row>
+            <Cell colSpan={4}>Span 4</Cell>
+          </Row>
+          <Row>
+            <Cell colSpan={3}>Span 3</Cell>
+            <Cell>Cell</Cell>
+          </Row>
+          <Row>
+            <Cell>Cell</Cell>
+            <Cell colSpan={3}>Span 3</Cell>
+          </Row>
+        </TableBody>
+      </TableView>
+    );
+
+    let grid = getByRole('grid');
+    expect(grid).toBeVisible();
+    expect(grid).toHaveAttribute('aria-rowcount', '6');
+    expect(grid).toHaveAttribute('aria-colcount', '4');
+
+    let rows = within(grid).getAllByRole('row');
+    expect(rows).toHaveLength(6);
+
+    let columnheaders = within(rows[0]).getAllByRole('columnheader');
+    expect(columnheaders).toHaveLength(4);
+
+    let cells1 = [...within(rows[1]).getAllByRole('rowheader'), ...within(rows[1]).getAllByRole('gridcell')];
+    expect(cells1).toHaveLength(3);
+    expect(cells1[0]).toHaveAttribute('aria-colindex', '1');
+    expect(cells1[1]).toHaveAttribute('aria-colindex', '2');
+    expect(cells1[1]).toHaveAttribute('aria-colspan', '2');
+    expect(cells1[2]).toHaveAttribute('aria-colindex', '4');
+
+
+    let cells2 = [...within(rows[2]).getAllByRole('rowheader'), ...within(rows[2]).getAllByRole('gridcell')];
+    expect(cells2).toHaveLength(4);
+    expect(cells2[0]).toHaveAttribute('aria-colindex', '1');
+    expect(cells2[1]).toHaveAttribute('aria-colindex', '2');
+    expect(cells2[2]).toHaveAttribute('aria-colindex', '3');
+    expect(cells2[3]).toHaveAttribute('aria-colindex', '4');
+
+    let cells3 = within(rows[3]).getAllByRole('rowheader');
+    expect(cells3).toHaveLength(1);
+    expect(cells3[0]).toHaveAttribute('aria-colindex', '1');
+    expect(cells3[0]).toHaveAttribute('aria-colspan', '4');
+
+    let cells4 = [...within(rows[4]).getAllByRole('rowheader'), ...within(rows[4]).getAllByRole('gridcell')];
+    expect(cells4).toHaveLength(2);
+    expect(cells4[0]).toHaveAttribute('aria-colindex', '1');
+    expect(cells4[0]).toHaveAttribute('aria-colspan', '3');
+    expect(cells4[1]).toHaveAttribute('aria-colindex', '4');
+
+    let cells5 = [...within(rows[5]).getAllByRole('rowheader'), ...within(rows[5]).getAllByRole('gridcell')];
+    expect(cells5).toHaveLength(2);
+    expect(cells5[0]).toHaveAttribute('aria-colindex', '1');
+    expect(cells5[1]).toHaveAttribute('aria-colindex', '2');
+    expect(cells5[1]).toHaveAttribute('aria-colspan', '3');
+  });
+
+  it('should throw error if number of cells do not match column count', () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      render(
+        <TableView aria-label="Col Span Table with wrong number of cells">
+          <TableHeader>
+            <Column isRowHeader>Col 1</Column>
+            <Column >Col 2</Column>
+            <Column >Col 3</Column>
+            <Column >Col 4</Column>
+          </TableHeader>
+          <TableBody>
+            <Row>
+              <Cell>Cell 11</Cell>
+              <Cell colSpan={2}>Cell 12</Cell>
+              <Cell>Cell 14</Cell>
+            </Row>
+            <Row>
+              <Cell>Cell 21</Cell>
+              <Cell colSpan={2}>Cell 22</Cell>
+              <Cell>Cell 24</Cell>
+              <Cell>Cell 25</Cell>
+            </Row>
+          </TableBody>
+        </TableView>
+        );
+    } catch (e) {
+      expect(e.message).toEqual('Cell count must match column count. Found 5 cells and 4 columns.');
+    }
+    try {
+      render(
+        <TableView aria-label="Col Span Table with wrong number of cells">
+          <TableHeader>
+            <Column isRowHeader>Col 1</Column>
+            <Column >Col 2</Column>
+          </TableHeader>
+          <TableBody>
+            <Row>
+              <Cell>Cell</Cell>
+            </Row>
+          </TableBody>
+        </TableView>
+      );
+    } catch (e) {
+      expect(e.message).toEqual('Cell count must match column count. Found 1 cells and 2 columns.');
+    }
+  });
+
   it('renders a static table with nested columns', function () {
     let {getByRole} = render(
       <TableView aria-label="Table" selectionMode="multiple">
