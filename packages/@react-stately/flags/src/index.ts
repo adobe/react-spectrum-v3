@@ -11,6 +11,7 @@
  */
 
 let _tableNestedRows = false;
+let _shadowDOM = false;
 
 export function enableTableNestedRows() {
   _tableNestedRows = true;
@@ -18,4 +19,12 @@ export function enableTableNestedRows() {
 
 export function tableNestedRows() {
   return _tableNestedRows;
+}
+
+export function enableShadowDOM() {
+  _shadowDOM = true;
+}
+
+export function shadowDOM() {
+  return _shadowDOM;
 }

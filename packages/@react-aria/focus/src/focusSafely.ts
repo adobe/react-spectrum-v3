@@ -11,7 +11,12 @@
  */
 
 import {FocusableElement} from '@react-types/shared';
-import {focusWithoutScrolling, getOwnerDocument, runAfterTransition} from '@react-aria/utils';
+import {
+  focusWithoutScrolling,
+  getActiveElement,
+  getOwnerDocument,
+  runAfterTransition
+} from '@react-aria/utils';
 import {getInteractionModality} from '@react-aria/interactions';
 
 /**
@@ -25,11 +30,12 @@ export function focusSafely(element: FocusableElement) {
   // causing the page to scroll when moving focus if the element is transitioning
   // from off the screen.
   const ownerDocument = getOwnerDocument(element);
+  const activeElement = getActiveElement(ownerDocument);
   if (getInteractionModality() === 'virtual') {
-    let lastFocusedElement = ownerDocument.activeElement;
+    let lastFocusedElement = activeElement;
     runAfterTransition(() => {
       // If focus did not move and the element is still in the document, focus it.
-      if (ownerDocument.activeElement === lastFocusedElement && element.isConnected) {
+      if (getActiveElement(ownerDocument) === lastFocusedElement && element.isConnected) {
         focusWithoutScrolling(element);
       }
     });

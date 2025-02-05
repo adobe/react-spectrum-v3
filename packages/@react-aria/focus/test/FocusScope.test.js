@@ -10,9 +10,10 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, pointerMap, render, waitFor} from '@react-spectrum/test-utils-internal';
+import {act, createShadowRoot, fireEvent, pointerMap, render, waitFor} from '@react-spectrum/test-utils-internal';
 import {defaultTheme} from '@adobe/react-spectrum';
 import {DialogContainer} from '@react-spectrum/dialog';
+import {enableShadowDOM} from '@react-stately/flags';
 import {FocusScope, useFocusManager} from '../';
 import {focusScopeTree} from '../src/FocusScope';
 import {Provider} from '@react-spectrum/provider';
@@ -21,7 +22,6 @@ import ReactDOM from 'react-dom';
 import {Example as StorybookExample} from '../stories/FocusScope.stories';
 import {useEvent} from '@react-aria/utils';
 import userEvent from '@testing-library/user-event';
-
 
 describe('FocusScope', function () {
   let user;
@@ -1717,6 +1717,180 @@ describe('FocusScope', function () {
       expect(document.activeElement).not.toBe(document.body);
       expect(document.activeElement.textContent).toBe('Open Menu');
     });
+  });
+});
+
+describe('FocusScope with Shadow DOM', function () {
+  let user;
+
+  beforeAll(() => {
+    enableShadowDOM();
+    user = userEvent.setup({delay: null, pointerMap});
+  });
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+  afterEach(() => {
+    // make sure to clean up any raf's that may be running to restore focus on unmount
+    act(() => {jest.runAllTimers();});
+  });
+
+  it('should contain focus within the shadow DOM scope', async function () {
+    const {shadowRoot} = createShadowRoot();
+    const FocusableComponent = () => ReactDOM.createPortal(
+      <FocusScope contain>
+        <input data-testid="input1" />
+        <input data-testid="input2" />
+        <input data-testid="input3" />
+      </FocusScope>,
+      shadowRoot
+    );
+
+    const {unmount} = render(<FocusableComponent />);
+
+    const input1 = shadowRoot.querySelector('[data-testid="input1"]');
+    const input2 = shadowRoot.querySelector('[data-testid="input2"]');
+    const input3 = shadowRoot.querySelector('[data-testid="input3"]');
+
+    // Simulate focusing the first input
+    act(() => {input1.focus();});
+    expect(document.activeElement).toBe(shadowRoot.host);
+    expect(shadowRoot.activeElement).toBe(input1);
+
+    // Simulate tabbing through inputs
+    await user.tab();
+    expect(shadowRoot.activeElement).toBe(input2);
+
+    await user.tab();
+    expect(shadowRoot.activeElement).toBe(input3);
+
+    // Simulate tabbing back to the first input
+    await user.tab();
+    expect(shadowRoot.activeElement).toBe(input1);
+
+    // Cleanup
+    unmount();
+    document.body.removeChild(shadowRoot.host);
+  });
+
+  it('should manage focus within nested shadow DOMs', async function () {
+    const {shadowRoot: parentShadowRoot} = createShadowRoot();
+    const nestedDiv = document.createElement('div');
+    parentShadowRoot.appendChild(nestedDiv);
+    const childShadowRoot = nestedDiv.attachShadow({mode: 'open'});
+
+    const FocusableComponent = () =>  ReactDOM.createPortal(<FocusScope contain>
+      <input data-testid="input1" />
+      <input data-testid="input2" />
+    </FocusScope>, childShadowRoot);
+
+    const {unmount} = render(<FocusableComponent />);
+
+    const input1 = childShadowRoot.querySelector('[data-testid=input1]');
+    const input2 = childShadowRoot.querySelector('[data-testid=input2]');
+
+    act(() => {input1.focus();});
+    expect(childShadowRoot.activeElement).toBe(input1);
+
+    await user.tab();
+    expect(childShadowRoot.activeElement).toBe(input2);
+
+    // Cleanup
+    unmount();
+    document.body.removeChild(parentShadowRoot.host);
+  });
+
+  /**
+   * document.body
+   * ├── div#outside-shadow (contains <FocusScope restoreFocus>)
+   * │   ├── input (focus can be restored here)
+   * │   └── shadow-root
+   * │       └── Your custom elements and focusable elements here
+   * └── Other elements
+   */
+  it('should restore focus to the element outside shadow DOM on unmount, with FocusScope outside as well', async () => {
+    const App = () => (
+      <>
+        <FocusScope restoreFocus>
+          <input data-testid="outside" />
+        </FocusScope>
+        <div id="shadow-host" />
+      </>
+    );
+
+    const {getByTestId} = render(<App />);
+    const shadowHost = document.getElementById('shadow-host');
+    const shadowRoot = shadowHost.attachShadow({mode: 'open'});
+
+    const FocusableComponent = () => ReactDOM.createPortal(
+      <FocusScope restoreFocus>
+        <input data-testid="input1" />
+        <input data-testid="input2" />
+        <input data-testid="input3" />
+      </FocusScope>,
+      shadowRoot
+    );
+
+    const {unmount} = render(<FocusableComponent />);
+
+    const input1 = shadowRoot.querySelector('[data-testid="input1"]');
+    act(() => { input1.focus(); });
+    expect(shadowRoot.activeElement).toBe(input1);
+
+    const externalInput = getByTestId('outside');
+    act(() => { externalInput.focus(); });
+    expect(document.activeElement).toBe(externalInput);
+
+    act(() => {
+      jest.runAllTimers();
+    });
+
+    unmount();
+
+    expect(document.activeElement).toBe(externalInput);
+  });
+
+  /**
+   * Test case: https://github.com/adobe/react-spectrum/issues/1472
+   */
+  it('should autofocus and lock tab navigation inside shadow DOM', async function () {
+    const {shadowRoot, shadowHost} = createShadowRoot();
+
+    const FocusableComponent = () => ReactDOM.createPortal(
+      <FocusScope contain>
+        <input data-testid="input1" />
+        <input data-testid="input2" />
+        <button data-testid="button">Button</button>
+      </FocusScope>,
+      shadowRoot
+    );
+
+    const {unmount} = render(<FocusableComponent />);
+
+    const input1 = shadowRoot.querySelector('[data-testid="input1"]');
+    const input2 = shadowRoot.querySelector('[data-testid="input2"]');
+    const button = shadowRoot.querySelector('[data-testid="button"]');
+
+    // Simulate focusing the first input and tab through the elements
+    act(() => {input1.focus();});
+    expect(shadowRoot.activeElement).toBe(input1);
+
+    // Hit TAB key
+    await user.tab();
+    expect(shadowRoot.activeElement).toBe(input2);
+
+    // Hit TAB key
+    await user.tab();
+    expect(shadowRoot.activeElement).toBe(button);
+
+    // Simulate tab again to check if focus loops back to the first input
+    await user.tab();
+    expect(shadowRoot.activeElement).toBe(input1);
+
+    // Cleanup
+    unmount();
+    document.body.removeChild(shadowHost);
   });
 });
 

@@ -6251,6 +6251,7 @@ __metadata:
   dependencies:
     "@react-aria/ssr": "npm:^3.9.7"
     "@react-aria/utils": "npm:^3.27.0"
+    "@react-stately/flags": "npm:^3.0.5"
     "@react-types/shared": "npm:^3.27.0"
     "@swc/helpers": "npm:^0.5.0"
   peerDependencies:
@@ -6807,6 +6808,7 @@ __metadata:
   resolution: "@react-aria/utils@workspace:packages/@react-aria/utils"
   dependencies:
     "@react-aria/ssr": "npm:^3.9.7"
+    "@react-stately/flags": "npm:^3.0.5"
     "@react-stately/utils": "npm:^3.10.5"
     "@react-types/shared": "npm:^3.27.0"
     "@swc/helpers": "npm:^0.5.0"

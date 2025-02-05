@@ -181,6 +181,7 @@ const tearDownWindowFocusTracking = (element, loadListener?: () => void) => {
   documentObject.removeEventListener('keydown', handleKeyboardEvent, true);
   documentObject.removeEventListener('keyup', handleKeyboardEvent, true);
   documentObject.removeEventListener('click', handleClickEvent, true);
+
   windowObject.removeEventListener('focus', handleFocusEvent, true);
   windowObject.removeEventListener('blur', handleWindowBlur, false);
 

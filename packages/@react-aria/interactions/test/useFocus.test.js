@@ -10,8 +10,10 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, render, waitFor} from '@react-spectrum/test-utils-internal';
+import {act, createShadowRoot, render, waitFor} from '@react-spectrum/test-utils-internal';
+import {enableShadowDOM} from '@react-stately/flags';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {useFocus} from '../';
 
 function Example(props) {
@@ -152,5 +154,120 @@ describe('useFocus', function () {
     tree.rerender(<Example disabled onFocus={onFocus} onBlur={onBlur} />);
     // MutationObserver is async
     await waitFor(() => expect(onBlur).toHaveBeenCalled());
+  });
+
+  describe('useFocus with Shadow DOM', function () {
+    beforeAll(() => {
+      enableShadowDOM();
+    });
+    it('handles focus events', function () {
+      const {shadowRoot, shadowHost} = createShadowRoot();
+      const events = [];
+      const ExampleComponent = () => ReactDOM.createPortal(
+        <Example
+          onFocus={(e) => events.push({type: 'focus', target: e.target})}
+          onBlur={(e) => events.push({type: 'blur', target: e.target})}
+          onFocusChange={isFocused => events.push({type: 'focuschange', isFocused})} />, shadowRoot);
+
+      const {unmount} = render(<ExampleComponent />);
+
+      const el = shadowRoot.querySelector('[data-testid="example"]');
+
+      act(() => {el.focus();});
+      act(() => {el.blur();});
+
+      expect(events).toEqual([
+        {type: 'focus', target: el},
+        {type: 'focuschange', isFocused: true},
+        {type: 'blur', target: el},
+        {type: 'focuschange', isFocused: false}
+      ]);
+
+      // Cleanup
+      unmount();
+      document.body.removeChild(shadowHost);
+    });
+
+    it('does not handle focus events if disabled', function () {
+      const {shadowRoot, shadowHost} = createShadowRoot();
+      const events = [];
+      const ExampleComponent = () => ReactDOM.createPortal(
+        <Example
+          isDisabled
+          onFocus={(e) => events.push({type: 'focus', target: e.target})}
+          onBlur={(e) => events.push({type: 'blur', target: e.target})}
+          onFocusChange={isFocused => events.push({type: 'focuschange', isFocused})} />, shadowRoot
+      );
+
+      const {unmount} = render(<ExampleComponent />);
+
+      const el = shadowRoot.querySelector('[data-testid="example"]');
+      act(() => {el.focus();});
+      act(() => {el.blur();});
+
+      expect(events).toEqual([]);
+
+      // Cleanup
+      unmount();
+      document.body.removeChild(shadowHost);
+    });
+
+    it('events do not bubble when stopPropagation is called', function () {
+      const {shadowRoot, shadowHost} = createShadowRoot();
+      const onWrapperFocus = jest.fn();
+      const onWrapperBlur = jest.fn();
+      const onInnerFocus = jest.fn(e => e.stopPropagation());
+      const onInnerBlur = jest.fn(e => e.stopPropagation());
+
+      const WrapperComponent = () => ReactDOM.createPortal(
+        <div onFocus={onWrapperFocus} onBlur={onWrapperBlur}>
+          <Example onFocus={onInnerFocus} onBlur={onInnerBlur} />
+        </div>, shadowRoot
+      );
+
+      const {unmount} = render(<WrapperComponent />);
+
+      const el = shadowRoot.querySelector('[data-testid="example"]');
+      act(() => {el.focus();});
+      act(() => {el.blur();});
+
+      expect(onInnerFocus).toHaveBeenCalledTimes(1);
+      expect(onInnerBlur).toHaveBeenCalledTimes(1);
+      expect(onWrapperFocus).not.toHaveBeenCalled();
+      expect(onWrapperBlur).not.toHaveBeenCalled();
+
+      // Cleanup
+      unmount();
+      document.body.removeChild(shadowHost);
+    });
+
+    it('events bubble by default', function () {
+      const {shadowRoot, shadowHost} = createShadowRoot();
+      const onWrapperFocus = jest.fn();
+      const onWrapperBlur = jest.fn();
+      const onInnerFocus = jest.fn();
+      const onInnerBlur = jest.fn();
+
+      const WrapperComponent = () => ReactDOM.createPortal(
+        <div onFocus={onWrapperFocus} onBlur={onWrapperBlur}>
+          <Example onFocus={onInnerFocus} onBlur={onInnerBlur} />
+        </div>, shadowRoot
+      );
+
+      const {unmount} = render(<WrapperComponent />);
+
+      const el = shadowRoot.querySelector('[data-testid="example"]');
+      act(() => {el.focus();});
+      act(() => {el.blur();});
+
+      expect(onInnerFocus).toHaveBeenCalledTimes(1);
+      expect(onInnerBlur).toHaveBeenCalledTimes(1);
+      expect(onWrapperFocus).toHaveBeenCalledTimes(1);
+      expect(onWrapperBlur).toHaveBeenCalledTimes(1);
+
+      // Cleanup
+      unmount();
+      document.body.removeChild(shadowHost);
+    });
   });
 });

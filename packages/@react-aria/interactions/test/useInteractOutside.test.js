@@ -10,9 +10,9 @@
  * governing permissions and limitations under the License.
  */
 
-import {createPortal} from 'react-dom';
 import {fireEvent, installPointerEvent, render, waitFor} from '@react-spectrum/test-utils-internal';
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
+import ReactDOM, {createPortal, render as ReactDOMRender} from 'react-dom';
 import {useInteractOutside} from '../';
 
 function Example(props) {
@@ -436,5 +436,150 @@ describe('useInteractOutside (iframes)', function () {
       fireEvent.mouseUp(iframeDocument.body);
       expect(onInteractOutside).not.toHaveBeenCalled();
     });
+  });
+});
+
+describe('useInteractOutside shadow DOM', function () {
+  // Helper function to create a shadow root and render the component inside it
+  function createShadowRootAndRender(ui) {
+    const shadowHost = document.createElement('div');
+    document.body.appendChild(shadowHost);
+    const shadowRoot = shadowHost.attachShadow({mode: 'open'});
+
+    function WrapperComponent() {
+      return ReactDOM.createPortal(ui, shadowRoot);
+    }
+
+    render(<WrapperComponent />);
+    return {shadowRoot, cleanup: () => document.body.removeChild(shadowHost)};
+  }
+
+  function App({onInteractOutside}) {
+    const ref = useRef(null);
+    useInteractOutside({ref, onInteractOutside});
+
+    return (
+      <div>
+        <div id="outside-popover" />
+        <div id="popover" ref={ref}>
+          <div id="inside-popover" />
+        </div>
+      </div>
+    );
+  }
+
+  it('does not trigger when clicking inside popover', function () {
+    const onInteractOutside = jest.fn();
+    const {shadowRoot, cleanup} = createShadowRootAndRender(
+      <App onInteractOutside={onInteractOutside} />
+    );
+
+    const insidePopover = shadowRoot.getElementById('inside-popover');
+    fireEvent.mouseDown(insidePopover);
+    fireEvent.mouseUp(insidePopover);
+
+    expect(onInteractOutside).not.toHaveBeenCalled();
+    cleanup();
+  });
+
+  it('does not trigger when clicking the popover', function () {
+    const onInteractOutside = jest.fn();
+    const {shadowRoot, cleanup} = createShadowRootAndRender(
+      <App onInteractOutside={onInteractOutside} />
+    );
+
+    const popover = shadowRoot.getElementById('popover');
+    fireEvent.mouseDown(popover);
+    fireEvent.mouseUp(popover);
+
+    expect(onInteractOutside).not.toHaveBeenCalled();
+    cleanup();
+  });
+
+  it('triggers when clicking outside the popover', function () {
+    const onInteractOutside = jest.fn();
+    const  {cleanup} = createShadowRootAndRender(
+      <App onInteractOutside={onInteractOutside} />
+    );
+
+    // Clicking on the document body outside the shadow DOM
+    fireEvent.mouseDown(document.body);
+    fireEvent.mouseUp(document.body);
+
+    expect(onInteractOutside).toHaveBeenCalledTimes(1);
+    cleanup();
+  });
+
+  it('triggers when clicking a button outside the shadow dom altogether', function () {
+    const onInteractOutside = jest.fn();
+    const {cleanup} = createShadowRootAndRender(
+      <App onInteractOutside={onInteractOutside} />
+    );
+    // Button outside shadow DOM and component
+    const button = document.createElement('button');
+    document.body.appendChild(button);
+
+    fireEvent.mouseDown(button);
+    fireEvent.mouseUp(button);
+
+    expect(onInteractOutside).toHaveBeenCalledTimes(1);
+    document.body.removeChild(button);
+    cleanup();
+  });
+});
+
+describe('useInteractOutside shadow DOM extended tests', function () {
+  // Setup function similar to previous tests, but includes a dynamic element scenario
+  function createShadowRootAndRender(ui) {
+    const shadowHost = document.createElement('div');
+    document.body.appendChild(shadowHost);
+    const shadowRoot = shadowHost.attachShadow({mode: 'open'});
+
+    function WrapperComponent() {
+      return ReactDOM.createPortal(ui, shadowRoot);
+    }
+
+    render(<WrapperComponent />);
+    return {shadowRoot, cleanup: () => document.body.removeChild(shadowHost)};
+  }
+
+  function App({onInteractOutside, includeDynamicElement = false}) {
+    const ref = useRef(null);
+    useInteractOutside({ref, onInteractOutside});
+
+    useEffect(() => {
+      if (includeDynamicElement) {
+        const dynamicEl = document.createElement('div');
+        dynamicEl.id = 'dynamic-outside';
+        document.body.appendChild(dynamicEl);
+
+        return () => document.body.removeChild(dynamicEl);
+      }
+    }, [includeDynamicElement]);
+
+    return (
+      <div>
+        <div id="outside-popover" />
+        <div id="popover" ref={ref}>
+          <div id="inside-popover" />
+        </div>
+      </div>
+    );
+  }
+
+  it('correctly identifies interaction with dynamically added external elements', function () {
+    jest.useFakeTimers();
+    const onInteractOutside = jest.fn();
+    const {cleanup} = createShadowRootAndRender(
+      <App onInteractOutside={onInteractOutside} includeDynamicElement />
+    );
+
+    const dynamicEl = document.getElementById('dynamic-outside');
+    fireEvent.mouseDown(dynamicEl);
+    fireEvent.mouseUp(dynamicEl);
+
+    expect(onInteractOutside).toHaveBeenCalledTimes(1);
+
+    cleanup();
   });
 });

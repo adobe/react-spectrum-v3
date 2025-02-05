@@ -974,27 +974,26 @@ describe('ListView', function () {
         expect(onAction).not.toHaveBeenCalled();
       });
 
-      it('should not trigger action when deselecting with keyboard', function () {
+      it('should not trigger action when deselecting with keyboard', async function () {
         let onSelectionChange = jest.fn();
         let onAction = jest.fn();
-        let tree = renderSelectionList({onSelectionChange, selectionMode: 'multiple', onAction, defaultSelectedKeys: ['foo']});
-        let rows = tree.getAllByRole('row');
+        renderSelectionList({onSelectionChange, selectionMode: 'multiple', onAction, defaultSelectedKeys: ['foo']});
 
-        fireEvent.keyDown(rows[0], {key: ' '});
-        fireEvent.keyUp(rows[0], {key: ' '});
+        await user.tab();
+        await user.keyboard(' ');
         expect(onSelectionChange).toHaveBeenCalledTimes(1);
         expect(onAction).not.toHaveBeenCalled();
       });
 
-      it('should not trigger action or selection when pressing Enter while in selection mode', function () {
+      it('should not trigger action or selection when pressing Enter while in selection mode', async function () {
         let onSelectionChange = jest.fn();
         let onAction = jest.fn();
         onSelectionChange.mockReset();
         let tree = renderSelectionList({onSelectionChange, selectionMode: 'multiple', onAction, defaultSelectedKeys: ['foo']});
-        let rows = tree.getAllByRole('row');
+        tree.getAllByRole('row');
 
-        fireEvent.keyDown(rows[0], {key: 'Enter'});
-        fireEvent.keyUp(rows[0], {key: 'Enter'});
+        await user.tab();
+        await user.keyboard('{Enter}');
         expect(onSelectionChange).not.toHaveBeenCalled();
         expect(onAction).not.toHaveBeenCalled();
       });
@@ -1555,6 +1554,9 @@ describe('ListView', function () {
         }
 
         let onClick = mockClickDefault();
+        if (type === 'keyboard') {
+          await user.tab();
+        }
         await trigger(items[0]);
         expect(onClick).toHaveBeenCalledTimes(1);
         expect(onClick.mock.calls[0][0].target).toBeInstanceOf(HTMLAnchorElement);
@@ -1578,6 +1580,9 @@ describe('ListView', function () {
         }
 
         let onClick = mockClickDefault();
+        if (type === 'keyboard') {
+          await user.tab();
+        }
         await trigger(items[0]);
         expect(onClick).toHaveBeenCalledTimes(1);
         expect(onClick.mock.calls[0][0].target).toBeInstanceOf(HTMLAnchorElement);
@@ -1586,6 +1591,9 @@ describe('ListView', function () {
         await user.click(within(items[0]).getByRole('checkbox'));
         expect(items[0]).toHaveAttribute('aria-selected', 'true');
 
+        if (type === 'keyboard') {
+          await user.keyboard('{ArrowDown}');
+        }
         await trigger(items[1], ' ');
         expect(onClick).toHaveBeenCalledTimes(1);
         expect(items[1]).toHaveAttribute('aria-selected', 'true');
@@ -1612,8 +1620,14 @@ describe('ListView', function () {
         if (type === 'mouse') {
           await user.click(items[0]);
         } else {
-          fireEvent.keyDown(items[0], {key: ' '});
-          fireEvent.keyUp(items[0], {key: ' '});
+          if (type === 'keyboard') {
+            await user.tab();
+            await user.keyboard(' ');
+            if (selectionMode === 'single') {
+              // single selection with replace will follow focus
+              await user.keyboard(' ');
+            }
+          }
         }
         expect(onClick).not.toHaveBeenCalled();
         expect(items[0]).toHaveAttribute('aria-selected', 'true');
@@ -1641,12 +1655,19 @@ describe('ListView', function () {
         );
 
         let items = getAllByRole('row');
+
+        if (type === 'keyboard') {
+          await user.tab();
+        }
         await trigger(items[0]);
         expect(navigate).toHaveBeenCalledWith('/one', {foo: 'bar'});
 
         navigate.mockReset();
         let onClick = mockClickDefault();
 
+        if (type === 'keyboard') {
+          await user.keyboard('{ArrowDown}');
+        }
         await trigger(items[1]);
         expect(navigate).not.toHaveBeenCalled();
         expect(onClick).toHaveBeenCalledTimes(1);

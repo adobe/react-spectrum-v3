@@ -17,6 +17,7 @@
 
 import {DOMAttributes} from '@react-types/shared';
 import {FocusEvent, useCallback, useRef} from 'react';
+import {getActiveElement, getEventTarget, getOwnerDocument} from '@react-aria/utils';
 import {useSyntheticBlurEvent} from './utils';
 
 export interface FocusWithinProps {
@@ -70,7 +71,9 @@ export function useFocusWithin(props: FocusWithinProps): FocusWithinResult {
   let onFocus = useCallback((e: FocusEvent) => {
     // Double check that document.activeElement actually matches e.target in case a previously chained
     // focus handler already moved focus somewhere else.
-    if (!state.current.isFocusWithin && document.activeElement === e.target) {
+    const ownerDocument = getOwnerDocument(e.target);
+    const activeElement = getActiveElement(ownerDocument);
+    if (!state.current.isFocusWithin && activeElement === getEventTarget(e.nativeEvent)) {
       if (onFocusWithin) {
         onFocusWithin(e);
       }
@@ -87,7 +90,7 @@ export function useFocusWithin(props: FocusWithinProps): FocusWithinResult {
   if (isDisabled) {
     return {
       focusWithinProps: {
-        // These should not have been null, that would conflict in mergeProps
+        // These cannot be null, that would conflict in mergeProps
         onFocus: undefined,
         onBlur: undefined
       }

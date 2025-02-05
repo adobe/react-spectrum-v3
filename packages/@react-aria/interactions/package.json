@@ -24,6 +24,7 @@
   "dependencies": {
     "@react-aria/ssr": "^3.9.7",
     "@react-aria/utils": "^3.27.0",
+    "@react-stately/flags": "^3.0.5",
     "@react-types/shared": "^3.27.0",
     "@swc/helpers": "^0.5.0"
   },

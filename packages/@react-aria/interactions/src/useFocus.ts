@@ -17,7 +17,7 @@
 
 import {DOMAttributes, FocusableElement, FocusEvents} from '@react-types/shared';
 import {FocusEvent, useCallback} from 'react';
-import {getOwnerDocument} from '@react-aria/utils';
+import {getActiveElement, getEventTarget, getOwnerDocument} from '@react-aria/utils';
 import {useSyntheticBlurEvent} from './utils';
 
 export interface FocusProps<Target = FocusableElement> extends FocusEvents<Target> {
@@ -64,8 +64,8 @@ export function useFocus<Target extends FocusableElement = FocusableElement>(pro
     // focus handler already moved focus somewhere else.
 
     const ownerDocument = getOwnerDocument(e.target);
-
-    if (e.target === e.currentTarget && ownerDocument.activeElement === e.target) {
+    const activeElement = ownerDocument ? getActiveElement(ownerDocument) : getActiveElement();
+    if (e.target === e.currentTarget && activeElement === getEventTarget(e.nativeEvent)) {
       if (onFocusProp) {
         onFocusProp(e);
       }
