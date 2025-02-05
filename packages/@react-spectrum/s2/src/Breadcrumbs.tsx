@@ -372,7 +372,8 @@ let CollapsingCollectionRenderer: CollectionRenderer = {
     return useCollectionRender(collection);
   },
   CollectionBranch({collection}) {
-    return useCollectionRender(collection);
+    // TODO breaking change in CollectionRenderer making this optional?
+    return useCollectionRender(collection!);
   }
 };
 

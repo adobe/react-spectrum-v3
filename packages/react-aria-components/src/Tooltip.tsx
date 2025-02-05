@@ -12,12 +12,14 @@
 
 import {AriaLabelingProps, FocusableElement, forwardRefType, RefObject} from '@react-types/shared';
 import {AriaPositionProps, mergeProps, OverlayContainer, Placement, PlacementAxis, PositionProps, useOverlayPosition, useTooltip, useTooltipTrigger} from 'react-aria';
+import {CollectionRendererContext} from './Collection';
 import {ContextValue, Provider, RenderProps, useContextProps, useRenderProps} from './utils';
+import {createBranchComponent} from '@react-aria/collections';
 import {FocusableProvider} from '@react-aria/focus';
 import {OverlayArrowContext} from './OverlayArrow';
 import {OverlayTriggerProps, TooltipTriggerProps, TooltipTriggerState, useTooltipTriggerState} from 'react-stately';
 import React, {createContext, ForwardedRef, forwardRef, ReactNode, useContext, useRef, useState} from 'react';
-import {useEnterAnimation, useExitAnimation, useLayoutEffect} from '@react-aria/utils';
+import {useEnterAnimation, useExitAnimation, useLayoutEffect, useObjectRef} from '@react-aria/utils';
 
 export interface TooltipTriggerComponentProps extends TooltipTriggerProps {
   children: ReactNode
@@ -80,23 +82,49 @@ export const TooltipContext = createContext<ContextValue<TooltipProps, HTMLDivEl
  * the Tooltip when the user hovers over or focuses the trigger, and positioning the Tooltip
  * relative to the trigger.
  */
-export function TooltipTrigger(props: TooltipTriggerComponentProps) {
+export const TooltipTrigger = /*#__PURE__*/createBranchComponent('tooltiptrigger', (props: TooltipTriggerComponentProps, ref: ForwardedRef<FocusableElement>, item) => {
+  let {CollectionBranch} = useContext(CollectionRendererContext);
   let state = useTooltipTriggerState(props);
-  let ref = useRef<FocusableElement>(null);
-  let {triggerProps, tooltipProps} = useTooltipTrigger(props, state, ref);
+  let triggerRef = useObjectRef(ref);
+  let {triggerProps, tooltipProps} = useTooltipTrigger(props, state, triggerRef);
 
+  if (!item) { // we're not in a collection
+    return (
+      <Provider
+        values={[
+          [TooltipTriggerStateContext, state],
+          [TooltipContext, {...tooltipProps, triggerRef}]
+        ]}>
+        <FocusableProvider {...triggerProps} ref={triggerRef}>
+          {props.children}
+        </FocusableProvider>
+      </Provider>
+    );
+  }
+
+  // TODO: what should we do about TooltipTriggers with a single child that wraps the trigger and the tooltip?
+  if (props.children == null || (Array.isArray(props.children) && props.children.length !== 2)) {
+    throw new Error('TooltipTrigger should have exactly two children: the trigger and the tooltip.');
+  }
   return (
     <Provider
       values={[
         [TooltipTriggerStateContext, state],
-        [TooltipContext, {...tooltipProps, triggerRef: ref}]
+        [TooltipContext, {...tooltipProps, triggerRef}]
       ]}>
-      <FocusableProvider {...triggerProps} ref={ref}>
-        {props.children}
+      <FocusableProvider {...triggerProps} ref={triggerRef}>
+        <CollectionBranch parent={item} />
+        {props.children[1]}
       </FocusableProvider>
     </Provider>
   );
+}, props => {
+  if (props.children == null || (Array.isArray(props.children) && props.children.length !== 2)) {
+    throw new Error('TooltipTrigger should have exactly two children: the trigger and the tooltip.');
+  }
+  return props.children[0];
 }
+);
 
 /**
  * A tooltip displays a description of an element on hover or focus.

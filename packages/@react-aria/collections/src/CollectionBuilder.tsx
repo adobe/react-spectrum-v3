@@ -63,6 +63,7 @@ export function CollectionBuilder<C extends BaseCollection<object>>(props: Colle
   );
 }
 
+
 function CollectionInner({collection, render}) {
   return render(collection);
 }
@@ -116,7 +117,7 @@ function useCollectionDocument<T extends object, C extends BaseCollection<T>>(cr
   useLayoutEffect(() => {
     document.isMounted = true;
     return () => {
-      // Mark unmounted so we can skip all of the collection updates caused by 
+      // Mark unmounted so we can skip all of the collection updates caused by
       // React calling removeChild on every item in the collection.
       document.isMounted = false;
     };
@@ -176,9 +177,16 @@ export function createLeafComponent<P extends object, E extends Element>(type: s
   return Result;
 }
 
+// TODO fix the override types
 export function createBranchComponent<T extends object, P extends {children?: any}, E extends Element>(type: string, render: (props: P, ref: ForwardedRef<E>, node: Node<T>) => ReactElement, useChildren: (props: P) => ReactNode = useCollectionChildren) {
   let Component = ({node}) => render(node.props, node.props.ref, node);
   let Result = (forwardRef as forwardRefType)((props: P, ref: ForwardedRef<E>) => {
+    let isShallow = useContext(ShallowRenderContext);
+    if (!isShallow) {
+      // @ts-ignore will be fixed with overrides once i figure out how
+      return render(props, ref);
+    }
+
     let children = useChildren(props);
     return useSSRCollectionNode(type, props, ref, null, children, node => <Component node={node} />) ?? <></>;
   });

@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import {CollectionBase, DropTargetDelegate, ItemDropTarget, Key, LayoutDelegate, RefObject} from '@react-types/shared';
+import {Collection, CollectionBase, DropTargetDelegate, ItemDropTarget, Key, LayoutDelegate, RefObject} from '@react-types/shared';
 import {createBranchComponent, useCachedChildren} from '@react-aria/collections';
 import {Collection as ICollection, Node, SelectionBehavior, SelectionMode, SectionProps as SharedSectionProps} from 'react-stately';
 import React, {createContext, ForwardedRef, HTMLAttributes, JSX, ReactElement, ReactNode, useContext, useMemo} from 'react';
@@ -108,7 +108,7 @@ export const Section = /*#__PURE__*/ createBranchComponent('section', <T extends
 
 export interface CollectionBranchProps {
   /** The collection of items to render. */
-  collection: ICollection<Node<unknown>>,
+  collection?: ICollection<Node<unknown>>,
   /** The parent node of the items to render. */
   parent: Node<unknown>,
   /** A function that renders a drop indicator between items. */
@@ -139,12 +139,23 @@ export interface CollectionRenderer {
   CollectionBranch: React.ComponentType<CollectionBranchProps>
 }
 
+let CollectionStateContext = createContext<Collection<Node<unknown>> | undefined | null>(null);
+
 export const DefaultCollectionRenderer: CollectionRenderer = {
   CollectionRoot({collection, renderDropIndicator}) {
-    return useCollectionRender(collection, null, renderDropIndicator);
+    let result = useCollectionRender(collection, null, renderDropIndicator);
+    return <CollectionStateContext.Provider value={collection}>{result}</CollectionStateContext.Provider>;
   },
   CollectionBranch({collection, parent, renderDropIndicator}) {
-    return useCollectionRender(collection, parent, renderDropIndicator);
+    let thisCollection: Collection<Node<unknown>> | undefined | null = collection;
+    let parentCollection = useContext(CollectionStateContext);
+    if (thisCollection == null) {
+      thisCollection = parentCollection;
+    }
+    if (!thisCollection) {
+      throw new Error('Collection not found in context.');
+    }
+    return useCollectionRender(thisCollection, parent, renderDropIndicator);
   }
 };
 

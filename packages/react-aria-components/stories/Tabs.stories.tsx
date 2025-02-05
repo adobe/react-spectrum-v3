@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {Button, Tab, TabList, TabPanel, TabProps, Tabs, TabsProps} from 'react-aria-components';
+import {Button, OverlayArrow, Tab, TabList, TabPanel, TabProps, Tabs, TabsProps, Tooltip, TooltipTrigger} from 'react-aria-components';
 import React, {useState} from 'react';
 import {RouterProvider} from '@react-aria/utils';
 
@@ -27,7 +27,25 @@ export const TabsExample = () => {
         <TabList aria-label="History of Ancient Rome" style={{display: 'flex', gap: 8}}>
           <CustomTab id="/FoR" href="/FoR">Founding of Rome</CustomTab>
           <CustomTab id="/MaR" href="/MaR">Monarchy and Republic</CustomTab>
-          <CustomTab id="/Emp" href="/Emp">Empire</CustomTab>
+          <TooltipTrigger>
+            <CustomTab id="/Emp" href="/Emp">Empire</CustomTab>
+            <Tooltip
+              offset={5}
+              style={{
+                background: 'Canvas',
+                color: 'CanvasText',
+                border: '1px solid gray',
+                padding: 5,
+                borderRadius: 4
+              }}>
+              <OverlayArrow style={{transform: 'translateX(-50%)'}}>
+                <svg width="8" height="8" style={{display: 'block'}}>
+                  <path d="M0 0L4 4L8 0" fill="white" strokeWidth={1} stroke="gray" />
+                </svg>
+              </OverlayArrow>
+              I am a tooltip
+            </Tooltip>
+          </TooltipTrigger>
         </TabList>
         <TabPanel id="/FoR">
           Arma virumque cano, Troiae qui primus ab oris.
@@ -61,7 +79,7 @@ export const TabsRenderProps = () => {
                 style={{display: 'flex', flexDirection: orientation === 'vertical' ? 'column' : 'row', gap: 8}}>
                 <CustomTab id="FoR">Founding of Rome</CustomTab>
                 <CustomTab id="MaR">Monarchy and Republic</CustomTab>
-                <CustomTab id="Emp">Empire</CustomTab>
+                <TooltipTrigger><CustomTab id="Emp">Empire</CustomTab><Tooltip>This is a tooltip</Tooltip></TooltipTrigger>
               </TabList>
               <TabPanel id="FoR">
                 Arma virumque cano, Troiae qui primus ab oris.
