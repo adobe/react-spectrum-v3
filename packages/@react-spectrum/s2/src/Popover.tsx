@@ -79,6 +79,7 @@ let popover = style({
   // Don't be larger than full screen minus 2 * containerPadding
   maxWidth: '[calc(100vw - 24px)]',
   boxSizing: 'border-box',
+  display: 'flex',
   opacity: {
     isEntering: 0,
     isExiting: 0
@@ -226,7 +227,7 @@ const dialogStyle = style({
   borderRadius: '[inherit]',
   overflow: 'auto',
   position: 'relative',
-  size: 'full',
+  width: 'full',
   maxSize: '[inherit]'
 }, getAllowedOverrides({height: true}));
 

@@ -104,6 +104,7 @@ export let menu = style({
   gridTemplateColumns: menuItemGrid,
   boxSizing: 'border-box',
   maxHeight: '[inherit]',
+  width: 'full',
   overflow: {
     isPopover: 'auto'
   },
@@ -187,6 +188,7 @@ export let menuitem = style({
   },
   alignItems: 'baseline',
   minHeight: 'control',
+  height: 'min',
   textDecoration: 'none',
   cursor: {
     default: 'default',

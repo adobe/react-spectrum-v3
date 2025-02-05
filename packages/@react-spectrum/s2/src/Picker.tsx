@@ -176,6 +176,7 @@ const quietFocusLine = style({
 export let menu = style({
   outlineStyle: 'none',
   display: 'grid',
+  width: 'full',
   gridTemplateColumns: {
     size: {
       S: [edgeToText(24), 'auto', 'auto', 'minmax(0, 1fr)', 'auto', 'auto', 'auto', edgeToText(24)],
