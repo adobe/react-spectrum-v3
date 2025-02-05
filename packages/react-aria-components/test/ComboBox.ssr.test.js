@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {screen, testSSR} from '@react-spectrum/test-utils-internal';
+import {fireEvent, screen, testSSR} from '@react-spectrum/test-utils-internal';
 
 describe('ComboBox SSR', function () {
   it('should render text of default selected key', async function () {
@@ -39,5 +39,59 @@ describe('ComboBox SSR', function () {
     // Assert that hydrated UI matches what we expect.
     let input = screen.getByRole('combobox');
     expect(input.value).toBe('Dog');
+  });
+
+  it('should point ref correctly after hydration', async function () {
+    await testSSR(__filename, `
+      import {ComboBox, Label, Input, Popover, ListBox, ListBoxItem} from '../';
+      import {useState, useRef} from 'react';
+      import {useLayoutEffect} from '@react-aria/utils';
+
+      function App() {
+        let [trigger, setTrigger] = useState(['null']);
+        let [otherState, setOtherState] = useState(0);
+        let ref = useRef(null);
+
+        useLayoutEffect(() => {
+          setTrigger(prev => [...prev, ref.current?.outerHTML]);
+        }, [otherState]);
+
+        return (
+          <React.StrictMode>
+            <ComboBox defaultSelectedKey="dog">
+              <div ref={ref}>
+                <Label>Favorite Animal</Label>
+                <Input />
+              </div>
+              <Popover>
+                <ListBox>
+                  <ListBoxItem id="cat">Cat</ListBoxItem>
+                  <ListBoxItem id="dog">Dog</ListBoxItem>
+                  <ListBoxItem id="kangaroo">Kangaroo</ListBoxItem>
+                </ListBox>
+              </Popover>
+            </ComboBox>
+            <div role="button">{trigger.join(", ")}</div>
+            <div role="button" onClick={() => setOtherState(1)}>{otherState}</div>
+          </React.StrictMode>
+        );
+      }
+    <App />
+    `, () => {
+      // Assert that server rendered stuff into the HTML.
+      let input = screen.getByRole('combobox');
+      expect(input.value).toBe('Dog');
+      let buttons = screen.getAllByRole('button');
+      expect(buttons[0].textContent).toBe('null');
+    });
+
+    // Assert that hydrated UI matches what we expect.
+    let input = screen.getByRole('combobox');
+    expect(input.value).toBe('Dog');
+    let buttons = screen.getAllByRole('button');
+    let [button, button2] = buttons;
+    fireEvent.click(button2);
+    expect(button2.textContent).toBe('1');
+    expect(button.textContent.split(', ')[2]).toBe(button.textContent.split(', ')[1]);
   });
 });
