@@ -11,7 +11,7 @@
  */
 
 import {AriaAutocompleteTests} from './AriaAutocomplete.test-util';
-import {Button, Header, Input, Label, ListBox, ListBoxItem, ListBoxSection, Menu, MenuItem, MenuSection, SearchField, Separator, Text, UNSTABLE_Autocomplete} from '..';
+import {Button, Dialog, DialogTrigger, Header, Input, Label, ListBox, ListBoxItem, ListBoxSection, Menu, MenuItem, MenuSection, Popover, SearchField, Separator, Text, TextField, UNSTABLE_Autocomplete} from '..';
 import {pointerMap, render, within} from '@react-spectrum/test-utils-internal';
 import React, {ReactNode} from 'react';
 import {useAsyncList} from 'react-stately';
@@ -243,6 +243,136 @@ describe('Autocomplete', () => {
     options = within(menu).getAllByRole('menuitem');
     expect(options[1]).toHaveAttribute('data-focused');
     expect(options[1]).not.toHaveAttribute('data-focus-visible');
+  });
+
+  it('should be able to tab inside a focus scope that contains', async () => {
+    const MyMenu = () => {
+      let {contains} = useFilter({sensitivity: 'base'});
+
+      return (
+        <DialogTrigger>
+          <Button aria-label="Menu">☰</Button>
+          <Popover>
+            <Dialog>
+              <Button>First</Button>
+              <Button>Second</Button>
+              <UNSTABLE_Autocomplete filter={contains}>
+                <TextField autoFocus aria-label="Search">
+                  <Input />
+                </TextField>
+                <Menu>
+                  <MenuItem>Open</MenuItem>
+                  <MenuItem>
+                    Rename…
+                  </MenuItem>
+                  <MenuItem>
+                    Duplicate
+                  </MenuItem>
+                </Menu>
+              </UNSTABLE_Autocomplete>
+            </Dialog>
+          </Popover>
+        </DialogTrigger>
+      );
+    };
+
+    function App() {
+      return (
+        <div>
+          <input />
+          <div>
+            <MyMenu />
+          </div>
+          <input />
+        </div>
+      );
+    }
+
+    let {getByRole} = render(<App />);
+    let trigger = getByRole('button', {name: 'Menu'});
+    await user.click(trigger);
+    let firstButton = getByRole('button', {name: 'First'});
+    let secondButton = getByRole('button', {name: 'Second'});
+    let input = getByRole('textbox');
+
+    expect(document.activeElement).toBe(input);
+
+    await user.tab();
+
+    expect(document.activeElement).toBe(firstButton);
+
+    await user.tab({shift: true});
+
+    expect(document.activeElement).toBe(input);
+
+    await user.tab({shift: true});
+
+    expect(document.activeElement).toBe(secondButton);
+  });
+
+  it('should be able to tab inside a focus scope that contains', async () => {
+    const MyMenu = () => {
+      let {contains} = useFilter({sensitivity: 'base'});
+
+      return (
+        <DialogTrigger>
+          <Button aria-label="Menu">☰</Button>
+          <Popover>
+            <Dialog>
+              <UNSTABLE_Autocomplete filter={contains}>
+                <TextField autoFocus aria-label="Search">
+                  <Input />
+                </TextField>
+                <Menu>
+                  <MenuItem>Open</MenuItem>
+                  <MenuItem>
+                    Rename…
+                  </MenuItem>
+                  <MenuItem>
+                    Duplicate
+                  </MenuItem>
+                </Menu>
+              </UNSTABLE_Autocomplete>
+              <Button>First</Button>
+              <Button>Second</Button>
+            </Dialog>
+          </Popover>
+        </DialogTrigger>
+      );
+    };
+
+    function App() {
+      return (
+        <div>
+          <input />
+          <div>
+            <MyMenu />
+          </div>
+          <input />
+        </div>
+      );
+    }
+
+    let {getByRole} = render(<App />);
+    let trigger = getByRole('button', {name: 'Menu'});
+    await user.click(trigger);
+    let firstButton = getByRole('button', {name: 'First'});
+    let secondButton = getByRole('button', {name: 'Second'});
+    let input = getByRole('textbox');
+
+    expect(document.activeElement).toBe(input);
+
+    await user.tab();
+
+    expect(document.activeElement).toBe(firstButton);
+
+    await user.tab({shift: true});
+
+    expect(document.activeElement).toBe(input);
+
+    await user.tab({shift: true});
+
+    expect(document.activeElement).toBe(secondButton);
   });
 });
 

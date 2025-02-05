@@ -11,7 +11,7 @@
  */
 
 import {action} from '@storybook/addon-actions';
-import {UNSTABLE_Autocomplete as Autocomplete, Button, Collection, Dialog, DialogTrigger, Header, Input, Keyboard, Label, ListBox, ListBoxSection, UNSTABLE_ListLayout as ListLayout, Menu, MenuSection, MenuTrigger, Popover, SearchField, Separator, Text, TextField, UNSTABLE_Virtualizer as Virtualizer} from 'react-aria-components';
+import {UNSTABLE_Autocomplete as Autocomplete, Button, Collection, Dialog, DialogTrigger, Header, Input, Keyboard, Label, ListBox, ListBoxSection, UNSTABLE_ListLayout as ListLayout, Menu, MenuItem, MenuSection, MenuTrigger, Popover, SearchField, Separator, Text, TextField, UNSTABLE_Virtualizer as Virtualizer} from 'react-aria-components';
 import {MyListBoxItem, MyMenuItem} from './utils';
 import React, {useMemo} from 'react';
 import styles from '../example/index.css';
@@ -517,3 +517,84 @@ export const AutocompleteInPopoverDialogTrigger = {
     }
   }
 };
+
+const MyMenu = () => {
+  let {contains} = useFilter({sensitivity: 'base'});
+
+  return (
+    <DialogTrigger>
+      <Button aria-label="Menu">☰</Button>
+      <Popover>
+        <Dialog>
+          <Button>First</Button>
+          <Button>Second</Button>
+          <Autocomplete filter={contains}>
+            <TextField autoFocus>
+              <Input />
+            </TextField>
+            <Menu>
+              <MenuItem onAction={() => console.log('open')}>Open</MenuItem>
+              <MenuItem onAction={() => console.log('rename')}>
+                Rename…
+              </MenuItem>
+              <MenuItem onAction={() => console.log('duplicate')}>
+                Duplicate
+              </MenuItem>
+              <MenuItem onAction={() => console.log('share')}>Share…</MenuItem>
+              <MenuItem onAction={() => console.log('delete')}>
+                Delete…
+              </MenuItem>
+            </Menu>
+          </Autocomplete>
+        </Dialog>
+      </Popover>
+    </DialogTrigger>
+  );
+};
+
+const MyMenu2 = () => {
+  let {contains} = useFilter({sensitivity: 'base'});
+
+  return (
+    <DialogTrigger>
+      <Button aria-label="Menu">☰</Button>
+      <Popover>
+        <Dialog>
+          <Autocomplete filter={contains}>
+            <TextField autoFocus>
+              <Input />
+            </TextField>
+            <Menu>
+              <MenuItem onAction={() => console.log('open')}>Open</MenuItem>
+              <MenuItem onAction={() => console.log('rename')}>
+                Rename…
+              </MenuItem>
+              <MenuItem onAction={() => console.log('duplicate')}>
+                Duplicate
+              </MenuItem>
+              <MenuItem onAction={() => console.log('share')}>Share…</MenuItem>
+              <MenuItem onAction={() => console.log('delete')}>
+                Delete…
+              </MenuItem>
+            </Menu>
+          </Autocomplete>
+          <Button>First</Button>
+          <Button>Second</Button>
+        </Dialog>
+      </Popover>
+    </DialogTrigger>
+  );
+};
+
+export function AutocompleteWithExtraButtons() {
+  return (
+    <div>
+      <input />
+      <div style={{display: 'flex', gap: '200px'}}>
+        <MyMenu />
+        <MyMenu2 />
+      </div>
+      <input />
+    </div>
+  );
+}
