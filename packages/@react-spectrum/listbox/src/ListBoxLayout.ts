@@ -8,18 +8,18 @@ interface ListBoxLayoutProps {
 
 interface ListBoxLayoutOptions extends ListLayoutOptions {
   placeholderHeight: number,
-  padding: number
+  paddingY: number
 }
 
 export class ListBoxLayout<T> extends ListLayout<T, ListBoxLayoutProps> {
   private isLoading: boolean = false;
   private placeholderHeight: number;
-  private padding: number;
+  private paddingY: number;
 
   constructor(opts: ListBoxLayoutOptions) {
     super(opts);
     this.placeholderHeight = opts.placeholderHeight;
-    this.padding = opts.padding;
+    this.paddingY = opts.paddingY;
   }
 
   update(invalidationContext: InvalidationContext<ListBoxLayoutProps>): void {
@@ -28,7 +28,7 @@ export class ListBoxLayout<T> extends ListLayout<T, ListBoxLayoutProps> {
   }
 
   protected buildCollection(): LayoutNode[] {
-    let nodes = super.buildCollection(this.padding);
+    let nodes = super.buildCollection(this.paddingY);
     let y = this.contentSize.height;
 
     if (this.isLoading) {
@@ -55,7 +55,7 @@ export class ListBoxLayout<T> extends ListLayout<T, ListBoxLayoutProps> {
       y = placeholder.rect.maxY;
     }
 
-    this.contentSize.height = y + this.padding;
+    this.contentSize.height = y + this.paddingY;
     return nodes;
   }
 

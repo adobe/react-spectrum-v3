@@ -41,6 +41,12 @@ export interface GridLayoutOptions {
   dropIndicatorThickness?: number
 }
 
+/**
+ * GridLayout is a virtualizer Layout implementation
+ * that arranges its items in an equal sized grid. 
+ * The items are sized between a minimum and maximum size
+ * depending on the width of the container.
+ */
 export class GridLayout<T, O = any> extends Layout<Node<T>, O> implements DropTargetDelegate {
   protected minItemSize: Size;
   protected maxItemSize: Size;

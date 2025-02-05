@@ -12,7 +12,7 @@ export default Layout;
 
 import docs from 'docs:react-aria-components';
 import dataDocs from 'docs:@react-stately/data';
-import {HeaderInfo, PropTable, TypeLink} from '@react-spectrum/docs';
+import {HeaderInfo, TypeContext, InterfaceType, TypeLink} from '@react-spectrum/docs';
 
 ---
 category: Guides
@@ -308,6 +308,70 @@ let list = useAsyncList({
 
 Note that `useAsyncList` is a convenience hook, not a requirement. You can use any state management or data loading
 library to manage collection items.
+
+## Virtualized scrolling
+
+Collection components like [ListBox](ListBox.html), [GridList](GridList.html), and [Table](Table.html) support virtualized scrolling, which is a performance optimization for large lists. Instead of rendering all items to the DOM at once, it only renders the visible items, reusing them as the user scrolls. This results in a small number of DOM elements being rendered, reducing memory usage and improving browser layout and rendering performance.
+
+Collections can be virtualized by wrapping them in a &lt;<TypeLink links={docs.links} type={docs.exports.Virtualizer} />&gt;, and providing a <TypeLink links={docs.links} type={docs.exports.Layout} /> object such as <TypeLink links={docs.links} type={docs.exports.ListLayout} /> or <TypeLink links={docs.links} type={docs.exports.GridLayout} />. Layouts are responsible for determining the position of each item in the collection, and providing the list of visible items. When using a Virtualizer, all items are positioned by the `Layout` object, and CSS layout properties such as flexbox and grid do not apply.
+
+```tsx
+import {Virtualizer, ListLayout} from 'react-aria-components';
+
+let layout = useMemo(() => new ListLayout({
+  rowHeight: 50
+}), []);
+
+<Virtualizer layout={layout}>
+  <ListBox items={items}>
+    {item => <ListBoxItem>{item}</ListBoxItem>}
+  </ListBox>
+</Virtualizer>
+```
+
+See the [Virtualizer](Virtualizer.html) docs for more details.
+
+## Advanced: Custom collection renderers
+
+Internally, `Virtualizer` is powered by a `CollectionRenderer`. Collection components delegate to a `CollectionRenderer` to render their items and sections, and to handle keyboard navigation and drag and drop interactions. Collection renderers are provided via `CollectionRendererContext`. The default `CollectionRenderer` simply renders all items to the DOM, but this can be overridden to implement custom behavior. The API includes the following properties:
+
+<TypeContext.Provider value={docs.links}>
+  <InterfaceType {...docs.exports.CollectionRenderer} />
+</TypeContext.Provider>
+
+The two required properties are `CollectionRoot` and `CollectionBranch`. These are React components that render the items at the root of a collection, and the children of a specific item respectively. See the [Collection interface docs](../react-stately/Collection.html) for details on the collection and item APIs.
+
+```tsx
+import type {CollectionRenderer} from 'react-aria-components';
+import {UNSTABLE_CollectionRendererContext as CollectionRendererContext} from 'react-aria-components';
+
+const renderer: CollectionRenderer = {
+  CollectionRoot({collection}) {
+    let items = [];
+    for (let item of collection) {
+      items.push(item.render(item));
+    }
+    return items;
+  },
+  CollectionBranch({collection, parent}) {
+    let items = [];
+    for (let item of collection.getChildren(parent.key)) {
+      items.push(item.render(item));
+    }
+    return items;
+  }
+};
+
+<CollectionRendererContext.Provider value={renderer}>
+  <ListBox>
+    {/* ... */}
+  </ListBox>
+</CollectionRendererContext.Provider>
+```
+
+**Note**: ensure that the value passed to `CollectionRendererContext` is memoized so React does not unmount and remount `CollectionRoot` and `CollectionBranch` unnecessarily.
+
+You also need to ensure that any additional DOM elements you add, such as wrappers around the items, are valid within the ARIA pattern that the collection component follows. Use `role="presentation"` for elements added only for styling purposes.
 
 ## Hooks
 

@@ -64,7 +64,7 @@ export {Separator, SeparatorContext} from './Separator';
 export {Slider, SliderOutput, SliderTrack, SliderThumb, SliderContext, SliderOutputContext, SliderTrackContext, SliderStateContext} from './Slider';
 export {Switch, SwitchContext} from './Switch';
 export {UNSTABLE_TableLoadingIndicator, Table, Row, Cell, Column, ColumnResizer, TableHeader, TableBody, TableContext, ResizableTableContainer, useTableOptions, TableStateContext, TableColumnResizeStateContext} from './Table';
-export {TableLayout as UNSTABLE_TableLayout} from './TableLayout';
+export {TableLayout} from './TableLayout';
 export {Tabs, TabList, TabPanel, Tab, TabsContext, TabListStateContext} from './Tabs';
 export {TagGroup, TagGroupContext, TagList, TagListContext, Tag} from './TagGroup';
 export {Text, TextContext} from './Text';
@@ -77,11 +77,12 @@ export {TooltipTrigger, Tooltip, TooltipTriggerStateContext, TooltipContext} fro
 export {UNSTABLE_TreeLoadingIndicator, UNSTABLE_Tree, UNSTABLE_TreeItem, UNSTABLE_TreeContext, UNSTABLE_TreeItemContent, UNSTABLE_TreeStateContext} from './Tree';
 export {useDragAndDrop} from './useDragAndDrop';
 export {DropIndicator, DropIndicatorContext, DragAndDropContext} from './DragAndDrop';
-export {Virtualizer as UNSTABLE_Virtualizer} from './Virtualizer';
+export {Virtualizer} from './Virtualizer';
 export {DIRECTORY_DRAG_TYPE, isDirectoryDropItem, isFileDropItem, isTextDropItem, SSRProvider, RouterProvider, I18nProvider, useLocale, useFilter} from 'react-aria';
 export {FormValidationContext} from 'react-stately';
 export {parseColor, getColorChannels} from '@react-stately/color';
-export {ListLayout as UNSTABLE_ListLayout, GridLayout as UNSTABLE_GridLayout} from '@react-stately/layout';
+export {ListLayout, GridLayout} from '@react-stately/layout';
+export {Layout, LayoutInfo, Size, Rect, Point} from '@react-stately/virtualizer';
 
 export type {AutocompleteProps} from './Autocomplete';
 export type {BreadcrumbsProps, BreadcrumbProps, BreadcrumbRenderProps} from './Breadcrumbs';

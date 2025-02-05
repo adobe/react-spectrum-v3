@@ -17,7 +17,7 @@ import {Virtualizer} from './Virtualizer';
 let KEY = 0;
 
 /**
- * [Virtualizer]{@link Virtualizer} creates instances of the [ReusableView]{@link ReusableView} class to
+ * `Virtualizer` creates instances of the `ReusableView` class to
  * represent views currently being displayed.
  */
 export class ReusableView<T extends object, V> {

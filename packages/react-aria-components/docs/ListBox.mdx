@@ -71,9 +71,10 @@ import {ListBox, ListBoxItem} from 'react-aria-components';
 .react-aria-ListBox {
   display: flex;
   flex-direction: column;
+  gap: 4px;
   max-height: inherit;
   overflow: auto;
-  padding: 2px;
+  padding: 4px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
   background: var(--overlay-background);
@@ -91,8 +92,7 @@ import {ListBox, ListBoxItem} from 'react-aria-components';
 }
 
 .react-aria-ListBoxItem {
-  margin: 2px;
-  padding: 0.286rem 0.571rem;
+  padding: 0 0.571rem;
   border-radius: 6px;
   outline: none;
   cursor: default;
@@ -101,6 +101,8 @@ import {ListBox, ListBoxItem} from 'react-aria-components';
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  min-height: 32px;
 
   &[data-focus-visible] {
     outline: 2px solid var(--focus-ring-color);
@@ -132,6 +134,7 @@ listbox components that can be styled as needed.
 * **Keyboard navigation** – List items can be navigated using the arrow keys, along with page up/down, home/end, etc. Typeahead, auto scrolling, and selection modifier keys are supported as well.
 * **Layout options** – Items can be arranged in a vertical or horizontal stack, or as a two-dimensional grid.
 * **Drag and drop** – ListBox supports drag and drop to reorder, insert, or update items via mouse, touch, keyboard, and screen reader interactions.
+* **Virtualized scrolling** – Use [Virtualizer](Virtualizer.html) to improve performance of large lists by rendering only the visible items.
 * **Touch friendly** – Selection behavior adapts depending on the device. For example, selection occurs on mouse down but on touch up, which is consistent with native conventions.
 * **Accessible** – Follows the [ARIA listbox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/), with support for items and sections, and slots for label and description elements within each item for improved screen reader announcement.
 * **Styleable** – Items include builtin states for styling, such as hover, press, focus, selected, and disabled.
@@ -235,7 +238,8 @@ function MyItem(props: ListBoxItemProps) {
 .my-listbox {
   max-height: inherit;
   overflow: auto;
-  padding: 2px;
+  padding: 4px;
+  gap: 4px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
   background: var(--overlay-background);
@@ -248,7 +252,6 @@ function MyItem(props: ListBoxItemProps) {
 .my-item {
   --highlight: #e70073;
 
-  margin: 2px;
   padding: 0.286rem 0.571rem;
   border-radius: 6px;
   outline: none;
@@ -630,22 +633,11 @@ let albums = [
       max-width: 150px;
       margin-bottom: 4px;
       border-radius: 4px;
-      transition: box-shadow 200ms;
-    }
-
-    &[data-hovered] {
-      & img {
-        box-shadow: 0 0 8px rgb(from slateblue r g b / 0.5);
-      }
     }
 
     &[data-selected] {
       background: none;
       color: inherit;
-
-      & img {
-        box-shadow: 0 0 12px rgb(from slateblue r g b / 0.8);
-      }
 
       &:after {
         content: '✓';
@@ -668,6 +660,11 @@ let albums = [
         justify-content: center;
         box-shadow: 0 0 8px rgb(0 0 0 / .5);
       }
+    }
+
+    &[data-focus-visible] {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: -2px;
     }
   }
 }

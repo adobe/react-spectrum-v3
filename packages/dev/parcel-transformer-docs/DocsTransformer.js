@@ -236,7 +236,9 @@ module.exports = new Transformer({
           type: value.type === 'function' ? 'method' : 'property',
           name,
           value,
-          access: path.node.accessibility
+          access: path.node.accessibility,
+          static: path.node.static,
+          abstract: path.node.abstract
         }, docs));
       }
 

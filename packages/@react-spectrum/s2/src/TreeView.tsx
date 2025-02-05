@@ -16,15 +16,15 @@ import {
   Button,
   ButtonContext,
   Collection,
+  ListLayout,
   Provider,
   TreeItemProps as RACTreeItemProps,
   TreeProps as RACTreeProps,
-  UNSTABLE_ListLayout,
   UNSTABLE_Tree,
   UNSTABLE_TreeItem,
   UNSTABLE_TreeItemContent,
-  UNSTABLE_Virtualizer,
-  useContextProps
+  useContextProps,
+  Virtualizer
 } from 'react-aria-components';
 import {centerBaseline} from './CenterBaseline';
 import {Checkbox} from './Checkbox';
@@ -108,13 +108,13 @@ function TreeView(props: TreeViewProps, ref: DOMRef<HTMLDivElement>) {
   let domRef = useDOMRef(ref);
 
   let layout = useMemo(() => {
-    return new UNSTABLE_ListLayout({
+    return new ListLayout({
       rowHeight: isDetached ? 42 : 40
     });
   }, [isDetached]);
 
   return (
-    <UNSTABLE_Virtualizer layout={layout}>
+    <Virtualizer layout={layout}>
       <TreeRendererContext.Provider value={{renderer}}>
         <InternalTreeContext.Provider value={{isDetached, isEmphasized}}>
           <UNSTABLE_Tree
@@ -126,7 +126,7 @@ function TreeView(props: TreeViewProps, ref: DOMRef<HTMLDivElement>) {
           </UNSTABLE_Tree>
         </InternalTreeContext.Provider>
       </TreeRendererContext.Provider>
-    </UNSTABLE_Virtualizer>
+    </Virtualizer>
   );
 }
 

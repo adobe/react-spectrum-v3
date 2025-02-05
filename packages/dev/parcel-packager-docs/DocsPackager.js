@@ -342,7 +342,9 @@ function visitChildren(obj, fn) {
         optional: obj.optional,
         access: obj.access,
         description: obj.description,
-        default: obj.default
+        default: obj.default,
+        static: obj.static,
+        abstract: obj.abstract
       };
     case 'alias':
       return {

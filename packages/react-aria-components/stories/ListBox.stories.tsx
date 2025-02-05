@@ -11,7 +11,7 @@
  */
 
 import {action} from '@storybook/addon-actions';
-import {Collection, DropIndicator, UNSTABLE_GridLayout as GridLayout, Header, ListBox, ListBoxItem, ListBoxProps, ListBoxSection, UNSTABLE_ListLayout as ListLayout, Separator, Text, useDragAndDrop, UNSTABLE_Virtualizer as Virtualizer} from 'react-aria-components';
+import {Collection, DropIndicator, GridLayout, Header, ListBox, ListBoxItem, ListBoxProps, ListBoxSection, ListLayout, Separator, Text, useDragAndDrop, Virtualizer} from 'react-aria-components';
 import {MyListBoxItem} from './utils';
 import React, {useMemo} from 'react';
 import {Size} from '@react-stately/virtualizer';

@@ -21,14 +21,14 @@ import {
   GridListContext,
   GridListItem,
   Label,
-  UNSTABLE_ListLayout as ListLayout,
+  ListLayout,
   Modal,
   RouterProvider,
   Tag,
   TagGroup,
   TagList,
   useDragAndDrop,
-  UNSTABLE_Virtualizer as Virtualizer
+  Virtualizer
 } from '../';
 import React from 'react';
 import {User} from '@react-aria/test-utils';

@@ -11,28 +11,44 @@
  */
 
 import {InvalidationContext} from './types';
-import {ItemDropTarget, Key, LayoutDelegate} from '@react-types/shared';
+import {ItemDropTarget, Key, LayoutDelegate, Node} from '@react-types/shared';
 import {LayoutInfo} from './LayoutInfo';
 import {Rect} from './Rect';
 import {Size} from './Size';
 import {Virtualizer} from './Virtualizer';
 
 /**
- * [Virtualizer]{@link Virtualizer} supports arbitrary layout objects, which compute what views are visible, and how
- * to position and style them. However, layouts do not create the views themselves directly. Instead,
- * layouts produce lightweight {@link LayoutInfo} objects which describe various properties of a view,
- * such as its position and size. The {@link Virtualizer} is then responsible for creating the actual
+ * Virtualizer supports arbitrary layout objects, which compute what items are visible, and how
+ * to position and style them. However, layouts do not render items directly. Instead,
+ * layouts produce lightweight LayoutInfo objects which describe various properties of an item,
+ * such as its position and size. The Virtualizer is then responsible for creating the actual
  * views as needed, based on this layout information.
  *
- * Every layout extends from the {@link Layout} abstract base class. Layouts must implement a minimum of the
- * two methods listed below. All other methods can be optionally overridden to implement custom behavior.
- *
- * @see {@link getVisibleLayoutInfos}
- * @see {@link getLayoutInfo}
+ * Every layout extends from the Layout abstract base class. Layouts must implement the `getVisibleLayoutInfos`,
+ * `getLayoutInfo`, and `getContentSize` methods. All other methods can be optionally overridden to implement custom behavior.
  */
-export abstract class Layout<T extends object, O = any> implements LayoutDelegate {
+export abstract class Layout<T extends object = Node<any>, O = any> implements LayoutDelegate {
   /** The Virtualizer the layout is currently attached to. */
   virtualizer: Virtualizer<T, any> | null = null;
+
+  /**
+   * Returns an array of `LayoutInfo` objects which are inside the given rectangle.
+   * Should be implemented by subclasses.
+   * @param rect The rectangle that should contain the returned LayoutInfo objects.
+   */
+  abstract getVisibleLayoutInfos(rect: Rect): LayoutInfo[];
+
+  /**
+   * Returns a `LayoutInfo` for the given key.
+   * Should be implemented by subclasses.
+   * @param key The key of the LayoutInfo to retrieve.
+   */
+  abstract getLayoutInfo(key: Key): LayoutInfo | null;
+
+  /**
+   * Returns size of the content. By default, it returns virtualizer's size.
+   */
+  abstract getContentSize(): Size;  
 
   /**
    * Returns whether the layout should invalidate in response to
@@ -48,30 +64,11 @@ export abstract class Layout<T extends object, O = any> implements LayoutDelegat
 
   /**
    * This method allows the layout to perform any pre-computation
-   * it needs to in order to prepare {@link LayoutInfo}s for retrieval.
-   * Called by the virtualizer before {@link getVisibleLayoutInfos}
-   * or {@link getLayoutInfo} are called.
+   * it needs to in order to prepare LayoutInfos for retrieval.
+   * Called by the virtualizer before `getVisibleLayoutInfos`
+   * or `getLayoutInfo` are called.
    */
   update(invalidationContext: InvalidationContext<O>) {} // eslint-disable-line @typescript-eslint/no-unused-vars
-
-  /**
-   * Returns an array of {@link LayoutInfo} objects which are inside the given rectangle.
-   * Should be implemented by subclasses.
-   * @param rect The rectangle that should contain the returned LayoutInfo objects.
-   */
-  abstract getVisibleLayoutInfos(rect: Rect): LayoutInfo[];
-
-  /**
-   * Returns a {@link LayoutInfo} for the given key.
-   * Should be implemented by subclasses.
-   * @param key The key of the LayoutInfo to retrieve.
-   */
-  abstract getLayoutInfo(key: Key): LayoutInfo | null;
-
-  /**
-   * Returns size of the content. By default, it returns collectionView's size.
-   */
-  abstract getContentSize(): Size;
 
   /** 
    * Updates the size of the given item.
@@ -79,14 +76,16 @@ export abstract class Layout<T extends object, O = any> implements LayoutDelegat
   updateItemSize?(key: Key, size: Size): boolean;
 
   /**
-   * Returns a LayoutInfo for the given drop target.
+   * Returns a `LayoutInfo` for the given drop target.
    */
   getDropTargetLayoutInfo?(target: ItemDropTarget): LayoutInfo;
 
+  /** @private */
   getItemRect(key: Key): Rect | null {
     return this.getLayoutInfo(key)?.rect ?? null;
   }
 
+  /** @private */
   getVisibleRect(): Rect {
     return this.virtualizer!.visibleRect;
   }

@@ -20,11 +20,11 @@ import {
   ListBoxContext,
   ListBoxItem,
   ListBoxSection,
-  UNSTABLE_ListLayout as ListLayout,
+  ListLayout,
   Modal,
   Text,
   useDragAndDrop,
-  UNSTABLE_Virtualizer as Virtualizer
+  Virtualizer
 } from '../';
 import React, {useState} from 'react';
 import {User} from '@react-aria/test-utils';

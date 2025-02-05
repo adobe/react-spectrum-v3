@@ -435,9 +435,9 @@ export function renderHTMLfromMarkdown(description, opts) {
   return '';
 }
 
-export function InterfaceType({description, properties: props, typeParameters, showRequired, showDefault, isComponent, name, hideType}) {
-  let properties = Object.values(props).filter(prop => prop.type === 'property' && prop.access !== 'private' && prop.access !== 'protected');
-  let methods = Object.values(props).filter(prop => prop.type === 'method' && prop.access !== 'private' && prop.access !== 'protected');
+export function InterfaceType({description, properties: props, typeParameters, showRequired, showDefault, isComponent, name, hideType, hideProperties, hideMethods}) {
+  let properties = hideProperties ? [] : Object.values(props).filter(prop => prop.type === 'property' && prop.access !== 'private' && prop.access !== 'protected');
+  let methods = hideMethods ? [] : Object.values(props).filter(prop => prop.type === 'method' && prop.access !== 'private' && prop.access !== 'protected');
 
   // Default to showing required indicators if some properties are optional but not all.
   showRequired = showRequired || (!properties.every(p => p.optional) && !properties.every(p => !p.optional));
@@ -524,6 +524,8 @@ export function InterfaceType({description, properties: props, typeParameters, s
               <tr key={index} className={clsx(tableStyles['spectrum-Table-row'], styles.tableRow)}>
                 <td role="rowheader" className={clsx(tableStyles['spectrum-Table-cell'], styles.tableCell)} data-column="Name">
                   <code className={`${typographyStyles['spectrum-Code4']}`}>
+                    {prop.static && <span className="token hljs-keyword">static </span>}
+                    {prop.abstract && <span className="token hljs-keyword">abstract </span>}
                     <span className="token hljs-function">{prop.name}</span>
                     <TypeParameters typeParameters={prop.value.typeParameters} />
                     <Indent params={prop.value.parameters} open="(" close=")">

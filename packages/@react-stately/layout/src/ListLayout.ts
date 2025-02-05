@@ -15,20 +15,41 @@ import {getChildNodes} from '@react-stately/collections';
 import {InvalidationContext, Layout, LayoutInfo, Point, Rect, Size} from '@react-stately/virtualizer';
 
 export interface ListLayoutOptions {
-  /** The fixed height of a row in px. */
+  /**
+   * The fixed height of a row in px.
+   * @default 48
+   */
   rowHeight?: number,
   /** The estimated height of a row, when row heights are variable. */
   estimatedRowHeight?: number,
-  /** The fixed height of a section header in px. */
+  /**
+   * The fixed height of a section header in px.
+   * @default 48
+   */
   headingHeight?: number,
   /** The estimated height of a section header, when the height is variable. */
   estimatedHeadingHeight?: number,
-  /** The fixed height of a loader element in px. This loader is specifically for
+  /** 
+   * The fixed height of a loader element in px. This loader is specifically for
    * "load more" elements rendered when loading more rows at the root level or inside nested row/sections.
+   * @default 48
    */
   loaderHeight?: number,
-  /** The thickness of the drop indicator. */
-  dropIndicatorThickness?: number
+  /**
+   * The thickness of the drop indicator.
+   * @default 2
+   */
+  dropIndicatorThickness?: number,
+  /**
+   * The gap between items.
+   * @default 0
+   */
+  gap?: number,
+  /**
+   * The padding around the list.
+   * @default 0
+   */
+  padding?: number
 }
 
 // A wrapper around LayoutInfo that supports hierarchy
@@ -43,12 +64,9 @@ export interface LayoutNode {
 const DEFAULT_HEIGHT = 48;
 
 /**
- * The ListLayout class is an implementation of a virtualizer {@link Layout}.
- * To configure a ListLayout, you can use the properties to define the
- * layouts and/or use the method for defining indentation.
- * The {@link ListKeyboardDelegate} extends the existing virtualizer
- * delegate with an additional method to do this (it uses the same delegate object as
- * the virtualizer itself).
+ * ListLayout is a virtualizer Layout implementation
+ * that arranges its items in a vertical stack. It supports both fixed
+ * and variable height items.
  */
 export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTargetDelegate {
   protected rowHeight: number | null;
@@ -57,6 +75,8 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
   protected estimatedHeadingHeight: number | null;
   protected loaderHeight: number | null;
   protected dropIndicatorThickness: number;
+  protected gap: number;
+  protected padding: number;
   protected layoutNodes: Map<Key, LayoutNode>;
   protected contentSize: Size;
   protected lastCollection: Collection<Node<T>> | null;
@@ -80,6 +100,8 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     this.estimatedHeadingHeight = options.estimatedHeadingHeight ?? null;
     this.loaderHeight = options.loaderHeight ?? null;
     this.dropIndicatorThickness = options.dropIndicatorThickness || 2;
+    this.gap = options.gap || 0;
+    this.padding = options.padding || 0;
     this.layoutNodes = new Map();
     this.rootNodes = [];
     this.lastWidth = 0;
@@ -104,7 +126,7 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     // Adjust rect to keep number of visible rows consistent.
     // (only if height > 1 for getDropTargetFromPoint)
     if (rect.height > 1) {
-      let rowHeight = this.rowHeight ?? this.estimatedRowHeight ?? DEFAULT_HEIGHT;
+      let rowHeight = (this.rowHeight ?? this.estimatedRowHeight ?? DEFAULT_HEIGHT) + this.gap;
       rect.y = Math.floor(rect.y / rowHeight) * rowHeight;
       rect.height = Math.ceil(rect.height / rowHeight) * rowHeight;
     }
@@ -204,12 +226,12 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     this.validRect = this.requestedRect.copy();
   }
 
-  protected buildCollection(y = 0): LayoutNode[] {
+  protected buildCollection(y = this.padding): LayoutNode[] {
     let collection = this.virtualizer!.collection;
     let skipped = 0;
     let nodes: LayoutNode[] = [];
     for (let node of collection) {
-      let rowHeight = this.rowHeight ?? this.estimatedRowHeight ?? DEFAULT_HEIGHT;
+      let rowHeight = (this.rowHeight ?? this.estimatedRowHeight ?? DEFAULT_HEIGHT) + this.gap;
 
       // Skip rows before the valid rectangle unless they are already cached.
       if (node.type === 'item' && y + rowHeight < this.requestedRect.y && !this.isValid(node, y)) {
@@ -218,8 +240,8 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
         continue;
       }
 
-      let layoutNode = this.buildChild(node, 0, y, null);
-      y = layoutNode.layoutInfo.rect.maxY;
+      let layoutNode = this.buildChild(node, this.padding, y, null);
+      y = layoutNode.layoutInfo.rect.maxY + this.gap;
       nodes.push(layoutNode);
 
       if (node.type === 'item' && y > this.requestedRect.maxY) {
@@ -228,6 +250,8 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
       }
     }
 
+    y -= this.gap;
+    y += this.padding;
     this.contentSize = new Size(this.virtualizer!.visibleRect.width, y);
     return nodes;
   }
@@ -272,9 +296,9 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
   }
 
   protected buildLoader(node: Node<T>, x: number, y: number): LayoutNode {
-    let rect = new Rect(x, y, 0, 0);
+    let rect = new Rect(x, y, this.padding, 0);
     let layoutInfo = new LayoutInfo('loader', node.key, rect);
-    rect.width = this.virtualizer!.contentSize.width;
+    rect.width = this.virtualizer!.contentSize.width - this.padding - x;
     rect.height = this.loaderHeight || this.rowHeight || this.estimatedRowHeight || DEFAULT_HEIGHT;
 
     return {
@@ -285,15 +309,15 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
 
   protected buildSection(node: Node<T>, x: number, y: number): LayoutNode {
     let collection = this.virtualizer!.collection;
-    let width = this.virtualizer!.visibleRect.width;
-    let rect = new Rect(0, y, width, 0);
+    let width = this.virtualizer!.visibleRect.width - this.padding;
+    let rect = new Rect(x, y, width - x, 0);
     let layoutInfo = new LayoutInfo(node.type, node.key, rect);
 
     let startY = y;
     let skipped = 0;
     let children: LayoutNode[] = [];
     for (let child of getChildNodes(node, collection)) {
-      let rowHeight = (this.rowHeight ?? this.estimatedRowHeight ?? DEFAULT_HEIGHT);
+      let rowHeight = (this.rowHeight ?? this.estimatedRowHeight ?? DEFAULT_HEIGHT) + this.gap;
 
       // Skip rows before the valid rectangle unless they are already cached.
       if (y + rowHeight < this.requestedRect.y && !this.isValid(node, y)) {
@@ -303,7 +327,7 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
       }
 
       let layoutNode = this.buildChild(child, x, y, layoutInfo.key);
-      y = layoutNode.layoutInfo.rect.maxY;
+      y = layoutNode.layoutInfo.rect.maxY + this.gap;
       children.push(layoutNode);
 
       if (y > this.requestedRect.maxY) {
@@ -313,6 +337,7 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
       }
     }
 
+    y -= this.gap;
     rect.height = y - startY;
 
     return {
@@ -324,7 +349,7 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
   }
 
   protected buildSectionHeader(node: Node<T>, x: number, y: number): LayoutNode {
-    let width = this.virtualizer!.visibleRect.width;
+    let width = this.virtualizer!.visibleRect.width - this.padding;
     let rectHeight = this.headingHeight;
     let isEstimated = false;
 
@@ -350,7 +375,7 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
       rectHeight = DEFAULT_HEIGHT;
     }
 
-    let headerRect = new Rect(0, y, width, rectHeight);
+    let headerRect = new Rect(x, y, width - x, rectHeight);
     let header = new LayoutInfo('header', node.key, headerRect);
     header.estimatedSize = isEstimated;
     return {
@@ -362,7 +387,7 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
   }
 
   protected buildItem(node: Node<T>, x: number, y: number): LayoutNode {
-    let width = this.virtualizer!.visibleRect.width;
+    let width = this.virtualizer!.visibleRect.width - this.padding;
     let rectHeight = this.rowHeight;
     let isEstimated = false;
 

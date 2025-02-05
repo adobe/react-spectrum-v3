@@ -12,7 +12,7 @@
 
 import {act, fireEvent, mockClickDefault, pointerMap, render, within} from '@react-spectrum/test-utils-internal';
 import {AriaTreeTests} from './AriaTree.test-util';
-import {Button, Checkbox, Collection, UNSTABLE_ListLayout as ListLayout, Text, UNSTABLE_Tree, UNSTABLE_TreeItem, UNSTABLE_TreeItemContent, UNSTABLE_Virtualizer as Virtualizer} from '../';
+import {Button, Checkbox, Collection, ListLayout, Text, UNSTABLE_Tree, UNSTABLE_TreeItem, UNSTABLE_TreeItemContent, Virtualizer} from '../';
 import {composeStories} from '@storybook/react';
 import React from 'react';
 import * as stories from '../stories/Tree.stories';

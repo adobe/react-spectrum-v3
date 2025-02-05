@@ -35,12 +35,12 @@ import {
   ResizableTableContainer,
   RowRenderProps,
   TableBodyRenderProps,
+  TableLayout,
   TableRenderProps,
-  UNSTABLE_TableLayout,
   UNSTABLE_TableLoadingIndicator,
-  UNSTABLE_Virtualizer,
   useSlottedContext,
-  useTableOptions
+  useTableOptions,
+  Virtualizer
 } from 'react-aria-components';
 import {centerPadding, getAllowedOverrides, StylesPropWithHeight, UnsafeStyles} from './style-utils' with {type: 'macro'};
 import {Checkbox} from './Checkbox';
@@ -187,7 +187,7 @@ const ROW_HEIGHTS = {
   }
 };
 
-export class S2TableLayout<T> extends UNSTABLE_TableLayout<T> {
+export class S2TableLayout<T> extends TableLayout<T> {
   constructor(options) {
     super({...options, loaderHeight: 60});
   }
@@ -334,7 +334,7 @@ export const TableView = forwardRef(function TableView(props: TableViewProps, re
       onResizeStart={onResizeStart}
       className={(UNSAFE_className || '') + mergeStyles(tableWrapper, styles)}
       style={UNSAFE_style}>
-      <UNSTABLE_Virtualizer layout={layout}>
+      <Virtualizer layout={layout}>
         <InternalTableContext.Provider value={context}>
           <RACTable
             ref={scrollRef as any}
@@ -358,7 +358,7 @@ export const TableView = forwardRef(function TableView(props: TableViewProps, re
             defaultSelectedKeys={undefined}
             onSelectionChange={onSelectionChange} />
         </InternalTableContext.Provider>
-      </UNSTABLE_Virtualizer>
+      </Virtualizer>
       {actionBar}
     </ResizableTableContainer>
   );

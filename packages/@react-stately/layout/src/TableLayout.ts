@@ -24,6 +24,10 @@ export interface TableLayoutProps {
 
 const DEFAULT_ROW_HEIGHT = 48;
 
+/**
+ * TableLayout is a virtualizer Layout implementation that arranges
+ * items in rows and columns.
+ */
 export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> extends ListLayout<T, O> {
   protected lastCollection: TableCollection<T> | null = null;
   private columnWidths: Map<Key, number> = new Map();
@@ -65,7 +69,7 @@ export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> exten
       }
     } else if (invalidationContext.sizeChanged || this.columnsChanged(newCollection, this.lastCollection)) {
       let columnLayout = new TableColumnLayout({});
-      this.columnWidths = columnLayout.buildColumnWidths(this.virtualizer!.visibleRect.width, newCollection, new Map());
+      this.columnWidths = columnLayout.buildColumnWidths(this.virtualizer!.visibleRect.width - this.padding * 2, newCollection, new Map());
       invalidationContext.sizeChanged = true;
     }
 
@@ -86,11 +90,11 @@ export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> exten
 
     let header = this.buildTableHeader();
     this.layoutNodes.set(header.layoutInfo.key, header);
-    let body = this.buildBody(header.layoutInfo.rect.height);
+    let body = this.buildBody(header.layoutInfo.rect.maxY + this.gap);
     this.lastPersistedKeys = null;
 
     body.layoutInfo.rect.width = Math.max(header.layoutInfo.rect.width, body.layoutInfo.rect.width);
-    this.contentSize = new Size(body.layoutInfo.rect.width, body.layoutInfo.rect.maxY);
+    this.contentSize = new Size(body.layoutInfo.rect.width + this.padding * 2, body.layoutInfo.rect.maxY + this.padding);
     return [
       header,
       body
@@ -99,16 +103,16 @@ export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> exten
 
   protected buildTableHeader(): LayoutNode {
     let collection = this.virtualizer!.collection as TableCollection<T>;
-    let rect = new Rect(0, 0, 0, 0);
+    let rect = new Rect(this.padding, this.padding, 0, 0);
     let layoutInfo = new LayoutInfo('header', collection.head?.key ?? 'header', rect);
     layoutInfo.isSticky = true;
     layoutInfo.zIndex = 1;
 
-    let y = 0;
+    let y = this.padding;
     let width = 0;
     let children: LayoutNode[] = [];
     for (let headerRow of collection.headerRows) {
-      let layoutNode = this.buildChild(headerRow, 0, y, layoutInfo.key);
+      let layoutNode = this.buildChild(headerRow, this.padding, y, layoutInfo.key);
       layoutNode.layoutInfo.parentKey = layoutInfo.key;
       y = layoutNode.layoutInfo.rect.maxY;
       width = Math.max(width, layoutNode.layoutInfo.rect.width);
@@ -117,7 +121,7 @@ export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> exten
     }
 
     rect.width = width;
-    rect.height = y;
+    rect.height = y - this.padding;
 
     return {
       layoutInfo,
@@ -128,7 +132,7 @@ export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> exten
   }
 
   protected buildHeaderRow(headerRow: GridNode<T>, x: number, y: number): LayoutNode {
-    let rect = new Rect(0, y, 0, 0);
+    let rect = new Rect(x, y, 0, 0);
     let row = new LayoutInfo('headerrow', headerRow.key, rect);
 
     let height = 0;
@@ -148,7 +152,7 @@ export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> exten
     this.setChildHeights(columns, height);
 
     rect.height = height;
-    rect.width = x;
+    rect.width = x - rect.x;
 
     return {
       layoutInfo: row,
@@ -234,14 +238,14 @@ export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> exten
 
   protected buildBody(y: number): LayoutNode {
     let collection = this.virtualizer!.collection as TableCollection<T>;
-    let rect = new Rect(0, y, 0, 0);
+    let rect = new Rect(this.padding, y, 0, 0);
     let layoutInfo = new LayoutInfo('rowgroup', collection.body.key, rect);
 
     let startY = y;
     let skipped = 0;
     let width = 0;
     let children: LayoutNode[] = [];
-    let rowHeight = this.getEstimatedRowHeight();
+    let rowHeight = this.getEstimatedRowHeight() + this.gap;
     for (let node of getChildNodes(collection.body, collection)) {
       // Skip rows before the valid rectangle unless they are already cached.
       if (y + rowHeight < this.requestedRect.y && !this.isValid(node, y)) {
@@ -250,10 +254,10 @@ export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> exten
         continue;
       }
 
-      let layoutNode = this.buildChild(node, 0, y, layoutInfo.key);
+      let layoutNode = this.buildChild(node, this.padding, y, layoutInfo.key);
       layoutNode.layoutInfo.parentKey = layoutInfo.key;
       layoutNode.index = children.length;
-      y = layoutNode.layoutInfo.rect.maxY;
+      y = layoutNode.layoutInfo.rect.maxY + this.gap;
       width = Math.max(width, layoutNode.layoutInfo.rect.width);
       children.push(layoutNode);
 
@@ -266,6 +270,8 @@ export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> exten
 
     if (children.length === 0) {
       y = this.virtualizer!.visibleRect.maxY;
+    } else {
+      y -= this.gap;
     }
 
     rect.width = width;

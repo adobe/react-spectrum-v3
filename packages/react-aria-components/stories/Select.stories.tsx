@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {Button, Label, ListBox, UNSTABLE_ListLayout as ListLayout, OverlayArrow, Popover, Select, SelectValue, UNSTABLE_Virtualizer as Virtualizer} from 'react-aria-components';
+import {Button, Label, ListBox, ListLayout, OverlayArrow, Popover, Select, SelectValue, Virtualizer} from 'react-aria-components';
 import {MyListBoxItem} from './utils';
 import React from 'react';
 import styles from '../example/index.css';

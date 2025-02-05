@@ -16,7 +16,7 @@ import {
   GridLayoutOptions,
   GridListItem,
   GridListProps,
-  UNSTABLE_Virtualizer
+  Virtualizer
 } from 'react-aria-components';
 import {CardContext, InternalCardViewContext} from './Card';
 import {createContext, forwardRef, ReactElement, useMemo, useRef, useState} from 'react';
@@ -583,7 +583,7 @@ export const CardView = /*#__PURE__*/ (forwardRef as forwardRefType)(function Ca
   let {selectedKeys, onSelectionChange, actionBar, actionBarHeight} = useActionBarContainer({...props, scrollRef});
 
   let cardView = (
-    <UNSTABLE_Virtualizer layout={layout} layoutOptions={options}>
+    <Virtualizer layout={layout} layoutOptions={options}>
       <InternalCardViewContext.Provider value={GridListItem}>
         <CardContext.Provider value={ctx}>
           <ImageCoordinator>
@@ -609,7 +609,7 @@ export const CardView = /*#__PURE__*/ (forwardRef as forwardRefType)(function Ca
           </ImageCoordinator>
         </CardContext.Provider>
       </InternalCardViewContext.Provider>
-    </UNSTABLE_Virtualizer>
+    </Virtualizer>
   );
 
   // Add extra wrapper if there is an action bar so we can position relative to it.

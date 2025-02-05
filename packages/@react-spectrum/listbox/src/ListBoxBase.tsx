@@ -54,7 +54,7 @@ export function useListBoxLayout<T>(): ListBoxLayout<T> {
     new ListBoxLayout<T>({
       estimatedRowHeight: scale === 'large' ? 48 : 32,
       estimatedHeadingHeight: scale === 'large' ? 33 : 26,
-      padding: scale === 'large' ? 5 : 4, // TODO: get from DNA
+      paddingY: scale === 'large' ? 5 : 4, // TODO: get from DNA
       placeholderHeight: scale === 'large' ? 48 : 32
     })
   , [scale]);

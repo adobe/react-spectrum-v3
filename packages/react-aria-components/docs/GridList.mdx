@@ -216,6 +216,7 @@ HTML lists are meant for static content, rather than lists with rich interaction
 * **Async loading** – Support for loading items asynchronously.
 * **Keyboard navigation** – List items and focusable children can be navigated using the arrow keys, along with page up/down, home/end, etc. Typeahead, auto scrolling, and selection modifier keys are supported as well.
 * **Drag and drop** – GridList supports drag and drop to reorder, insert, or update items via mouse, touch, keyboard, and screen reader interactions.
+* **Virtualized scrolling** – Use [Virtualizer](Virtualizer.html) to improve performance of large lists by rendering only the visible items.
 * **Touch friendly** – Selection and actions adapt their behavior depending on the device. For example, selection is activated via long press on touch when item actions are present.
 * **Accessible** – Follows the [ARIA grid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/), with additional selection announcements via an ARIA live region. Extensively tested across many devices and [assistive technologies](accessibility.html#testing) to ensure announcements and behaviors are consistent.
 
@@ -309,7 +310,7 @@ This example wraps `GridList` and all of its children together into a single com
 ```tsx example export=true
 import type {GridListProps, GridListItemProps} from 'react-aria-components';
 
-function MyGridList<T extends object>({children, ...props}: GridListProps<T>) {
+export function MyGridList<T extends object>({children, ...props}: GridListProps<T>) {
   return (
     <GridList {...props}>
       {children}
@@ -317,7 +318,7 @@ function MyGridList<T extends object>({children, ...props}: GridListProps<T>) {
   );
 }
 
-function MyItem({children, ...props}: GridListItemProps) {
+export function MyItem({children, ...props}: GridListItemProps) {
   let textValue = typeof children === 'string' ? children : undefined;
   return (
     <GridListItem textValue={textValue} {...props}>
