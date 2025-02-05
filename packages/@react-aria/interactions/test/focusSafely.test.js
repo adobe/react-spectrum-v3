@@ -12,10 +12,9 @@
 
 
 import {act, render} from '@react-spectrum/test-utils-internal';
-import {focusSafely} from '../';
+import {focusSafely, setInteractionModality} from '../';
 import React from 'react';
 import * as ReactAriaUtils from '@react-aria/utils';
-import {setInteractionModality} from '@react-aria/interactions';
 
 jest.mock('@react-aria/utils', () => {
   let original = jest.requireActual('@react-aria/utils');

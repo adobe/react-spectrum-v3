@@ -13,7 +13,7 @@
 import {AriaDialogProps} from '@react-types/dialog';
 import {DOMAttributes, FocusableElement, RefObject} from '@react-types/shared';
 import {filterDOMProps, useSlotId} from '@react-aria/utils';
-import {focusSafely} from '@react-aria/focus';
+import {focusSafely} from '@react-aria/interactions';
 import {useEffect, useRef} from 'react';
 import {useOverlayFocusContain} from '@react-aria/overlays';
 

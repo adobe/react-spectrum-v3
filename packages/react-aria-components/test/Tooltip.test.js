@@ -11,7 +11,7 @@
  */
 
 import {act, fireEvent, pointerMap, render} from '@react-spectrum/test-utils-internal';
-import {Button, OverlayArrow, Tooltip, TooltipTrigger} from 'react-aria-components';
+import {Button, Focusable, OverlayArrow, Pressable, Tooltip, TooltipTrigger} from 'react-aria-components';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 
@@ -206,5 +206,66 @@ describe('Tooltip', () => {
       await user.unhover(button);
       act(() => jest.runAllTimers());
     });
+  });
+
+  it('should support custom Focusable trigger on hover', async () => {
+    let {getByRole} = render(
+      <TooltipTrigger>
+        <Focusable>
+          <span role="button">Trigger</span>
+        </Focusable>
+        <Tooltip>Test</Tooltip>
+      </TooltipTrigger>
+    );
+
+    let button = getByRole('button');
+    expect(button).toHaveAttribute('tabindex', '0');
+
+    await user.tab();
+    expect(document.activeElement).toBe(button);
+
+    let tooltip = getByRole('tooltip');
+    expect(tooltip).toBeInTheDocument();
+  });
+
+  it('should support custom Focusable trigger on focus', async () => {
+    let {getByRole} = render(
+      <TooltipTrigger>
+        <Focusable>
+          <span role="button">Trigger</span>
+        </Focusable>
+        <Tooltip>Test</Tooltip>
+      </TooltipTrigger>
+    );
+
+    let button = getByRole('button');
+    expect(button).toHaveAttribute('tabindex', '0');
+
+    fireEvent.mouseMove(document.body);
+    await user.hover(button);
+    act(() => jest.runAllTimers());
+
+    let tooltip = getByRole('tooltip');
+    expect(tooltip).toBeInTheDocument();
+  });
+
+  it('should support custom Pressable trigger', async () => {
+    let {getByRole} = render(
+      <TooltipTrigger>
+        <Pressable>
+          <span role="button">Trigger</span>
+        </Pressable>
+        <Tooltip>Test</Tooltip>
+      </TooltipTrigger>
+    );
+
+    let button = getByRole('button');
+
+    fireEvent.mouseMove(document.body);
+    await user.hover(button);
+    act(() => jest.runAllTimers());
+
+    let tooltip = getByRole('tooltip');
+    expect(tooltip).toBeInTheDocument();
   });
 });

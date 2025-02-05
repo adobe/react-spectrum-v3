@@ -184,6 +184,37 @@ Alert dialogs are a special type of dialog meant to present a prompt that the us
 </DialogTrigger>
 ```
 
+## Custom trigger
+
+`DialogTrigger` works out of the box with any pressable React Aria component (e.g. [Button](Button.html), [Link](Link.html), etc.). Custom trigger elements such as third party components and other DOM elements are also supported by wrapping them with the `<Pressable>` component, or using the [usePress](usePress.html) hook.
+
+```tsx example
+import {Pressable} from 'react-aria-components';
+
+<DialogTrigger>
+  {/*- begin highlight -*/}
+  <Pressable>
+    <span role="button">Custom trigger</span>
+  </Pressable>
+  {/*- end highlight -*/}
+  <Modal>
+    <Dialog>
+      <Heading slot="title">Dialog</Heading>
+      <p>This dialog was triggered by a custom button.</p>
+      <Button slot="close">Close</Button>
+    </Dialog>
+  </Modal>
+</DialogTrigger>
+```
+
+Note that any `<Pressable>` child must have an [interactive ARIA role](https://www.w3.org/TR/wai-aria-1.2/#widget_roles) or use an appropriate semantic HTML element so that screen readers can announce the trigger. Trigger components must forward their `ref` and spread all props to a DOM element.
+
+```tsx
+const CustomTrigger = React.forwardRef((props, ref) => (
+  <button {...props} ref={ref} />
+));
+```
+
 ## Props
 
 ### DialogTrigger

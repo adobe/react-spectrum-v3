@@ -18,10 +18,9 @@ import intlMessages from '../intl/*.json';
 import {isAndroid, mergeProps, useDescription} from '@react-aria/utils';
 import {TableState} from '@react-stately/table';
 import {useEffect} from 'react';
-import {useFocusable} from '@react-aria/focus';
+import {useFocusable, usePress} from '@react-aria/interactions';
 import {useGridCell} from '@react-aria/grid';
 import {useLocalizedStringFormatter} from '@react-aria/i18n';
-import {usePress} from '@react-aria/interactions';
 
 export interface AriaTableColumnHeaderProps<T> {
   /** An object representing the [column header](https://www.w3.org/TR/wai-aria-1.1/#columnheader). Contains all the relevant information that makes up the column header. */

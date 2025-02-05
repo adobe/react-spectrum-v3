@@ -315,6 +315,33 @@ The `isDisabled` prop can be provided to a TooltipTrigger to disable the tooltip
 </TooltipTrigger>
 ```
 
+## Custom trigger
+
+`TooltipTrigger` works out of the box with any focusable React Aria component (e.g. [Button](Button.html), [Link](Link.html), etc.). Custom trigger elements such as third party components and other DOM elements are also supported by wrapping them with the `<Focusable>` component.
+
+```tsx example
+import {Focusable} from 'react-aria-components';
+
+<TooltipTrigger>
+  {/*- begin highlight -*/}
+  <Focusable>
+    <span role="button">Custom trigger</span>
+  </Focusable>
+  {/*- end highlight -*/}
+  <MyTooltip>Tooltip</MyTooltip>
+</TooltipTrigger>
+```
+
+Note that any `<Focusable>` child must have an ARIA role or use an appropriate semantic HTML element so that screen readers can announce the content of the tooltip. Trigger components must forward their `ref` and spread all props to a DOM element.
+
+```tsx
+const CustomTrigger = React.forwardRef((props, ref) => (
+  <button {...props} ref={ref} />
+));
+```
+
+[DialogTrigger](Dialog.html#custom-trigger) or [MenuTrigger](Menu.html#custom-trigger) with custom triggers via `<Pressable>` also automatically work with `TooltipTrigger`. All `<Pressable>` elements are already focusable, so there's no need to wrap them in `<Focusable>` in this case.
+
 ## Props
 
 ### TooltipTrigger

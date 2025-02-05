@@ -15,8 +15,7 @@ import {filterDOMProps, mergeProps, useFormReset} from '@react-aria/utils';
 import {InputHTMLAttributes, LabelHTMLAttributes} from 'react';
 import {RefObject} from '@react-types/shared';
 import {ToggleState} from '@react-stately/toggle';
-import {useFocusable} from '@react-aria/focus';
-import {usePress} from '@react-aria/interactions';
+import {useFocusable, usePress} from '@react-aria/interactions';
 
 export interface ToggleAria {
   /** Props to be spread on the label element. */

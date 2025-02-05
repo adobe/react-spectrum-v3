@@ -30,6 +30,8 @@ export {useMove} from './useMove';
 export {usePress} from './usePress';
 export {useScrollWheel} from './useScrollWheel';
 export {useLongPress} from './useLongPress';
+export {useFocusable, FocusableProvider, Focusable} from './useFocusable';
+export {focusSafely} from './focusSafely';
 
 export type {FocusProps, FocusResult} from './useFocus';
 export type {FocusVisibleHandler, FocusVisibleProps, FocusVisibleResult, Modality} from './useFocusVisible';
@@ -42,3 +44,4 @@ export type {PressEvent, PressEvents, MoveStartEvent, MoveMoveEvent, MoveEndEven
 export type {MoveResult} from './useMove';
 export type {LongPressProps, LongPressResult} from './useLongPress';
 export type {ScrollWheelProps} from './useScrollWheel';
+export type {FocusableAria, FocusableOptions, FocusableProviderProps} from './useFocusable';

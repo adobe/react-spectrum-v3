@@ -11,7 +11,7 @@
  */
 
 import {act, pointerMap, render} from '@react-spectrum/test-utils-internal';
-import {Button, Dialog, DialogTrigger, OverlayArrow, Popover} from '../';
+import {Button, Dialog, DialogTrigger, OverlayArrow, Popover, Pressable} from '../';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 
@@ -211,5 +211,25 @@ describe('Popover', () => {
 
       expect(getByRole('dialog').closest('[data-testid="custom-container"]')).toBe(getByTestId('custom-container'));
     });
+  });
+
+  it('should support custom Pressable trigger', async () => {
+    let {getByRole} = render(
+      <DialogTrigger>
+        <Pressable>
+          <span role="button">Trigger</span>
+        </Pressable>
+        <Popover>
+          <Dialog>Popover</Dialog>
+        </Popover>
+      </DialogTrigger>
+    );
+
+    let button = getByRole('button');
+
+    await user.click(button);
+
+    let dialog = getByRole('dialog');
+    expect(dialog).toBeInTheDocument();
   });
 });

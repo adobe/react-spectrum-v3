@@ -22,7 +22,8 @@ import comboboxStyles from './combobox.css';
 import {DismissButton, useOverlayTrigger} from '@react-aria/overlays';
 import {Field} from '@react-spectrum/label';
 import {FocusableRef, FocusableRefValue, ValidationState} from '@react-types/shared';
-import {FocusRing, focusSafely, FocusScope} from '@react-aria/focus';
+import {FocusRing, FocusScope} from '@react-aria/focus';
+import {focusSafely, setInteractionModality, useHover} from '@react-aria/interactions';
 // @ts-ignore
 import intlMessages from '../intl/*.json';
 import labelStyles from '@adobe/spectrum-css-temp/components/fieldlabel/vars.css';
@@ -31,7 +32,6 @@ import {mergeProps, useFormReset, useId, useObjectRef} from '@react-aria/utils';
 import {ProgressCircle} from '@react-spectrum/progress';
 import React, {ForwardedRef, HTMLAttributes, InputHTMLAttributes, ReactElement, ReactNode, useCallback, useEffect, useRef, useState} from 'react';
 import searchStyles from '@adobe/spectrum-css-temp/components/search/vars.css';
-import {setInteractionModality, useHover} from '@react-aria/interactions';
 import {SpectrumComboBoxProps} from '@react-types/combobox';
 import styles from '@adobe/spectrum-css-temp/components/inputgroup/vars.css';
 import {TextFieldBase} from '@react-spectrum/textfield';

@@ -19,7 +19,8 @@ import {ComboBoxState, useComboBoxState} from '@react-stately/combobox';
 import {DismissButton, useOverlayTrigger} from '@react-aria/overlays';
 import {Field} from '@react-spectrum/label';
 import {FocusableRef, ValidationState} from '@react-types/shared';
-import {focusSafely, FocusScope, useFocusRing} from '@react-aria/focus';
+import {focusSafely, setInteractionModality, useHover} from '@react-aria/interactions';
+import {FocusScope, useFocusRing} from '@react-aria/focus';
 // @ts-ignore
 import intlMessages from '../intl/*.json';
 import {ListBoxBase, useListBoxLayout} from '@react-spectrum/listbox';
@@ -38,7 +39,6 @@ import React, {
 } from 'react';
 import searchAutocompleteStyles from './searchautocomplete.css';
 import searchStyles from '@adobe/spectrum-css-temp/components/search/vars.css';
-import {setInteractionModality, useHover} from '@react-aria/interactions';
 import {SpectrumSearchAutocompleteProps} from '@react-types/autocomplete';
 import styles from '@adobe/spectrum-css-temp/components/inputgroup/vars.css';
 import {TextFieldBase} from '@react-spectrum/textfield';

@@ -14,8 +14,8 @@ import {CLEAR_FOCUS_EVENT, FOCUS_EVENT, focusWithoutScrolling, isCtrlKeyPressed,
 import {DOMAttributes, FocusableElement, FocusStrategy, Key, KeyboardDelegate, RefObject} from '@react-types/shared';
 import {flushSync} from 'react-dom';
 import {FocusEvent, KeyboardEvent, useEffect, useRef} from 'react';
-import {focusSafely, getFocusableTreeWalker} from '@react-aria/focus';
-import {getInteractionModality} from '@react-aria/interactions';
+import {focusSafely, getInteractionModality} from '@react-aria/interactions';
+import {getFocusableTreeWalker} from '@react-aria/focus';
 import {isNonContiguousSelectionModifier} from './utils';
 import {MultipleSelectionManager} from '@react-stately/selection';
 import {useLocale} from '@react-aria/i18n';

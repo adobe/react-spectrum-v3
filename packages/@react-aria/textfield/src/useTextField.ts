@@ -23,7 +23,7 @@ import {DOMAttributes, ValidationResult} from '@react-types/shared';
 import {filterDOMProps, getOwnerWindow, mergeProps, useFormReset} from '@react-aria/utils';
 import {useControlledState} from '@react-stately/utils';
 import {useField} from '@react-aria/label';
-import {useFocusable} from '@react-aria/focus';
+import {useFocusable} from '@react-aria/interactions';
 import {useFormValidation} from '@react-aria/form';
 import {useFormValidationState} from '@react-stately/form';
 

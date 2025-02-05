@@ -11,12 +11,12 @@
  */
 
 import {DOMAttributes, FocusableElement, Key, RefObject} from '@react-types/shared';
-import {focusSafely, getFocusableTreeWalker} from '@react-aria/focus';
+import {focusSafely, isFocusVisible} from '@react-aria/interactions';
+import {getFocusableTreeWalker} from '@react-aria/focus';
 import {getScrollParent, mergeProps, scrollIntoViewport} from '@react-aria/utils';
 import {GridCollection, GridNode} from '@react-types/grid';
 import {gridMap} from './utils';
 import {GridState} from '@react-stately/grid';
-import {isFocusVisible} from '@react-aria/interactions';
 import {KeyboardEvent as ReactKeyboardEvent, useRef} from 'react';
 import {useLocale} from '@react-aria/i18n';
 import {useSelectableItem} from '@react-aria/selection';

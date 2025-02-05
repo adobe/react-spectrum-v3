@@ -4,8 +4,7 @@ import {DOMAttributes, RefObject} from '@react-types/shared';
 import {getSliderThumbId, sliderData} from './utils';
 import React, {ChangeEvent, InputHTMLAttributes, LabelHTMLAttributes, useCallback, useEffect, useRef} from 'react';
 import {SliderState} from '@react-stately/slider';
-import {useFocusable} from '@react-aria/focus';
-import {useKeyboard, useMove} from '@react-aria/interactions';
+import {useFocusable, useKeyboard, useMove} from '@react-aria/interactions';
 import {useLabel} from '@react-aria/label';
 import {useLocale} from '@react-aria/i18n';
 

@@ -5950,7 +5950,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-aria/button@workspace:packages/@react-aria/button"
   dependencies:
-    "@react-aria/focus": "npm:^3.19.1"
     "@react-aria/interactions": "npm:^3.23.0"
     "@react-aria/toolbar": "npm:3.0.0-beta.12"
     "@react-aria/utils": "npm:^3.27.0"
@@ -6100,7 +6099,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-aria/dialog@workspace:packages/@react-aria/dialog"
   dependencies:
-    "@react-aria/focus": "npm:^3.19.1"
+    "@react-aria/interactions": "npm:^3.23.0"
     "@react-aria/overlays": "npm:^3.25.0"
     "@react-aria/utils": "npm:^3.27.0"
     "@react-types/dialog": "npm:^3.5.15"
@@ -6290,7 +6289,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-aria/link@workspace:packages/@react-aria/link"
   dependencies:
-    "@react-aria/focus": "npm:^3.19.1"
     "@react-aria/interactions": "npm:^3.23.0"
     "@react-aria/utils": "npm:^3.27.0"
     "@react-types/link": "npm:^3.5.10"
@@ -6537,7 +6535,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-aria/slider@workspace:packages/@react-aria/slider"
   dependencies:
-    "@react-aria/focus": "npm:^3.19.1"
     "@react-aria/i18n": "npm:^3.12.5"
     "@react-aria/interactions": "npm:^3.23.0"
     "@react-aria/label": "npm:^3.7.14"
@@ -6702,8 +6699,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-aria/textfield@workspace:packages/@react-aria/textfield"
   dependencies:
-    "@react-aria/focus": "npm:^3.19.1"
     "@react-aria/form": "npm:^3.0.12"
+    "@react-aria/interactions": "npm:^3.23.0"
     "@react-aria/label": "npm:^3.7.14"
     "@react-aria/utils": "npm:^3.27.0"
     "@react-stately/form": "npm:^3.1.1"
@@ -6739,7 +6736,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-aria/toggle@workspace:packages/@react-aria/toggle"
   dependencies:
-    "@react-aria/focus": "npm:^3.19.1"
     "@react-aria/interactions": "npm:^3.23.0"
     "@react-aria/utils": "npm:^3.27.0"
     "@react-stately/toggle": "npm:^3.8.1"
@@ -6771,7 +6767,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-aria/tooltip@workspace:packages/@react-aria/tooltip"
   dependencies:
-    "@react-aria/focus": "npm:^3.19.1"
     "@react-aria/interactions": "npm:^3.23.0"
     "@react-aria/utils": "npm:^3.27.0"
     "@react-stately/tooltip": "npm:^3.5.1"

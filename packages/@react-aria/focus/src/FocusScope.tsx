@@ -11,8 +11,7 @@
  */
 
 import {FocusableElement, RefObject} from '@react-types/shared';
-import {focusSafely} from './focusSafely';
-import {getInteractionModality} from '@react-aria/interactions';
+import {focusSafely, getInteractionModality} from '@react-aria/interactions';
 import {getOwnerDocument, isAndroid, isChrome, isFocusable, isTabbable, useLayoutEffect} from '@react-aria/utils';
 import {isElementVisible} from './isElementVisible';
 import React, {ReactNode, useContext, useEffect, useMemo, useRef} from 'react';
