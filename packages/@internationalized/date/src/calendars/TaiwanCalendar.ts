@@ -79,10 +79,11 @@ export class TaiwanCalendar extends GregorianCalendar {
 
 function toGregorian(date: AnyCalendarDate) {
   let [era, year] = fromExtendedYear(gregorianYear(date));
-  return new CalendarDate(
-    era,
-    year,
-    date.month,
-    date.day
-  );
+  return {
+    era: era,
+    year: year,
+    month: date.month,
+    day: date.day,
+    calendar: new GregorianCalendar()
+  };
 }

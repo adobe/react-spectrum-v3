@@ -14,7 +14,6 @@
 // Original licensing can be found in the NOTICE file in the root directory of this source tree.
 
 import {AnyCalendarDate} from '../types';
-import {CalendarDate} from '../CalendarDate';
 import {fromExtendedYear, GregorianCalendar, gregorianToJulianDay, isLeapYear} from './GregorianCalendar';
 
 // Starts in 78 AD,
@@ -31,7 +30,7 @@ const INDIAN_YEAR_START = 80;
 export class IndianCalendar extends GregorianCalendar {
   identifier = 'indian';
 
-  fromJulianDay(jd: number): CalendarDate {
+  fromJulianDay(jd: number): AnyCalendarDate {
     // Gregorian date for Julian day
     let date = super.fromJulianDay(jd);
 
@@ -71,8 +70,15 @@ export class IndianCalendar extends GregorianCalendar {
         indianDay = (mDay % 30) + 1;
       }
     }
-
-    return new CalendarDate(this, indianYear, indianMonth, indianDay);
+    const eras = this.getEras();
+    const era = eras[eras.length - 1];
+    return {
+      calendar: this,
+      era: era,
+      year: indianYear,
+      month: indianMonth,
+      day: indianDay
+    };
   }
 
   toJulianDay(date: AnyCalendarDate) {
