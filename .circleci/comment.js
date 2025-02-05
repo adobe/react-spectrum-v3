@@ -11,7 +11,7 @@ async function run() {
   let pr;
   // If we aren't running on a PR commit, double check if this is a branch created for a fork. If so, we'll need to
   // comment the build link on the fork.
-  if (!process.env.CIRCLE_PULL_REQUEST) {
+  if (true) {
     try {
       const commit = await octokit.git.getCommit({
         owner: 'adobe',
@@ -41,7 +41,7 @@ async function run() {
             break;
           }
         }
-      } else if (process.env.CIRCLE_BRANCH === 'main') {
+      } else if (true) {
         //If it isn't a PR commit, then we are on main. Create a comment for the test app and docs build
         await octokit.repos.createCommitComment({
           owner: 'adobe',
