@@ -73,23 +73,18 @@ export function scrollIntoView(scrollView: HTMLElement, element: HTMLElement) {
  * offsetLeft or offsetTop through intervening offsetParents.
  */
 function relativeOffset(ancestor: HTMLElement, child: HTMLElement, axis: 'left'|'top') {
-  const prop = axis === 'left' ? 'offsetLeft' : 'offsetTop';
-  let sum = 0;
-  while (child.offsetParent) {
-    sum += child[prop];
-    if (child.offsetParent === ancestor) {
-      // Stop once we have found the ancestor we are interested in.
-      break;
-    } else if (child.offsetParent.contains(ancestor)) {
-      // If the ancestor is not `position:relative`, then we stop at
-      // _its_ offset parent, and we subtract off _its_ offset, so that
-      // we end up with the proper offset from child to ancestor.
-      sum -= ancestor[prop];
-      break;
-    }
-    child = child.offsetParent as HTMLElement;
-  }
-  return sum;
+  let childRect = child.getBoundingClientRect();
+  let ancestorRect = ancestor.getBoundingClientRect();
+  
+  let viewportOffset = axis === 'left' 
+      ? childRect.left - ancestorRect.left 
+      : childRect.top - ancestorRect.top;
+
+  let scrollAdjustment = axis === 'left' 
+      ? ancestor.scrollLeft 
+      : ancestor.scrollTop;
+
+  return viewportOffset + scrollAdjustment;
 }
 
 /**
