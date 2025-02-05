@@ -241,6 +241,17 @@ export class MenuTester {
           throw new Error('Expected menu element to not be in the document after selecting an option');
         }
       }
+      // else {
+      //   // TODO: this is a bit unfortunate, but from a submenu point of view, we can't perform a check that waits for
+      //   // focus to return to the original trigger since we don't have that information in the submenu trigger tester. Even if we did
+      //   // it is a bit unpredicatable where focus might end up landing and waiting for the option/menu to disappear isn't sufficient if there are
+      //   // more transitions in play. For now advance times by a certain amount of time and rely on the user to advance them even more if need be
+      //   if (this._advanceTimer == null) {
+      //     throw new Error('No advanceTimers provided for long press.');
+      //   } else {
+      //     await act(async () => await this._advanceTimer(1000));
+      //   }
+      // }
     } else {
       throw new Error("Attempted to select a option in the menu, but menu wasn't found.");
     }
@@ -269,18 +280,23 @@ export class MenuTester {
           submenuTrigger = (within(menu!).getByText(submenuTrigger).closest('[role=menuitem]'))! as HTMLElement;
         }
 
-        let submenuTriggerTester = new MenuTester({user: this.user, interactionType: this._interactionType, root: submenuTrigger, isSubmenu: true});
+        let submenuTriggerTester = new MenuTester({user: this.user, interactionType: this._interactionType, root: submenuTrigger, isSubmenu: true, advanceTimer: this._advanceTimer});
         if (interactionType === 'mouse') {
           await this.user.pointer({target: submenuTrigger});
-          act(() => {jest.runAllTimers();});
         } else if (interactionType === 'keyboard') {
           await this.keyboardNavigateToOption({option: submenuTrigger});
           await this.user.keyboard('[ArrowRight]');
-          act(() => {jest.runAllTimers();});
         } else {
           await submenuTriggerTester.open();
         }
 
+        await waitFor(() => {
+          if (submenuTriggerTester._trigger?.getAttribute('aria-expanded') !== 'true') {
+            throw new Error('aria-expanded for the submenu trigger wasn\'t changed to "true", unable to confirm the existance of the submenu');
+          } else {
+            return true;
+          }
+        });
 
         return submenuTriggerTester;
       }
