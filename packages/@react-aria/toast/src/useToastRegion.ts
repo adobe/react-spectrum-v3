@@ -1,3 +1,15 @@
+/*
+ * Copyright 2025 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 import {AriaLabelingProps, DOMAttributes, FocusableElement, RefObject} from '@react-types/shared';
 import {focusWithoutScrolling, mergeProps, useLayoutEffect} from '@react-aria/utils';
 import {getInteractionModality, useFocusWithin, useHover} from '@react-aria/interactions';
@@ -32,10 +44,50 @@ export function useToastRegion<T>(props: AriaToastRegionProps, state: ToastState
     'aria-label': props['aria-label'] || stringFormatter.format('notifications', {count: state.visibleToasts.length})
   }, ref);
 
+  let isHovered = useRef(false);
+  let pointerPosition = useRef({x: 0, y: 0});
+
   let {hoverProps} = useHover({
-    onHoverStart: state.pauseAll,
-    onHoverEnd: state.resumeAll
+    onHoverStart: () => {
+      isHovered.current = true;
+      state.pauseAll();
+    },
+    onHoverEnd: () => {
+      isHovered.current = false;
+      state.resumeAll();
+    }
   });
+
+  // If a toast is removed while we're hovered, check whether the pointer is still over the toast region.
+  // If not, resume all timers (handles case where onHoverEnd is not called).
+  let prevToastCount = useRef(state.visibleToasts.length);
+  useEffect(() => {
+    let currentCount = state.visibleToasts.length;
+    let prevCount = prevToastCount.current;
+    if (currentCount < prevCount && isHovered.current && ref.current) {
+      let rect = ref.current.getBoundingClientRect();
+      let {x, y} = pointerPosition.current;
+      let isOutside = x < rect.left || x > rect.right || y < rect.top || y > rect.bottom;
+      if (isOutside) {
+        state.resumeAll();
+      }
+    }
+    prevToastCount.current = currentCount;
+  }, [ref, state]);
+
+  useEffect(() => {
+    let onPointerMove = (e: PointerEvent) => {
+      pointerPosition.current = {x: e.clientX, y: e.clientY};
+    };
+    if (prevToastCount.current === 1 && state.visibleToasts.length === 2) {
+      document.addEventListener('pointermove', onPointerMove);
+    } else if (prevToastCount.current === 2 && state.visibleToasts.length === 1) {
+      document.removeEventListener('pointermove', onPointerMove);
+    }
+    return () => {
+      document.removeEventListener('pointermove', onPointerMove);
+    };
+  }, [state.visibleToasts]);
 
   // Manage focus within the toast region.
   // If a focused containing toast is removed, move focus to the next toast, or the previous toast if there is no next toast.
