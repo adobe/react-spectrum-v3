@@ -38,20 +38,17 @@
     top: 0;
     flex-direction: column;
     --slide-from: translateY(-100%);
-    --slide-to: translateY(0);
   }
 
   &[data-position=bottom] {
     bottom: 0;
     flex-direction: column-reverse;
     --slide-from: translateY(100%);
-    --slide-to: translateY(0);
   }
 
   &[data-placement=start] {
     align-items: flex-start;
     --slide-from: translateX(-100%);
-    --slide-to: translateX(0);
 
     &:dir(rtl) {
       --slide-from: translateX(100%);
@@ -65,7 +62,6 @@
   &[data-placement=end] {
     align-items: flex-end;
     --slide-from: translateX(100%);
-    --slide-to: translateX(0);
 
     &:dir(rtl) {
       --slide-from: translateX(-100%);
@@ -82,14 +78,6 @@
   position: relative;
   outline: none;
 
-  &[data-animation=entering] {
-    animation: slide-in 300ms;
-  }
-
-  &[data-animation=exiting] {
-    animation: fade-out 300ms forwards;
-  }
-
   .spectrum-Toast-contentWrapper {
     display: inline-flex;
   }
@@ -100,33 +88,67 @@
   flex-direction: inherit;
   align-items: inherit;
   list-style-type: none;
-  margin-block-start: 0;
-  margin-block-end: 0;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
+  margin: 0;
   padding-inline-start: 0;
 }
 
 .spectrum-ToastContainer-listitem {
   display: inline-block;
+  view-transition-class: toast;
 }
 
 @keyframes slide-in {
   from {
-    transform: var(--slide-from);
+    translate: var(--slideX) var(--slideY);
+    opacity: 0;
   }
+}
 
+@keyframes slide-out {
   to {
-    transform: var(--slide-to);
+    translate: var(--slideX) var(--slideY);
+    opacity: 0;
   }
 }
 
 @keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-
   to {
     opacity: 0;
   }
+}
+
+::view-transition-group(.toast) {
+  animation-duration: 300ms;
+}
+
+::view-transition-group(.toast.bottom) {
+  --slideX: 0;
+  --slideY: calc(100% + 12px);
+}
+
+::view-transition-group(.toast.top) {
+  --slideX: 0;
+  --slideY: calc(-100% - 12px);
+}
+
+::view-transition-group(.toast.start) {
+  --slideX: calc(-100% - 12px);
+  --slideY: 0;
+}
+
+::view-transition-group(.toast.end) {
+  --slideX: calc(100% + 12px);
+  --slideY: 0;
+}
+
+::view-transition-new(.toast):only-child {
+  animation-name: slide-in;
+}
+
+::view-transition-old(.toast):only-child {
+  animation-name: slide-out;
+}
+
+::view-transition-old(.toast.fadeOnly):only-child {
+  animation-name: fade-out;
 }

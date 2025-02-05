@@ -4511,7 +4511,7 @@ __metadata:
     "@parcel/source-map": "npm:^2.1.1"
     "@parcel/utils": "npm:2.13.3"
     browserslist: "npm:^4.6.6"
-    lightningcss: "npm:^1.22.1"
+    lightningcss: "npm:^1.29.1"
     nullthrows: "npm:^1.1.1"
   checksum: 10c0/3300fdbd17fca043985f4be3d97c702825283fa0d656743cf9e8aab6c66b157946419eece6c70f85a2b8d316d75b986ec47d3f12d1e9bd65daa1156b8af3b288
   languageName: node
@@ -4624,7 +4624,7 @@ __metadata:
     "@parcel/plugin": "npm:2.13.3"
     "@parcel/source-map": "npm:^2.1.1"
     "@parcel/utils": "npm:2.13.3"
-    lightningcss: "npm:^1.22.1"
+    lightningcss: "npm:^1.29.1"
     nullthrows: "npm:^1.1.1"
   checksum: 10c0/549f690864fa397c565fe4f308968d0351388baff9fc193900e1ae82291a498dc5861751408be42e24f5fb3c0785cf87adf3ffe200d82e2d231c87d2f02513f3
   languageName: node
@@ -4873,7 +4873,7 @@ __metadata:
     "@parcel/source-map": "npm:^2.1.1"
     "@parcel/utils": "npm:2.13.3"
     browserslist: "npm:^4.6.6"
-    lightningcss: "npm:^1.22.1"
+    lightningcss: "npm:^1.29.1"
     nullthrows: "npm:^1.1.1"
   checksum: 10c0/16acf19f69a484ff1c4ea33c83396a7bf2d33cd6f858327cb39c63f5edcd60ad883a3b41d046010ffecd139b8be181d3883861922b364bf9ed27d50db7f3022d
   languageName: node
@@ -23584,7 +23584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss@npm:^1.22.1, lightningcss@npm:^1.29.1":
+"lightningcss@npm:^1.29.1":
   version: 1.29.1
   resolution: "lightningcss@npm:1.29.1"
   dependencies:

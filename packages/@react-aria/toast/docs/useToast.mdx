@@ -50,7 +50,6 @@ There is no built in way to toast notifications in HTML. <TypeLink links={docs.l
 * **Accessible** – Toasts follow the [ARIA alert pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alert/). They are rendered in a [landmark region](https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/), which keyboard and screen reader users can easily jump to when an alert is announced.
 * **Focus management** – When a toast unmounts, focus is moved to the next toast if any. Otherwise, focus is restored to where it was before navigating to the toast region.
 * **Priority queue** – Toasts are displayed according to a priority queue, displaying a configurable number of toasts at a time. The queue can either be owned by a provider component, or global.
-* **Animations** – Toasts support optional entry and exit animations.
 
 ## Anatomy
 
@@ -344,71 +343,6 @@ Now you can queue a toast from anywhere:
 
 ```tsx example
 <Button onPress={() => toastQueue.add('Toast is done!')}>Show toast</Button>
-```
-
-### Animations
-
-`useToastState` and `ToastQueue` support a `hasExitAnimation` option. When enabled, toasts transition to an "exiting" state when closed rather than immediately being removed. This allows you to trigger an exit animation. When complete, call the `state.remove` function.
-
-Each <TypeLink links={statelyDocs.links} type={statelyDocs.exports.QueuedToast} /> includes an `animation` property that indicates the current animation state. There are three possible states:
-
-* `entering` – The toast is entering immediately after being triggered.
-* `queued` – The toast is entering from the queue (out of view).
-* `exiting` – The toast is exiting from view.
-
-```tsx
-function ToastRegion() {
-  let state = useToastState({
-    maxVisibleToasts: 5,
-    /*- begin highlight -*/
-    hasExitAnimation: true
-    /*- end highlight -*/
-  });
-
-  // ...
-}
-
-function Toast({state, ...props}) {
-  let ref = React.useRef(null);
-  let {toastProps, titleProps, closeButtonProps} = useToast(props, state, ref);
-
-  return (
-    <div
-      {...toastProps}
-      ref={ref}
-      className="toast"
-      /*- begin highlight -*/
-      // Use a data attribute to trigger animations in CSS.
-      data-animation={props.toast.animation}
-      onAnimationEnd={() => {
-        // Remove the toast when the exiting animation completes.
-        if (props.toast.animation === 'exiting') {
-          state.remove(props.toast.key);
-        }
-      }}
-      /*- end highlight -*/
-    >
-      <div {...titleProps}>{props.toast.content}</div>
-      <Button {...closeButtonProps}>x</Button>
-    </div>
-  );
-}
-```
-
-In CSS, the data attribute defined above can be used to trigger keyframe animations:
-
-```css
-.toast[data-animation=entering] {
-  animation-name: slide-in;
-}
-
-.toast[data-animation=queued] {
-  animation-name: fade-in;
-}
-
-.toast[data-animation=exiting] {
-  animation-name: slide-out;
-}
 ```
 
 ### TypeScript

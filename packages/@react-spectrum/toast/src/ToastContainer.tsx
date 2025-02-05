@@ -14,7 +14,8 @@ import {AriaToastRegionProps} from '@react-aria/toast';
 import {classNames} from '@react-spectrum/utils';
 import {DOMProps} from '@react-types/shared';
 import {filterDOMProps} from '@react-aria/utils';
-import React, {ReactElement, useEffect, useRef} from 'react';
+import {flushSync} from 'react-dom';
+import React, {ReactElement, useEffect, useMemo, useRef} from 'react';
 import {SpectrumToastValue, Toast} from './Toast';
 import toastContainerStyles from './toastContainer.css';
 import {Toaster} from './Toaster';
@@ -38,13 +39,29 @@ export interface SpectrumToastOptions extends Omit<ToastOptions, 'priority'>, DO
 
 type CloseFunction = () => void;
 
+function wrapInViewTransition<R>(fn: () => R): R {
+  if ('startViewTransition' in document) {
+    let result: R;
+    // @ts-expect-error
+    document.startViewTransition(() => {
+      flushSync(() => {
+        result = fn();
+      });
+    });
+    // @ts-ignore
+    return result;
+  } else {
+    return fn();
+  }
+}
+
 // There is a single global toast queue instance for the whole app, initialized lazily.
 let globalToastQueue: ToastQueue<SpectrumToastValue> | null = null;
 function getGlobalToastQueue() {
   if (!globalToastQueue) {
     globalToastQueue = new ToastQueue({
       maxVisibleToasts: Infinity,
-      hasExitAnimation: true
+      wrapUpdate: wrapInViewTransition
     });
   }
 
@@ -94,12 +111,6 @@ export function ToastContainer(props: SpectrumToastContainerProps): ReactElement
     triggerSubscriptions();
 
     return () => {
-      // When this toast provider unmounts, reset all animations so that
-      // when the new toast provider renders, it is seamless.
-      for (let toast of getGlobalToastQueue().visibleToasts) {
-        toast.animation = null;
-      }
-
       // Remove this toast provider, and call subscriptions.
       // This will cause all other instances to re-render,
       // and the first one to become the new active toast provider.
@@ -112,19 +123,39 @@ export function ToastContainer(props: SpectrumToastContainerProps): ReactElement
   let activeToastContainer = useActiveToastContainer();
   let state = useToastQueue(getGlobalToastQueue());
 
+  let {placement, isCentered} = useMemo(() => {
+    let placements = (props.placement ?? 'bottom').split(' ');
+    let placement = placements[placements.length - 1];
+    let isCentered = placements.length === 1;
+    return {placement, isCentered};
+  }, [props.placement]);
+
   if (ref === activeToastContainer && state.visibleToasts.length > 0) {
     return (
       <Toaster state={state} {...props}>
         <ol className={classNames(toastContainerStyles, 'spectrum-ToastContainer-list')}>
-          {state.visibleToasts.slice().reverse().map((toast) => (
-            <li
-              key={toast.key}
-              className={classNames(toastContainerStyles, 'spectrum-ToastContainer-listitem')}>
-              <Toast
-                toast={toast}
-                state={state} />
-            </li>
-          ))}
+          {state.visibleToasts.slice().reverse().map((toast, index) => {
+            let shouldFade = isCentered && index !== 0;
+            return (
+              <li
+                key={toast.key}
+                className={classNames(toastContainerStyles, 'spectrum-ToastContainer-listitem')}
+                style={{
+                  // @ts-expect-error
+                  viewTransitionName: `_${toast.key.slice(2)}`,
+                  viewTransitionClass: classNames(
+                    toastContainerStyles,
+                    'toast',
+                    placement,
+                    {'fadeOnly': shouldFade}
+                  )
+                }}>
+                <Toast
+                  toast={toast}
+                  state={state} />
+              </li>
+            );
+          })} 
         </ol>
       </Toaster>
     );

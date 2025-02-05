@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {act, fireEvent, pointerMap, render, renderHook, within} from '@react-spectrum/test-utils-internal';
+import {act, pointerMap, render, renderHook, within} from '@react-spectrum/test-utils-internal';
 import {composeStories} from '@storybook/react';
 import React, {useRef} from 'react';
 import * as stories from '../stories/useToast.stories';
@@ -51,12 +51,6 @@ describe('useToast', () => {
 });
 
 describe('single toast at a time', () => {
-  function fireAnimationEnd(alert) {
-    let e = new Event('animationend', {bubbles: true, cancelable: false});
-    e.animationName = 'fade-out';
-    fireEvent(alert, e);
-  }
-
   let user;
   beforeAll(() => {
     user = userEvent.setup({delay: null, pointerMap});
@@ -82,7 +76,6 @@ describe('single toast at a time', () => {
     expect(toast.textContent).toContain('High');
     let closeButton = within(toast).getByRole('button');
     await user.click(closeButton);
-    fireAnimationEnd(toast);
 
     toast = tree.getByRole('alertdialog');
     expect(toast.textContent).toContain('Low');
@@ -90,7 +83,6 @@ describe('single toast at a time', () => {
 
     closeButton = within(toast).getByRole('button');
     await user.click(closeButton);
-    fireAnimationEnd(toast);
 
     expect(tree.queryByRole('alertdialog')).toBeNull();
     expect(bLow).toHaveFocus();

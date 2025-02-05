@@ -15,7 +15,7 @@ import {AriaLabelingProps, DOMAttributes, FocusableElement, RefObject} from '@re
 // @ts-ignore
 import intlMessages from '../intl/*.json';
 import {QueuedToast, ToastState} from '@react-stately/toast';
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {useId, useSlotId} from '@react-aria/utils';
 import {useLocalizedStringFormatter} from '@react-aria/i18n';
 
@@ -46,8 +46,7 @@ export function useToast<T>(props: AriaToastProps<T>, state: ToastState<T>, ref:
   let {
     key,
     timer,
-    timeout,
-    animation
+    timeout
   } = props.toast;
 
   useEffect(() => {
@@ -61,13 +60,6 @@ export function useToast<T>(props: AriaToastProps<T>, state: ToastState<T>, ref:
     };
   }, [timer, timeout]);
 
-  let [isEntered, setIsEntered] = React.useState(false);
-  useEffect(() => {
-    if (animation === 'entering' || animation === 'queued') {
-      setIsEntered(true);
-    }
-  }, [animation]);
-
   let titleId = useId();
   let descriptionId = useSlotId();
   let stringFormatter = useLocalizedStringFormatter(intlMessages, '@react-aria/toast');
@@ -80,16 +72,11 @@ export function useToast<T>(props: AriaToastProps<T>, state: ToastState<T>, ref:
       'aria-labelledby': props['aria-labelledby'] || titleId,
       'aria-describedby': props['aria-describedby'] || descriptionId,
       'aria-details': props['aria-details'],
-      // Hide toasts that are animating out so VoiceOver doesn't announce them.
-      'aria-hidden': animation === 'exiting' ? 'true' : undefined,
       tabIndex: 0
     },
     contentProps: {
       role: 'alert',
-      'aria-atomic': 'true',
-      style: {
-        visibility: isEntered || animation === null ? 'visible' : 'hidden'
-      }
+      'aria-atomic': 'true'
     },
     titleProps: {
       id: titleId
