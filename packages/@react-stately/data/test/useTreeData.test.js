@@ -729,7 +729,6 @@ describe('useTreeData', function () {
 
   it('should move an item to a different level at the end when the index is greater than the node list length', function () {
     const initialItems = [...initial, {name: 'Emily'}, {name: 'Eli'}];
-    console.log('initialItems', initialItems[0]);
     let {result} = renderHook(() =>
       useTreeData({initialItems, getChildren, getKey})
     );
@@ -745,5 +744,57 @@ describe('useTreeData', function () {
     expect(result.current.items[0].children[3].key).toEqual('Eli');
     expect(result.current.items[1].key).toEqual('Emily');
     expect(result.current.items.length).toEqual(2);
+  });
+
+  it('gets the decentants of a node', function () {
+    const initialItems = [...initial, {name: 'Emily'}, {name: 'Eli'}];
+    let {result} = renderHook(() =>
+      useTreeData({initialItems, getChildren, getKey})
+    );
+    let decendants; 
+    act(() => {
+      const top = result.current.getItem('David');
+      decendants = result.current.getDescendantKeys(top);
+    });
+    expect(decendants).toEqual(['John', 'Suzie', 'Sam', 'Stacy', 'Brad', 'Jane']);
+  });
+
+
+  it('gets the decentants of a child node', function () {
+    const initialItems = [...initial, {name: 'Emily'}, {name: 'Eli'}];
+    let {result} = renderHook(() =>
+      useTreeData({initialItems, getChildren, getKey})
+    );
+    let descendants; 
+    act(() => {
+      const top = result.current.getItem('Sam');
+      descendants = result.current.getDescendantKeys(top);
+    });
+    expect(descendants).toEqual(['Stacy', 'Brad']);
+  });
+
+  it('returns an empty array when getting the decendant keys for a leaf node', function () {
+    const initialItems = [...initial, {name: 'Emily'}, {name: 'Eli'}];
+    let {result} = renderHook(() =>
+      useTreeData({initialItems, getChildren, getKey})
+    );
+    let descendants; 
+    act(() => {
+      const top = result.current.getItem('Eli');
+      descendants = result.current.getDescendantKeys(top);
+    });
+    expect(descendants).toEqual([]);
+  });
+
+  it('returns an empty array when an undefined key is supplied', function () {
+    const initialItems = [...initial, {name: 'Emily'}, {name: 'Eli'}];
+    let {result} = renderHook(() =>
+      useTreeData({initialItems, getChildren, getKey})
+    );
+    let descendants; 
+    act(() => {
+      descendants = result.current.getDescendantKeys(undefined);
+    });
+    expect(descendants).toEqual([]);
   });
 });

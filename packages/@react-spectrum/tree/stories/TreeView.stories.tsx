@@ -14,16 +14,22 @@ import {action} from '@storybook/addon-actions';
 import {ActionGroup, Item} from '@react-spectrum/actiongroup';
 import {ActionMenu} from '@react-spectrum/menu';
 import Add from '@spectrum-icons/workflow/Add';
+import {classNames} from '@react-spectrum/utils';
 import {Content} from '@react-spectrum/view';
 import Delete from '@spectrum-icons/workflow/Delete';
+import {DragItem} from '@react-types/shared';
+import dropIndicatorStyles from '@adobe/spectrum-css-temp/components/dropindicator/vars.css';
 import Edit from '@spectrum-icons/workflow/Edit';
 import FileTxt from '@spectrum-icons/workflow/FileTxt';
 import Folder from '@spectrum-icons/workflow/Folder';
 import {Heading, Text} from '@react-spectrum/text';
 import {IllustratedMessage} from '@react-spectrum/illustratedmessage';
 import {Link} from '@react-spectrum/link';
-import React from 'react';
+import React, {JSX} from 'react';
 import {SpectrumTreeViewProps, TreeView, TreeViewItem} from '../src';
+import {useDragAndDrop} from 'react-aria-components';
+import {TreeData, useTreeData} from 'react-stately';
+
 
 export default {
   title: 'TreeView',
@@ -163,7 +169,13 @@ TreeExampleStatic.story = {
   }
 };
 
-let rows = [
+type Node = {
+  id: string,
+  name: string,
+  icon: JSX.Element,
+  childItems?: Node[]
+};
+let rows: Node[] = [
   {id: 'projects', name: 'Projects', icon: <Folder />, childItems: [
     {id: 'project-1', name: 'Project 1', icon: <FileTxt />},
     {id: 'project-2', name: 'Project 2', icon: <Folder />, childItems: [
@@ -221,6 +233,105 @@ TreeExampleDynamic.story = {
   parameters: null
 };
 
+export const TreeExampleDynamicDragNDrop = (
+  args: SpectrumTreeViewProps<unknown>
+) => {
+  const list = useTreeData<Node>({
+    initialItems: rows,
+    getChildren: (item) => {
+      return item.childItems ?? [];
+    }
+  });
+  // @TODO internalise inside Tree ?
+  let {dragAndDropHooks} = useDragAndDrop({
+    getItems: (keys) => {
+      return [...keys].map((key) => {
+        return {
+          'text/plain': list.getItem(key)?.key ?? ''
+        } as DragItem;
+      });
+
+    },
+    renderDropIndicator() {
+      return <InsertionIndicator />;
+    },
+    onReorder(e) {
+      const k = e.keys.values().next().value;
+      const parent = list.getItem(e.target.key)?.parentKey ?? null;
+      if (!k) {
+        return;
+      }
+
+      // you shouldn't be able to drop a parent into a child
+      const dragNode = list.getItem(k);
+      const childTreeKeys = list.getDescendantKeys(dragNode);
+      if (childTreeKeys.includes(e.target.key)) {
+        return null;
+      }
+      // node list index...
+      let i = 0;
+      if (parent) {
+        const parentNode = list.getItem(parent);
+        i = (parentNode?.children ?? []).findIndex(
+          (c) => c.key === e.target.key
+        );
+      }
+      if (e.target.dropPosition === 'before') {
+        list.moveBefore(k, parent, i);
+      } else if (e.target.dropPosition === 'after') {
+        list.moveAfter(k, parent, i);
+      }
+    }
+  });
+  return (
+    <div
+      style={{
+        width: '330px',
+        padding: '0 15px',
+        resize: 'both',
+        height: '90vh',
+        overflow: 'auto'
+      }}>
+      <TreeView
+        disabledKeys={['reports-1AB']}
+        aria-label="test dynamic tree"
+        items={list.items}
+        onExpandedChange={action('onExpandedChange')}
+        onSelectionChange={action('onSelectionChange')}
+        {...args}
+        dragAndDropHooks={dragAndDropHooks}>
+        {(item: any) => {
+          if (!item.value) {
+            return;
+          }
+          return (
+            <TreeViewItem
+              childItems={item.children ?? []}
+              textValue={item.value.name}>
+              <Text>{item.value.name}</Text>
+              {item.value.icon}
+              <ActionGroup onAction={action('onActionGroup action')}>
+                <Item key="edit">
+                  <Edit />
+                  <Text>Edit</Text>
+                </Item>
+                <Item key="delete">
+                  <Delete />
+                  <Text>Delete</Text>
+                </Item>
+              </ActionGroup>
+            </TreeViewItem>
+          );
+        }}
+      </TreeView>
+    </div>
+  );
+};
+
+TreeExampleDynamic.story = {
+  ...TreeExampleStatic.story,
+  parameters: null
+};
 
 export const WithActions = {
   render: TreeExampleDynamic,
@@ -310,3 +421,19 @@ export const WithActionMenu = (args: SpectrumTreeViewProps<unknown>) => (
     </TreeView>
   </div>
 );
+
+
+function InsertionIndicator() {
+  return (
+    <div
+      role="option"
+      aria-selected="false"
+      className={classNames(dropIndicatorStyles, 'spectrum-DropIndicator', 'spectrum-DropIndicator--horizontal')}
+      style={{
+        width: '100%',
+        margin: '-5px 0',
+        height: 2,
+        outline: 'none'
+      }} />
+  );
+}

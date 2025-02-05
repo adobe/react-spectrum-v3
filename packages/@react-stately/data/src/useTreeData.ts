@@ -51,6 +51,7 @@ export interface TreeData<T extends object> {
    */
   getItem(key: Key): TreeNode<T> | undefined,
 
+  getDescendantKeys(node?: TreeNode<T>): Key[],
   /**
    * Inserts an item into a parent node as a child.
    * @param parentKey - The key of the parent item to insert into. `null` for the root.
@@ -250,10 +251,29 @@ export function useTreeData<T extends object>(options: TreeOptions<T>): TreeData
     }
   }
 
+  function getDescendantKeys(node?: TreeNode<T>): Key[] {
+    let descendantKeys: Key[] = [];
+    if (!node) {
+      return descendantKeys;
+    }
+    function recurse(currentNode: TreeNode<T>) {
+      if (currentNode.children) {
+        for (let child of currentNode.children) {
+          descendantKeys.push(child.key);
+          recurse(child);
+        }
+      }
+    }
+  
+    recurse(node);
+    return descendantKeys;
+  }
+  
   return {
     items,
     selectedKeys,
     setSelectedKeys,
+    getDescendantKeys,
     getItem(key: Key) {
       return nodeMap.get(key);
     },
