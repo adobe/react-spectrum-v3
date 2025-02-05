@@ -48,39 +48,41 @@ export const HelpCenter = (args: any) => (
           <Tab id="feedback">Feedback</Tab>
         </TabList>
         <TabPanel id="help">
-          <SearchField label="Search" styles={style({marginTop: 12, marginX: 12})} />
-          <Menu aria-label="Help" styles={style({marginTop: 12})}>
-            <MenuSection>
-              <MenuItem href="#">
-                <File />
-                <Text slot="label">Documentation</Text>
-              </MenuItem>
-            </MenuSection>
-            <MenuSection>
-              <MenuItem href="#">
-                <Education />
-                <Text slot="label">Learning</Text>
-              </MenuItem>
-              <MenuItem href="#">
-                <Users />
-                <Text slot="label">Community</Text>
-              </MenuItem>
-            </MenuSection>
-            <MenuSection>
-              <MenuItem href="#">
-                <User />
-                <Text slot="label">Customer Care</Text>
-              </MenuItem>
-              <MenuItem href="#">
-                <Cloud />
-                <Text slot="label">Status</Text>
-              </MenuItem>
-              <MenuItem href="#">
-                <Lightbulb />
-                <Text slot="label">Developer Connection</Text>
-              </MenuItem>
-            </MenuSection>
-          </Menu>
+          <div className={style({marginTop: 12, display: 'flex', flexDirection: 'column', gap: 12})}>
+            <SearchField label="Search" styles={style({marginX: 12})} />
+            <Menu aria-label="Help">
+              <MenuSection>
+                <MenuItem href="#">
+                  <File />
+                  <Text slot="label">Documentation</Text>
+                </MenuItem>
+              </MenuSection>
+              <MenuSection>
+                <MenuItem href="#">
+                  <Education />
+                  <Text slot="label">Learning</Text>
+                </MenuItem>
+                <MenuItem href="#">
+                  <Users />
+                  <Text slot="label">Community</Text>
+                </MenuItem>
+              </MenuSection>
+              <MenuSection>
+                <MenuItem href="#">
+                  <User />
+                  <Text slot="label">Customer Care</Text>
+                </MenuItem>
+                <MenuItem href="#">
+                  <Cloud />
+                  <Text slot="label">Status</Text>
+                </MenuItem>
+                <MenuItem href="#">
+                  <Lightbulb />
+                  <Text slot="label">Developer Connection</Text>
+                </MenuItem>
+              </MenuSection>
+            </Menu>
+          </div>
         </TabPanel>
         <TabPanel id="support" styles={style({margin: 12})}>
           <Card size="L" styles={style({width: 'full'})}>

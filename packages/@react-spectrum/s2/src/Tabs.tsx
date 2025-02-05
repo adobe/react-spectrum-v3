@@ -31,11 +31,11 @@ import {createContext, forwardRef, ReactNode, useCallback, useContext, useEffect
 import {focusRing, size, style} from '../style' with {type: 'macro'};
 import {getAllowedOverrides, StyleProps, StylesPropWithHeight, UnsafeStyles} from './style-utils' with {type: 'macro'};
 import {IconContext} from './Icon';
+import {inertValue, useEffectEvent, useId, useLabels, useLayoutEffect, useResizeObserver} from '@react-aria/utils';
 import {Picker, PickerItem} from './TabsPicker';
 import {Text, TextContext} from './Content';
 import {useControlledState} from '@react-stately/utils';
 import {useDOMRef} from '@react-spectrum/utils';
-import {useEffectEvent, useId, useLabels, useLayoutEffect, useResizeObserver} from '@react-aria/utils';
 import {useHasTabbableChild} from '@react-aria/focus';
 import {useLocale} from '@react-aria/i18n';
 import {useSpectrumContextProps} from './useSpectrumContextProps';
@@ -346,7 +346,8 @@ const tab = style({
     labelBehavior: {
       hide: size(6)
     }
-  }
+  },
+  disableTapHighlight: true
 }, getAllowedOverrides());
 
 const icon = style({
@@ -409,17 +410,12 @@ export function Tab(props: TabProps) {
 
 const tabPanel = style({
   ...focusRing(),
-  display: 'flex',
   marginTop: 4,
-  marginX: -4,
-  paddingX: 4,
   color: 'gray-800',
   flexGrow: 1,
-  flexShrink: 1,
   flexBasis: '[0%]',
   minHeight: 0,
-  minWidth: 0,
-  overflow: 'auto'
+  minWidth: 0
 }, getAllowedOverrides({height: true}));
 
 export function TabPanel(props: TabPanelProps) {
@@ -489,7 +485,7 @@ let HiddenTabs = function (props: {
   return (
     <div
       // @ts-ignore
-      inert="true"
+      inert={inertValue(true)}
       ref={listRef}
       className={style({
         display: '[inherit]',
@@ -613,7 +609,8 @@ let CollapsingTabs = ({collection, containerRef, ...props}: {collection: Collect
     }
   }, [collection.size, updateOverflow]);
 
-  let prevOrientation = useRef(orientation);
+  // start with null so that the first render won't have a flicker
+  let prevOrientation = useRef<Orientation | null>(null);
   useLayoutEffect(() => {
     if (collection.size > 0 && prevOrientation.current !== orientation) {
       updateOverflow();
