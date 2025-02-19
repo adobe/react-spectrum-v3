@@ -11,8 +11,9 @@
  */
 
 import {action} from '@storybook/addon-actions';
-import {ActionButton, Cell, Column, Content, Heading, IllustratedMessage, Link, Row, TableBody, TableHeader, TableView} from '../src';
+import {ActionButton, Cell, Column, Content, Heading, IllustratedMessage, Link, MenuItem, MenuSection, Row, TableBody, TableHeader, TableView, Text} from '../src';
 import {categorizeArgTypes} from './utils';
+import Filter from '../s2wf-icons/S2_Icon_Filter_20_N.svg';
 import FolderOpen from '../spectrum-illustrations/linear/FolderOpen';
 import type {Meta} from '@storybook/react';
 import {SortDescriptor} from 'react-aria-components';
@@ -151,8 +152,112 @@ const DynamicTable = (args: any) => (
   </TableView>
 );
 
+
+const DynamicTableWithCustomMenus = (args: any) => (
+  <TableView aria-label="Dynamic table" {...args} styles={style({width: 320, height: 208})}>
+    <TableHeader columns={columns}>
+      {(column) => (
+        <Column
+          width={150}
+          minWidth={150}
+          isRowHeader={column.isRowHeader}
+          menu={
+            <>
+              <MenuSection>
+                <MenuItem onAction={action('filter')}><Filter /><Text slot="label">Filter</Text></MenuItem>
+              </MenuSection>
+              <MenuSection>
+                <MenuItem onAction={action('hide column')}><Text slot="label">Hide column</Text></MenuItem>
+                <MenuItem onAction={action('manage columns')}><Text slot="label">Manage columns</Text></MenuItem>
+              </MenuSection>
+            </>
+          }>{column.name}</Column>
+      )}
+    </TableHeader>
+    <TableBody items={items}>
+      {item => (
+        <Row id={item.id} columns={columns}>
+          {(column) => {
+            return <Cell>{item[column.id]}</Cell>;
+          }}
+        </Row>
+      )}
+    </TableBody>
+  </TableView>
+);
+
+let sortItems = items;
+const DynamicSortableTableWithCustomMenus = (args: any) => {
+  let [items, setItems] = useState(sortItems);
+  let [sortDescriptor, setSortDescriptor] = useState({});
+  let onSortChange = (sortDescriptor: SortDescriptor) => {
+    let {direction = 'ascending', column = 'name'} = sortDescriptor;
+
+    let sorted = items.slice().sort((a, b) => {
+      let cmp = a[column] < b[column] ? -1 : 1;
+      if (direction === 'descending') {
+        cmp *= -1;
+      }
+      return cmp;
+    });
+
+    setItems(sorted);
+    setSortDescriptor(sortDescriptor);
+  };
+
+  return (
+    <TableView aria-label="Dynamic table" {...args} sortDescriptor={sortDescriptor} onSortChange={onSortChange} styles={style({width: 320, height: 208})}>
+      <TableHeader columns={columns}>
+        {(column) => (
+          <Column
+            allowsSorting
+            width={150}
+            minWidth={150}
+            isRowHeader={column.isRowHeader}
+            menu={
+              <>
+                <MenuSection>
+                  <MenuItem onAction={action('filter')}><Filter /><Text slot="label">Filter</Text></MenuItem>
+                </MenuSection>
+                <MenuSection>
+                  <MenuItem onAction={action('hide column')}><Text slot="label">Hide column</Text></MenuItem>
+                  <MenuItem onAction={action('manage columns')}><Text slot="label">Manage columns</Text></MenuItem>
+                </MenuSection>
+              </>
+            }>{column.name}</Column>
+        )}
+      </TableHeader>
+      <TableBody items={items}>
+        {item => (
+          <Row id={item.id} columns={columns}>
+            {(column) => {
+              return <Cell>{item[column.id]}</Cell>;
+            }}
+          </Row>
+        )}
+      </TableBody>
+    </TableView>
+  );
+};
+
 export const Dynamic = {
   render: DynamicTable,
+  args: {
+    ...Example.args,
+    disabledKeys: ['Foo 5']
+  }
+};
+
+export const DynamicCustomMenus = {
+  render: DynamicTableWithCustomMenus,
+  args: {
+    ...Example.args,
+    disabledKeys: ['Foo 5']
+  }
+};
+
+export const DynamicSortableCustomMenus = {
+  render: DynamicSortableTableWithCustomMenus,
   args: {
     ...Example.args,
     disabledKeys: ['Foo 5']
@@ -471,7 +576,11 @@ const SortableResizableTable = (args: any) => {
     <TableView aria-label="sortable table" {...args} sortDescriptor={isSortable ? sortDescriptor : null} onSortChange={isSortable ? onSortChange : null} styles={style({width: 384, height: 320})}>
       <TableHeader columns={args.columns}>
         {(column: any) => (
-          <Column isRowHeader={column.isRowHeader} allowsSorting={column.isSortable} allowsResizing={column.allowsResizing} align={column.align}>{column.name}</Column>
+          <Column
+            isRowHeader={column.isRowHeader}
+            allowsSorting={column.isSortable}
+            allowsResizing={column.allowsResizing}
+            align={column.align}>{column.name}</Column>
         )}
       </TableHeader>
       <TableBody items={items}>
