@@ -11,7 +11,7 @@
  */
 
 import {AriaTreeGridListProps} from '@react-aria/tree';
-import {ButtonContext, TreeItemContentProps, TreeItemContentRenderProps, TreeItemProps, TreeItemRenderProps, TreeRenderProps, UNSTABLE_Tree, UNSTABLE_TreeItem, UNSTABLE_TreeItemContent, useContextProps} from 'react-aria-components';
+import {ButtonContext, DragAndDropHooks, TreeItemContentProps, TreeItemContentRenderProps, TreeItemProps, TreeItemRenderProps, TreeRenderProps, UNSTABLE_Tree, UNSTABLE_TreeItem, UNSTABLE_TreeItemContent, useContextProps} from 'react-aria-components';
 import {Checkbox} from '@react-spectrum/checkbox';
 import ChevronLeftMedium from '@spectrum-icons/ui/ChevronLeftMedium';
 import ChevronRightMedium from '@spectrum-icons/ui/ChevronRightMedium';
@@ -23,7 +23,7 @@ import {style} from '@react-spectrum/style-macro-s1' with {type: 'macro'};
 import {useButton} from '@react-aria/button';
 import {useLocale} from '@react-aria/i18n';
 
-export interface SpectrumTreeViewProps<T> extends Omit<AriaTreeGridListProps<T>, 'children'>, StyleProps, SpectrumSelectionProps, Expandable {
+export interface SpectrumTreeViewProps<T> extends Omit<AriaTreeGridListProps<T>, 'children'>, StyleProps,  SpectrumSelectionProps, Expandable {
   /** Provides content to display when there are no items in the tree. */
   renderEmptyState?: () => JSX.Element,
   /**
@@ -34,7 +34,10 @@ export interface SpectrumTreeViewProps<T> extends Omit<AriaTreeGridListProps<T>,
   /**
    * The contents of the tree.
    */
-  children?: ReactNode | ((item: T) => ReactNode)
+  children?: ReactNode | ((item: T) => ReactNode),
+
+  /** The drag and drop hooks returned by `useDragAndDrop` used to enable drag and drop behavior for the ListBox. */
+  dragAndDropHooks?: DragAndDropHooks
 }
 
 export interface SpectrumTreeViewItemProps<T extends object = object> extends Omit<TreeItemProps, 'className' | 'style' | 'value' | 'onHoverStart' | 'onHoverEnd' | 'onHoverChange'> {
