@@ -10,6 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
+import {action} from '@storybook/addon-actions';
 import {Button, Tab, TabList, TabPanel, TabProps, Tabs, TabsProps} from 'react-aria-components';
 import React, {useState} from 'react';
 import {RouterProvider} from '@react-aria/utils';
@@ -23,7 +24,7 @@ export const TabsExample = () => {
 
   return (
     <RouterProvider navigate={setUrl}>
-      <Tabs selectedKey={url}>
+      <Tabs selectedKey={url} onSelectionChange={action('onSelectionChange')}>
         <TabList aria-label="History of Ancient Rome" style={{display: 'flex', gap: 8}}>
           <CustomTab id="/FoR" href="/FoR">Founding of Rome</CustomTab>
           <CustomTab id="/MaR" href="/MaR">Monarchy and Republic</CustomTab>
@@ -52,7 +53,7 @@ export const TabsRenderProps = () => {
       <Button onPress={() => setTabOrientation((current) => current === 'vertical' ? 'horizontal' : 'vertical')}>
         Change Orientation
       </Button>
-      <Tabs orientation={tabOrientation}>
+      <Tabs orientation={tabOrientation} onSelectionChange={action('onSelectionChange')}>
         {({orientation}) => (
           <div>
             <div style={{display: 'flex', flexDirection: orientation === 'vertical' ? 'row' : 'column', gap: 8}}>
@@ -86,12 +87,20 @@ const CustomTab = (props: TabProps) => {
       {...props}
       style={({isSelected}) => ({
         borderBottom: '2px solid ' + (isSelected ? 'slateblue' : 'transparent')
-      })} />
+      })}
+      onHoverChange={action('onHoverChange')}
+      onHoverEnd={action('onHoverEnd')}
+      onHoverStart={action('onHoverStart')}
+      onPress={action('onPress')}
+      onPressChange={action('onPressChange')}
+      onPressEnd={action('onPressEnd')}
+      onPressStart={action('onPressStart')}
+      onPressUp={action('onPressUp')} />
   );
 };
 
 export const NestedTabs = () => (
-  <Tabs>
+  <Tabs onSelectionChange={action('onSelectionChange')}>
     <TabList style={{display: 'flex', gap: 8}}>
       <CustomTab id="foo">Foo</CustomTab>
       <CustomTab id="bar">Bar</CustomTab>

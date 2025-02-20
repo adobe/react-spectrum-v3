@@ -162,6 +162,62 @@ describe('Tabs', () => {
     expect(onHoverEnd).not.toHaveBeenCalled();
   });
 
+  it('should support press', () => {
+    let onPress = jest.fn();
+    let onPressChange = jest.fn();
+    let onPressEnd = jest.fn();
+    let onPressStart = jest.fn();
+    let onPressUp = jest.fn();
+    let {getAllByRole} = renderTabs({}, {}, {className: ({isPressed}) => isPressed ? 'press' : '', onPress, onPressChange, onPressEnd, onPressStart, onPressUp});
+    let tab = getAllByRole('tab')[0];
+
+    expect(tab).not.toHaveAttribute('data-pressed');
+    expect(tab).not.toHaveClass('press');
+
+    fireEvent.mouseDown(tab);
+    expect(tab).toHaveAttribute('data-pressed', 'true');
+    expect(tab).toHaveClass('press');
+    expect(onPressStart).toHaveBeenCalledTimes(1);
+    expect(onPressChange).toHaveBeenCalledTimes(1);
+
+    fireEvent.mouseUp(tab);
+    expect(tab).not.toHaveAttribute('data-pressed');
+    expect(tab).not.toHaveClass('press');
+    expect(onPressUp).toHaveBeenCalledTimes(1);
+    expect(onPressEnd).toHaveBeenCalledTimes(1);
+    expect(onPressChange).toHaveBeenCalledTimes(2);
+    expect(onPress).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not show press state when item is not interactive', () => {
+    let onPress = jest.fn();
+    let onPressChange = jest.fn();
+    let onPressEnd = jest.fn();
+    let onPressStart = jest.fn();
+    let onPressUp = jest.fn();
+    let {getAllByRole} = renderTabs({disabledKeys: ['a', 'b', 'c']}, {}, {className: ({isPressed}) => isPressed ? 'press' : '', onPress, onPressChange, onPressEnd, onPressStart, onPressUp});
+    let tab = getAllByRole('tab')[0];
+
+    expect(tab).not.toHaveAttribute('data-pressed');
+    expect(tab).not.toHaveClass('press');
+    expect(onPress).not.toHaveBeenCalled();
+    expect(onPressStart).not.toHaveBeenCalled();
+    expect(onPressChange).not.toHaveBeenCalled();
+    expect(onPressUp).not.toHaveBeenCalled();
+    expect(onPressEnd).not.toHaveBeenCalled();
+
+    fireEvent.mouseDown(tab);
+    expect(tab).not.toHaveAttribute('data-pressed');
+    expect(tab).not.toHaveClass('press');
+
+    fireEvent.mouseUp(tab);
+    expect(onPress).not.toHaveBeenCalled();
+    expect(onPressStart).not.toHaveBeenCalled();
+    expect(onPressChange).not.toHaveBeenCalled();
+    expect(onPressUp).not.toHaveBeenCalled();
+    expect(onPressEnd).not.toHaveBeenCalled();
+  });
+
   it('should support focus ring', async () => {
     let {getAllByRole} = renderTabs({}, {}, {className: ({isFocusVisible}) => isFocusVisible ? 'focus' : ''});
     let tab = getAllByRole('tab')[0];
