@@ -144,6 +144,7 @@ The `DateField` component implements the keyboard editable input used in a `Date
   <summary style={{fontWeight: 'bold'}}><ChevronRight size="S" /> Show code</summary>
 
 ```tsx example export=true render=false
+import { createCalendar } from '@internationalized/date';
 import {useLocale} from '@react-aria/i18n';
 import {useDateFieldState} from '@react-stately/datepicker';
 import {useDateField, useDateSegment} from '@react-aria/datepicker';
