@@ -11,7 +11,7 @@
  */
 
 import {FocusableElement, RefObject} from '@react-types/shared';
-import React, {ReactNode, useRef} from 'react';
+import React, {ReactNode, useEffect, useRef} from 'react';
 import {selectData} from './useSelect';
 import {SelectState} from '@react-stately/select';
 import {useFormReset} from '@react-aria/utils';
@@ -113,6 +113,16 @@ export function HiddenSelect<T>(props: HiddenSelectProps<T>) {
   let {state, triggerRef, label, name, isDisabled} = props;
   let selectRef = useRef(null);
   let {containerProps, selectProps} = useHiddenSelect({...props, selectRef}, state, triggerRef);
+
+  // When the selected key changes, we dispatch a change event to mimic the behavior of a native select element.
+  let prevSelectedKey = useRef(state.selectedKey);
+  useEffect(() => {
+    if (prevSelectedKey.current === state.selectedKey || !selectRef.current) {
+      return;
+    }
+    selectRef.current.dispatchEvent(new Event('change', {bubbles: true}));
+    prevSelectedKey.current = state.selectedKey;
+  }, [state.selectedKey]);
 
   // If used in a <form>, use a hidden input so the value can be submitted to a server.
   // If the collection isn't too big, use a hidden <select> element for this so that browser
