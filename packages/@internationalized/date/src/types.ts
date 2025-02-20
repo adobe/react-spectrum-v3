@@ -10,7 +10,6 @@
  * governing permissions and limitations under the License.
  */
 
-import {CalendarDate} from './CalendarDate';
 
 /** An interface that is compatible with any object with date fields. */
 export interface AnyCalendarDate {
@@ -18,8 +17,7 @@ export interface AnyCalendarDate {
   readonly era: string,
   readonly year: number,
   readonly month: number,
-  readonly day: number,
-  copy(): this
+  readonly day: number
 }
 
 /** An interface that is compatible with any object with time fields. */
@@ -27,7 +25,10 @@ export interface AnyTime {
   readonly hour: number,
   readonly minute: number,
   readonly second: number,
-  readonly millisecond: number,
+  readonly millisecond: number
+}
+
+export interface Copyable {
   copy(): this
 }
 
@@ -44,7 +45,7 @@ export interface Calendar {
   identifier: string,
 
   /** Creates a CalendarDate in this calendar from the given Julian day number. */
-  fromJulianDay(jd: number): CalendarDate,
+  fromJulianDay(jd: number): AnyCalendarDate,
   /** Converts a date in this calendar to a Julian day number. */
   toJulianDay(date: AnyCalendarDate): number,
 

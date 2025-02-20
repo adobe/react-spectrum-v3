@@ -14,7 +14,6 @@
 // Original licensing can be found in the NOTICE file in the root directory of this source tree.
 
 import {AnyCalendarDate, Calendar} from '../types';
-import {CalendarDate} from '../CalendarDate';
 import {mod, Mutable} from '../utils';
 
 const EPOCH = 1721426; // 001/01/03 Julian C.E.
@@ -70,7 +69,7 @@ const daysInMonth = {
 export class GregorianCalendar implements Calendar {
   identifier = 'gregory';
 
-  fromJulianDay(jd: number): CalendarDate {
+  fromJulianDay(jd: number): AnyCalendarDate {
     let jd0 = jd;
     let depoch = jd0 - EPOCH;
     let quadricent = Math.floor(depoch / 146097);
@@ -93,7 +92,13 @@ export class GregorianCalendar implements Calendar {
     let month = Math.floor(((yearDay + leapAdj) * 12 + 373) / 367);
     let day = jd0 - gregorianToJulianDay(era, year, month, 1) + 1;
 
-    return new CalendarDate(era, year, month, day);
+    return {
+      calendar: this,
+      era,
+      year,
+      month,
+      day
+    };
   }
 
   toJulianDay(date: AnyCalendarDate): number {

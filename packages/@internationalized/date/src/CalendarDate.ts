@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {add, addTime, addZoned, constrain, constrainTime, cycleDate, cycleTime, cycleZoned, set, setTime, setZoned, subtract, subtractTime, subtractZoned} from './manipulation';
+import {add, addTime, addZoned, constrain, constrainTime, cycleDate, cycleTime, cycleZoned, normalize, set, setTime, setZoned, subtract, subtractTime, subtractZoned} from './manipulation';
 import {AnyCalendarDate, AnyTime, Calendar, CycleOptions, CycleTimeOptions, DateDuration, DateField, DateFields, DateTimeDuration, Disambiguation, TimeDuration, TimeField, TimeFields} from './types';
 import {compareDate, compareTime} from './queries';
 import {dateTimeToString, dateToString, timeToString, zonedDateTimeToString} from './string';
@@ -65,12 +65,22 @@ export class CalendarDate {
   constructor(calendar: Calendar, era: string, year: number, month: number, day: number);
   constructor(...args: any[]) {
     let [calendar, era, year, month, day] = shiftArgs(args);
-    this.calendar = calendar;
-    this.era = era;
-    this.year = year;
-    this.month = month;
-    this.day = day;
-
+    const normalized = normalize({
+      calendar,
+      era,
+      year,
+      month,
+      day,
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0
+    });
+    this.calendar = normalized.calendar;
+    this.era = normalized.era;
+    this.year = normalized.year;
+    this.month = normalized.month;
+    this.day = normalized.day;
     constrain(this);
   }
 
@@ -222,16 +232,32 @@ export class CalendarDateTime {
   constructor(calendar: Calendar, era: string, year: number, month: number, day: number, hour?: number, minute?: number, second?: number, millisecond?: number);
   constructor(...args: any[]) {
     let [calendar, era, year, month, day] = shiftArgs(args);
-    this.calendar = calendar;
-    this.era = era;
-    this.year = year;
-    this.month = month;
-    this.day = day;
-    this.hour = args.shift() || 0;
-    this.minute = args.shift() || 0;
-    this.second = args.shift() || 0;
-    this.millisecond = args.shift() || 0;
-
+    let hour = args.shift() || 0;
+    let minute = args.shift() || 0;
+    let second = args.shift() || 0;
+    let millisecond = args.shift() || 0;
+  
+    const normalized = normalize({
+      calendar,
+      era,
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      second,
+      millisecond
+    });
+  
+    this.calendar = normalized.calendar;
+    this.era = normalized.era;
+    this.year = normalized.year;
+    this.month = normalized.month;
+    this.day = normalized.day;
+    this.hour = normalized.hour;
+    this.minute = normalized.minute;
+    this.second = normalized.second;
+    this.millisecond = normalized.millisecond;
     constrain(this);
   }
 
@@ -336,18 +362,34 @@ export class ZonedDateTime {
     let [calendar, era, year, month, day] = shiftArgs(args);
     let timeZone = args.shift();
     let offset = args.shift();
-    this.calendar = calendar;
-    this.era = era;
-    this.year = year;
-    this.month = month;
-    this.day = day;
+    let hour = args.shift() || 0;
+    let minute = args.shift() || 0;
+    let second = args.shift() || 0;
+    let millisecond = args.shift() || 0;
+  
+    const normalized = normalize({
+      calendar,
+      era,
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      second,
+      millisecond
+    });
+  
+    this.calendar = normalized.calendar;
+    this.era = normalized.era;
+    this.year = normalized.year;
+    this.month = normalized.month;
+    this.day = normalized.day;
     this.timeZone = timeZone;
     this.offset = offset;
-    this.hour = args.shift() || 0;
-    this.minute = args.shift() || 0;
-    this.second = args.shift() || 0;
-    this.millisecond = args.shift() || 0;
-
+    this.hour = normalized.hour;
+    this.minute = normalized.minute;
+    this.second = normalized.second;
+    this.millisecond = normalized.millisecond;
     constrain(this);
   }
 

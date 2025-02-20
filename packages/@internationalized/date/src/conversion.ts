@@ -13,14 +13,14 @@
 // Portions of the code in this file are based on code from the TC39 Temporal proposal.
 // Original licensing can be found in the NOTICE file in the root directory of this source tree.
 
-import {AnyCalendarDate, AnyDateTime, AnyTime, Calendar, DateFields, Disambiguation, TimeFields} from './types';
+import {AnyCalendarDate, AnyDateTime, AnyTime, Calendar, Copyable, DateFields, Disambiguation, TimeFields} from './types';
 import {CalendarDate, CalendarDateTime, Time, ZonedDateTime} from './CalendarDate';
 import {constrain} from './manipulation';
 import {getExtendedYear, GregorianCalendar} from './calendars/GregorianCalendar';
 import {getLocalTimeZone} from './queries';
 import {Mutable} from './utils';
 
-export function epochFromDate(date: AnyDateTime) {
+export function epochFromDate(date: AnyDateTime & Copyable) {
   date = toCalendar(date, new GregorianCalendar());
   let year = getExtendedYear(date.era, date.year);
   return epochFromParts(year, date.month, date.day, date.hour, date.minute, date.second, date.millisecond);
@@ -259,7 +259,7 @@ export function toTime(dateTime: CalendarDateTime | ZonedDateTime): Time {
 }
 
 /** Converts a date from one calendar system to another. */
-export function toCalendar<T extends AnyCalendarDate>(date: T, calendar: Calendar): T {
+export function toCalendar<T extends AnyCalendarDate & Copyable>(date: T, calendar: Calendar): T {
   if (date.calendar.identifier === calendar.identifier) {
     return date;
   }

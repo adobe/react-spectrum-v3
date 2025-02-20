@@ -14,7 +14,6 @@
 // Original licensing can be found in the NOTICE file in the root directory of this source tree.
 
 import {AnyCalendarDate, Calendar} from '../types';
-import {CalendarDate} from '../CalendarDate';
 import {mod} from '../utils';
 
 const PERSIAN_EPOCH = 1948320;
@@ -44,7 +43,7 @@ const MONTH_START = [
 export class PersianCalendar implements Calendar {
   identifier = 'persian';
 
-  fromJulianDay(jd: number): CalendarDate {
+  fromJulianDay(jd: number): AnyCalendarDate {
     let daysSinceEpoch = jd - PERSIAN_EPOCH;
     let year = 1 + Math.floor((33 * daysSinceEpoch + 3) / 12053);
     let farvardin1 = 365 * (year - 1) + Math.floor((8 * year + 21) / 33);
@@ -53,7 +52,14 @@ export class PersianCalendar implements Calendar {
       ? Math.floor(dayOfYear / 31)
       : Math.floor((dayOfYear - 6) / 30);
     let day = dayOfYear - MONTH_START[month] + 1;
-    return new CalendarDate(this, year, month + 1, day);
+    
+    return {
+      calendar: this,
+      era: 'AP',  // Anno Persico/Persian Era
+      year,
+      month: month + 1,
+      day
+    };
   }
 
   toJulianDay(date: AnyCalendarDate): number {

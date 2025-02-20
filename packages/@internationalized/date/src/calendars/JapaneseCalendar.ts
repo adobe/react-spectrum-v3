@@ -57,11 +57,13 @@ function toGregorian(date: AnyCalendarDate) {
     throw new Error('Unknown era: ' + date.era);
   }
 
-  return new CalendarDate(
-    date.year + eraAddend,
-    date.month,
-    date.day
-  );
+  return {
+    era: 'AD',
+    year: date.year + eraAddend,
+    month: date.month,
+    day: date.day,
+    calendar: new GregorianCalendar()
+  };
 }
 
 /**
