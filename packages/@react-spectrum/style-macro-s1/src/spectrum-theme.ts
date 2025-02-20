@@ -252,7 +252,14 @@ const color = {
   LinkText: 'LinkText'
 };
 
-export function baseColor(base: keyof typeof color) {
+interface ColorStates {
+  default: keyof typeof color,
+  isHovered: keyof typeof color,
+  isFocusVisible: keyof typeof color,
+  isPressed: keyof typeof color
+}
+
+export function baseColor(base: keyof typeof color): ColorStates {
   let keys = Object.keys(color) as (keyof typeof color)[];
   let index = keys.indexOf(base);
   if (index === -1) {

@@ -362,7 +362,7 @@ export class TableLayout<T, O extends TableLayoutProps = TableLayoutProps> exten
     };
   }
 
-  getVisibleLayoutInfos(rect: Rect) {
+  getVisibleLayoutInfos(rect: Rect): LayoutInfo[] {
     // Adjust rect to keep number of visible rows consistent.
     // (only if height > 1 for getDropTargetFromPoint)
     if (rect.height > 1) {

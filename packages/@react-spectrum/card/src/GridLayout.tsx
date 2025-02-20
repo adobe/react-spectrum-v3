@@ -116,11 +116,11 @@ export class GridLayout<T> extends BaseLayout<T> {
     this.horizontalSpacing = 0;
   }
 
-  get layoutType() {
+  get layoutType(): string {
     return 'grid';
   }
 
-  getIndexAtPoint(x, y, allowInsertingAtEnd = false) {
+  getIndexAtPoint(x: number, y: number, allowInsertingAtEnd = false): number {
     let itemHeight = this.itemSize.height + this.minSpace.height;
     let itemWidth = this.itemSize.width + this.horizontalSpacing;
     return Math.max(0,
@@ -131,7 +131,7 @@ export class GridLayout<T> extends BaseLayout<T> {
     );
   }
 
-  buildCollection() {
+  buildCollection(): void {
     let visibleWidth = this.virtualizer.visibleRect.width;
     let visibleHeight = this.virtualizer.visibleRect.height;
     let horizontalItemPadding = this.cardOrientation === 'horizontal' ? this.itemPadding : 0;
@@ -210,7 +210,7 @@ export class GridLayout<T> extends BaseLayout<T> {
   // Since the collection doesn't represent the visual layout, need to calculate what row and column the current key is in,
   // then return the key that occupies the row + column below. This can be done by figuring out how many cards exist per column then dividing the
   // collection contents by that number (which will give us the row distribution)
-  getKeyBelow(key: Key) {
+  getKeyBelow(key: Key): Node<T> | undefined | null {
     // Expected key is the currently focused cell so we need the parent row key
     let parentRowKey = this.collection.getItem(key).parentKey;
     let indexRowBelow;
@@ -225,7 +225,7 @@ export class GridLayout<T> extends BaseLayout<T> {
     return row ? getFirstItem(getChildNodes(row, this.collection))?.key : null;
   }
 
-  getKeyAbove(key: Key) {
+  getKeyAbove(key: Key): Node<T> | undefined | null {
     // Expected key is the currently focused cell so we need the parent row key
     let parentRowKey = this.collection.getItem(key).parentKey;
     let indexRowAbove;

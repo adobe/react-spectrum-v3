@@ -14,7 +14,7 @@ import {RefObject} from '@react-types/shared';
 import {useLayoutEffect} from '@react-aria/utils';
 import {useState} from 'react';
 
-export function useHasChild(query: string, ref: RefObject<HTMLElement | null>) {
+export function useHasChild(query: string, ref: RefObject<HTMLElement | null>): boolean {
   let [hasChild, setHasChild] = useState(true);
   useLayoutEffect(() => {
     setHasChild(!!(ref.current && ref.current.querySelector(query)));

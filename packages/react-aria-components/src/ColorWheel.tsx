@@ -2,6 +2,7 @@ import {AriaColorWheelOptions, useColorWheel} from '@react-aria/color';
 import {ColorWheelContext} from './RSPContexts';
 import {ColorWheelState, useColorWheelState} from '@react-stately/color';
 import {ContextValue, Provider, RenderProps, SlotProps, StyleRenderProps, useContextProps, useRenderProps} from './utils';
+import {DOMProps} from '@react-types/shared';
 import {filterDOMProps} from '@react-aria/utils';
 import {InternalColorThumbContext} from './ColorThumb';
 import React, {createContext, ForwardedRef, forwardRef, HTMLAttributes, useContext, useRef} from 'react';
@@ -66,7 +67,7 @@ export const ColorWheel = forwardRef(function ColorWheel(props: ColorWheelProps,
 });
 
 export interface ColorWheelTrackRenderProps extends ColorWheelRenderProps {}
-export interface ColorWheelTrackProps extends StyleRenderProps<ColorWheelTrackRenderProps> {}
+export interface ColorWheelTrackProps extends StyleRenderProps<ColorWheelTrackRenderProps>, DOMProps {}
 interface ColorWheelTrackContextValue extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'className' | 'style'>, ColorWheelTrackProps {}
 
 export const ColorWheelTrackContext = createContext<ContextValue<ColorWheelTrackContextValue, HTMLDivElement>>(null);
@@ -86,10 +87,11 @@ export const ColorWheelTrack = forwardRef(function ColorWheelTrack(props: ColorW
       state
     }
   });
+  let DOMProps = filterDOMProps(props);
 
   return (
     <div
-      {...props}
+      {...DOMProps}
       {...renderProps}
       ref={ref}
       data-disabled={state.isDisabled || undefined} />

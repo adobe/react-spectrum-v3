@@ -10,11 +10,11 @@
  * governing permissions and limitations under the License.
  */
 
-import React, {useRef} from 'react';
+import React, {ReactElement, useRef} from 'react';
 import {useTableContext} from './TableViewBase';
 import {useVisuallyHidden} from '@react-aria/visually-hidden';
 
-export function RootDropIndicator() {
+export function RootDropIndicator(): ReactElement | null {
   let {dropState, dragAndDropHooks, state} = useTableContext();
   let ref = useRef<HTMLDivElement | null>(null);
   let {dropIndicatorProps} = dragAndDropHooks!.useDropIndicator!({

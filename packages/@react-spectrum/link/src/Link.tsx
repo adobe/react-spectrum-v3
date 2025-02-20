@@ -13,7 +13,7 @@
 import {classNames, getWrappedElement, useSlotProps, useStyleProps} from '@react-spectrum/utils';
 import {FocusRing} from '@react-aria/focus';
 import {mergeProps, mergeRefs} from '@react-aria/utils';
-import React, {ForwardedRef, JSX, MutableRefObject, useRef} from 'react';
+import React, {ForwardedRef, JSX, MutableRefObject, ReactElement, useRef} from 'react';
 import {SpectrumLinkProps} from '@react-types/link';
 import styles from '@adobe/spectrum-css-temp/components/link/vars.css';
 import {useHover} from '@react-aria/interactions';
@@ -25,7 +25,7 @@ let isOldReact = parseInt(React.version, 10) <= 18;
  * Links allow users to navigate to a different location.
  * They can be presented inline inside a paragraph or as standalone text.
  */
-export function Link(props: SpectrumLinkProps) {
+export function Link(props: SpectrumLinkProps): ReactElement {
   props = useProviderProps(props);
   props = useSlotProps(props, 'link');
   let {

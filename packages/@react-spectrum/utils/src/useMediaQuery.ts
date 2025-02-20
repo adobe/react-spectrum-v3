@@ -13,7 +13,7 @@
 import {useEffect, useState} from 'react';
 import {useIsSSR} from '@react-aria/ssr';
 
-export function useMediaQuery(query: string) {
+export function useMediaQuery(query: string): boolean {
   let supportsMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
   let [matches, setMatches] = useState(() =>
     supportsMatchMedia

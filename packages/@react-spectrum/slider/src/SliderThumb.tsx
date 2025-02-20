@@ -14,7 +14,7 @@ import {AriaSliderThumbProps} from '@react-types/slider';
 import {classNames} from '@react-spectrum/utils';
 import {FocusRing} from '@react-aria/focus';
 import {mergeProps} from '@react-aria/utils';
-import React, {useRef} from 'react';
+import React, {ReactElement, useRef} from 'react';
 import {RefObject} from '@react-types/shared';
 import {SliderState} from '@react-stately/slider';
 import styles from '@adobe/spectrum-css-temp/components/slider/vars.css';
@@ -28,7 +28,7 @@ interface SliderThumbProps extends AriaSliderThumbProps {
   state: SliderState
 }
 
-export function SliderThumb(props: SliderThumbProps) {
+export function SliderThumb(props: SliderThumbProps): ReactElement {
   let {
     inputRef,
     state

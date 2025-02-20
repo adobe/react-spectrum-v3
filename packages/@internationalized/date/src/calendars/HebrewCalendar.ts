@@ -159,7 +159,7 @@ export class HebrewCalendar implements Calendar {
     return new CalendarDate(this, year, month, day);
   }
 
-  toJulianDay(date: AnyCalendarDate) {
+  toJulianDay(date: AnyCalendarDate): number {
     let jd = startOfYear(date.year);
     for (let month = 1; month < date.month; month++) {
       jd += getDaysInMonth(date.year, month);
@@ -185,11 +185,11 @@ export class HebrewCalendar implements Calendar {
     return 9999;
   }
 
-  getEras() {
+  getEras(): string[] {
     return ['AM'];
   }
 
-  balanceYearMonth(date: Mutable<AnyCalendarDate>, previousDate: AnyCalendarDate) {
+  balanceYearMonth(date: Mutable<AnyCalendarDate>, previousDate: AnyCalendarDate): void {
     // Keep date in the same month when switching between leap years and non leap years
     if (previousDate.year !== date.year) {
       if (isLeapYear(previousDate.year) && !isLeapYear(date.year) && previousDate.month > 6) {

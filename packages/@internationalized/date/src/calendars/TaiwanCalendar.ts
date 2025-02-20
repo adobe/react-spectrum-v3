@@ -50,15 +50,15 @@ export class TaiwanCalendar extends GregorianCalendar {
     return new CalendarDate(this, era, year, date.month, date.day);
   }
 
-  toJulianDay(date: AnyCalendarDate) {
+  toJulianDay(date: AnyCalendarDate): number {
     return super.toJulianDay(toGregorian(date));
   }
 
-  getEras() {
+  getEras(): string[] {
     return ['before_minguo', 'minguo'];
   }
 
-  balanceDate(date: Mutable<AnyCalendarDate>) {
+  balanceDate(date: Mutable<AnyCalendarDate>): void {
     let [era, year] = gregorianToTaiwan(gregorianYear(date));
     date.era = era;
     date.year = year;

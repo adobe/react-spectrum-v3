@@ -86,7 +86,7 @@ export function getRangeValidationResult(
   maxValue: DateValue | null | undefined,
   isDateUnavailable: ((v: DateValue) => boolean) | undefined,
   options: FormatterOptions
-) {
+): ValidationResult {
   let startValidation = getValidationResult(
     value?.start ?? null,
     minValue,

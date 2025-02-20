@@ -135,19 +135,19 @@ export class Rect {
     return null;
   }
 
-  equals(rect: Rect) {
+  equals(rect: Rect): boolean {
     return rect.x === this.x
         && rect.y === this.y
         && rect.width === this.width
         && rect.height === this.height;
   }
 
-  pointEquals(point: Point | Rect) {
+  pointEquals(point: Point | Rect): boolean {
     return this.x === point.x
         && this.y === point.y;
   }
 
-  sizeEquals(size: Size | Rect) {
+  sizeEquals(size: Size | Rect): boolean {
     return this.width === size.width
         && this.height === size.height;
   }
@@ -155,7 +155,7 @@ export class Rect {
   /**
    * Returns the union of this Rect and another.
    */
-  union(other: Rect) {
+  union(other: Rect): Rect {
     let x = Math.min(this.x, other.x);
     let y = Math.min(this.y, other.y);
     let width = Math.max(this.maxX, other.maxX) - x;

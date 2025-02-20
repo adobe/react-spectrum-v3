@@ -15,7 +15,7 @@ import {LayoutInfo} from '@react-stately/virtualizer';
 import {layoutInfoToStyle, useVirtualizerItem, VirtualizerItemOptions} from '@react-aria/virtualizer';
 import {ListBoxContext} from './ListBoxContext';
 import {Node} from '@react-types/shared';
-import React, {Fragment, ReactNode, useContext, useRef} from 'react';
+import React, {Fragment, ReactElement, ReactNode, useContext, useRef} from 'react';
 import styles from '@adobe/spectrum-css-temp/components/menu/vars.css';
 import {useListBoxSection} from '@react-aria/listbox';
 import {useLocale} from '@react-aria/i18n';
@@ -28,7 +28,7 @@ interface ListBoxSectionProps<T> extends Omit<VirtualizerItemOptions, 'ref' | 'l
 }
 
 /** @private */
-export function ListBoxSection<T>(props: ListBoxSectionProps<T>) {
+export function ListBoxSection<T>(props: ListBoxSectionProps<T>): ReactElement {
   let {children, layoutInfo, headerLayoutInfo, virtualizer, item} = props;
   let {headingProps, groupProps} = useListBoxSection({
     heading: item.rendered,

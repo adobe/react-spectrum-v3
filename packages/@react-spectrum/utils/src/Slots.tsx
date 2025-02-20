@@ -11,7 +11,7 @@
  */
 
 import {mergeProps} from '@react-aria/utils';
-import React, {useContext, useMemo} from 'react';
+import React, {ReactElement, ReactNode, useContext, useMemo} from 'react';
 
 interface SlotProps {
   slot?: string
@@ -27,16 +27,16 @@ export function useSlotProps<T>(props: T & {id?: string}, defaultSlot?: string):
   return mergeProps(props, mergeProps(slotProps, {id: props.id}));
 }
 
-export function cssModuleToSlots(cssModule) {
+export function cssModuleToSlots(cssModule: {[cssmodule: string]: string}): {[slot: string]: {UNSAFE_className: string}} {
   return Object.keys(cssModule).reduce((acc, slot) => {
     acc[slot] = {UNSAFE_className: cssModule[slot]};
     return acc;
   }, {});
 }
 
-export function SlotProvider(props) {
+export function SlotProvider(props: {slots?: {[slot: string]: object}, children?: ReactNode}): ReactElement {
   const emptyObj = useMemo(() => ({}), []);
-   
+
   let parentSlots = useContext(SlotContext) || emptyObj;
   let {slots = emptyObj, children} = props;
 
@@ -56,7 +56,7 @@ export function SlotProvider(props) {
   );
 }
 
-export function ClearSlots(props) {
+export function ClearSlots(props: {children?: ReactNode}): ReactElement {
   let {children, ...otherProps} = props;
 
   const emptyObj = useMemo(() => ({}), []);

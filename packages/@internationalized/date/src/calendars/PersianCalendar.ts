@@ -80,7 +80,7 @@ export class PersianCalendar implements Calendar {
     return isLeapYear ? 30 : 29;
   }
 
-  getEras() {
+  getEras(): string[] {
     return ['AP'];
   }
 

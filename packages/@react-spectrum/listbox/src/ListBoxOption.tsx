@@ -18,7 +18,7 @@ import {isFocusVisible, useHover} from '@react-aria/interactions';
 import {ListBoxContext} from './ListBoxContext';
 import {mergeProps} from '@react-aria/utils';
 import {Node} from '@react-types/shared';
-import React, {useContext, useRef} from 'react';
+import React, {ReactElement, useContext, useRef} from 'react';
 import styles from '@adobe/spectrum-css-temp/components/menu/vars.css';
 import {Text} from '@react-spectrum/text';
 import {useOption} from '@react-aria/listbox';
@@ -28,7 +28,7 @@ interface OptionProps<T> {
 }
 
 /** @private */
-export function ListBoxOption<T>(props: OptionProps<T>) {
+export function ListBoxOption<T>(props: OptionProps<T>): ReactElement {
   let {item} = props;
 
   let {

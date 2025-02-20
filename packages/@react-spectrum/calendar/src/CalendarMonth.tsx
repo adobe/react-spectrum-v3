@@ -16,7 +16,7 @@ import {CalendarPropsBase} from '@react-types/calendar';
 import {CalendarState, RangeCalendarState} from '@react-stately/calendar';
 import {classNames} from '@react-spectrum/utils';
 import {DOMProps, StyleProps} from '@react-types/shared';
-import React from 'react';
+import React, {ReactElement} from 'react';
 import styles from '@adobe/spectrum-css-temp/components/calendar/vars.css';
 import {useCalendarGrid} from '@react-aria/calendar';
 import {useLocale} from '@react-aria/i18n';
@@ -26,7 +26,7 @@ interface CalendarMonthProps extends CalendarPropsBase, DOMProps, StyleProps {
   startDate: CalendarDate
 }
 
-export function CalendarMonth(props: CalendarMonthProps) {
+export function CalendarMonth(props: CalendarMonthProps): ReactElement {
   let {
     state,
     startDate,

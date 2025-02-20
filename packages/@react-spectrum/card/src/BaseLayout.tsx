@@ -54,7 +54,7 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
     this.margin = options.margin || 24;
   }
 
-  update(invalidationContext: InvalidationContext<CardViewLayoutOptions>) {
+  update(invalidationContext: InvalidationContext<CardViewLayoutOptions>): void {
     this.collection = this.virtualizer.collection as GridCollection<T>;
     this.isLoading = invalidationContext.layoutOptions?.isLoading || false;
     this.direction = invalidationContext.layoutOptions?.direction || 'ltr';
@@ -81,17 +81,17 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  buildCollection(invalidationContext?: InvalidationContext) {}
+  buildCollection(invalidationContext?: InvalidationContext): void {}
 
-  getContentSize() {
+  getContentSize(): number {
     return this.contentSize;
   }
 
-  getLayoutInfo(key: Key) {
+  getLayoutInfo(key: Key): LayoutInfo {
     return this.layoutInfos.get(key)!;
   }
 
-  getVisibleLayoutInfos(rect: Rect, excludePersistedKeys = false) {
+  getVisibleLayoutInfos(rect: Rect, excludePersistedKeys = false): LayoutInfo[] {
     let res: LayoutInfo[] = [];
 
     for (let layoutInfo of this.layoutInfos.values()) {
@@ -103,7 +103,7 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
     return res;
   }
 
-  isVisible(layoutInfo: LayoutInfo, rect: Rect, excludePersistedKeys: boolean) {
+  isVisible(layoutInfo: LayoutInfo, rect: Rect, excludePersistedKeys: boolean): boolean {
     if (layoutInfo.rect.intersects(rect)) {
       return true;
     }
@@ -115,7 +115,7 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
     return false;
   }
 
-  _findClosestLayoutInfo(target: Rect, rect: Rect) {
+  _findClosestLayoutInfo(target: Rect, rect: Rect): LayoutInfo | null {
     let layoutInfos = this.getVisibleLayoutInfos(rect, true);
     let best = null;
     let bestDistance = Infinity;
@@ -139,12 +139,12 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
     return best;
   }
 
-  _findClosest(target: Rect, rect: Rect) {
+  _findClosest(target: Rect, rect: Rect): LayoutInfo | null {
     let best = this._findClosestLayoutInfo(target, rect);
     return best || null;
   }
 
-  getKeyBelow(key: Key) {
+  getKeyBelow(key: Key): Node<T> | undefined {
     // Expected key is the currently focused cell so we need the parent row key
     let parentRowKey = this.collection.getItem(key).parentKey;
     let layoutInfo = this.getLayoutInfo(parentRowKey);
@@ -153,7 +153,7 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
     return getFirstItem(getChildNodes(closestRow, this.collection))?.key;
   }
 
-  getKeyAbove(key: Key) {
+  getKeyAbove(key: Key): Node<T> | undefined {
     // Expected key is the currently focused cell so we need the parent row key
     let parentRowKey = this.collection.getItem(key).parentKey;
     let layoutInfo = this.getLayoutInfo(parentRowKey);
@@ -162,7 +162,7 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
     return getFirstItem(getChildNodes(closestRow, this.collection))?.key;
   }
 
-  getKeyRightOf(key: Key) {
+  getKeyRightOf(key: Key): Node<T> | undefined {
     // Expected key is the currently focused cell so we need the parent row key
     let parentRowKey = this.collection.getItem(key).parentKey;
     key = this.direction === 'rtl' ?  this.collection.getKeyBefore(parentRowKey) : this.collection.getKeyAfter(parentRowKey);
@@ -177,7 +177,7 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
     }
   }
 
-  getKeyLeftOf(key: Key) {
+  getKeyLeftOf(key: Key): Node<T> | undefined {
     // Expected key is the currently focused cell so we need the parent row key
     let parentRowKey = this.collection.getItem(key).parentKey;
     key = this.direction === 'rtl' ?  this.collection.getKeyAfter(parentRowKey) : this.collection.getKeyBefore(parentRowKey);
@@ -192,19 +192,19 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
     }
   }
 
-  getFirstKey() {
+  getFirstKey(): Node<T> | undefined {
     let firstRow = this.collection.getItem(this.collection.getFirstKey());
     return getFirstItem(getChildNodes(firstRow, this.collection))?.key;
   }
 
-  getLastKey() {
+  getLastKey(): Node<T> | undefined {
     let lastRow = this.collection.getItem(this.collection.getLastKey());
     return getFirstItem(getChildNodes(lastRow, this.collection))?.key;
   }
 
   // TODO: pretty unwieldy because it needs to bounce back and forth between the parent key and the child key
   // Perhaps have layoutInfo store childKey as well so we don't need to do this? Or maybe make the layoutInfos be the cells instead of the rows?
-  getKeyPageAbove(key: Key) {
+  getKeyPageAbove(key: Key): Node<T> | undefined {
     // Expected key is the currently focused cell so we need the parent row key
     let parentRowKey = this.collection.getItem(key).parentKey;
     let layoutInfo = this.getLayoutInfo(parentRowKey);
@@ -235,7 +235,7 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
 
   // TODO: pretty unwieldy because it needs to bounce back and forth between the parent key and the child key
   // Perhaps have layoutInfo store childKey as well so we don't need to do this?
-  getKeyPageBelow(key: Key) {
+  getKeyPageBelow(key: Key): Node<T> | undefined {
     // Expected key is the currently focused cell so we need the parent row key
     let parentRowKey = this.collection.getItem(key).parentKey;
     let layoutInfo = this.getLayoutInfo(parentRowKey);
@@ -262,7 +262,7 @@ export class BaseLayout<T> extends Layout<Node<T>, CardViewLayoutOptions> implem
     return this.getLastKey();
   }
 
-  getKeyForSearch(search: string, fromKey?: Key) {
+  getKeyForSearch(search: string, fromKey?: Key): Node<T> | undefined | null {
     if (!this.collator) {
       return null;
     }

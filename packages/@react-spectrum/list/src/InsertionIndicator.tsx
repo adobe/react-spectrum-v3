@@ -2,7 +2,7 @@ import {classNames} from '@react-spectrum/utils';
 import {ItemDropTarget} from '@react-types/shared';
 import listStyles from './styles.css';
 import {ListViewContext} from './ListView';
-import React, {useContext, useRef} from 'react';
+import React, {ReactElement, useContext, useRef} from 'react';
 import {useVisuallyHidden} from '@react-aria/visually-hidden';
 
 interface InsertionIndicatorProps {
@@ -10,7 +10,7 @@ interface InsertionIndicatorProps {
   isPresentationOnly?: boolean
 }
 
-export default function InsertionIndicator(props: InsertionIndicatorProps) {
+export default function InsertionIndicator(props: InsertionIndicatorProps): ReactElement | null {
   let {dropState, dragAndDropHooks} = useContext(ListViewContext)!;
   const {target, isPresentationOnly} = props;
 

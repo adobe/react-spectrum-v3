@@ -155,17 +155,17 @@ export class Time {
   }
 
   /** Returns a new `Time` with the given duration added to it. */
-  add(duration: TimeDuration) {
+  add(duration: TimeDuration): Time {
     return addTime(this, duration);
   }
 
   /** Returns a new `Time` with the given duration subtracted from it. */
-  subtract(duration: TimeDuration) {
+  subtract(duration: TimeDuration): Time {
     return subtractTime(this, duration);
   }
 
   /** Returns a new `Time` with the given fields set to the provided values. Other fields will be constrained accordingly. */
-  set(fields: TimeFields) {
+  set(fields: TimeFields): Time {
     return setTime(this, fields);
   }
 
@@ -173,17 +173,17 @@ export class Time {
    * Returns a new `Time` with the given field adjusted by a specified amount.
    * When the resulting value reaches the limits of the field, it wraps around.
    */
-  cycle(field: TimeField, amount: number, options?: CycleTimeOptions) {
+  cycle(field: TimeField, amount: number, options?: CycleTimeOptions): Time {
     return cycleTime(this, field, amount, options);
   }
 
   /** Converts the time to an ISO 8601 formatted string. */
-  toString() {
+  toString(): string {
     return timeToString(this);
   }
 
   /** Compares this time with another. A negative result indicates that this time is before the given one, and a positive time indicates that it is after. */
-  compare(b: AnyTime) {
+  compare(b: AnyTime): number {
     return compareTime(this, b);
   }
 }
@@ -361,17 +361,17 @@ export class ZonedDateTime {
   }
 
   /** Returns a new `ZonedDateTime` with the given duration added to it. */
-  add(duration: DateTimeDuration) {
+  add(duration: DateTimeDuration): ZonedDateTime {
     return addZoned(this, duration);
   }
 
   /** Returns a new `ZonedDateTime` with the given duration subtracted from it. */
-  subtract(duration: DateTimeDuration) {
+  subtract(duration: DateTimeDuration): ZonedDateTime {
     return subtractZoned(this, duration);
   }
 
   /** Returns a new `ZonedDateTime` with the given fields set to the provided values. Other fields will be constrained accordingly. */
-  set(fields: DateFields & TimeFields, disambiguation?: Disambiguation) {
+  set(fields: DateFields & TimeFields, disambiguation?: Disambiguation): ZonedDateTime {
     return setZoned(this, fields, disambiguation);
   }
 
@@ -379,27 +379,27 @@ export class ZonedDateTime {
    * Returns a new `ZonedDateTime` with the given field adjusted by a specified amount.
    * When the resulting value reaches the limits of the field, it wraps around.
    */
-  cycle(field: DateField | TimeField, amount: number, options?: CycleTimeOptions) {
+  cycle(field: DateField | TimeField, amount: number, options?: CycleTimeOptions): ZonedDateTime {
     return cycleZoned(this, field, amount, options);
   }
 
   /** Converts the date to a native JavaScript Date object. */
-  toDate() {
+  toDate(): Date {
     return zonedToDate(this);
   }
 
    /** Converts the date to an ISO 8601 formatted string, including the UTC offset and time zone identifier. */
-  toString() {
+  toString(): string {
     return zonedDateTimeToString(this);
   }
 
    /** Converts the date to an ISO 8601 formatted string in UTC. */
-  toAbsoluteString() {
+  toAbsoluteString(): string {
     return this.toDate().toISOString();
   }
 
   /** Compares this date with another. A negative result indicates that this date is before the given one, and a positive date indicates that it is after. */
-  compare(b: CalendarDate | CalendarDateTime | ZonedDateTime) {
+  compare(b: CalendarDate | CalendarDateTime | ZonedDateTime): number {
     // TODO: Is this a bad idea??
     return this.toDate().getTime() - toZoned(b, this.timeZone).toDate().getTime();
   }

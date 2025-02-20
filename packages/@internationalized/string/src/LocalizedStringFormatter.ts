@@ -38,7 +38,7 @@ export class LocalizedStringFormatter<K extends string = string, T extends Local
     return typeof message === 'function' ? message(variables, this) : message;
   }
 
-  protected plural(count: number, options: Record<string, InternalString>, type: Intl.PluralRuleType = 'cardinal') {
+  protected plural(count: number, options: Record<string, InternalString>, type: Intl.PluralRuleType = 'cardinal'): string {
     let opt = options['=' + count];
     if (opt) {
       return typeof opt === 'function' ? opt() : opt;
@@ -56,7 +56,7 @@ export class LocalizedStringFormatter<K extends string = string, T extends Local
     return typeof opt === 'function' ? opt() : opt;
   }
 
-  protected number(value: number) {
+  protected number(value: number): string {
     let numberFormat = numberFormatCache.get(this.locale);
     if (!numberFormat) {
       numberFormat = new Intl.NumberFormat(this.locale);
@@ -65,7 +65,7 @@ export class LocalizedStringFormatter<K extends string = string, T extends Local
     return numberFormat.format(value);
   }
 
-  protected select(options: Record<string, InternalString>, value: string) {
+  protected select(options: Record<string, InternalString>, value: string): string {
     let opt = options[value] || options.other;
     return typeof opt === 'function' ? opt() : opt;
   }

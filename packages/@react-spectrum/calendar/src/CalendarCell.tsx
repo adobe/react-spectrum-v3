@@ -15,7 +15,7 @@ import {CalendarDate, getDayOfWeek, isSameDay, isSameMonth, isToday} from '@inte
 import {CalendarState, RangeCalendarState} from '@react-stately/calendar';
 import {classNames} from '@react-spectrum/utils';
 import {mergeProps} from '@react-aria/utils';
-import React, {useRef} from 'react';
+import React, {ReactElement, useRef} from 'react';
 import styles from '@adobe/spectrum-css-temp/components/calendar/vars.css';
 import {useFocusRing} from '@react-aria/focus';
 import {useHover} from '@react-aria/interactions';
@@ -27,7 +27,7 @@ interface CalendarCellProps extends AriaCalendarCellProps {
   firstDayOfWeek?: 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat'
 }
 
-export function CalendarCell({state, currentMonth, firstDayOfWeek, ...props}: CalendarCellProps) {
+export function CalendarCell({state, currentMonth, firstDayOfWeek, ...props}: CalendarCellProps): ReactElement {
   let ref = useRef<HTMLElement>(null);
   let {
     cellProps,

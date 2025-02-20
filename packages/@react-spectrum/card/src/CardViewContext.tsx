@@ -13,8 +13,15 @@
 
 import React, {useContext} from 'react';
 
-export const CardViewContext = React.createContext(null);
+export interface CardViewContextValue {
+  state: 'idle' | 'loading' | 'error',
+  isQuiet: boolean,
+  layout: 'grid' | 'gallery' | 'waterfall',
+  cardOrientation: 'horizontal' | 'vertical',
+  renderEmptyState: () => React.ReactNode
+}
+export const CardViewContext = React.createContext<CardViewContextValue>(null);
 
-export function useCardViewContext() {
+export function useCardViewContext(): CardViewContextValue | null {
   return useContext(CardViewContext);
 }

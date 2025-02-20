@@ -13,7 +13,7 @@
 import {classNames} from '@react-spectrum/utils';
 import {DateFieldState, DateSegment} from '@react-stately/datepicker';
 import {DatePickerBase, DateValue} from '@react-types/datepicker';
-import React, {useRef} from 'react';
+import React, {ReactElement, useRef} from 'react';
 import styles from './styles.css';
 import {useDateSegment} from '@react-aria/datepicker';
 
@@ -26,7 +26,7 @@ interface LiteralSegmentProps {
   segment: DateSegment
 }
 
-export function DatePickerSegment({segment, state, ...otherProps}: DatePickerSegmentProps) {
+export function DatePickerSegment({segment, state, ...otherProps}: DatePickerSegmentProps): ReactElement {
   switch (segment.type) {
     // A separator, e.g. punctuation
     case 'literal':

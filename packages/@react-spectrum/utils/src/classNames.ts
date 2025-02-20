@@ -14,7 +14,7 @@ import _clsx from 'clsx';
 
 export let shouldKeepSpectrumClassNames = false;
 
-export function keepSpectrumClassNames() {
+export function keepSpectrumClassNames(): void {
   shouldKeepSpectrumClassNames = true;
   console.warn(
     'Legacy spectrum-prefixed class names enabled for backward compatibility. ' +

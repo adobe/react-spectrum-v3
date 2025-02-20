@@ -28,7 +28,7 @@ export class MessageFormatter {
     this.cache = {};
   }
 
-  format<T = void>(key: string, variables: Record<string, PrimitiveType | T | FormatXMLElementFn<T, string | T | (string | T)[]>> | undefined) {
+  format<T = void>(key: string, variables: Record<string, PrimitiveType | T | FormatXMLElementFn<T, string | T | (string | T)[]>> | undefined): string | T | (string | T)[] {
     let message = this.cache[key];
     if (!message) {
       let msg = this.messages.getStringForLocale(key, this.locale);

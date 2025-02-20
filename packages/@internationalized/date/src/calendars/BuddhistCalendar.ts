@@ -38,11 +38,11 @@ export class BuddhistCalendar extends GregorianCalendar {
     );
   }
 
-  toJulianDay(date: AnyCalendarDate) {
+  toJulianDay(date: AnyCalendarDate): number {
     return super.toJulianDay(toGregorian(date));
   }
 
-  getEras() {
+  getEras(): string[] {
     return ['BE'];
   }
 
@@ -50,7 +50,7 @@ export class BuddhistCalendar extends GregorianCalendar {
     return super.getDaysInMonth(toGregorian(date));
   }
 
-  balanceDate() {}
+  balanceDate(): void {}
 }
 
 function toGregorian(date: AnyCalendarDate) {

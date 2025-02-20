@@ -1,4 +1,4 @@
-import React, {ReactNode, useContext, useEffect, useState} from 'react';
+import React, {ReactElement, ReactNode, useContext, useEffect, useState} from 'react';
 import {useIsSSR} from '@react-aria/ssr';
 
 interface Breakpoints {
@@ -20,7 +20,7 @@ interface BreakpointProviderProps {
   matchedBreakpoints: string[]
 }
 
-export function BreakpointProvider(props: BreakpointProviderProps) {
+export function BreakpointProvider(props: BreakpointProviderProps): ReactElement {
   let {
     children,
     matchedBreakpoints
@@ -87,6 +87,6 @@ export function useMatchedBreakpoints(breakpoints: Breakpoints): string[] {
   return isSSR ? ['base'] : breakpoint;
 }
 
-export function useBreakpoint() {
+export function useBreakpoint(): BreakpointContext | null {
   return useContext(Context);
 }

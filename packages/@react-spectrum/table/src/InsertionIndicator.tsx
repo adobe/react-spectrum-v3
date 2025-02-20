@@ -12,7 +12,7 @@
 
 import {classNames} from '@react-spectrum/utils';
 import {FocusableElement, ItemDropTarget} from '@react-types/shared';
-import React, {DOMAttributes, HTMLAttributes, useRef} from 'react';
+import React, {DOMAttributes, HTMLAttributes, ReactElement, useRef} from 'react';
 import styles from './table.css';
 import {useTableContext} from './TableViewBase';
 import {useVisuallyHidden} from '@react-aria/visually-hidden';
@@ -22,7 +22,7 @@ interface InsertionIndicatorProps {
   rowProps: HTMLAttributes<HTMLElement> & DOMAttributes<FocusableElement>
 }
 
-export function InsertionIndicator(props: InsertionIndicatorProps) {
+export function InsertionIndicator(props: InsertionIndicatorProps): ReactElement | null {
   let {dropState, dragAndDropHooks} = useTableContext();
   const {target, rowProps} = props;
 

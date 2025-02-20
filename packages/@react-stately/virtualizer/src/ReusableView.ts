@@ -52,13 +52,13 @@ export class ReusableView<T extends object, V> {
   /**
    * Prepares the view for reuse. Called just before the view is removed from the DOM.
    */
-  prepareForReuse() {
+  prepareForReuse(): void {
     this.content = null;
     this.rendered = null;
     this.layoutInfo = null;
   }
 
-  getReusableView(reuseType: string) {
+  getReusableView(reuseType: string): ChildView<T, V> {
     // Reusable view queue should be FIFO so that DOM order remains consistent during scrolling.
     // For example, cells within a row should remain in the same order even if the row changes contents.
     // The cells within a row are removed from their parent in order. If the row is reused, the cells
@@ -71,7 +71,7 @@ export class ReusableView<T extends object, V> {
     return view;
   }
 
-  reuseChild(child: ChildView<T, V>) {
+  reuseChild(child: ChildView<T, V>): void {
     child.prepareForReuse();
     let reusable = this.reusableViews.get(child.viewType);
     if (!reusable) {

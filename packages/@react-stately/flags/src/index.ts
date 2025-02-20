@@ -13,18 +13,18 @@
 let _tableNestedRows = false;
 let _shadowDOM = false;
 
-export function enableTableNestedRows() {
+export function enableTableNestedRows(): void {
   _tableNestedRows = true;
 }
 
-export function tableNestedRows() {
+export function tableNestedRows(): boolean {
   return _tableNestedRows;
 }
 
-export function enableShadowDOM() {
+export function enableShadowDOM(): void {
   _shadowDOM = true;
 }
 
-export function shadowDOM() {
+export function shadowDOM(): boolean {
   return _shadowDOM;
 }

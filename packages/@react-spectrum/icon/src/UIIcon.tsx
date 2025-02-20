@@ -28,7 +28,7 @@ export interface UIIconProps extends DOMProps, AriaLabelingProps, StyleProps {
 
 export type UIIconPropsWithoutChildren = Omit<UIIconProps, 'children'>;
 
-export function UIIcon(props: UIIconProps) {
+export function UIIcon(props: UIIconProps): ReactElement {
   props = useSlotProps(props, 'icon');
   let {
     children,

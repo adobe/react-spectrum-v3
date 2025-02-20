@@ -18,7 +18,7 @@ export function clamp(value: number, min: number = -Infinity, max: number = Infi
   return newValue;
 }
 
-export function roundToStepPrecision(value: number, step: number) {
+export function roundToStepPrecision(value: number, step: number): number {
   let roundedValue = value;
   let stepString = step.toString();
   let pointIndex = stepString.indexOf('.');

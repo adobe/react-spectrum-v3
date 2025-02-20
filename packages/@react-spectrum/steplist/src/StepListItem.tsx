@@ -15,7 +15,7 @@ import {FocusRing} from '@react-aria/focus';
 import intlMessages from '../intl';
 import {mergeProps, useId} from '@react-aria/utils';
 import {Node} from '@react-types/shared';
-import React, {useContext, useRef} from 'react';
+import React, {ReactElement, useContext, useRef} from 'react';
 import {StepListContext} from './StepListContext';
 import styles from '@adobe/spectrum-css-temp/components/steplist/vars.css';
 import {useHover} from '@react-aria/interactions';
@@ -30,7 +30,7 @@ interface SpectrumStepListItemProps<T> {
   isReadOnly?: boolean
 }
 
-export function StepListItem<T>(props: SpectrumStepListItemProps<T>) {
+export function StepListItem<T>(props: SpectrumStepListItemProps<T>): ReactElement {
   let {
     isDisabled,
     item

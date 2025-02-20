@@ -11,15 +11,16 @@
  */
 import {createDOMRef} from '@react-spectrum/utils';
 import {createFocusManager} from '@react-aria/focus';
+import {DateFormatter, useDateFormatter, useLocale} from '@react-aria/i18n';
 import {FocusableRef} from '@react-types/shared';
-import React, {useImperativeHandle, useMemo, useRef, useState} from 'react';
+import {FormatterOptions} from '@react-stately/datepicker';
+import React, {ReactNode, useImperativeHandle, useMemo, useRef, useState} from 'react';
 import {SpectrumDatePickerBase} from '@react-types/datepicker';
-import {useDateFormatter, useLocale} from '@react-aria/i18n';
 import {useDisplayNames} from '@react-aria/datepicker';
 import {useLayoutEffect} from '@react-aria/utils';
 import {useProvider} from '@react-spectrum/provider';
 
-export function useFormatHelpText(props: Pick<SpectrumDatePickerBase<any>, 'description' | 'showFormatHelpText'>) {
+export function useFormatHelpText(props: Pick<SpectrumDatePickerBase<any>, 'description' | 'showFormatHelpText'>): ReactNode {
   let formatter = useDateFormatter({dateStyle: 'short'});
   let displayNames = useDisplayNames();
   return useMemo(() => {
@@ -43,7 +44,7 @@ export function useFormatHelpText(props: Pick<SpectrumDatePickerBase<any>, 'desc
   }, [props.description, props.showFormatHelpText, formatter, displayNames]);
 }
 
-export function useVisibleMonths(maxVisibleMonths: number) {
+export function useVisibleMonths(maxVisibleMonths: number): number {
   let {scale} = useProvider()!;
   let [visibleMonths, setVisibleMonths] = useState(getVisibleMonths(scale));
   useLayoutEffect(() => {
@@ -69,7 +70,7 @@ function getVisibleMonths(scale) {
   return Math.floor((window.innerWidth - popoverPadding * 2) / (monthWidth + gap));
 }
 
-export function useFocusManagerRef(ref: FocusableRef<HTMLElement>) {
+export function useFocusManagerRef(ref: FocusableRef<HTMLElement>): React.RefObject<HTMLElement | null> {
   let domRef = useRef<HTMLElement | null>(null);
   useImperativeHandle(ref, () => ({
     ...createDOMRef(domRef),
@@ -80,10 +81,10 @@ export function useFocusManagerRef(ref: FocusableRef<HTMLElement>) {
   return domRef;
 }
 
-export function useFormattedDateWidth(state) {
+export function useFormattedDateWidth(state: {getDateFormatter: (locale: string, formatOptions: FormatterOptions) => DateFormatter}): number {
   let locale = useLocale()?.locale;
   let currentDate = new Date();
-  let formatedDate = state.getDateFormatter(locale, {shouldForceLeadingZeros: true}).format(currentDate, locale);
+  let formatedDate = state.getDateFormatter(locale, {shouldForceLeadingZeros: true}).format(currentDate);
   let totalCharacters =  formatedDate.length;
 
   // The max of two is for times with only hours.

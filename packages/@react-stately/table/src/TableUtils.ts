@@ -14,12 +14,12 @@ import {ColumnSize} from '@react-types/table';
 import {Key} from '@react-types/shared';
 
 // numbers and percents are considered static. *fr units or a lack of units are considered dynamic.
-export function isStatic(width: number | string): boolean {
+export function isStatic(width?: ColumnSize | null): boolean {
   return width != null && (!isNaN(width as number) || (String(width)).match(/^(\d+)(?=%$)/) !== null);
 }
 
-export function parseFractionalUnit(width: string): number {
-  if (!width) {
+export function parseFractionalUnit(width?: ColumnSize | null): number {
+  if (!width || typeof width === 'number') {
     return 1;
   }
   let match = width.match(/^(.+)(?=fr$)/);
@@ -102,10 +102,10 @@ interface FlexItem {
  * @param getDefaultWidth - A function that returns the default width of a column by its index.
  * @param getDefaultMinWidth - A function that returns the default min width of a column by its index.
  */
-export function calculateColumnSizes(availableWidth: number, columns: IColumn[], changedColumns: Map<Key, ColumnSize>, getDefaultWidth, getDefaultMinWidth) {
+export function calculateColumnSizes(availableWidth: number, columns: IColumn[], changedColumns: Map<Key, ColumnSize>, getDefaultWidth?: (number) => ColumnSize | null | undefined, getDefaultMinWidth?: (number) => ColumnSize | null | undefined): number[] {
   let hasNonFrozenItems = false;
   let flexItems: FlexItem[] = columns.map((column, index) => {
-    let width = changedColumns.get(column.key) != null ? changedColumns.get(column.key) : column.width ?? column.defaultWidth ?? getDefaultWidth?.(index) ?? '1fr';
+    let width: ColumnSize = (changedColumns.get(column.key) != null ? changedColumns.get(column.key) ?? '1fr' : column.width ?? column.defaultWidth ?? getDefaultWidth?.(index) ?? '1fr') as ColumnSize;
     let frozen = false;
     let baseSize = 0;
     let flex = 0;

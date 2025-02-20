@@ -13,7 +13,7 @@ import {classNames, SlotProvider} from '@react-spectrum/utils';
 import {Grid} from '@react-spectrum/layout';
 import {GridNode} from '@react-types/grid';
 import listStyles from './styles.css';
-import React from 'react';
+import React, {ReactElement} from 'react';
 import type {SpectrumListViewProps} from './ListView';
 import {Text} from '@react-spectrum/text';
 
@@ -24,7 +24,7 @@ interface DragPreviewProps<T> {
   density: SpectrumListViewProps<T>['density']
 }
 
-export function DragPreview(props: DragPreviewProps<unknown>) {
+export function DragPreview(props: DragPreviewProps<unknown>): ReactElement {
   let {
     item,
     itemCount,

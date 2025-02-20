@@ -15,7 +15,7 @@ import {createCalendar} from '@internationalized/date';
 import {DatePickerSegment} from './DatePickerSegment';
 import datepickerStyles from './styles.css';
 import {DateValue, SpectrumDatePickerProps} from '@react-types/datepicker';
-import React, {useRef} from 'react';
+import React, {ReactElement, useRef} from 'react';
 import {useDateField} from '@react-aria/datepicker';
 import {useDateFieldState} from '@react-stately/datepicker';
 import {useLocale} from '@react-aria/i18n';
@@ -26,7 +26,7 @@ interface DatePickerFieldProps<T extends DateValue> extends SpectrumDatePickerPr
   maxGranularity?: SpectrumDatePickerProps<T>['granularity']
 }
 
-export function DatePickerField<T extends DateValue>(props: DatePickerFieldProps<T>) {
+export function DatePickerField<T extends DateValue>(props: DatePickerFieldProps<T>): ReactElement {
   let {
     isDisabled,
     isReadOnly,

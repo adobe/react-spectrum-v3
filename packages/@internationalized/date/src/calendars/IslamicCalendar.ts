@@ -56,7 +56,7 @@ export class IslamicCivilCalendar implements Calendar {
     return julianDayToIslamic(this, CIVIL_EPOC, jd);
   }
 
-  toJulianDay(date: AnyCalendarDate) {
+  toJulianDay(date: AnyCalendarDate): number {
     return islamicToJulianDay(CIVIL_EPOC, date.year, date.month, date.day);
   }
 
@@ -82,7 +82,7 @@ export class IslamicCivilCalendar implements Calendar {
     return 9665;
   }
 
-  getEras() {
+  getEras(): string[] {
     return ['AH'];
   }
 }
@@ -101,7 +101,7 @@ export class IslamicTabularCalendar extends IslamicCivilCalendar {
     return julianDayToIslamic(this, ASTRONOMICAL_EPOC, jd);
   }
 
-  toJulianDay(date: AnyCalendarDate) {
+  toJulianDay(date: AnyCalendarDate): number {
     return islamicToJulianDay(ASTRONOMICAL_EPOC, date.year, date.month, date.day);
   }
 }

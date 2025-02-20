@@ -79,7 +79,7 @@ export class EthiopicCalendar implements Calendar {
     return new CalendarDate(this, era, year, month, day);
   }
 
-  toJulianDay(date: AnyCalendarDate) {
+  toJulianDay(date: AnyCalendarDate): number {
     let year = date.year;
     if (date.era === 'AA') {
       year -= AMETE_MIHRET_DELTA;
@@ -107,7 +107,7 @@ export class EthiopicCalendar implements Calendar {
     return date.era === 'AA' ? 9999 : 9991;
   }
 
-  getEras() {
+  getEras(): string[] {
     return ['AA', 'AM'];
   }
 }
@@ -125,7 +125,7 @@ export class EthiopicAmeteAlemCalendar extends EthiopicCalendar {
     return new CalendarDate(this, 'AA', year, month, day);
   }
 
-  getEras() {
+  getEras(): string[] {
     return ['AA'];
   }
 
@@ -154,7 +154,7 @@ export class CopticCalendar extends EthiopicCalendar {
     return new CalendarDate(this, era, year, month, day);
   }
 
-  toJulianDay(date: AnyCalendarDate) {
+  toJulianDay(date: AnyCalendarDate): number {
     let year = date.year;
     if (date.era === 'BCE') {
       year = 1 - year;
@@ -176,14 +176,14 @@ export class CopticCalendar extends EthiopicCalendar {
     return date.era === 'BCE';
   }
 
-  balanceDate(date: Mutable<AnyCalendarDate>) {
+  balanceDate(date: Mutable<AnyCalendarDate>): void {
     if (date.year <= 0) {
       date.era = date.era === 'BCE' ? 'CE' : 'BCE';
       date.year = 1 - date.year;
     }
   }
 
-  getEras() {
+  getEras(): string[] {
     return ['BCE', 'CE'];
   }
 

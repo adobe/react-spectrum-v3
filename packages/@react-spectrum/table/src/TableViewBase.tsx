@@ -128,12 +128,15 @@ export interface TableContextValue<T> {
 }
 
 export const TableContext = React.createContext<TableContextValue<unknown> | null>(null);
-export function useTableContext() {
+export function useTableContext(): TableContextValue<unknown> {
   return useContext(TableContext)!;
 }
 
 export const VirtualizerContext = React.createContext<{width: number, key: Key | null} | null>(null);
-export function useVirtualizerContext() {
+export function useVirtualizerContext(): {
+  width: number,
+  key: Key | null
+} | null {
   return useContext(VirtualizerContext);
 }
 
@@ -1128,7 +1131,7 @@ interface TableRowContextValue {
 
 
 const TableRowContext = React.createContext<TableRowContextValue | null>(null);
-export function useTableRowContext() {
+export function useTableRowContext(): TableRowContextValue {
   return useContext(TableRowContext)!;
 }
 

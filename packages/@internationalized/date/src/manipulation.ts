@@ -21,7 +21,7 @@ const ONE_HOUR = 3600000;
 export function add(date: CalendarDateTime, duration: DateTimeDuration): CalendarDateTime;
 export function add(date: CalendarDate, duration: DateDuration): CalendarDate;
 export function add(date: CalendarDate | CalendarDateTime, duration: DateTimeDuration): CalendarDate | CalendarDateTime;
-export function add(date: CalendarDate | CalendarDateTime, duration: DateTimeDuration) {
+export function add(date: CalendarDate | CalendarDateTime, duration: DateTimeDuration): Mutable<AnyCalendarDate | AnyDateTime> {
   let mutableDate: Mutable<AnyCalendarDate | AnyDateTime> = date.copy();
   let days = 'hour' in mutableDate ? addTimeFields(mutableDate, duration) : 0;
 
@@ -118,7 +118,7 @@ function constrainMonthDay(date: Mutable<AnyCalendarDate>) {
   date.day = Math.max(1, Math.min(date.calendar.getDaysInMonth(date), date.day));
 }
 
-export function constrain(date: Mutable<AnyCalendarDate>) {
+export function constrain(date: Mutable<AnyCalendarDate>): void {
   if (date.calendar.constrainDate) {
     date.calendar.constrainDate(date);
   }
@@ -146,7 +146,7 @@ export function subtract(date: CalendarDate | CalendarDateTime, duration: DateTi
 
 export function set(date: CalendarDateTime, fields: DateFields): CalendarDateTime;
 export function set(date: CalendarDate, fields: DateFields): CalendarDate;
-export function set(date: CalendarDate | CalendarDateTime, fields: DateFields) {
+export function set(date: CalendarDate | CalendarDateTime, fields: DateFields): Mutable<AnyCalendarDate> {
   let mutableDate: Mutable<AnyCalendarDate> = date.copy();
 
   if (fields.era != null) {
@@ -171,7 +171,7 @@ export function set(date: CalendarDate | CalendarDateTime, fields: DateFields) {
 
 export function setTime(value: CalendarDateTime, fields: TimeFields): CalendarDateTime;
 export function setTime(value: Time, fields: TimeFields): Time;
-export function setTime(value: Time | CalendarDateTime, fields: TimeFields) {
+export function setTime(value: Time | CalendarDateTime, fields: TimeFields): Mutable<Time | CalendarDateTime> {
   let mutableValue: Mutable<Time | CalendarDateTime> = value.copy();
 
   if (fields.hour != null) {
@@ -210,7 +210,7 @@ function balanceTime(time: Mutable<AnyTime>): number {
   return days;
 }
 
-export function constrainTime(time: Mutable<AnyTime>) {
+export function constrainTime(time: Mutable<AnyTime>): void {
   time.millisecond = Math.max(0, Math.min(time.millisecond, 1000));
   time.second = Math.max(0, Math.min(time.second, 59));
   time.minute = Math.max(0, Math.min(time.minute, 59));
@@ -245,7 +245,7 @@ export function subtractTime(time: Time, duration: TimeDuration): Time {
 
 export function cycleDate(value: CalendarDateTime, field: DateField, amount: number, options?: CycleOptions): CalendarDateTime;
 export function cycleDate(value: CalendarDate, field: DateField, amount: number, options?: CycleOptions): CalendarDate;
-export function cycleDate(value: CalendarDate | CalendarDateTime, field: DateField, amount: number, options?: CycleOptions) {
+export function cycleDate(value: CalendarDate | CalendarDateTime, field: DateField, amount: number, options?: CycleOptions): Mutable<CalendarDate | CalendarDateTime> {
   let mutable: Mutable<CalendarDate | CalendarDateTime> = value.copy();
 
   switch (field) {
@@ -300,7 +300,7 @@ export function cycleDate(value: CalendarDate | CalendarDateTime, field: DateFie
 
 export function cycleTime(value: CalendarDateTime, field: TimeField, amount: number, options?: CycleTimeOptions): CalendarDateTime;
 export function cycleTime(value: Time, field: TimeField, amount: number, options?: CycleTimeOptions): Time;
-export function cycleTime(value: Time | CalendarDateTime, field: TimeField, amount: number, options?: CycleTimeOptions) {
+export function cycleTime(value: Time | CalendarDateTime, field: TimeField, amount: number, options?: CycleTimeOptions): Mutable<Time | CalendarDateTime> {
   let mutable: Mutable<Time | CalendarDateTime> = value.copy();
 
   switch (field) {

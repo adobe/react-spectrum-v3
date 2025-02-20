@@ -59,7 +59,7 @@ const iconStyleProps: StyleHandlers = {
 /**
  * Spectrum icons are clear, minimal, and consistent across platforms. They follow the focused and rational principles of the design system in both metaphor and style.
  */
-export function Icon(props: IconProps) {
+export function Icon(props: IconProps): ReactElement {
   props = useSlotProps(props, 'icon');
   let {
     children,

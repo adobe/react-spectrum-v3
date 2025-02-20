@@ -37,7 +37,7 @@ export class Size {
   /**
    * The total area of the Size.
    */
-  get area() {
+  get area(): number {
     return this.width * this.height;
   }
 }

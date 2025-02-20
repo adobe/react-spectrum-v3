@@ -177,7 +177,7 @@ export function endOfYear(date: DateValue): DateValue {
   return endOfMonth(date.add({months: date.calendar.getMonthsInYear(date) - date.month}));
 }
 
-export function getMinimumMonthInYear(date: AnyCalendarDate) {
+export function getMinimumMonthInYear(date: AnyCalendarDate): number {
   if (date.calendar.getMinimumMonthInYear) {
     return date.calendar.getMinimumMonthInYear(date);
   }
@@ -185,7 +185,7 @@ export function getMinimumMonthInYear(date: AnyCalendarDate) {
   return 1;
 }
 
-export function getMinimumDayInMonth(date: AnyCalendarDate) {
+export function getMinimumDayInMonth(date: AnyCalendarDate): number {
   if (date.calendar.getMinimumDayInMonth) {
     return date.calendar.getMinimumDayInMonth(date);
   }

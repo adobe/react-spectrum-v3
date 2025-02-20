@@ -14,7 +14,7 @@ import {AriaAutocompleteProps, CollectionOptions, UNSTABLE_useAutocomplete} from
 import {AutocompleteState, UNSTABLE_useAutocompleteState} from '@react-stately/autocomplete';
 import {mergeProps} from '@react-aria/utils';
 import {Provider, removeDataAttributes, SlotProps, SlottedContextValue, useSlottedContext} from './utils';
-import React, {createContext, RefObject, useRef} from 'react';
+import React, {createContext, ReactElement, RefObject, useRef} from 'react';
 import {SearchFieldContext} from './SearchField';
 import {TextFieldContext} from './TextField';
 
@@ -35,7 +35,7 @@ export const UNSTABLE_InternalAutocompleteContext = createContext<InternalAutoco
 /**
  * A autocomplete combines a text input with a menu, allowing users to filter a list of options to items matching a query.
  */
-export function UNSTABLE_Autocomplete(props: AutocompleteProps) {
+export function UNSTABLE_Autocomplete(props: AutocompleteProps): ReactElement {
   let ctx = useSlottedContext(UNSTABLE_AutocompleteContext, props.slot);
   props = mergeProps(ctx, props);
   let {filter} = props;

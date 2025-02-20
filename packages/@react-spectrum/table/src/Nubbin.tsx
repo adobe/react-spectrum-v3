@@ -10,11 +10,11 @@
  * governing permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, {ReactElement} from 'react';
 
 
 // TODO resize with scale? colors should be variables
-export function Nubbin() {
+export function Nubbin(): ReactElement {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
       <g fill="var(--spectrum-global-color-blue-600)" stroke="var(--spectrum-global-color-blue-600)" strokeWidth="2">

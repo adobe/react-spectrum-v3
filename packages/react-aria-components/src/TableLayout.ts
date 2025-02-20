@@ -17,7 +17,7 @@ import {useContext, useMemo} from 'react';
 
 export class TableLayout<T> extends BaseTableLayout<T> implements LayoutOptionsDelegate<TableLayoutProps> {
   // Invalidate the layout whenever the column widths change.
-  useLayoutOptions() {
+  useLayoutOptions(): TableLayoutProps {
     // This is not a React class component, just a regular class.
     /* eslint-disable react-hooks/rules-of-hooks */
     let colResizeState = useContext(TableColumnResizeStateContext);

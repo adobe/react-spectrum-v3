@@ -11,7 +11,8 @@
  */
 
 import {ContextValue, RenderProps, useContextProps, useRenderProps} from './utils';
-import {forwardRefType} from '@react-types/shared';
+import {DOMProps, forwardRefType} from '@react-types/shared';
+import {filterDOMProps} from '@react-aria/utils';
 import {PlacementAxis} from 'react-aria';
 import React, {createContext, CSSProperties, ForwardedRef, forwardRef, HTMLAttributes} from 'react';
 
@@ -23,7 +24,7 @@ export const OverlayArrowContext = createContext<ContextValue<OverlayArrowContex
   placement: 'bottom'
 });
 
-export interface OverlayArrowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style' | 'children'>, RenderProps<OverlayArrowRenderProps> {}
+export interface OverlayArrowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style' | 'children'>, RenderProps<OverlayArrowRenderProps>, DOMProps {}
 
 export interface OverlayArrowRenderProps {
   /**
@@ -61,9 +62,11 @@ export const OverlayArrow = /*#__PURE__*/ (forwardRef as forwardRefType)(functio
     Object.keys(renderProps.style).forEach(key => renderProps.style![key] === undefined && delete renderProps.style![key]);
   }
 
+  let DOMProps = filterDOMProps(props);
+
   return (
     <div
-      {...props}
+      {...DOMProps}
       {...renderProps}
       style={{
         ...style,

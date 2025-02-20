@@ -73,7 +73,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Sets the selection behavior for the collection.
    */
-  setSelectionBehavior(selectionBehavior: SelectionBehavior) {
+  setSelectionBehavior(selectionBehavior: SelectionBehavior): void {
     this.state.setSelectionBehavior(selectionBehavior);
   }
 
@@ -87,7 +87,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Sets whether the collection is focused.
    */
-  setFocused(isFocused: boolean) {
+  setFocused(isFocused: boolean): void {
     this.state.setFocused(isFocused);
   }
 
@@ -106,7 +106,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Sets the focused key.
    */
-  setFocusedKey(key: Key | null, childFocusStrategy?: FocusStrategy) {
+  setFocusedKey(key: Key | null, childFocusStrategy?: FocusStrategy): void {
     if (key == null || this.collection.getItem(key)) {
       this.state.setFocusedKey(key, childFocusStrategy);
     }
@@ -132,7 +132,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Returns whether a key is selected.
    */
-  isSelected(key: Key) {
+  isSelected(key: Key): boolean {
     if (this.state.selectionMode === 'none') {
       return false;
     }
@@ -210,7 +210,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Extends the selection to the given key.
    */
-  extendSelection(toKey: Key) {
+  extendSelection(toKey: Key): void {
     if (this.selectionMode === 'none') {
       return;
     }
@@ -312,7 +312,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Toggles whether the given key is selected.
    */
-  toggleSelection(key: Key) {
+  toggleSelection(key: Key): void {
     if (this.selectionMode === 'none') {
       return;
     }
@@ -348,7 +348,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Replaces the selection with only the given key.
    */
-  replaceSelection(key: Key) {
+  replaceSelection(key: Key): void {
     if (this.selectionMode === 'none') {
       return;
     }
@@ -368,7 +368,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Replaces the selection with the given keys.
    */
-  setSelectedKeys(keys: Iterable<Key>) {
+  setSelectedKeys(keys: Iterable<Key>): void {
     if (this.selectionMode === 'none') {
       return;
     }
@@ -414,7 +414,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Selects all items in the collection.
    */
-  selectAll() {
+  selectAll(): void {
     if (!this.isSelectAll && this.selectionMode === 'multiple') {
       this.state.setSelectedKeys('all');
     }
@@ -423,7 +423,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Removes all keys from the selection.
    */
-  clearSelection() {
+  clearSelection(): void {
     if (!this.disallowEmptySelection && (this.state.selectedKeys === 'all' || this.state.selectedKeys.size > 0)) {
       this.state.setSelectedKeys(new Selection());
     }
@@ -432,7 +432,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Toggles between select all and an empty selection.
    */
-  toggleSelectAll() {
+  toggleSelectAll(): void {
     if (this.isSelectAll) {
       this.clearSelection();
     } else {
@@ -440,7 +440,7 @@ export class SelectionManager implements MultipleSelectionManager {
     }
   }
 
-  select(key: Key, e?: PressEvent | LongPressEvent | PointerEvent) {
+  select(key: Key, e?: PressEvent | LongPressEvent | PointerEvent): void {
     if (this.selectionMode === 'none') {
       return;
     }
@@ -462,7 +462,7 @@ export class SelectionManager implements MultipleSelectionManager {
   /**
    * Returns whether the current selection is equal to the given selection.
    */
-  isSelectionEqual(selection: Set<Key>) {
+  isSelectionEqual(selection: Set<Key>): boolean {
     if (selection === this.state.selectedKeys) {
       return true;
     }
@@ -488,7 +488,7 @@ export class SelectionManager implements MultipleSelectionManager {
     return true;
   }
 
-  canSelectItem(key: Key) {
+  canSelectItem(key: Key): boolean {
     if (this.state.selectionMode === 'none' || this.state.disabledKeys.has(key)) {
       return false;
     }
@@ -501,15 +501,15 @@ export class SelectionManager implements MultipleSelectionManager {
     return true;
   }
 
-  isDisabled(key: Key) {
+  isDisabled(key: Key): boolean {
     return this.state.disabledBehavior === 'all' && (this.state.disabledKeys.has(key) || !!this.collection.getItem(key)?.props?.isDisabled);
   }
 
-  isLink(key: Key) {
+  isLink(key: Key): boolean {
     return !!this.collection.getItem(key)?.props?.href;
   }
 
-  getItemProps(key: Key) {
+  getItemProps(key: Key): any {
     return this.collection.getItem(key)?.props;
   }
 }

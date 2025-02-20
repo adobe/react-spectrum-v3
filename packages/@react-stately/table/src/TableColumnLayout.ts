@@ -100,7 +100,7 @@ export class TableColumnLayout<T> {
     return newWidths;
   }
 
-  buildColumnWidths(tableWidth: number, collection: TableCollection<T>, widths: Map<Key, ColumnSize>) {
+  buildColumnWidths(tableWidth: number, collection: TableCollection<T>, widths: Map<Key, ColumnSize>): Map<Key, number> {
     this.columnWidths = new Map();
     this.columnMinWidths = new Map();
     this.columnMaxWidths = new Map();

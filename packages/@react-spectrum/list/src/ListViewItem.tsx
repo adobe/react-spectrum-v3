@@ -24,7 +24,7 @@ import listStyles from './styles.css';
 import {ListViewContext} from './ListView';
 import {mergeProps} from '@react-aria/utils';
 import {Provider} from '@react-spectrum/provider';
-import React, {useContext, useRef} from 'react';
+import React, {ReactElement, useContext, useRef} from 'react';
 import {Text} from '@react-spectrum/text';
 import {useButton} from '@react-aria/button';
 import {useGridListItem, useGridListSelectionCheckbox} from '@react-aria/gridlist';
@@ -37,7 +37,7 @@ interface ListViewItemProps<T> {
   hasActions: boolean
 }
 
-export function ListViewItem<T>(props: ListViewItemProps<T>) {
+export function ListViewItem<T>(props: ListViewItemProps<T>): ReactElement {
   let {
     item,
     isEmphasized
@@ -81,7 +81,7 @@ export function ListViewItem<T>(props: ListViewItemProps<T>) {
 
   let draggableItem: DraggableItemResult | null = null;
   if (isListDraggable && dragAndDropHooks && dragState) {
-     
+
     draggableItem = dragAndDropHooks.useDraggableItem!({key: item.key, hasDragButton: true}, dragState);
     if (isDisabled) {
       draggableItem = null;
@@ -93,7 +93,7 @@ export function ListViewItem<T>(props: ListViewItemProps<T>) {
   if (isListDroppable && dragAndDropHooks && dropState) {
     let target = {type: 'item', key: item.key, dropPosition: 'on'} as DropTarget;
     isDropTarget = dropState.isDropTarget(target);
-     
+
     dropIndicator = dragAndDropHooks.useDropIndicator!({target}, dropState, dropIndicatorRef);
   }
 
@@ -143,7 +143,7 @@ export function ListViewItem<T>(props: ListViewItemProps<T>) {
     focusWithinProps,
     focusProps
   );
-  
+
   // Remove tab index from list row if performing a screenreader drag. This prevents TalkBack from focusing the row,
   // allowing for single swipe navigation between row drop indicator
   if (dragAndDropHooks?.isVirtualDragging?.()) {

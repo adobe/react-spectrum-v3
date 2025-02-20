@@ -118,7 +118,7 @@ export class GregorianCalendar implements Calendar {
     return 9999;
   }
 
-  getEras() {
+  getEras(): string[] {
     return ['BC', 'AD'];
   }
 
@@ -126,7 +126,7 @@ export class GregorianCalendar implements Calendar {
     return date.era === 'BC';
   }
 
-  balanceDate(date: Mutable<AnyCalendarDate>) {
+  balanceDate(date: Mutable<AnyCalendarDate>): void {
     if (date.year <= 0) {
       date.era = date.era === 'BC' ? 'AD' : 'BC';
       date.year = 1 - date.year;

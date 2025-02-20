@@ -60,41 +60,41 @@ export class ListCollection<T> implements Collection<Node<T>> {
     this.lastKey = last?.key ?? null;
   }
 
-  *[Symbol.iterator]() {
+  *[Symbol.iterator](): IterableIterator<Node<T>> {
     yield* this.iterable;
   }
 
-  get size() {
+  get size(): number {
     return this.keyMap.size;
   }
 
-  getKeys() {
+  getKeys(): IterableIterator<Key> {
     return this.keyMap.keys();
   }
 
-  getKeyBefore(key: Key) {
+  getKeyBefore(key: Key): Key | null {
     let node = this.keyMap.get(key);
     return node ? node.prevKey ?? null : null;
   }
 
-  getKeyAfter(key: Key) {
+  getKeyAfter(key: Key): Key | null {
     let node = this.keyMap.get(key);
     return node ? node.nextKey ?? null : null;
   }
 
-  getFirstKey() {
+  getFirstKey(): Key | null {
     return this.firstKey;
   }
 
-  getLastKey() {
+  getLastKey(): Key | null {
     return this.lastKey;
   }
 
-  getItem(key: Key) {
+  getItem(key: Key): Node<T> | null {
     return this.keyMap.get(key) ?? null;
   }
 
-  at(idx: number) {
+  at(idx: number): Node<T> | null {
     const keys = [...this.getKeys()];
     return this.getItem(keys[idx]);
   }

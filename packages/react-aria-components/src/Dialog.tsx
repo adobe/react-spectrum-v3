@@ -18,7 +18,7 @@ import {HeadingContext} from './RSPContexts';
 import {OverlayTriggerProps, OverlayTriggerState, useMenuTriggerState} from 'react-stately';
 import {PopoverContext} from './Popover';
 import {PressResponder} from '@react-aria/interactions';
-import React, {createContext, ForwardedRef, forwardRef, ReactNode, useContext, useRef} from 'react';
+import React, {createContext, ForwardedRef, forwardRef, ReactElement, ReactNode, useContext, useRef} from 'react';
 import {RootMenuTriggerStateContext} from './Menu';
 
 export interface DialogTriggerProps extends OverlayTriggerProps {
@@ -40,7 +40,7 @@ export const OverlayTriggerStateContext = createContext<OverlayTriggerState | nu
 /**
  * A DialogTrigger opens a dialog when a trigger element is pressed.
  */
-export function DialogTrigger(props: DialogTriggerProps) {
+export function DialogTrigger(props: DialogTriggerProps): ReactElement {
   // Use useMenuTriggerState instead of useOverlayTriggerState in case a menu is embedded in the dialog.
   // This is needed to handle submenus.
   let state = useMenuTriggerState(props);

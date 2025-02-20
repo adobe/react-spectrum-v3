@@ -19,3 +19,4 @@ export type {DateFieldStateOptions, DateFieldState, DateSegment, SegmentType} fr
 export type {DatePickerStateOptions, DatePickerState} from './useDatePickerState';
 export type {DateRangePickerStateOptions, DateRangePickerState} from './useDateRangePickerState';
 export type {TimeFieldStateOptions, TimeFieldState} from './useTimeFieldState';
+export type {FormatterOptions} from './utils';

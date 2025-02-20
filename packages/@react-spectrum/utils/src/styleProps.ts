@@ -123,7 +123,7 @@ const UNIT_RE = /(%|px|em|rem|vw|vh|auto|cm|mm|in|pt|pc|ex|ch|rem|vmin|vmax|fr)$
 const FUNC_RE = /^\s*\w+\(/;
 const SPECTRUM_VARIABLE_RE = /(static-)?size-\d+|single-line-(height|width)/g;
 
-export function dimensionValue(value: DimensionValue) {
+export function dimensionValue(value: DimensionValue): string | undefined {
   if (typeof value === 'number') {
     return value + 'px';
   }
@@ -143,7 +143,7 @@ export function dimensionValue(value: DimensionValue) {
   return `var(--spectrum-global-dimension-${value}, var(--spectrum-alias-${value}))`;
 }
 
-export function responsiveDimensionValue(value: Responsive<DimensionValue>, matchedBreakpoints: Breakpoint[]) {
+export function responsiveDimensionValue(value: Responsive<DimensionValue>, matchedBreakpoints: Breakpoint[]): string | undefined {
   let responsiveValue = getResponsiveProp(value, matchedBreakpoints);
   if (responsiveValue != null) {
     return dimensionValue(responsiveValue);
@@ -159,7 +159,7 @@ function colorValue(value: ColorValue, type: ColorType = 'default', version = 5)
   return `var(--spectrum-legacy-color-${value}, var(--spectrum-global-color-${value}, var(--spectrum-semantic-${value}-color-${type})))`;
 }
 
-function backgroundColorValue(value: BackgroundColorValue, version = 5) {
+function backgroundColorValue(value: BackgroundColorValue, version = 5): string | undefined {
   if (!value) {
     return undefined;
   }
@@ -167,7 +167,7 @@ function backgroundColorValue(value: BackgroundColorValue, version = 5) {
   return `var(--spectrum-alias-background-color-${value}, ${colorValue(value as ColorValue, 'background', version)})`;
 }
 
-function borderColorValue(value: BorderColorValue, version = 5) {
+function borderColorValue(value: BorderColorValue, version = 5): string | undefined {
   if (!value)  {
     return undefined;
   }
@@ -179,13 +179,13 @@ function borderColorValue(value: BorderColorValue, version = 5) {
   return `var(--spectrum-alias-border-color-${value}, ${colorValue(value as ColorValue, 'border', version)})`;
 }
 
-function borderSizeValue(value?: BorderSizeValue | null) {
+function borderSizeValue(value?: BorderSizeValue | null): string {
   return value && value !== 'none'
     ? `var(--spectrum-alias-border-size-${value})`
     : '0';
 }
 
-function borderRadiusValue(value: BorderRadiusValue) {
+function borderRadiusValue(value: BorderRadiusValue): string | undefined {
   if (!value) {
     return undefined;
   }
@@ -193,15 +193,15 @@ function borderRadiusValue(value: BorderRadiusValue) {
   return `var(--spectrum-alias-border-radius-${value})`;
 }
 
-function hiddenValue(value: boolean) {
+function hiddenValue(value: boolean): string | undefined {
   return value ? 'none' : undefined;
 }
 
-function anyValue(value: any) {
+function anyValue<T>(value: T): T {
   return value;
 }
 
-function flexValue(value: boolean | number | string) {
+function flexValue(value: boolean | number | string): string | undefined {
   if (typeof value === 'boolean') {
     return value ? '1' : undefined;
   }
@@ -209,7 +209,7 @@ function flexValue(value: boolean | number | string) {
   return '' + value;
 }
 
-export function convertStyleProps<C extends ColorVersion>(props: ViewStyleProps<C>, handlers: StyleHandlers, direction: Direction, matchedBreakpoints: Breakpoint[]) {
+export function convertStyleProps<C extends ColorVersion>(props: ViewStyleProps<C>, handlers: StyleHandlers, direction: Direction, matchedBreakpoints: Breakpoint[]): CSSProperties {
   let style: CSSProperties = {};
   for (let key in props) {
     let styleProp = handlers[key];
@@ -251,7 +251,7 @@ export function useStyleProps<T extends StyleProps>(
   props: T,
   handlers: StyleHandlers = baseStyleProps,
   options: StylePropsOptions = {}
-) {
+): {styleProps: HTMLAttributes<HTMLElement>} {
   let {
     UNSAFE_className,
     UNSAFE_style,
@@ -297,7 +297,7 @@ export function useStyleProps<T extends StyleProps>(
   };
 }
 
-export function passthroughStyle(value) {
+export function passthroughStyle<T>(value: T): T {
   return value;
 }
 

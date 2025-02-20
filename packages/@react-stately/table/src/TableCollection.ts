@@ -286,41 +286,41 @@ export class TableCollection<T> extends GridCollection<T> implements ITableColle
     }
   }
 
-  *[Symbol.iterator]() {
+  *[Symbol.iterator](): IterableIterator<GridNode<T>> {
     yield* this.body.childNodes;
   }
 
-  get size() {
+  get size(): number {
     return this._size;
   }
 
-  getKeys() {
+  getKeys(): IterableIterator<Key> {
     return this.keyMap.keys();
   }
 
-  getKeyBefore(key: Key) {
+  getKeyBefore(key: Key): Key | null {
     let node = this.keyMap.get(key);
     return node?.prevKey ?? null;
   }
 
-  getKeyAfter(key: Key) {
+  getKeyAfter(key: Key): Key | null {
     let node = this.keyMap.get(key);
     return node?.nextKey ?? null;
   }
 
-  getFirstKey() {
+  getFirstKey(): Key | null {
     return getFirstItem(this.body.childNodes)?.key ?? null;
   }
 
-  getLastKey() {
+  getLastKey(): Key | null {
     return getLastItem(this.body.childNodes)?.key ?? null;
   }
 
-  getItem(key: Key) {
+  getItem(key: Key): GridNode<T> | null {
     return this.keyMap.get(key) ?? null;
   }
 
-  at(idx: number) {
+  at(idx: number): GridNode<T> | null {
     const keys = [...this.getKeys()];
     return this.getItem(keys[idx]);
   }

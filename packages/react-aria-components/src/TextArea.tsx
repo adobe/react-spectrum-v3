@@ -7,7 +7,7 @@ export interface TextAreaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaE
 
 export const TextAreaContext = createContext<ContextValue<TextAreaProps, HTMLTextAreaElement>>({});
 
-let filterHoverProps = (props: TextAreaProps) => {
+let filterHoverProps = (props: TextAreaProps): TextAreaProps => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let {onHoverStart, onHoverChange, onHoverEnd, ...otherProps} = props;
   return otherProps;

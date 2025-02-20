@@ -68,9 +68,9 @@ export abstract class Layout<T extends object = Node<any>, O = any> implements L
    * Called by the virtualizer before `getVisibleLayoutInfos`
    * or `getLayoutInfo` are called.
    */
-  update(invalidationContext: InvalidationContext<O>) {} // eslint-disable-line @typescript-eslint/no-unused-vars
+  update(invalidationContext: InvalidationContext<O>): void {} // eslint-disable-line @typescript-eslint/no-unused-vars
 
-  /** 
+  /**
    * Updates the size of the given item.
    */
   updateItemSize?(key: Key, size: Size): boolean;

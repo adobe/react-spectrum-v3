@@ -133,24 +133,24 @@ export class GridCollection<T> implements IGridCollection<T> {
     }
   }
 
-  *[Symbol.iterator]() {
+  *[Symbol.iterator](): IterableIterator<GridNode<T>> {
     yield* [...this.rows];
   }
 
-  get size() {
+  get size(): number {
     return [...this.rows].length;
   }
 
-  getKeys() {
+  getKeys(): IterableIterator<Key> {
     return this.keyMap.keys();
   }
 
-  getKeyBefore(key: Key) {
+  getKeyBefore(key: Key): Key | null {
     let node = this.keyMap.get(key);
     return node ? node.prevKey ?? null : null;
   }
 
-  getKeyAfter(key: Key) {
+  getKeyAfter(key: Key): Key | null {
     let node = this.keyMap.get(key);
     return node ? node.nextKey ?? null : null;
   }
@@ -164,11 +164,11 @@ export class GridCollection<T> implements IGridCollection<T> {
     return rows[rows.length - 1]?.key;
   }
 
-  getItem(key: Key) {
+  getItem(key: Key): GridNode<T> | null {
     return this.keyMap.get(key) ?? null;
   }
 
-  at(idx: number) {
+  at(idx: number): GridNode<T> | null {
     const keys = [...this.getKeys()];
     return this.getItem(keys[idx]);
   }

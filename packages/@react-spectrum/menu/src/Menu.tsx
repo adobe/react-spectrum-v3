@@ -21,12 +21,13 @@ import {MenuContext, MenuStateContext, useMenuStateContext} from './context';
 import {MenuItem} from './MenuItem';
 import {MenuSection} from './MenuSection';
 import {mergeProps, useLayoutEffect, useSlotId, useSyncRef} from '@react-aria/utils';
-import React, {ReactElement, useContext, useEffect, useRef, useState} from 'react';
+import React, {KeyboardEventHandler, ReactElement, ReactNode, RefObject, useContext, useEffect, useRef, useState} from 'react';
+import {RootMenuTriggerState} from '@react-stately/menu';
 import {SpectrumMenuProps} from '@react-types/menu';
 import styles from '@adobe/spectrum-css-temp/components/menu/vars.css';
+import {TreeState, useTreeState} from '@react-stately/tree';
 import {useLocale, useLocalizedStringFormatter} from '@react-aria/i18n';
 import {useMenu} from '@react-aria/menu';
-import {useTreeState} from '@react-stately/tree';
 
 /**
  * Menus display a list of actions or options that a user can choose.
@@ -123,12 +124,25 @@ export const Menu = React.forwardRef(function Menu<T extends object>(props: Spec
   );
 }) as <T>(props: SpectrumMenuProps<T> & {ref?: DOMRef<HTMLDivElement>}) => ReactElement;
 
-export function TrayHeaderWrapper(props) {
+export function TrayHeaderWrapper(props: {
+  children: ReactNode,
+  isSubmenu?: boolean,
+  hasOpenSubmenu?: boolean,
+  parentMenuTreeState?: TreeState<any>,
+  rootMenuTriggerState?: RootMenuTriggerState,
+  onBackButtonPress?: (() => void),
+  wrapperKeyDown?: KeyboardEventHandler<HTMLDivElement> | undefined,
+  menuRef?: RefObject<HTMLDivElement | null>
+}): ReactElement {
   let {children, isSubmenu, hasOpenSubmenu, parentMenuTreeState, rootMenuTriggerState, onBackButtonPress, wrapperKeyDown, menuRef} = props;
   let stringFormatter = useLocalizedStringFormatter(intlMessages, '@react-spectrum/menu');
-  let backButtonText = parentMenuTreeState?.collection.getItem(rootMenuTriggerState?.expandedKeysStack.slice(-1)[0])?.textValue;
+  let lastKey = rootMenuTriggerState?.expandedKeysStack.slice(-1)[0];
+  let backButtonText = '';
+  if (lastKey != null) {
+    backButtonText = parentMenuTreeState?.collection.getItem(lastKey)?.textValue ?? '';
+  }
   let backButtonLabel = stringFormatter.format('backButton', {
-    prevMenuButton: backButtonText
+    prevMenuButton: backButtonText ?? ''
   });
   let headingId = useSlotId();
   let isMobile = useIsMobileDevice();
@@ -145,7 +159,7 @@ export function TrayHeaderWrapper(props) {
   let handleBackButtonPress = () => {
     setTraySubmenuAnimation('spectrum-TraySubmenu-exit');
     timeoutRef.current = setTimeout(() => {
-      onBackButtonPress();
+      onBackButtonPress?.();
     }, 220); // Matches transition duration
   };
 
@@ -163,7 +177,7 @@ export function TrayHeaderWrapper(props) {
   useEffect(() => {
     if (isMobile && isSubmenu && !hasOpenSubmenu && traySubmenuAnimation === 'spectrum-TraySubmenu-enter') {
       focusTimeoutRef.current = setTimeout(() => {
-        let firstItem = menuRef.current.querySelector('[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]') as HTMLElement;
+        let firstItem = menuRef?.current?.querySelector('[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]') as HTMLElement;
         firstItem?.focus();
       }, 220);
     }

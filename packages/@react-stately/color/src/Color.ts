@@ -29,7 +29,7 @@ export function parseColor(value: string): IColor {
   throw new Error('Invalid color value: ' + value);
 }
 
-export function normalizeColor(v: string | IColor) {
+export function normalizeColor(v: string | IColor): IColor {
   if (typeof v === 'string') {
     return parseColor(v);
   } else {
@@ -38,7 +38,7 @@ export function normalizeColor(v: string | IColor) {
 }
 
 /** Returns a list of color channels for a given color space. */
-export function getColorChannels(colorSpace: ColorSpace) {
+export function getColorChannels(colorSpace: ColorSpace): [ColorChannel, ColorChannel, ColorChannel] {
   switch (colorSpace) {
     case 'rgb':
       return RGBColor.colorChannels;
@@ -52,7 +52,7 @@ export function getColorChannels(colorSpace: ColorSpace) {
 /**
  * Returns the hue value normalized to the range of 0 to 360.
  */
-export function normalizeHue(hue: number) {
+export function normalizeHue(hue: number): number {
   if (hue === 360) {
     return hue;
   }

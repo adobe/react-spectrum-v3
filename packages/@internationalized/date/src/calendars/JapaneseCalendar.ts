@@ -85,11 +85,11 @@ export class JapaneseCalendar extends GregorianCalendar {
     );
   }
 
-  toJulianDay(date: AnyCalendarDate) {
+  toJulianDay(date: AnyCalendarDate): number {
     return super.toJulianDay(toGregorian(date));
   }
 
-  balanceDate(date: Mutable<AnyCalendarDate>) {
+  balanceDate(date: Mutable<AnyCalendarDate>): void {
     let gregorianDate = toGregorian(date);
     let era = findEraFromGregorianDate(gregorianDate);
 
@@ -102,7 +102,7 @@ export class JapaneseCalendar extends GregorianCalendar {
     this.constrainDate(date);
   }
 
-  constrainDate(date: Mutable<AnyCalendarDate>) {
+  constrainDate(date: Mutable<AnyCalendarDate>): void {
     let idx = ERA_NAMES.indexOf(date.era);
     let end = ERA_END_DATES[idx];
     if (end != null) {
@@ -131,7 +131,7 @@ export class JapaneseCalendar extends GregorianCalendar {
     }
   }
 
-  getEras() {
+  getEras(): string[] {
     return ERA_NAMES;
   }
 

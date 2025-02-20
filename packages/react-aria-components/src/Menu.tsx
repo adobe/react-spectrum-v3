@@ -51,7 +51,7 @@ export interface MenuTriggerProps extends BaseMenuTriggerProps {
   children: ReactNode
 }
 
-export function MenuTrigger(props: MenuTriggerProps) {
+export function MenuTrigger(props: MenuTriggerProps): ReactElement {
   let state = useMenuTriggerState(props);
   let ref = useRef<HTMLButtonElement>(null);
   let {menuTriggerProps, menuProps} = useMenuTrigger({

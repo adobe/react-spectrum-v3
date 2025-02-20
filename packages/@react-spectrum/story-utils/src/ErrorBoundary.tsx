@@ -13,17 +13,17 @@
 import React, {Component, ReactNode} from 'react';
 
 export class ErrorBoundary extends Component<{message: string, children: ReactNode}, {hasError: boolean}> {
-  constructor(props) {
+  constructor(props: {message: string, children: ReactNode}) {
     super(props);
     this.state = {hasError: false};
   }
 
-  static getDerivedStateFromError() {
+  static getDerivedStateFromError(): {hasError: boolean} {
     // Update state so the next render will show the fallback UI.
     return {hasError: true};
   }
 
-  render() {
+  render(): ReactNode {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return <div>{this.props.message}</div>;

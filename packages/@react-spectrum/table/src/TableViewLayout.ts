@@ -89,8 +89,8 @@ export class TableViewLayout<T> extends TableLayout<T> {
     return super.getEstimatedRowHeight() + 1; // for bottom border
   }
 
-  protected isStickyColumn(node: GridNode<T>) {
-    return node.props?.isDragButtonCell || node.props?.isSelectionCell;
+  protected isStickyColumn(node: GridNode<T>): boolean {
+    return (node.props?.isDragButtonCell || node.props?.isSelectionCell) ?? false;
   }
 
   getDropTargetFromPoint(x: number, y: number, isValidDropTarget: (target: DropTarget) => boolean): DropTarget | null {

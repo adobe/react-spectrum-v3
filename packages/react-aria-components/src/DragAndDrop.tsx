@@ -12,7 +12,7 @@
 import type {DropIndicatorProps as AriaDropIndicatorProps, ItemDropTarget, Key} from 'react-aria';
 import type {DragAndDropHooks} from './useDragAndDrop';
 import type {DraggableCollectionState, DroppableCollectionState, MultipleSelectionManager} from 'react-stately';
-import React, {createContext, ForwardedRef, forwardRef, JSX, ReactNode, useCallback, useContext, useMemo} from 'react';
+import React, {createContext, ForwardedRef, forwardRef, JSX, ReactElement, ReactNode, useCallback, useContext, useMemo} from 'react';
 import type {RenderProps} from './utils';
 
 export interface DragAndDropContextValue {
@@ -45,7 +45,9 @@ export const DropIndicator = forwardRef(function DropIndicator(props: DropIndica
   return <>{render(props, ref)}</>;
 });
 
-export function useRenderDropIndicator(dragAndDropHooks?: DragAndDropHooks, dropState?: DroppableCollectionState) {
+type RenderDropIndicatorRetValue = ((target: ItemDropTarget) => ReactElement | undefined) | undefined
+
+export function useRenderDropIndicator(dragAndDropHooks?: DragAndDropHooks, dropState?: DroppableCollectionState): RenderDropIndicatorRetValue {
   let renderDropIndicator = dragAndDropHooks?.renderDropIndicator;
   let isVirtualDragging = dragAndDropHooks?.isVirtualDragging?.();
   let fn = useCallback((target: ItemDropTarget) => {
@@ -59,7 +61,7 @@ export function useRenderDropIndicator(dragAndDropHooks?: DragAndDropHooks, drop
   return dragAndDropHooks?.useDropIndicator ? fn : undefined;
 }
 
-export function useDndPersistedKeys(selectionManager: MultipleSelectionManager, dragAndDropHooks?: DragAndDropHooks, dropState?: DroppableCollectionState) {
+export function useDndPersistedKeys(selectionManager: MultipleSelectionManager, dragAndDropHooks?: DragAndDropHooks, dropState?: DroppableCollectionState): Set<Key> {
   // Persist the focused key and the drop target key.
   let focusedKey = selectionManager.focusedKey;
   let dropTargetKey: Key | null | undefined = null;

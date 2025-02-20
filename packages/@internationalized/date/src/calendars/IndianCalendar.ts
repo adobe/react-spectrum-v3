@@ -75,7 +75,7 @@ export class IndianCalendar extends GregorianCalendar {
     return new CalendarDate(this, indianYear, indianMonth, indianDay);
   }
 
-  toJulianDay(date: AnyCalendarDate) {
+  toJulianDay(date: AnyCalendarDate): number {
     let extendedYear = date.year + INDIAN_ERA_START;
     let [era, year] = fromExtendedYear(extendedYear);
 
@@ -121,9 +121,9 @@ export class IndianCalendar extends GregorianCalendar {
     return 9919;
   }
 
-  getEras() {
+  getEras(): string[] {
     return ['saka'];
   }
 
-  balanceDate() {}
+  balanceDate(): void {}
 }

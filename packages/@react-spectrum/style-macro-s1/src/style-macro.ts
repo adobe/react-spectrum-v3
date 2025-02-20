@@ -449,7 +449,7 @@ function printRuleChildren(rule: Rule, indent = '') {
   return res;
 }
 
-export function raw(this: MacroContext | void, css: string) {
+export function raw(this: MacroContext | void, css: string): string {
   let className = generateArbitraryValueSelector(css, true);
   css = `.${className} {
   ${css}
@@ -463,7 +463,7 @@ export function raw(this: MacroContext | void, css: string) {
   return className;
 }
 
-export function keyframes(this: MacroContext | void, css: string) {
+export function keyframes(this: MacroContext | void, css: string): string {
   let name = generateArbitraryValueSelector(css, true);
   css = `@keyframes ${name} {
   ${css}

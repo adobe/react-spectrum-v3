@@ -33,7 +33,7 @@ export class MessageDictionary {
     this.defaultLocale = defaultLocale;
   }
 
-  getStringForLocale(key: string, locale: string) {
+  getStringForLocale(key: string, locale: string): string {
     let strings = this.messages[locale];
     if (!strings) {
       strings = getStringsForLocale(locale, this.messages, this.defaultLocale);

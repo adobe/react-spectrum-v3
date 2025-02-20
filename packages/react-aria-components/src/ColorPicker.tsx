@@ -17,7 +17,7 @@ import {ColorSwatchContext} from './ColorSwatch';
 import {ColorSwatchPickerContext} from './ColorSwatchPicker';
 import {mergeProps} from 'react-aria';
 import {Provider, RenderProps, SlotProps, SlottedContextValue, useRenderProps, useSlottedContext} from './utils';
-import React, {createContext} from 'react';
+import React, {createContext, ReactElement} from 'react';
 
 export interface ColorPickerRenderProps {
   /** The currently selected color. */
@@ -33,7 +33,7 @@ export const ColorPickerStateContext = createContext<ColorPickerState | null>(nu
  * A ColorPicker synchronizes a color value between multiple React Aria color components.
  * It simplifies building color pickers with customizable layouts via composition.
  */
-export function ColorPicker(props: ColorPickerProps) {
+export function ColorPicker(props: ColorPickerProps): ReactElement {
   let ctx = useSlottedContext(ColorPickerContext, props.slot);
   props = mergeProps(ctx, props);
   let state = useColorPickerState(props);

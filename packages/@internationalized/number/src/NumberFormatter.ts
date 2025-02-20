@@ -167,7 +167,7 @@ function getCachedNumberFormatter(locale: string, options: NumberFormatOptions =
 }
 
 /** @private - exported for tests */
-export function numberFormatSignDisplayPolyfill(numberFormat: Intl.NumberFormat, signDisplay: string, num: number) {
+export function numberFormatSignDisplayPolyfill(numberFormat: Intl.NumberFormat, signDisplay: string, num: number): string {
   if (signDisplay === 'auto') {
     return numberFormat.format(num);
   } else if (signDisplay === 'never') {

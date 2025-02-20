@@ -87,7 +87,7 @@ export class GalleryLayout<T> extends BaseLayout<T> {
     this.margin = options.margin != null ? options.margin : DEFAULT_OPTIONS[cardSize].margin;
   }
 
-  get layoutType() {
+  get layoutType(): string {
     return 'gallery';
   }
 
@@ -96,7 +96,7 @@ export class GalleryLayout<T> extends BaseLayout<T> {
    * the widest in the row until it can't give anymore, then move to the second widest and so forth.
    * Do this until all assets meet the min-width.
    * */
-  _distributeWidths(widths) {
+  _distributeWidths(widths: number[]): boolean {
     // create a copy of the widths array and sort it largest to smallest
     let sortedWidths = widths.concat().sort((a, b) => a[1] > b[1] ? -1 : 1);
     for (let width of widths) {
@@ -134,7 +134,7 @@ export class GalleryLayout<T> extends BaseLayout<T> {
     return true;
   }
 
-  buildCollection() {
+  buildCollection(): void {
     let visibleWidth = this.virtualizer.visibleRect.width;
     let visibleHeight = this.virtualizer.visibleRect.height;
     let y = this.margin;

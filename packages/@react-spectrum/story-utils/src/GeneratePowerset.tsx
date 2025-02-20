@@ -13,7 +13,7 @@
 import {mergeProps} from '@react-aria/utils';
 
 // Generate a powerset from a given array of states/options,
-export function generatePowerset(states: Array<object>, exclude?: (merged) => boolean) {
+export function generatePowerset(states: Array<object>, exclude?: (merged) => boolean): any[] {
   let combinations: any[] = [{}];
   for (let i = 0; i < states.length; i++) {
     let len = combinations.length;

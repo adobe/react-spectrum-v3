@@ -66,11 +66,11 @@ export class WaterfallLayout<T> extends BaseLayout<T> implements KeyboardDelegat
     this.collator = options.collator;
   }
 
-  get layoutType() {
+  get layoutType(): string {
     return 'waterfall';
   }
 
-  buildCollection(invalidationContext: InvalidationContext) {
+  buildCollection(invalidationContext: InvalidationContext): void {
     // Compute the number of columns needed to display the content
     let visibleWidth = this.virtualizer.visibleRect.width;
     let availableWidth = visibleWidth - this.margin * 2;
@@ -163,7 +163,7 @@ export class WaterfallLayout<T> extends BaseLayout<T> implements KeyboardDelegat
     this.contentSize = new Size(this.virtualizer.visibleRect.width, y);
   }
 
-  updateItemSize(key: Key, size: Size) {
+  updateItemSize(key: Key, size: Size): number {
     let layoutInfo = this.layoutInfos.get(key);
     if (!size || !layoutInfo) {
       return false;
@@ -182,7 +182,7 @@ export class WaterfallLayout<T> extends BaseLayout<T> implements KeyboardDelegat
     return false;
   }
 
-  getNextColumnIndex(columnHeights) {
+  getNextColumnIndex(columnHeights: number[]): number {
     let minIndex = 0;
     for (let i = 0; i < columnHeights.length; i++) {
       if (columnHeights[i] < columnHeights[minIndex]) {
@@ -193,7 +193,7 @@ export class WaterfallLayout<T> extends BaseLayout<T> implements KeyboardDelegat
     return minIndex;
   }
 
-  getClosestRight(key: Key) {
+  getClosestRight(key: Key): Node<T> | undefined {
     let layoutInfo = this.getLayoutInfo(key);
     // Refactored from v2. Current strategy is to find the closest card in the adjacent column.
     // This prevent the issue where it was possible that the closest layoutInfo would be two columns over due to the middle card being exceptionally tall
@@ -212,7 +212,7 @@ export class WaterfallLayout<T> extends BaseLayout<T> implements KeyboardDelegat
     return getFirstItem(getChildNodes(item, this.collection))?.key;
   }
 
-  getClosestLeft(key: Key) {
+  getClosestLeft(key: Key): Node<T> | undefined {
     let layoutInfo = this.getLayoutInfo(key);
      // First look for a card to the immediate left of the current card. If we can't find any, look for the nearest card in the entire column to the left of the card
     let rect = new Rect(layoutInfo.rect.x - layoutInfo.rect.width - this.horizontalSpacing - 1, layoutInfo.rect.y, layoutInfo.rect.width + this.horizontalSpacing, layoutInfo.rect.height);
@@ -227,13 +227,13 @@ export class WaterfallLayout<T> extends BaseLayout<T> implements KeyboardDelegat
     return getFirstItem(getChildNodes(item, this.collection))?.key;
   }
 
-  getKeyRightOf(key: Key) {
+  getKeyRightOf(key: Key): Node<T> | undefined {
     // Expected key is the currently focused cell so we need the parent row key
     let parentRowKey = this.collection.getItem(key).parentKey;
     return this.direction === 'rtl' ?  this.getClosestLeft(parentRowKey) : this.getClosestRight(parentRowKey);
   }
 
-  getKeyLeftOf(key: Key) {
+  getKeyLeftOf(key: Key): Node<T> | undefined {
     // Expected key is the currently focused cell so we need the parent row key
     let parentRowKey = this.collection.getItem(key).parentKey;
     return this.direction === 'rtl' ?  this.getClosestRight(parentRowKey) : this.getClosestLeft(parentRowKey);

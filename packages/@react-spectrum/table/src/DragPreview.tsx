@@ -12,7 +12,7 @@
 
 import {classNames} from '@react-spectrum/utils';
 import {Flex} from '@react-spectrum/layout';
-import React from 'react';
+import React, {ReactElement} from 'react';
 import styles from '@adobe/spectrum-css-temp/components/table/vars.css';
 import stylesOverrides from './table.css';
 
@@ -23,7 +23,7 @@ interface DragPreviewProps {
   maxWidth: number
 }
 
-export function DragPreview(props: DragPreviewProps) {
+export function DragPreview(props: DragPreviewProps): ReactElement {
   let {
     itemText,
     itemCount,

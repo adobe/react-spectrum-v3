@@ -50,7 +50,7 @@ export function getLastItem<T>(iterable: Iterable<T>): T | undefined {
   return lastItem;
 }
 
-export function compareNodeOrder<T>(collection: Collection<Node<T>>, a: Node<T>, b: Node<T>) {
+export function compareNodeOrder<T>(collection: Collection<Node<T>>, a: Node<T>, b: Node<T>): number {
   // If the two nodes have the same parent, compare their indices.
   if (a.parentKey === b.parentKey) {
     return a.index - b.index;

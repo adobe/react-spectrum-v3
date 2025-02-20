@@ -73,7 +73,7 @@ export class GridLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     // The max item width is always the entire viewport.
     // If the max item height is infinity, scale in proportion to the max width.
     let maxItemWidth = Math.min(this.maxItemSize.width, visibleWidth);
-    let maxItemHeight = Number.isFinite(this.maxItemSize.height) 
+    let maxItemHeight = Number.isFinite(this.maxItemSize.height)
       ? this.maxItemSize.height
       : Math.floor((this.minItemSize.height / this.minItemSize.width) * maxItemWidth);
 
@@ -115,7 +115,7 @@ export class GridLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
       }
     }
     persistedIndices.sort((a, b) => a - b);
-    
+
     let persistedBefore: LayoutInfo[] = [];
     for (let index of persistedIndices) {
       if (index < firstVisibleItem) {
@@ -128,7 +128,7 @@ export class GridLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     return result;
   }
 
-  protected getIndexAtPoint(x: number, y: number) {
+  protected getIndexAtPoint(x: number, y: number): number {
     let itemHeight = this.itemSize.height + this.minSpace.height;
     let itemWidth = this.itemSize.width + this.horizontalSpacing;
     return Math.max(0,
@@ -156,7 +156,7 @@ export class GridLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
 
   getContentSize(): Size {
     let numRows = Math.ceil(this.virtualizer!.collection.size / this.numColumns);
-    let contentHeight = this.minSpace.height + numRows * (this.itemSize.height + this.minSpace.height);  
+    let contentHeight = this.minSpace.height + numRows * (this.itemSize.height + this.minSpace.height);
     return new Size(this.virtualizer!.visibleRect.width, contentHeight);
   }
 
@@ -207,7 +207,7 @@ export class GridLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
       // Flip from vertical to horizontal if only one column is visible.
       rect = new Rect(
         layoutInfo.rect.x,
-        target.dropPosition === 'before' 
+        target.dropPosition === 'before'
           ? layoutInfo.rect.y - this.minSpace.height / 2 - this.dropIndicatorThickness / 2
           : layoutInfo.rect.maxY + this.minSpace.height / 2 - this.dropIndicatorThickness / 2,
         layoutInfo.rect.width,
@@ -215,8 +215,8 @@ export class GridLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
       );
     } else {
       rect = new Rect(
-        target.dropPosition === 'before' 
-          ? layoutInfo.rect.x - this.horizontalSpacing / 2 - this.dropIndicatorThickness / 2 
+        target.dropPosition === 'before'
+          ? layoutInfo.rect.x - this.horizontalSpacing / 2 - this.dropIndicatorThickness / 2
           : layoutInfo.rect.maxX + this.horizontalSpacing / 2 - this.dropIndicatorThickness / 2,
         layoutInfo.rect.y,
         this.dropIndicatorThickness,

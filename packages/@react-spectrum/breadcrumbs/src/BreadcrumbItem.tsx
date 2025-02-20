@@ -15,7 +15,7 @@ import ChevronRightSmall from '@spectrum-icons/ui/ChevronRightSmall';
 import {classNames} from '@react-spectrum/utils';
 import {FocusRing} from '@react-aria/focus';
 import {mergeProps} from '@react-aria/utils';
-import React, {Fragment, useRef} from 'react';
+import React, {Fragment, ReactElement, useRef} from 'react';
 import styles from '@adobe/spectrum-css-temp/components/breadcrumb/vars.css';
 import {useBreadcrumbItem} from '@react-aria/breadcrumbs';
 import {useHover} from '@react-aria/interactions';
@@ -25,7 +25,7 @@ interface SpectrumBreadcrumbItemProps extends BreadcrumbItemProps {
   isMenu?: boolean
 }
 
-export function BreadcrumbItem(props: SpectrumBreadcrumbItemProps) {
+export function BreadcrumbItem(props: SpectrumBreadcrumbItemProps): ReactElement {
   let {
     children,
     isCurrent,

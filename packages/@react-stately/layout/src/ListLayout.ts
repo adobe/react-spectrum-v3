@@ -117,12 +117,12 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     return this.virtualizer!.collection;
   }
 
-  getLayoutInfo(key: Key) {
+  getLayoutInfo(key: Key): LayoutInfo | null {
     this.ensureLayoutInfo(key);
     return this.layoutNodes.get(key)?.layoutInfo || null;
   }
 
-  getVisibleLayoutInfos(rect: Rect) {
+  getVisibleLayoutInfos(rect: Rect): LayoutInfo[] {
     // Adjust rect to keep number of visible rows consistent.
     // (only if height > 1 for getDropTargetFromPoint)
     if (rect.height > 1) {
@@ -153,7 +153,7 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     return res;
   }
 
-  protected layoutIfNeeded(rect: Rect) {
+  protected layoutIfNeeded(rect: Rect): void {
     if (!this.lastCollection) {
       return;
     }
@@ -162,7 +162,7 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
       this.requestedRect = this.requestedRect.union(rect);
       this.rootNodes = this.buildCollection();
     }
-    
+
     // Ensure all of the persisted keys are available.
     for (let key of this.virtualizer!.persistedKeys) {
       if (this.ensureLayoutInfo(key)) {
@@ -185,17 +185,17 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     return false;
   }
 
-  protected isVisible(node: LayoutNode, rect: Rect) {
+  protected isVisible(node: LayoutNode, rect: Rect): boolean {
     return node.layoutInfo.rect.intersects(rect) || node.layoutInfo.isSticky || node.layoutInfo.type === 'header' || this.virtualizer!.isPersistedKey(node.layoutInfo.key);
   }
 
-  protected shouldInvalidateEverything(invalidationContext: InvalidationContext<O>) {
+  protected shouldInvalidateEverything(invalidationContext: InvalidationContext<O>): boolean {
     // Invalidate cache if the size of the collection changed.
     // In this case, we need to recalculate the entire layout.
     return invalidationContext.sizeChanged || false;
   }
 
-  update(invalidationContext: InvalidationContext<O>) {
+  update(invalidationContext: InvalidationContext<O>): void {
     let collection = this.virtualizer!.collection;
 
     // Reset valid rect if we will have to invalidate everything.
@@ -256,11 +256,11 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     return nodes;
   }
 
-  protected isValid(node: Node<T>, y: number) {
+  protected isValid(node: Node<T>, y: number): boolean {
     let cached = this.layoutNodes.get(node.key);
     return (
       !this.invalidateEverything &&
-      cached &&
+      !!cached &&
       cached.node === node &&
       y === cached.layoutInfo.rect.y &&
       cached.layoutInfo.rect.intersects(this.validRect) &&
@@ -421,7 +421,7 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     };
   }
 
-  updateItemSize(key: Key, size: Size) {
+  updateItemSize(key: Key, size: Size): boolean {
     let layoutNode = this.layoutNodes.get(key);
     // If no layoutInfo, item has been deleted/removed.
     if (!layoutNode) {
@@ -472,7 +472,7 @@ export class ListLayout<T, O = any> extends Layout<Node<T>, O> implements DropTa
     }
   }
 
-  getContentSize() {
+  getContentSize(): Size {
     return this.contentSize;
   }
 
