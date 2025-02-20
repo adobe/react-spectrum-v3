@@ -29,7 +29,7 @@ export interface UserOpts {
    * A function used by the test utils to advance timers during interactions. Required for certain aria patterns (e.g. table). This can be overridden
    * at the aria pattern tester level if needed.
    */
-  advanceTimer?: (time?: number) => void | Promise<unknown>
+  advanceTimer?: (time?: number) => void | Promise<unknown> | any
 }
 
 export interface BaseTesterOpts extends UserOpts {
