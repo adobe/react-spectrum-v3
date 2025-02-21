@@ -12,10 +12,9 @@
 
 import {act, fireEvent, mockClickDefault, pointerMap, render, within} from '@react-spectrum/test-utils-internal';
 import {AriaMenuTests} from './AriaMenu.test-util';
-import {Button, Collection, Dialog, Header, Heading, Input, Keyboard, Label, Menu, MenuContext, MenuItem, MenuSection, MenuTrigger, Popover, Pressable, Separator, SubmenuTrigger, Text, TextField} from '..';
+import {Button, Collection, Header, Heading, Input, Keyboard, Label, Menu, MenuContext, MenuItem, MenuSection, MenuTrigger, Popover, Pressable, Separator, SubmenuTrigger, Text, TextField} from '..';
 import React, {useState} from 'react';
 import {Selection, SelectionMode} from '@react-types/shared';
-import {SubDialogTrigger} from '../src/Menu';
 import {UNSTABLE_PortalProvider} from '@react-aria/overlays';
 import {User} from '@react-aria/test-utils';
 import userEvent from '@testing-library/user-event';
@@ -1107,29 +1106,22 @@ describe('Menu', () => {
               <MenuItem id="open">Open</MenuItem>
               <MenuItem id="rename">Rename…</MenuItem>
               <MenuItem id="duplicate">Duplicate</MenuItem>
-              <SubDialogTrigger>
+              <SubmenuTrigger>
                 <MenuItem id="share">Share…</MenuItem>
                 <Popover>
-                  <Dialog>
-                    {({close}) => (
-                      <form style={{display: 'flex', flexDirection: 'column'}}>
-                        <Heading slot="title">Sign up</Heading>
-                        <TextField>
-                          <Label>First Name: </Label>
-                          <Input />
-                        </TextField>
-                        <TextField>
-                          <Label>Last Name: </Label>
-                          <Input />
-                        </TextField>
-                        <Button onPress={close}>
-                          Submit
-                        </Button>
-                      </form>
-                    )}
-                  </Dialog>
+                  <form style={{display: 'flex', flexDirection: 'column'}}>
+                    <Heading slot="title">Sign up</Heading>
+                    <TextField>
+                      <Label>First Name: </Label>
+                      <Input />
+                    </TextField>
+                    <TextField>
+                      <Label>Last Name: </Label>
+                      <Input />
+                    </TextField>
+                  </form>
                 </Popover>
-              </SubDialogTrigger>
+              </SubmenuTrigger>
               <MenuItem id="delete">Delete…</MenuItem>
             </Menu>
           </Popover>
@@ -1149,9 +1141,8 @@ describe('Menu', () => {
 
       let triggerItem = menuTester.submenuTriggers[0];
       expect(triggerItem).toHaveTextContent('Share…');
-      expect(triggerItem).toHaveAttribute('aria-haspopup', 'dialog');
+      expect(triggerItem).toHaveAttribute('aria-haspopup', 'menu');
       expect(triggerItem).toHaveAttribute('aria-expanded', 'false');
-      // TODO: should this have a different data attribute aka has-subdialog?
       expect(triggerItem).toHaveAttribute('data-has-submenu', 'true');
       expect(triggerItem).not.toHaveAttribute('data-open');
 
@@ -1161,21 +1152,18 @@ describe('Menu', () => {
       expect(triggerItem).toHaveAttribute('data-hovered', 'true');
       expect(triggerItem).toHaveAttribute('aria-expanded', 'true');
       expect(triggerItem).toHaveAttribute('data-open', 'true');
-      let subdialog = getAllByRole('dialog')[0];
+      let subdialog = getAllByRole('dialog')[1];
       expect(subdialog).toBeInTheDocument();
 
       let subdialogPopover = subdialog.closest('.react-aria-Popover') as HTMLElement;
       expect(subdialogPopover).toBeInTheDocument();
-      expect(subdialogPopover).toHaveAttribute('data-trigger', 'SubDialogTrigger');
+      expect(subdialogPopover).toHaveAttribute('data-trigger', 'SubmenuTrigger');
 
       let inputs = within(subdialogPopover).getAllByRole('textbox');
-      let buttons = within(subdialogPopover).getAllByRole('button');
       await user.click(inputs[0]);
       expect(document.activeElement).toBe(inputs[0]);
       await user.tab();
       expect(document.activeElement).toBe(inputs[1]);
-      await user.tab();
-      expect(document.activeElement).toBe(buttons[0]);
       await user.tab();
       expect(document.activeElement).toBe(inputs[0]);
     });
@@ -1190,47 +1178,35 @@ describe('Menu', () => {
               <MenuItem id="open">Open</MenuItem>
               <MenuItem id="rename">Rename…</MenuItem>
               <MenuItem id="duplicate">Duplicate</MenuItem>
-              <SubDialogTrigger>
+              <SubmenuTrigger>
                 <MenuItem id="share">Share…</MenuItem>
                 <Popover>
-                  <Dialog>
-                    {({close}) => (
-                      <>
-                        <Menu>
-                          <SubDialogTrigger>
-                            <MenuItem>Nested Subdialog</MenuItem>
-                            <Popover>
-                              <Dialog>
-                                {({close}) => (
-                                  <form>
-                                    <Heading slot="title">Contact</Heading>
-                                    <TextField autoFocus>
-                                      <Label>Email: </Label>
-                                      <Input />
-                                    </TextField>
-                                    <TextField>
-                                      <Label>Contact number: </Label>
-                                      <Input />
-                                    </TextField>
-                                    <Button onPress={close}>
-                                      Submit
-                                    </Button>
-                                  </form>
-                                )}
-                              </Dialog>
-                            </Popover>
-                          </SubDialogTrigger>
-                          <MenuItem>B</MenuItem>
-                          <MenuItem>C</MenuItem>
-                        </Menu>
-                        <Button onPress={close}>
-                          Close
-                        </Button>
-                      </>
-                    )}
-                  </Dialog>
+                  <Menu>
+                    <SubmenuTrigger>
+                      <MenuItem>Nested Subdialog</MenuItem>
+                      <Popover>
+                        <form>
+                          <Heading slot="title">Contact</Heading>
+                          <TextField autoFocus>
+                            <Label>Email: </Label>
+                            <Input />
+                          </TextField>
+                          <TextField>
+                            <Label>Contact number: </Label>
+                            <Input />
+                          </TextField>
+                          <Button>
+                            Submit
+                          </Button>
+                        </form>
+                      </Popover>
+                    </SubmenuTrigger>
+                    <MenuItem>B</MenuItem>
+                    <MenuItem>C</MenuItem>
+                  </Menu>
+                  <Button>Test</Button>
                 </Popover>
-              </SubDialogTrigger>
+              </SubmenuTrigger>
               <MenuItem id="delete">Delete…</MenuItem>
             </Menu>
           </Popover>
@@ -1242,7 +1218,7 @@ describe('Menu', () => {
 
       let triggerItem = menuTester.submenuTriggers[0];
       expect(triggerItem).toHaveTextContent('Share…');
-      expect(triggerItem).toHaveAttribute('aria-haspopup', 'dialog');
+      expect(triggerItem).toHaveAttribute('aria-haspopup', 'menu');
 
       // Open the subdialog
       let subDialogTester = await menuTester.openSubmenu({submenuTrigger: triggerItem});
@@ -1251,24 +1227,24 @@ describe('Menu', () => {
 
       let subDialogTriggerItem = subDialogTester?.submenuTriggers[0];
       expect(subDialogTriggerItem).toHaveTextContent('Nested Subdialog');
-      expect(subDialogTriggerItem).toHaveAttribute('aria-haspopup', 'dialog');
+      expect(subDialogTriggerItem).toHaveAttribute('aria-haspopup', 'menu');
 
       // Open the nested subdialog
       await subDialogTester?.openSubmenu({submenuTrigger: subDialogTriggerItem!});
       act(() => {jest.runAllTimers();});
       let subdialogs = getAllByRole('dialog');
-      expect(subdialogs).toHaveLength(2);
+      expect(subdialogs).toHaveLength(3);
 
       await user.keyboard('{Escape}');
       act(() => {jest.runAllTimers();});
       subdialogs = getAllByRole('dialog');
-      expect(subdialogs).toHaveLength(1);
+      expect(subdialogs).toHaveLength(2);
       expect(document.activeElement).toBe(subDialogTriggerItem);
 
       await user.keyboard('{Escape}');
       act(() => {jest.runAllTimers();});
       subdialogs = queryAllByRole('dialog');
-      expect(subdialogs).toHaveLength(0);
+      expect(subdialogs).toHaveLength(1);
       expect(document.activeElement).toBe(triggerItem);
     });
 
@@ -1282,47 +1258,35 @@ describe('Menu', () => {
               <MenuItem id="open">Open</MenuItem>
               <MenuItem id="rename">Rename…</MenuItem>
               <MenuItem id="duplicate">Duplicate</MenuItem>
-              <SubDialogTrigger>
+              <SubmenuTrigger>
                 <MenuItem id="share">Share…</MenuItem>
                 <Popover>
-                  <Dialog>
-                    {({close}) => (
-                      <>
-                        <Menu>
-                          <SubDialogTrigger>
-                            <MenuItem>Nested Subdialog</MenuItem>
-                            <Popover>
-                              <Dialog>
-                                {({close}) => (
-                                  <form>
-                                    <Heading slot="title">Contact</Heading>
-                                    <TextField autoFocus>
-                                      <Label>Email: </Label>
-                                      <Input />
-                                    </TextField>
-                                    <TextField>
-                                      <Label>Contact number: </Label>
-                                      <Input />
-                                    </TextField>
-                                    <Button onPress={close}>
-                                      Submit
-                                    </Button>
-                                  </form>
-                                )}
-                              </Dialog>
-                            </Popover>
-                          </SubDialogTrigger>
-                          <MenuItem>B</MenuItem>
-                          <MenuItem>C</MenuItem>
-                        </Menu>
-                        <Button onPress={close}>
-                          Close
-                        </Button>
-                      </>
-                    )}
-                  </Dialog>
+                  <Menu>
+                    <SubmenuTrigger>
+                      <MenuItem>Nested Subdialog</MenuItem>
+                      <Popover>
+                        <form>
+                          <Heading slot="title">Contact</Heading>
+                          <TextField autoFocus>
+                            <Label>Email: </Label>
+                            <Input />
+                          </TextField>
+                          <TextField>
+                            <Label>Contact number: </Label>
+                            <Input />
+                          </TextField>
+                          <Button>
+                            Submit
+                          </Button>
+                        </form>
+                      </Popover>
+                    </SubmenuTrigger>
+                    <MenuItem>B</MenuItem>
+                    <MenuItem>C</MenuItem>
+                  </Menu>
+                  <Button>Test </Button>
                 </Popover>
-              </SubDialogTrigger>
+              </SubmenuTrigger>
               <MenuItem id="delete">Delete…</MenuItem>
             </Menu>
           </Popover>
@@ -1344,7 +1308,7 @@ describe('Menu', () => {
       await subDialogTester?.openSubmenu({submenuTrigger: subDialogTriggerItem!});
       act(() => {jest.runAllTimers();});
       let subdialogs = getAllByRole('dialog');
-      expect(subdialogs).toHaveLength(2);
+      expect(subdialogs).toHaveLength(3);
 
       await user.click(document.body);
       act(() => {jest.runAllTimers();});

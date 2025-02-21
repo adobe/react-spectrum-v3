@@ -33,6 +33,10 @@ export interface OverlayProps {
    */
   disableFocusManagement?: boolean,
   /**
+   * Whether to contain focus within the overlay.
+   */
+  shouldContainFocus?: boolean,
+  /**
    * Whether the overlay is currently performing an exit animation. When true,
    * focus is allowed to move outside.
    */
@@ -63,7 +67,7 @@ export function Overlay(props: OverlayProps) {
   let contents = props.children;
   if (!props.disableFocusManagement) {
     contents = (
-      <FocusScope restoreFocus contain={contain && !isExiting}>
+      <FocusScope restoreFocus contain={(props.shouldContainFocus || contain) && !isExiting}>
         {contents}
       </FocusScope>
     );

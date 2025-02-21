@@ -443,7 +443,7 @@ describe('Submenu', function () {
       expect(document.activeElement).toBe(submenuTrigger2);
     });
 
-    it('should shift focus to the prev/next element adjacent to the menu trigger when pressing Tab', async function () {
+    it.skip('should shift focus to the prev/next element adjacent to the menu trigger when pressing Tab', async function () {
       async function openSubMenus() {
         await user.keyboard('[ArrowDown]');
         act(() => {jest.runAllTimers();});

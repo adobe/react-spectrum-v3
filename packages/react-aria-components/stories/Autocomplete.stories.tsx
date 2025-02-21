@@ -11,7 +11,7 @@
  */
 
 import {action} from '@storybook/addon-actions';
-import {UNSTABLE_Autocomplete as Autocomplete, Button, Collection, Dialog, DialogTrigger, Header, Input, Keyboard, Label, ListBox, ListBoxSection, ListLayout, Menu, MenuItem, MenuSection, MenuTrigger, Popover, SearchField, Select, SelectValue, Separator, UNSTABLE_SubDialogTrigger as SubDialogTrigger, SubmenuTrigger, Text, TextField, Virtualizer} from 'react-aria-components';
+import {UNSTABLE_Autocomplete as Autocomplete, Button, Collection, DialogTrigger, Header, Input, Keyboard, Label, ListBox, ListBoxSection, ListLayout, Menu, MenuItem, MenuSection, MenuTrigger, Popover, SearchField, Select, SelectValue, Separator, SubmenuTrigger, Text, TextField, Virtualizer} from 'react-aria-components';
 import {MyListBoxItem, MyMenuItem} from './utils';
 import React from 'react';
 import styles from '../example/index.css';
@@ -50,7 +50,7 @@ let StaticMenu = (props) => {
         <MyMenuItem>Bar</MyMenuItem>
         <MyMenuItem>Baz</MyMenuItem>
         <MyMenuItem href="http://google.com">Google</MyMenuItem>
-        <SubDialogTrigger>
+        <SubmenuTrigger>
           <MyMenuItem>With subdialog</MyMenuItem>
           <Popover
             style={{
@@ -59,22 +59,20 @@ let StaticMenu = (props) => {
               border: '1px solid gray',
               padding: 5
             }}>
-            <Dialog>
-              <AutocompleteWrapper>
-                <TextField autoFocus>
-                  <Label style={{display: 'block'}}>Search</Label>
-                  <Input />
-                  <Text style={{display: 'block'}} slot="description">Please select an option below.</Text>
-                </TextField>
-                <Menu className={styles.menu} {...props}>
-                  <MyMenuItem>Subdialog Foo</MyMenuItem>
-                  <MyMenuItem>Subdialog Bar</MyMenuItem>
-                  <MyMenuItem>Subdialog Baz</MyMenuItem>
-                </Menu>
-              </AutocompleteWrapper>
-            </Dialog>
+            <AutocompleteWrapper>
+              <TextField autoFocus>
+                <Label style={{display: 'block'}}>Search</Label>
+                <Input />
+                <Text style={{display: 'block'}} slot="description">Please select an option below.</Text>
+              </TextField>
+              <Menu className={styles.menu} {...props}>
+                <MyMenuItem>Subdialog Foo</MyMenuItem>
+                <MyMenuItem>Subdialog Bar</MyMenuItem>
+                <MyMenuItem>Subdialog Baz</MyMenuItem>
+              </Menu>
+            </AutocompleteWrapper>
           </Popover>
-        </SubDialogTrigger>
+        </SubmenuTrigger>
         <MyMenuItem>Option</MyMenuItem>
         <MyMenuItem>Option with a space</MyMenuItem>
       </MenuSection>
@@ -230,7 +228,7 @@ let dynamicRenderTrigger = (item: ItemNode) => {
     );
   } else {
     return (
-      <SubDialogTrigger>
+      <SubmenuTrigger>
         <MyMenuItem id={item.name} textValue={item.name}>
           {item.name}
         </MyMenuItem>
@@ -241,20 +239,18 @@ let dynamicRenderTrigger = (item: ItemNode) => {
             border: '1px solid gray',
             padding: 5
           }}>
-          <Dialog>
-            <AutocompleteWrapper>
-              <SearchField autoFocus>
-                <Label style={{display: 'block'}}>Search</Label>
-                <Input />
-                <Text style={{display: 'block'}} slot="description">Please select an option below.</Text>
-              </SearchField>
-              <Menu className={styles.menu} items={item.children} onAction={action(`${item.name} onAction`)}>
-                {(item) => dynamicRenderFuncSections(item)}
-              </Menu>
-            </AutocompleteWrapper>
-          </Dialog>
+          <AutocompleteWrapper>
+            <SearchField autoFocus>
+              <Label style={{display: 'block'}}>Search</Label>
+              <Input />
+              <Text style={{display: 'block'}} slot="description">Please select an option below.</Text>
+            </SearchField>
+            <Menu className={styles.menu} items={item.children} onAction={action(`${item.name} onAction`)}>
+              {(item) => dynamicRenderFuncSections(item)}
+            </Menu>
+          </AutocompleteWrapper>
         </Popover>
-      </SubDialogTrigger>
+      </SubmenuTrigger>
     );
   }
 };
@@ -602,18 +598,16 @@ export const AutocompleteInPopover = {
             padding: 20,
             height: 250
           }}>
-          <Dialog aria-label="dialog with autocomplete">
-            <AutocompleteWrapper>
-              <div>
-                <SearchField autoFocus>
-                  <Label style={{display: 'block'}}>Test</Label>
-                  <Input />
-                  <Text style={{display: 'block'}} slot="description">Please select an option below.</Text>
-                </SearchField>
-                <ShellExample />
-              </div>
-            </AutocompleteWrapper>
-          </Dialog>
+          <AutocompleteWrapper>
+            <div>
+              <SearchField autoFocus>
+                <Label style={{display: 'block'}}>Test</Label>
+                <Input />
+                <Text style={{display: 'block'}} slot="description">Please select an option below.</Text>
+              </SearchField>
+              <ShellExample />
+            </div>
+          </AutocompleteWrapper>
         </Popover>
       </MenuTrigger>
     );
@@ -649,20 +643,18 @@ export const AutocompleteInPopoverDialogTrigger = {
             padding: 20,
             height: 250
           }}>
-          <Dialog aria-label="dialog with autocomplete">
-            {() => (
-              <AutocompleteWrapper>
-                <div>
-                  <SearchField autoFocus>
-                    <Label style={{display: 'block'}}>Test</Label>
-                    <Input />
-                    <Text style={{display: 'block'}} slot="description">Please select an option below.</Text>
-                  </SearchField>
-                  <ShellExample />
-                </div>
-              </AutocompleteWrapper>
-            )}
-          </Dialog>
+          {() => (
+            <AutocompleteWrapper>
+              <div>
+                <SearchField autoFocus>
+                  <Label style={{display: 'block'}}>Test</Label>
+                  <Input />
+                  <Text style={{display: 'block'}} slot="description">Please select an option below.</Text>
+                </SearchField>
+                <ShellExample />
+              </div>
+            </AutocompleteWrapper>
+          )}
         </Popover>
       </DialogTrigger>
     );
@@ -686,33 +678,31 @@ const MyMenu = () => {
   let {contains} = useFilter({sensitivity: 'base'});
 
   return (
-    <DialogTrigger>
+    <MenuTrigger>
       <Button aria-label="Menu">☰</Button>
       <Popover>
-        <Dialog>
-          <Button>First</Button>
-          <Button>Second</Button>
-          <Autocomplete filter={contains}>
-            <TextField autoFocus>
-              <Input />
-            </TextField>
-            <Menu>
-              <MenuItem onAction={() => console.log('open')}>Open</MenuItem>
-              <MenuItem onAction={() => console.log('rename')}>
-                Rename…
-              </MenuItem>
-              <MenuItem onAction={() => console.log('duplicate')}>
-                Duplicate
-              </MenuItem>
-              <MenuItem onAction={() => console.log('share')}>Share…</MenuItem>
-              <MenuItem onAction={() => console.log('delete')}>
-                Delete…
-              </MenuItem>
-            </Menu>
-          </Autocomplete>
-        </Dialog>
+        <Button>First</Button>
+        <Button>Second</Button>
+        <Autocomplete filter={contains}>
+          <TextField autoFocus>
+            <Input />
+          </TextField>
+          <Menu>
+            <MenuItem onAction={() => console.log('open')}>Open</MenuItem>
+            <MenuItem onAction={() => console.log('rename')}>
+              Rename…
+            </MenuItem>
+            <MenuItem onAction={() => console.log('duplicate')}>
+              Duplicate
+            </MenuItem>
+            <MenuItem onAction={() => console.log('share')}>Share…</MenuItem>
+            <MenuItem onAction={() => console.log('delete')}>
+              Delete…
+            </MenuItem>
+          </Menu>
+        </Autocomplete>
       </Popover>
-    </DialogTrigger>
+    </MenuTrigger>
   );
 };
 
@@ -720,33 +710,31 @@ const MyMenu2 = () => {
   let {contains} = useFilter({sensitivity: 'base'});
 
   return (
-    <DialogTrigger>
+    <MenuTrigger>
       <Button aria-label="Menu">☰</Button>
       <Popover>
-        <Dialog>
-          <Autocomplete filter={contains}>
-            <TextField autoFocus>
-              <Input />
-            </TextField>
-            <Menu>
-              <MenuItem onAction={() => console.log('open')}>Open</MenuItem>
-              <MenuItem onAction={() => console.log('rename')}>
-                Rename…
-              </MenuItem>
-              <MenuItem onAction={() => console.log('duplicate')}>
-                Duplicate
-              </MenuItem>
-              <MenuItem onAction={() => console.log('share')}>Share…</MenuItem>
-              <MenuItem onAction={() => console.log('delete')}>
-                Delete…
-              </MenuItem>
-            </Menu>
-          </Autocomplete>
-          <Button>First</Button>
-          <Button>Second</Button>
-        </Dialog>
+        <Autocomplete filter={contains}>
+          <TextField autoFocus>
+            <Input />
+          </TextField>
+          <Menu>
+            <MenuItem onAction={() => console.log('open')}>Open</MenuItem>
+            <MenuItem onAction={() => console.log('rename')}>
+              Rename…
+            </MenuItem>
+            <MenuItem onAction={() => console.log('duplicate')}>
+              Duplicate
+            </MenuItem>
+            <MenuItem onAction={() => console.log('share')}>Share…</MenuItem>
+            <MenuItem onAction={() => console.log('delete')}>
+              Delete…
+            </MenuItem>
+          </Menu>
+        </Autocomplete>
+        <Button>First</Button>
+        <Button>Second</Button>
       </Popover>
-    </DialogTrigger>
+    </MenuTrigger>
   );
 };
 
@@ -780,22 +768,18 @@ export const AutocompleteMenuInPopoverDialogTrigger = {
             padding: 20,
             height: 250
           }}>
-          <Dialog aria-label="dialog with autocomplete">
-            {() => (
-              <AutocompleteWrapper>
-                <div>
-                  <SearchField autoFocus>
-                    <Label style={{display: 'block'}}>Test</Label>
-                    <Input />
-                    <Text style={{display: 'block'}} slot="description">Please select an option below.</Text>
-                  </SearchField>
-                  <Menu className={styles.menu} items={dynamicAutocompleteSubdialog}  onAction={onAction} onSelectionChange={onSelectionChange} selectionMode={selectionMode}>
-                    {item => dynamicRenderFuncSections(item)}
-                  </Menu>
-                </div>
-              </AutocompleteWrapper>
-            )}
-          </Dialog>
+          <AutocompleteWrapper>
+            <div>
+              <SearchField autoFocus>
+                <Label style={{display: 'block'}}>Test</Label>
+                <Input />
+                <Text style={{display: 'block'}} slot="description">Please select an option below.</Text>
+              </SearchField>
+              <Menu className={styles.menu} items={dynamicAutocompleteSubdialog}  onAction={onAction} onSelectionChange={onSelectionChange} selectionMode={selectionMode}>
+                {item => dynamicRenderFuncSections(item)}
+              </Menu>
+            </div>
+          </AutocompleteWrapper>
         </Popover>
       </DialogTrigger>
     );
@@ -820,16 +804,14 @@ export const AutocompleteSelect = () => (
       <span aria-hidden="true" style={{paddingLeft: 5}}>▼</span>
     </Button>
     <Popover style={{background: 'Canvas', border: '1px solid ButtonBorder', padding: 5, boxSizing: 'border-box', display: 'flex'}}>
-      <Dialog aria-label="Test" style={{display: 'flex', flexDirection: 'column'}}>
-        <Autocomplete filter={useFilter({sensitivity: 'base'}).contains}>
-          <SearchField aria-label="Search" autoFocus style={{display: 'flex', flexDirection: 'column'}}>
-            <Input />
-          </SearchField>
-          <ListBox items={manyItems} className={styles.menu} style={{flex: 1}}>
-            {item => <MyListBoxItem>{item.name}</MyListBoxItem>}
-          </ListBox>
-        </Autocomplete>
-      </Dialog>
+      <Autocomplete filter={useFilter({sensitivity: 'base'}).contains}>
+        <SearchField aria-label="Search" autoFocus style={{display: 'flex', flexDirection: 'column'}}>
+          <Input />
+        </SearchField>
+        <ListBox items={manyItems} className={styles.menu} style={{flex: 1}}>
+          {item => <MyListBoxItem>{item.name}</MyListBoxItem>}
+        </ListBox>
+      </Autocomplete>
     </Popover>
   </Select>
 );

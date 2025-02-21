@@ -68,6 +68,7 @@ import {MenuTrigger, Button, Popover, Menu, MenuItem} from 'react-aria-component
 ```css hidden
 @import './Button.mdx' layer(button);
 @import './Popover.mdx' layer(popover);
+@import './SearchField.mdx' layer(searchfield);
 ```
 
 ```css
@@ -841,6 +842,52 @@ let items = [
 ```
 
 </details>
+
+### Complex content
+
+Submenu popovers can also include components other than menus. This example uses an [Autocomplete](Autocomplete.html) to make the submenu searchable.
+
+```tsx example
+import {Menu, Popover, SubmenuTrigger, UNSTABLE_Autocomplete as Autocomplete, useFilter} from 'react-aria-components';
+import {MySearchField} from './SearchField';
+
+function Example() {
+  let {contains} = useFilter({sensitivity: 'base'});
+
+  return (
+    <MyMenuButton label="Actions">
+      <MyItem>Cut</MyItem>
+      <MyItem>Copy</MyItem>
+      <MyItem>Delete</MyItem>
+      <SubmenuTrigger>
+        <MyItem>Add tag...</MyItem>
+        <Popover>
+          <Autocomplete filter={contains}>
+            <MySearchField label="Search tags" autoFocus />
+            <Menu>
+              <MyItem>News</MyItem>
+              <MyItem>Travel</MyItem>
+              <MyItem>Shopping</MyItem>
+              <MyItem>Business</MyItem>
+              <MyItem>Entertainment</MyItem>
+              <MyItem>Food</MyItem>
+              <MyItem>Technology</MyItem>
+              <MyItem>Health</MyItem>
+              <MyItem>Science</MyItem>
+            </Menu>
+          </Autocomplete>
+        </Popover>
+      </SubmenuTrigger>
+    </MyMenuButton>
+  );
+}
+```
+
+```css hidden
+.react-aria-Popover[data-trigger=SubmenuTrigger] .react-aria-SearchField {
+  margin: 4px 8px;
+}
+```
 
 ## Custom trigger
 

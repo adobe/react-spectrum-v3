@@ -50,7 +50,7 @@ export {Keyboard, KeyboardContext} from './Keyboard';
 export {Label, LabelContext} from './Label';
 export {Link, LinkContext} from './Link';
 export {ListBox, ListBoxItem, ListBoxSection, ListBoxContext, ListStateContext} from './ListBox';
-export {Menu, MenuItem, MenuTrigger, MenuSection, MenuContext, MenuStateContext, RootMenuTriggerStateContext, SubmenuTrigger, SubDialogTrigger as UNSTABLE_SubDialogTrigger} from './Menu';
+export {Menu, MenuItem, MenuTrigger, MenuSection, MenuContext, MenuStateContext, RootMenuTriggerStateContext, SubmenuTrigger} from './Menu';
 export {Meter, MeterContext} from './Meter';
 export {Modal, ModalOverlay, ModalContext} from './Modal';
 export {NumberField, NumberFieldContext, NumberFieldStateContext} from './NumberField';

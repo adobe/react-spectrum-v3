@@ -179,7 +179,8 @@ function SelectInner<T extends object>({props, selectRef: ref, collection}: Sele
           triggerRef: buttonRef,
           scrollRef,
           placement: 'bottom start',
-          style: {'--trigger-width': buttonWidth} as React.CSSProperties
+          style: {'--trigger-width': buttonWidth} as React.CSSProperties,
+          'aria-labelledby': menuProps['aria-labelledby']
         }],
         [ListBoxContext, {...menuProps, ref: scrollRef}],
         [ListStateContext, state],

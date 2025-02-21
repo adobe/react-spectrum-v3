@@ -99,6 +99,12 @@ export function useSubmenuTrigger<T>(props: AriaSubmenuTriggerProps, state: Subm
   }, [cancelOpenTimeout]);
 
   let submenuKeyDown = (e: KeyboardEvent) => {
+    // If focus is not within the menu, assume virtual focus is being used.
+    // This means some other input element is also within the popover, so we shouldn't close the menu.
+    if (!e.currentTarget.contains(document.activeElement)) {
+      return;
+    }
+
     switch (e.key) {
       case 'ArrowLeft':
         if (direction === 'ltr' && e.currentTarget.contains(e.target as Element)) {
@@ -253,7 +259,7 @@ export function useSubmenuTrigger<T>(props: AriaSubmenuTriggerProps, state: Subm
       // We will manually coerce focus back to the triggers for mobile screen readers and non virtual focus use cases (aka submenus outside of autocomplete) so turn off
       // FocusScope then. For virtual focus use cases (Autocomplete subdialogs/menu) and subdialogs we want to keep FocusScope restoreFocus to automatically
       // send focus to parent subdialog input fields and/or tab containment
-      disableFocusManagement: !shouldUseVirtualFocus && (getInteractionModality() === 'virtual' || type === 'menu'),
+      disableFocusManagement: !shouldUseVirtualFocus && (getInteractionModality() === 'virtual'),
       shouldCloseOnInteractOutside
     }
   };

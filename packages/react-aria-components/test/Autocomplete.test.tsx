@@ -12,7 +12,7 @@
 
 import {act, pointerMap, render, within} from '@react-spectrum/test-utils-internal';
 import {AriaAutocompleteTests} from './AriaAutocomplete.test-util';
-import {Button, Dialog, DialogTrigger, Header, Input, Label, ListBox, ListBoxItem, ListBoxSection, Menu, MenuItem, MenuSection, Popover, SearchField, Select, SelectValue, Separator, UNSTABLE_SubDialogTrigger as SubDialogTrigger, SubmenuTrigger, Text, TextField, UNSTABLE_Autocomplete} from '..';
+import {Button, Dialog, DialogTrigger, Header, Input, Label, ListBox, ListBoxItem, ListBoxSection, Menu, MenuItem, MenuSection, Popover, SearchField, Select, SelectValue, Separator, SubmenuTrigger, Text, TextField, UNSTABLE_Autocomplete} from '..';
 import React, {ReactNode} from 'react';
 import {useAsyncList} from 'react-stately';
 import {useFilter} from '@react-aria/i18n';
@@ -97,33 +97,29 @@ let SubMenus = (props) => (
 let SubDialogs = (props) => (
   <Menu {...props}>
     <MenuItem>Foo</MenuItem>
-    <SubDialogTrigger>
+    <SubmenuTrigger>
       <MenuItem>Bar</MenuItem>
       <Popover>
-        <Dialog>
-          <AutocompleteWrapper inputProps={{autoFocus: true}}>
-            <Menu {...props}>
-              <MenuItem>Lvl 1 Bar 1</MenuItem>
-              <SubDialogTrigger>
-                <MenuItem>Lvl 1 Bar 2</MenuItem>
-                <Popover>
-                  <Dialog>
-                    <AutocompleteWrapper inputProps={{autoFocus: true}}>
-                      <Menu {...props}>
-                        <MenuItem>Lvl 2 Bar 1</MenuItem>
-                        <MenuItem>Lvl 2 Bar 2</MenuItem>
-                        <MenuItem>Lvl 2 Bar 3</MenuItem>
-                      </Menu>
-                    </AutocompleteWrapper>
-                  </Dialog>
-                </Popover>
-              </SubDialogTrigger>
-              <MenuItem >Lvl 1 Bar 3</MenuItem>
-            </Menu>
-          </AutocompleteWrapper>
-        </Dialog>
+        <AutocompleteWrapper inputProps={{autoFocus: true}}>
+          <Menu {...props}>
+            <MenuItem>Lvl 1 Bar 1</MenuItem>
+            <SubmenuTrigger>
+              <MenuItem>Lvl 1 Bar 2</MenuItem>
+              <Popover>
+                <AutocompleteWrapper inputProps={{autoFocus: true}}>
+                  <Menu {...props}>
+                    <MenuItem>Lvl 2 Bar 1</MenuItem>
+                    <MenuItem>Lvl 2 Bar 2</MenuItem>
+                    <MenuItem>Lvl 2 Bar 3</MenuItem>
+                  </Menu>
+                </AutocompleteWrapper>
+              </Popover>
+            </SubmenuTrigger>
+            <MenuItem >Lvl 1 Bar 3</MenuItem>
+          </Menu>
+        </AutocompleteWrapper>
       </Popover>
-    </SubDialogTrigger>
+    </SubmenuTrigger>
     <MenuItem id="3">Baz</MenuItem>
   </Menu>
 );
@@ -131,42 +127,38 @@ let SubDialogs = (props) => (
 let SubDialogAndMenu = (props) => (
   <Menu {...props}>
     <MenuItem>Foo</MenuItem>
-    <SubDialogTrigger>
+    <SubmenuTrigger>
       <MenuItem>Bar</MenuItem>
       <Popover>
-        <Dialog>
-          <AutocompleteWrapper inputProps={{autoFocus: true}}>
-            <Menu {...props}>
-              <MenuItem>Lvl 1 Bar 1</MenuItem>
-              <SubmenuTrigger>
-                <MenuItem>Lvl 1 Bar 2</MenuItem>
-                <Popover>
-                  <Menu {...props}>
-                    <MenuItem>Lvl 2 Bar 1</MenuItem>
-                    <SubDialogTrigger>
-                      <MenuItem>Lvl 2 Bar 2</MenuItem>
-                      <Popover>
-                        <Dialog>
-                          <AutocompleteWrapper inputProps={{autoFocus: true}}>
-                            <Menu {...props}>
-                              <MenuItem>Lvl 3 Bar 1</MenuItem>
-                              <MenuItem>Lvl 3 Bar 2</MenuItem>
-                              <MenuItem>Lvl 3 Bar 3</MenuItem>
-                            </Menu>
-                          </AutocompleteWrapper>
-                        </Dialog>
-                      </Popover>
-                    </SubDialogTrigger>
-                    <MenuItem>Lvl 2 Bar 3</MenuItem>
-                  </Menu>
-                </Popover>
-              </SubmenuTrigger>
-              <MenuItem >Lvl 1 Bar 3</MenuItem>
-            </Menu>
-          </AutocompleteWrapper>
-        </Dialog>
+        <AutocompleteWrapper inputProps={{autoFocus: true}}>
+          <Menu {...props}>
+            <MenuItem>Lvl 1 Bar 1</MenuItem>
+            <SubmenuTrigger>
+              <MenuItem>Lvl 1 Bar 2</MenuItem>
+              <Popover>
+                <Menu {...props}>
+                  <MenuItem>Lvl 2 Bar 1</MenuItem>
+                  <SubmenuTrigger>
+                    <MenuItem>Lvl 2 Bar 2</MenuItem>
+                    <Popover>
+                      <AutocompleteWrapper inputProps={{autoFocus: true}}>
+                        <Menu {...props}>
+                          <MenuItem>Lvl 3 Bar 1</MenuItem>
+                          <MenuItem>Lvl 3 Bar 2</MenuItem>
+                          <MenuItem>Lvl 3 Bar 3</MenuItem>
+                        </Menu>
+                      </AutocompleteWrapper>
+                    </Popover>
+                  </SubmenuTrigger>
+                  <MenuItem>Lvl 2 Bar 3</MenuItem>
+                </Menu>
+              </Popover>
+            </SubmenuTrigger>
+            <MenuItem >Lvl 1 Bar 3</MenuItem>
+          </Menu>
+        </AutocompleteWrapper>
       </Popover>
-    </SubDialogTrigger>
+    </SubmenuTrigger>
     <MenuItem id="3">Baz</MenuItem>
   </Menu>
 );
@@ -443,11 +435,9 @@ describe('Autocomplete', () => {
           <SelectValue />
         </Button>
         <Popover>
-          <Dialog aria-label="Test">
-            <AutocompleteWrapper inputProps={{autoFocus: true}}>
-              <StaticListbox />
-            </AutocompleteWrapper>
-          </Dialog>
+          <AutocompleteWrapper inputProps={{autoFocus: true}}>
+            <StaticListbox />
+          </AutocompleteWrapper>
         </Popover>
       </Select>
     );

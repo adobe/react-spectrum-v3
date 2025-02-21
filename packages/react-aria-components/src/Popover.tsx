@@ -10,17 +10,18 @@
  * governing permissions and limitations under the License.
  */
 
+import {AriaLabelingProps, forwardRefType, RefObject} from '@react-types/shared';
 import {AriaPopoverProps, DismissButton, Overlay, PlacementAxis, PositionProps, useLocale, usePopover} from 'react-aria';
 import {ContextValue, RenderProps, SlotProps, useContextProps, useRenderProps} from './utils';
 import {filterDOMProps, mergeProps, useEnterAnimation, useExitAnimation, useLayoutEffect} from '@react-aria/utils';
-import {forwardRefType, RefObject} from '@react-types/shared';
+import {focusSafely} from '@react-aria/interactions';
 import {OverlayArrowContext} from './OverlayArrow';
 import {OverlayTriggerProps, OverlayTriggerState, useOverlayTriggerState} from 'react-stately';
 import {OverlayTriggerStateContext} from './Dialog';
-import React, {createContext, ForwardedRef, forwardRef, useContext, useRef, useState} from 'react';
+import React, {createContext, ForwardedRef, forwardRef, useContext, useEffect, useRef, useState} from 'react';
 import {useIsHidden} from '@react-aria/collections';
 
-export interface PopoverProps extends Omit<PositionProps, 'isOpen'>, Omit<AriaPopoverProps, 'popoverRef' | 'triggerRef' | 'groupRef' | 'offset' | 'arrowSize'>, OverlayTriggerProps, RenderProps<PopoverRenderProps>, SlotProps {
+export interface PopoverProps extends Omit<PositionProps, 'isOpen'>, Omit<AriaPopoverProps, 'popoverRef' | 'triggerRef' | 'groupRef' | 'offset' | 'arrowSize'>, OverlayTriggerProps, RenderProps<PopoverRenderProps>, SlotProps, AriaLabelingProps {
   /**
    * The name of the component that triggered the popover. This is reflected on the element
    * as the `data-trigger` attribute, and can be used to provide specific
@@ -142,7 +143,7 @@ function PopoverInner({state, isExiting, UNSTABLE_portalContainer, ...props}: Po
   let [arrowWidth, setArrowWidth] = useState(0);
   let containerRef = useRef<HTMLDivElement | null>(null);
   let groupCtx = useContext(PopoverGroupContext);
-  let isSubPopover = groupCtx && (props.trigger === 'SubmenuTrigger' || props.trigger === 'SubDialogTrigger');
+  let isSubPopover = groupCtx && props.trigger === 'SubmenuTrigger';
   useLayoutEffect(() => {
     if (arrowRef.current && state.isOpen) {
       setArrowWidth(arrowRef.current.getBoundingClientRect().width);
@@ -171,11 +172,32 @@ function PopoverInner({state, isExiting, UNSTABLE_portalContainer, ...props}: Po
     }
   });
 
+  // Automatically render Popover with role=dialog except when isNonModal is true,
+  // or a dialog is already nested inside the popover.
+  let shouldBeDialog = !props.isNonModal || props.trigger === 'SubmenuTrigger';
+  let [isDialog, setDialog] = useState(false);
+  useLayoutEffect(() => {
+    if (ref.current) {
+      setDialog(shouldBeDialog && !ref.current.querySelector('[role=dialog]'));
+    }
+  }, [ref, shouldBeDialog]);
+
+  // Focus the popover itself on mount, unless a child element is already focused.
+  useEffect(() => {
+    if (isDialog && ref.current && !ref.current.contains(document.activeElement)) {
+      focusSafely(ref.current);
+    }
+  }, [isDialog, ref]);
+
   let style = {...popoverProps.style, ...renderProps.style};
   let overlay = (
     <div
       {...mergeProps(filterDOMProps(props as any), popoverProps)}
       {...renderProps}
+      role={isDialog ? 'dialog' : undefined}
+      tabIndex={isDialog ? -1 : undefined}
+      aria-label={props['aria-label']}
+      aria-labelledby={props['aria-labelledby']}
       ref={ref}
       slot={props.slot || undefined}
       style={style}
@@ -195,7 +217,7 @@ function PopoverInner({state, isExiting, UNSTABLE_portalContainer, ...props}: Po
   // If this is a root popover, render an extra div to act as the portal container for submenus/subdialogs.
   if (!isSubPopover) {
     return (
-      <Overlay {...props} isExiting={isExiting} portalContainer={UNSTABLE_portalContainer}>
+      <Overlay {...props} shouldContainFocus={isDialog} isExiting={isExiting} portalContainer={UNSTABLE_portalContainer}>
         {!props.isNonModal && state.isOpen && <div data-testid="underlay" {...underlayProps} style={{position: 'fixed', inset: 0}} />}
         <div ref={containerRef} style={{display: 'contents'}}>
           <PopoverGroupContext.Provider value={containerRef}>
@@ -208,7 +230,7 @@ function PopoverInner({state, isExiting, UNSTABLE_portalContainer, ...props}: Po
 
   // Submenus/subdialogs are mounted into the root popover's container.
   return (
-    <Overlay {...props} isExiting={isExiting} portalContainer={UNSTABLE_portalContainer ?? groupCtx?.current ?? undefined}>
+    <Overlay {...props} shouldContainFocus={isDialog} isExiting={isExiting} portalContainer={UNSTABLE_portalContainer ?? groupCtx?.current ?? undefined}>
       {overlay}
     </Overlay>
   );

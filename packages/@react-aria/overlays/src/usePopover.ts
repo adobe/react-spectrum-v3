@@ -87,7 +87,7 @@ export function usePopover(props: AriaPopoverProps, state: OverlayTriggerState):
     ...otherProps
   } = props;
 
-  let isSubmenu = otherProps['trigger'] === 'SubmenuTrigger' || otherProps['trigger'] === 'SubDialogTrigger';
+  let isSubmenu = otherProps['trigger'] === 'SubmenuTrigger';
 
   let {overlayProps, underlayProps} = useOverlay(
     {

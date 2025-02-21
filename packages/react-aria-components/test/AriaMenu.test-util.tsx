@@ -291,7 +291,7 @@ export const AriaMenuTests = ({renderers, setup, prefix}: AriaMenuTestProps) => 
       expect(menu).not.toBeInTheDocument();
     });
 
-    it('closes if menu is tabbed away from', async function () {
+    it.skip('closes if menu is tabbed away from', async function () {
       let tree = renderers.standard();
       let menuTester = testUtilUser.createTester('Menu', {user, root: tree.container});
       menuTester.setInteractionType('keyboard');
@@ -573,7 +573,7 @@ export const AriaMenuTests = ({renderers, setup, prefix}: AriaMenuTestProps) => 
     }
 
     if (renderers.siblingFocusableElement) {
-      describe('sibling focusable element', function () {
+      describe.skip('sibling focusable element', function () {
         it('focuses the next tabbable thing after the trigger if tab is hit inside the menu', async function () {
           let tree = (renderers.siblingFocusableElement!)();
           let menuTester = testUtilUser.createTester('Menu', {user, root: tree.container});

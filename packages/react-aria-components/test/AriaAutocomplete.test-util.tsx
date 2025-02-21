@@ -877,7 +877,7 @@ export const AriaAutocompleteTests = ({renderers, setup, prefix, ariaPattern = '
           let {getByRole, getAllByRole} = (renderers.subdialogs!)();
           let menu = getByRole('menu');
           let options = within(menu).getAllByRole('menuitem');
-          expect(options[1]).toHaveAttribute('aria-haspopup', 'dialog');
+          expect(options[1]).toHaveAttribute('aria-haspopup', 'menu');
 
           await user.click(options[1]);
           act(() => {jest.runAllTimers();});
@@ -897,7 +897,7 @@ export const AriaAutocompleteTests = ({renderers, setup, prefix, ariaPattern = '
           let {getByRole, getAllByRole} = (renderers.subdialogs!)();
           let menu = getByRole('menu');
           let options = within(menu).getAllByRole('menuitem');
-          expect(options[1]).toHaveAttribute('aria-haspopup', 'dialog');
+          expect(options[1]).toHaveAttribute('aria-haspopup', 'menu');
           await user.click(options[1]);
           act(() => {
             jest.runAllTimers();
@@ -927,7 +927,7 @@ export const AriaAutocompleteTests = ({renderers, setup, prefix, ariaPattern = '
           let input = getByRole('searchbox');
           let menu = getByRole('menu');
           let options = within(menu).getAllByRole('menuitem');
-          expect(options[1]).toHaveAttribute('aria-haspopup', 'dialog');
+          expect(options[1]).toHaveAttribute('aria-haspopup', 'menu');
           await user.tab();
           expect(document.activeElement).toBe(input);
           await user.keyboard('{ArrowDown}');
@@ -970,7 +970,7 @@ export const AriaAutocompleteTests = ({renderers, setup, prefix, ariaPattern = '
 
           // Open the nested submenu
           await user.keyboard('{ArrowDown}');
-          await user.keyboard('{ArrowDown}');
+          // await user.keyboard('{ArrowDown}');
           await user.keyboard('{ArrowRight}');
           act(() => jest.runAllTimers());
           dialogs = getAllByRole('dialog');
@@ -985,7 +985,7 @@ export const AriaAutocompleteTests = ({renderers, setup, prefix, ariaPattern = '
           expect(dialogs).toHaveLength(1);
           expect(document.activeElement).toBe(subDialogInput);
           let subDialogMenuItems = within(dialogs[0]).getAllByRole('menuitem');
-          expect(subDialogMenuItems[1]).toHaveAttribute('aria-haspopup', 'dialog');
+          expect(subDialogMenuItems[1]).toHaveAttribute('aria-haspopup', 'menu');
           expect(subDialogInput).toHaveAttribute('aria-activedescendant', subDialogMenuItems[1].id);
 
           await user.keyboard('{Escape}');
@@ -1005,7 +1005,7 @@ export const AriaAutocompleteTests = ({renderers, setup, prefix, ariaPattern = '
           fireEvent.click(input, {pointerType: 'mouse', width: 1, height: 1, detail: 0});
           expect(document.activeElement).toBe(input);
           let options = within(menu).getAllByRole('menuitem');
-          expect(options[1]).toHaveAttribute('aria-haspopup', 'dialog');
+          expect(options[1]).toHaveAttribute('aria-haspopup', 'menu');
 
           act(() => options[1].focus());
           fireEvent.click(options[1], {pointerType: 'mouse', width: 1, height: 1, detail: 0});
@@ -1042,7 +1042,7 @@ export const AriaAutocompleteTests = ({renderers, setup, prefix, ariaPattern = '
           await user.keyboard('{ArrowDown}');
           let options = within(menus[0]).getAllByRole('menuitem');
           expect(input).toHaveAttribute('aria-activedescendant', options[1].id);
-          expect(options[1]).toHaveAttribute('aria-haspopup', 'dialog');
+          expect(options[1]).toHaveAttribute('aria-haspopup', 'menu');
 
           // Open subdialog
           await user.keyboard('{ArrowRight}');
@@ -1057,7 +1057,7 @@ export const AriaAutocompleteTests = ({renderers, setup, prefix, ariaPattern = '
 
           // Open submenu
           await user.keyboard('{ArrowDown}');
-          await user.keyboard('{ArrowDown}');
+          // await user.keyboard('{ArrowDown}');
           await user.keyboard('{ArrowRight}');
           act(() => {jest.runAllTimers();});
           menus = getAllByRole('menu');
@@ -1065,22 +1065,22 @@ export const AriaAutocompleteTests = ({renderers, setup, prefix, ariaPattern = '
           expect(menus).toHaveLength(3);
           expect(menus[2]).toContainElement(document.activeElement as HTMLElement);
           let submenuItems = within(menus[2]).getAllByRole('menuitem');
-          expect(submenuItems[1]).toHaveAttribute('aria-haspopup', 'dialog');
+          expect(submenuItems[1]).toHaveAttribute('aria-haspopup', 'menu');
 
           // Open last subdialog
           await user.keyboard('{ArrowDown}');
           await user.keyboard('{ArrowRight}');
           act(() => {jest.runAllTimers();});
           dialogs = getAllByRole('dialog');
-          expect(dialogs).toHaveLength(2);
-          let subDialogInput2 = within(dialogs[1]).getByRole('searchbox');
+          expect(dialogs).toHaveLength(3);
+          let subDialogInput2 = within(dialogs[2]).getByRole('searchbox');
           expect(document.activeElement).toBe(subDialogInput2);
 
           // Check focus is restored to the expected places when closing dialogs/menus
           await user.keyboard('{Escape}');
           act(() => jest.runAllTimers());
           dialogs = getAllByRole('dialog');
-          expect(dialogs).toHaveLength(1);
+          expect(dialogs).toHaveLength(2);
           expect(document.activeElement).toBe(submenuItems[1]);
 
           await user.keyboard('{ArrowLeft}');

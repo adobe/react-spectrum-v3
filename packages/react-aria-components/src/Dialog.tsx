@@ -61,7 +61,11 @@ export function DialogTrigger(props: DialogTriggerProps) {
         [OverlayTriggerStateContext, state],
         [RootMenuTriggerStateContext, state],
         [DialogContext, overlayProps],
-        [PopoverContext, {trigger: 'DialogTrigger', triggerRef: buttonRef}]
+        [PopoverContext, {
+          trigger: 'DialogTrigger',
+          triggerRef: buttonRef,
+          'aria-labelledby': overlayProps['aria-labelledby']
+        }]
       ]}>
       <PressResponder {...triggerProps} ref={buttonRef} isPressed={state.isOpen}>
         {props.children}
