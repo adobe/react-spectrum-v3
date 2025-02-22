@@ -206,3 +206,57 @@ export function TagGroupInsideGridList() {
     </GridList>
   );
 }
+
+export function GridListScrollIntoView() {
+  let items: {id: number, name: string}[] = [];
+  for (let i = 0; i < 100; i++) {
+    items.push({id: i, name: `Item ${i}`});
+  }
+
+  let list = useListData({
+    initialItems: items
+  });
+
+  const getElement = (id: number) => document.querySelector(`[data-key="${id}"]`) as HTMLElement;
+
+  const rowHeight = 25;
+
+  return (
+    <>
+      <div style={{height: 500, overflow: 'auto'}}>
+        <GridList
+          className={styles.menu}
+          selectionMode="multiple"
+          aria-label="virtualized listbox"
+          items={list.items}
+          style={{
+            position: 'relative',
+            overflow: 'hidden',
+            width: 100,
+            height: list.items.length * rowHeight
+          }}>
+          {item => (
+            <GridListItem
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                overflow: 'visible',
+                transform: `translateY(${item.id * rowHeight}px)`
+              }}>
+              {item.name}
+            </GridListItem>)}
+        </GridList>
+      </div>
+      <button onClick={() => getElement(40)?.scrollIntoView({block: 'start'})}>Scroll to item 40</button>
+      <button
+        tabIndex={0}
+        onKeyDown={() => {
+          getElement(70)?.focus();
+        }}>
+        Click, press ESC key focus item 70
+      </button>
+    </>
+  );
+}
