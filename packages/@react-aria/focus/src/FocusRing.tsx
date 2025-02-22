@@ -29,7 +29,11 @@ export interface FocusRingProps {
    * @default false
    */
   within?: boolean,
-  /** Whether the element is a text input. */
+
+  /**
+   * Whether the element is a text input.
+   * @deprecated This is no longer necessary.
+   */
   isTextInput?: boolean,
   /** Whether the element will be auto focused. */
   autoFocus?: boolean

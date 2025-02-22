@@ -149,7 +149,6 @@ const NumberFieldInput = React.forwardRef(function NumberFieldInput(props: Numbe
   return (
     <FocusRing
       within
-      isTextInput
       focusClass={classNames(stepperStyle, 'is-focused')}
       focusRingClass={classNames(stepperStyle, 'focus-ring')}
       autoFocus={autoFocus}>

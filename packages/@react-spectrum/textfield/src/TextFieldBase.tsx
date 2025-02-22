@@ -101,7 +101,6 @@ export const TextFieldBase = forwardRef(function TextFieldBase(props: TextFieldB
   });
 
   let {focusProps, isFocusVisible} = useFocusRing({
-    isTextInput: true,
     autoFocus
   });
 

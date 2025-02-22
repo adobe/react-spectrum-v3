@@ -21,7 +21,6 @@ export const TextArea = forwardRef(function TextArea(props: TextAreaProps, ref: 
 
   let {hoverProps, isHovered} = useHover(props);
   let {isFocused, isFocusVisible, focusProps} = useFocusRing({
-    isTextInput: true,
     autoFocus: props.autoFocus
   });
 

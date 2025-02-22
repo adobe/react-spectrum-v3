@@ -25,7 +25,10 @@ type HandlerEvent = PointerEvent | MouseEvent | KeyboardEvent | FocusEvent | nul
 type Handler = (modality: Modality, e: HandlerEvent) => void;
 export type FocusVisibleHandler = (isFocusVisible: boolean) => void;
 export interface FocusVisibleProps {
-  /** Whether the element is a text input. */
+  /**
+   * Whether the element is a text input.
+   * @deprecated This is no longer necessary.
+   */
   isTextInput?: boolean,
   /** Whether the element will be auto focused. */
   autoFocus?: boolean

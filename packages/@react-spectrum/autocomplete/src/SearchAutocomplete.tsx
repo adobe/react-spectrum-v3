@@ -297,7 +297,6 @@ function ForwardSearchAutocompleteInput<T>(props: SearchAutocompleteInputProps<T
   return (
     (<FocusRing
       within
-      isTextInput
       focusClass={classNames(styles, 'is-focused')}
       focusRingClass={classNames(styles, 'focus-ring')}
       autoFocus={autoFocus}>
