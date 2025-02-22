@@ -25,6 +25,7 @@ import {DOMRef, DOMRefValue, forwardRefType, Key, LoadingState} from '@react-typ
 import {focusRing, style} from '../style' with {type: 'macro'};
 import {getAllowedOverrides, StylesPropWithHeight, UnsafeStyles} from './style-utils' with {type: 'macro'};
 import {ImageCoordinator} from './ImageCoordinator';
+import {mergeStyles} from '../style/runtime';
 import {Size} from '@react-stately/virtualizer';
 import {useActionBarContainer} from './ActionBar';
 import {useDOMRef} from '@react-spectrum/utils';
@@ -242,14 +243,14 @@ export const CardView = /*#__PURE__*/ (forwardRef as forwardRefType)(function Ca
               defaultSelectedKeys={undefined}
               onSelectionChange={onSelectionChange}
               style={{
-                ...UNSAFE_style,
+                ...(!props.renderActionBar ? UNSAFE_style : {}),
                 // Add padding at the bottom when the action bar is visible so users can scroll to the last items.
                 // Also add scroll padding so keyboard navigating preserves the padding.
                 paddingBottom: actionBarHeight > 0 ? actionBarHeight + options.minSpace.height : 0,
                 scrollPadding: options.minSpace.height,
                 scrollPaddingBottom: actionBarHeight + options.minSpace.height
               }}
-              className={renderProps => UNSAFE_className + cardViewStyles({...renderProps, isLoading: props.loadingState === 'loading'}, styles)}>
+              className={renderProps => (!props.renderActionBar ? UNSAFE_className + cardViewStyles({...renderProps, isLoading: props.loadingState === 'loading'}, styles) : '')}>
               {children}
             </AriaGridList>
           </ImageCoordinator>
@@ -262,7 +263,7 @@ export const CardView = /*#__PURE__*/ (forwardRef as forwardRefType)(function Ca
   // ActionBar cannot be inside the GridList due to ARIA and focus management requirements.
   if (props.renderActionBar) {
     return (
-      <div ref={domRef} className={style({position: 'relative', overflow: 'clip', size: 'fit'})}>
+      <div ref={domRef} className={UNSAFE_className + mergeStyles(style({position: 'relative', overflow: 'clip', size: 'fit'}), styles)} style={UNSAFE_style}>
         {cardView}
         {actionBar}
       </div>
