@@ -1,5 +1,4 @@
 const Octokit = require('@octokit/rest');
-const fs = require('fs');
 
 const octokit = new Octokit({
   auth: `token ${process.env.GITHUB_TOKEN}`
@@ -11,7 +10,7 @@ async function run() {
   let pr;
   // If we aren't running on a PR commit, double check if this is a branch created for a fork. If so, we'll need to
   // comment the build link on the fork.
-  if (!process.env.CIRCLE_PULL_REQUEST) {
+  if (true) {
     try {
       const commit = await octokit.git.getCommit({
         owner: 'adobe',
@@ -36,13 +35,14 @@ async function run() {
             repo: 'react-spectrum',
             pull_number
           });
+          // eslint-disable-next-line max-depth
           if (data && data.head.repo.full_name !== 'adobe/react-spectrum' && data.head.sha === forkHeadCommit) {
             pr = pull_number;
             break;
           }
         }
-      } else if (process.env.CIRCLE_BRANCH === 'main') {
-        //If it isn't a PR commit, then we are on main. Create a comment for the test app and docs build
+      } else if (true) {
+        // If it isn't a PR commit, then we are on main. Create a comment for the test app and docs build
         await octokit.repos.createCommitComment({
           owner: 'adobe',
           repo: 'react-spectrum',
@@ -54,6 +54,7 @@ async function run() {
       [RAC Spectrum + Tailwind Example](https://reactspectrum.blob.core.windows.net/reactspectrum/${process.env.CIRCLE_SHA1}/verdaccio/rac-spectrum-tailwind/index.html)
       [S2 Parcel Example](https://reactspectrum.blob.core.windows.net/reactspectrum/${process.env.CIRCLE_SHA1}/verdaccio/s2-parcel-example/index.html)
       [S2 Webpack Example](https://reactspectrum.blob.core.windows.net/reactspectrum/${process.env.CIRCLE_SHA1}/verdaccio/s2-webpack-5-example/index.html)
+      [S2 Next.js Example](https://reactspectrum.blob.core.windows.net/reactspectrum/${process.env.CIRCLE_SHA1}/verdaccio/s2-next-macros/index.html)
       [CRA Test App Size](https://reactspectrum.blob.core.windows.net/reactspectrum/${process.env.CIRCLE_SHA1}/verdaccio/publish-stats/build-stats.txt)
       [NextJS App Size](https://reactspectrum.blob.core.windows.net/reactspectrum/${process.env.CIRCLE_SHA1}/verdaccio/publish-stats/next-build-stats.txt)
       [Publish stats](https://reactspectrum.blob.core.windows.net/reactspectrum/${process.env.CIRCLE_SHA1}/verdaccio/publish-stats/publish.json)
@@ -86,7 +87,7 @@ async function run() {
   * [View the documentation](https://reactspectrum.blob.core.windows.net/reactspectrum/${process.env.CIRCLE_SHA1}/docs/index.html)`
       });
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   }
 }
