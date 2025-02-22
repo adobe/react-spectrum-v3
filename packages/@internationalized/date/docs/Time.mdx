@@ -89,6 +89,19 @@ parseDuration('PT20H35M15,75S')
 // => {hours: 20, minutes: 35, seconds: 15.75}
 ```
 
+A <TypeLink links={docs.links} type={docs.exports.DateTimeDuration} /> object can be converted back to a [ISO 8601 duration string](https://en.wikipedia.org/wiki/ISO_8601#Durations) by using <TypeLink links={docs.links} type={docs.exports.durationToString} />.
+
+```tsx
+durationToString({hours: 20, minutes: 35, seconds: 15})
+// => 'PT20H35M15S'
+
+durationToString({hours: -20, minutes: -35, seconds: -15})
+// => '-PT20H35M15S'
+
+durationToString({hours: 20, minutes: 35, seconds: 15.75})
+// => 'PT20H35M15,75S'
+```
+
 ### Setting fields
 
 `Time` objects are immutable, which means their properties cannot be set directly. Instead, use the `set` method, and pass the fields to be modified. This will return a new `Time` with the updated values.

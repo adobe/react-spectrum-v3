@@ -143,6 +143,19 @@ parseDuration('P3Y6M6W4DT12H30M5.5S');
 // => {years: 3, months: 6, weeks: 6, days: 4, hours: 12, minutes: 30, seconds: 5.5}
 ```
 
+A <TypeLink links={docs.links} type={docs.exports.DateTimeDuration} /> object can be converted back to a [ISO 8601 duration string](https://en.wikipedia.org/wiki/ISO_8601#Durations) by using <TypeLink links={docs.links} type={docs.exports.durationToString} />.
+
+```tsx
+durationToString({years: 3, months: 6, weeks: 6, days: 4, hours: 12, minutes: 30, seconds: 5});
+// => 'P3Y6M6W4DT12H30M5S'
+
+durationToString({years: -3, months: -6, weeks: -6, days: -4, hours: -12, minutes: -30, seconds: -5});
+// => '-P3Y6M6W4DT12H30M5S'
+
+durationToString({years: 3, months: 6, weeks: 6, days: 4, hours: 12, minutes: 30, seconds: 5.5});
+// => 'P3Y6M6W4DT12H30M5.5S'
+```
+
 ### Setting fields
 
 `CalendarDateTime` objects are immutable, which means their properties cannot be set directly. Instead, use the `set` method, and pass the fields to be modified. This will return a new `CalendarDateTime` with the updated values.

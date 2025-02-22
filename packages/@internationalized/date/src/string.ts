@@ -23,7 +23,7 @@ const DATE_TIME_RE = /^([+-]\d{6}|\d{4})-(\d{2})-(\d{2})(?:T(\d{2}))?(?::(\d{2})
 const ZONED_DATE_TIME_RE = /^([+-]\d{6}|\d{4})-(\d{2})-(\d{2})(?:T(\d{2}))?(?::(\d{2}))?(?::(\d{2}))?(\.\d+)?(?:([+-]\d{2})(?::?(\d{2}))?)?\[(.*?)\]$/;
 const ABSOLUTE_RE = /^([+-]\d{6}|\d{4})-(\d{2})-(\d{2})(?:T(\d{2}))?(?::(\d{2}))?(?::(\d{2}))?(\.\d+)?(?:(?:([+-]\d{2})(?::?(\d{2}))?)|Z)$/;
 const DATE_TIME_DURATION_RE =
-    /^((?<negative>-)|\+)?P((?<years>\d*)Y)?((?<months>\d*)M)?((?<weeks>\d*)W)?((?<days>\d*)D)?((?<time>T)((?<hours>\d*[.,]?\d{1,9})H)?((?<minutes>\d*[.,]?\d{1,9})M)?((?<seconds>\d*[.,]?\d{1,9})S)?)?$/;
+    /^((?<negative>-)|\+)?P((?<years>\d*[.,]?\d{1,9})Y)?((?<months>\d*[.,]?\d{1,9})M)?((?<weeks>\d*[.,]?\d{1,9})W)?((?<days>\d*[.,]?\d{1,9})D)?((?<time>T)((?<hours>\d*[.,]?\d{1,9})H)?((?<minutes>\d*[.,]?\d{1,9})M)?((?<seconds>\d*[.,]?\d{1,9})S)?)?$/;
 const requiredDurationTimeGroups = ['hours', 'minutes', 'seconds'];
 const requiredDurationGroups = ['years', 'months', 'weeks', 'days', ...requiredDurationTimeGroups];
 
@@ -194,7 +194,7 @@ export function dateToString(date: CalendarDate): string {
   let gregorianDate = toCalendar(date, new GregorianCalendar());
   let year: string;
   if (gregorianDate.era === 'BC') {
-    year = gregorianDate.year === 1 
+    year = gregorianDate.year === 1
       ? '0000'
       : '-' + String(Math.abs(1 - gregorianDate.year)).padStart(6, '00');
   } else {
@@ -218,6 +218,32 @@ function offsetToString(offset: number) {
 
 export function zonedDateTimeToString(date: ZonedDateTime): string {
   return `${dateTimeToString(date)}${offsetToString(date.offset)}[${date.timeZone}]`;
+}
+
+function validateDurationDecimal(duration: DateTimeDuration): boolean {
+  // Using fallthrough to make code concise.
+  // Note: this wouldn't catch invalid strings such as `PT1.5H0M0S` during parse.
+  switch (true) {
+    case (duration.years || 0) % 1 !== 0:
+      if (duration.months) { return false; }
+
+    case (duration.months || 0) % 1 !== 0:
+      if (duration.weeks) { return false; }
+
+    case (duration.weeks || 0) % 1 !== 0:
+      if (duration.days) { return false; }
+
+    case (duration.days || 0) % 1 !== 0:
+      if (duration.hours) { return false; }
+
+    case (duration.hours || 0) % 1 !== 0:
+      if (duration.minutes) { return false; }
+
+    case (duration.minutes || 0) % 1 !== 0:
+      if (duration.seconds || duration.milliseconds) { return false; }
+  }
+
+  return true;
 }
 
 /**
@@ -264,23 +290,91 @@ export function parseDuration(value: string): Required<DateTimeDuration> {
     }
   }
 
-  const duration: Mutable<DateTimeDuration> = {
+  const duration: Mutable<Required<DateTimeDuration>> = {
     years: parseDurationGroup(match.groups?.years, isNegative),
     months: parseDurationGroup(match.groups?.months, isNegative),
     weeks: parseDurationGroup(match.groups?.weeks, isNegative),
     days: parseDurationGroup(match.groups?.days, isNegative),
     hours: parseDurationGroup(match.groups?.hours, isNegative),
     minutes: parseDurationGroup(match.groups?.minutes, isNegative),
-    seconds: parseDurationGroup(match.groups?.seconds, isNegative)
+    seconds: parseDurationGroup(match.groups?.seconds, isNegative),
+    milliseconds: 0
   };
 
-  if (duration.hours !== undefined && ((duration.hours % 1) !== 0) && (duration.minutes || duration.seconds)) {
+  if (!validateDurationDecimal(duration)) {
     throw new Error(`Invalid ISO 8601 Duration string: ${value} - only the smallest unit can be fractional`);
   }
 
-  if (duration.minutes !== undefined && ((duration.minutes % 1) !== 0) && duration.seconds) {
-    throw new Error(`Invalid ISO 8601 Duration string: ${value} - only the smallest unit can be fractional`);
+  return duration;
+}
+
+type NormalizedDuration = Omit<Required<DateTimeDuration>, 'weeks' | 'milliseconds'> & { isNegative: boolean }
+
+function normalizeDuration(duration: DateTimeDuration): NormalizedDuration {
+  const isNegative =
+    (duration.years || 0) < 0 ||
+    (duration.months || 0) < 0 ||
+    (duration.weeks || 0) < 0 ||
+    (duration.days || 0) < 0 ||
+    (duration.hours || 0) < 0 ||
+    (duration.minutes || 0) < 0 ||
+    (duration.seconds || 0) < 0;
+
+  const isPositive =
+    (duration.years || 0) > 0 ||
+    (duration.months || 0) > 0 ||
+    (duration.weeks || 0) > 0 ||
+    (duration.days || 0) > 0 ||
+    (duration.hours || 0) > 0 ||
+    (duration.minutes || 0) > 0 ||
+    (duration.seconds || 0) > 0;
+
+  if (isNegative && isPositive) {
+    throw new Error('Cannot stringify a duration with mixed positive and negative components');
   }
 
-  return duration as Required<DateTimeDuration>;
+  if (!validateDurationDecimal(duration)) {
+    throw new Error('Cannot stringify a duration which contains fractional values other than in the lowest order component');
+  }
+
+  const mul = isNegative ? -1 : 1;
+
+  return {
+    isNegative,
+
+    years: mul * (duration.years || 0),
+    months: mul * (duration.months || 0),
+    days: mul * (((duration.weeks || 0) * 7) + (duration.days || 0)),
+    hours: mul * (duration.hours || 0),
+    minutes: mul * (duration.minutes || 0),
+    seconds: mul * ((duration.seconds || 0) + ((duration.milliseconds || 0) / 1e3))
+  };
+}
+
+/**
+ * Formats a DateTimeDuration to an ISO 8601 duration string (e.g. "P3Y6M6W4DT12H30M5S").
+ * @param value A DateTimeDuration object.
+ * @returns An ISO 8601 duration string.
+ */
+export function durationToString(durationSrc: DateTimeDuration): string {
+  let durationString = 'P';
+  let timeDurationString = 'T';
+
+  const duration = normalizeDuration(durationSrc);
+
+  if (duration.years) { durationString += `${duration.years}Y`; }
+  if (duration.months) { durationString += `${duration.months}M`; }
+  if (duration.days) { durationString += `${duration.days}D`; }
+
+  if (duration.hours) { timeDurationString += `${duration.hours}H`; }
+  if (duration.minutes) { timeDurationString += `${duration.minutes}M`; }
+  if (duration.seconds) { timeDurationString += `${duration.seconds}S`; }
+
+  if (timeDurationString.length > 1) { durationString += timeDurationString; }
+
+  // ISO 8601-1:2019 § 5.5.2.3 a) "[...] at least one number and its designator shall be present."
+  // Picking day is arbitrary; it's the smallest unit that doesn't involve the time designator.
+  if (durationString.length < 2) { durationString += '0D'; }
+
+  return duration.isNegative ? `-${durationString}` : durationString;
 }
