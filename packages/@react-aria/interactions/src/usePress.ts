@@ -526,7 +526,7 @@ export function usePress(props: PressHookProps): PressResult {
                   state.target.click();
                 }
               }
-            }, 40);
+            }, 60);
             // Use a capturing listener to track if a click occurred.
             // If stopPropagation is called it may never reach our handler.
             addGlobalListener(e.currentTarget as Document, 'click', () => clicked = true, true);

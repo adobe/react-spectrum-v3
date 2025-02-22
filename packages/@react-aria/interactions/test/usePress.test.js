@@ -262,7 +262,7 @@ describe('usePress', function () {
       expect(shouldFocus).toBe(true);
 
       // Mouse events are not fired in this case, and the browser does not focus the element.
-      act(() => jest.advanceTimersByTime(50));
+      act(() => jest.advanceTimersByTime(70));
       expect(document.activeElement).toBe(el);
 
       expect(events).toEqual([
@@ -353,7 +353,7 @@ describe('usePress', function () {
       expect(shouldClick).toBe(true);
       fireEvent(el, pointerEvent('pointerout', {pointerId: 1, pointerType: 'mouse', clientX: 0, clientY: 0}));
 
-      act(() => jest.advanceTimersByTime(50));
+      act(() => jest.advanceTimersByTime(70));
 
       expect(events).toEqual([
         {
