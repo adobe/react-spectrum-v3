@@ -10,13 +10,44 @@
  * governing permissions and limitations under the License.
  */
 
-import {Button, Calendar, CalendarCell, CalendarGrid, DateInput, DatePicker, DateRangePicker, DateSegment, Dialog, Group, Heading, Label, Popover, RangeCalendar} from 'react-aria-components';
+import {action} from '@storybook/addon-actions';
+import {Button, Calendar, CalendarCell, CalendarGrid, DateInput, DatePicker, DateRangePicker, DateSegment, Dialog, Form, Group, Heading, Input, Label, Popover, RangeCalendar, TextField} from 'react-aria-components';
 import clsx from 'clsx';
 import React from 'react';
 import styles from '../example/index.css';
 
 export default {
-  title: 'React Aria Components'
+  title: 'React Aria Components',
+  argTypes: {
+    onChange: {
+      table: {
+        disable: true
+      }
+    },
+    granularity: {
+      control: 'select',
+      options: ['day', 'hour', 'minute', 'second']
+    },
+    minValue: {
+      control: 'date'
+    },
+    maxValue: {
+      control: 'date'
+    },
+    isRequired: {
+      control: 'boolean'
+    },
+    isInvalid: {
+      control: 'boolean'
+    },
+    validationBehavior: {
+      control: 'select',
+      options: ['native', 'aria']
+    }
+  },
+  args: {
+    onChange: action('OnChange')
+  }
 };
 
 export const DatePickerExample = () => (
@@ -165,4 +196,49 @@ export const DateRangePickerTriggerWidthExample = () => (
       </Dialog>
     </Popover>
   </DateRangePicker>
+);
+
+export const DatePickerAutofill = (props) => (
+  <Form
+    // action={'#'}
+    onSubmit={e => {
+      action('onSubmit')(Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()));
+      e.preventDefault();
+    }}>
+    <TextField>
+      <Label>Name</Label>
+      <Input name="firstName" type="name" id="name" autoComplete="name" />
+    </TextField>
+    <DatePicker data-testid="date-picker-example" name="bday" autoComplete="bday" {...props}>
+      <Label style={{display: 'block'}}>Date</Label>
+      <Group style={{display: 'inline-flex'}}>
+        <DateInput className={styles.field}>
+          {segment => <DateSegment segment={segment} className={clsx(styles.segment, {[styles.placeholder]: segment.isPlaceholder})} />}
+        </DateInput>
+        <Button>🗓</Button>
+      </Group>
+      <Popover
+        placement="bottom start"
+        style={{
+          background: 'Canvas',
+          color: 'CanvasText',
+          border: '1px solid gray',
+          padding: 20
+        }}>
+        <Dialog>
+          <Calendar style={{width: 220}}>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+              <Button slot="previous">&lt;</Button>
+              <Heading style={{flex: 1, textAlign: 'center'}} />
+              <Button slot="next">&gt;</Button>
+            </div>
+            <CalendarGrid style={{width: '100%'}}>
+              {date => <CalendarCell date={date} style={({isSelected, isOutsideMonth}) => ({display: isOutsideMonth ? 'none' : '', textAlign: 'center', cursor: 'default', background: isSelected ? 'blue' : ''})} />}
+            </CalendarGrid>
+          </Calendar>
+        </Dialog>
+      </Popover>
+    </DatePicker>
+    <Button type="submit">Submit</Button>
+  </Form>
 );

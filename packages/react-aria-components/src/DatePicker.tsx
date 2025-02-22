@@ -21,6 +21,7 @@ import {filterDOMProps, useResizeObserver} from '@react-aria/utils';
 import {FormContext} from './Form';
 import {forwardRefType} from '@react-types/shared';
 import {GroupContext} from './Group';
+import {HiddenDateInput} from './HiddenDateInput';
 import {LabelContext} from './Label';
 import {PopoverContext} from './Popover';
 import React, {createContext, ForwardedRef, forwardRef, useCallback, useRef, useState} from 'react';
@@ -170,6 +171,11 @@ export const DatePicker = /*#__PURE__*/ (forwardRef as forwardRefType)(function 
         data-focus-visible={isFocusVisible || undefined}
         data-disabled={props.isDisabled || undefined}
         data-open={state.isOpen || undefined} />
+      <HiddenDateInput 
+        autoComplete={props.autoComplete}
+        name={props.name}
+        isDisabled={props.isDisabled}
+        state={state} />
     </Provider>
   );
 });

@@ -274,4 +274,14 @@ describe('DatePicker', () => {
     let hiddenInput = getByRole('textbox', {hidden: true});
     expect(hiddenInput).toHaveAttribute('disabled');
   });
+
+  it('should support autofill', async() => {
+    let {getByRole} = render(<TestDatePicker />);
+
+    let hiddenDateInput = document.querySelector('input[type=date]');
+    await user.type(hiddenDateInput, '2000-05-30');
+    let group = getByRole('group');
+    let input = group.querySelector('.react-aria-DateInput');
+    expect(input).toHaveTextContent('5/30/2000');
+  });
 });
