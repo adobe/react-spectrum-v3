@@ -33,7 +33,7 @@
     "test-storybook": "test-storybook --url http://localhost:9003  --browsers chromium --no-cache",
     "test:docs": "yarn playwright install && node scripts/testDocs.js",
     "build": "make build",
-    "test:ssr": "cross-env STRICT_MODE=1 yarn jest --config jest.ssr.config.js",
+    "test:ssr": "cross-env STRICT_MODE=1 yarn jest --runInBand --config jest.ssr.config.js",
     "ci-test": "cross-env STRICT_MODE=1 yarn jest --maxWorkers=2 && cross-env STRICT_MODE=1 yarn test:ssr --runInBand",
     "lint": "concurrently \"yarn check-types\" \"eslint packages\" \"node scripts/lint-packages.js\" \"yarn constraints\"",
     "jest": "node scripts/jest.js",

@@ -272,7 +272,7 @@ describe('LabeledValue', function () {
 
     let staticField = getByTestId('test-id');
     expect(staticField).toBeInTheDocument();
-    expect(staticField).toHaveTextContent('10 – 20');
+    expect(staticField).toHaveTextContent('10–20');
   });
 
   it('renders correctly with ReactElement value', function () {

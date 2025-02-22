@@ -1,0 +1,29 @@
+{
+  "name": "@spectrum-css/component-builder",
+  "private": true,
+  "version": "1.0.1",
+  "description": "The Spectrum CSS component builder",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adobe/react-spectrum"
+  },
+  "bugs": {
+    "url": "https://github.com/adobe/spectrum-css/issues"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@swc/helpers": "^0.5.0",
+    "gulp": "^5.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulplog": "^1.0.0",
+    "postcss": "^5.2.18",
+    "postcss-custom-properties": "^6.0.1",
+    "postcss-import": "^10.0.0",
+    "postcss-value-parser": "3.3.1",
+    "through2": "^3.0.1"
+  },
+  "rsp": {
+    "type": "cli"
+  },
+  "gitHead": "9b1c059b9e3c769334f8c6880e4a6a041fde1227"
+}

@@ -39,7 +39,8 @@ async function build() {
     workspaces: [
       'packages/@internationalized/string-compiler',
       'packages/dev/*',
-      'packages/@adobe/spectrum-css-temp'
+      'packages/@adobe/spectrum-css-temp',
+      'packages/@adobe/spectrum-css-builder-temp'
     ],
     packageManager: 'yarn@4.2.2',
     devDependencies: Object.fromEntries(
@@ -128,6 +129,7 @@ async function build() {
   fs.copySync(path.join(__dirname, '..', 'packages', 'dev'), path.join(dir, 'packages', 'dev'));
   fs.copySync(path.join(__dirname, '..', 'packages', '@internationalized', 'string-compiler'), path.join(dir, 'packages', '@internationalized', 'string-compiler'));
   fs.copySync(path.join(__dirname, '..', 'packages', '@adobe', 'spectrum-css-temp'), path.join(dir, 'packages', '@adobe', 'spectrum-css-temp'));
+  fs.copySync(path.join(__dirname, '..', 'packages', '@adobe', 'spectrum-css-builder-temp'), path.join(dir, 'packages', '@adobe', 'spectrum-css-builder-temp'));
   fs.copySync(path.join(__dirname, '..', '.parcelrc'), path.join(dir, '.parcelrc'));
   fs.copySync(path.join(__dirname, '..', 'postcss.config.js'), path.join(dir, 'postcss.config.js'));
   fs.copySync(path.join(__dirname, '..', 'lib'), path.join(dir, 'lib'));
@@ -151,7 +153,7 @@ async function build() {
   }
 
   // Only copy babel and parcel patches over
-  let patches = fs.readdirSync(path.join(__dirname, '..', 'patches')).filter(name => name.startsWith('@babel') || name.startsWith('@parcel') || name.startsWith('@spectrum-css') || name.startsWith('postcss'));
+  let patches = fs.readdirSync(path.join(__dirname, '..', 'patches')).filter(name => name.startsWith('@babel') || name.startsWith('@parcel') || name.startsWith('postcss'));
   for (let patch of patches) {
     fs.copySync(path.join(__dirname, '..', 'patches', patch), path.join(dir, 'patches', patch));
   }

@@ -36,11 +36,14 @@ build().catch(err => {
  * This is run against the current branch by copying the current branch into a temporary directory and building there
  */
 async function build() {
+  let backupDir = tempy.directory();
   let archiveDir;
   if (argv.githash) {
     archiveDir = tempy.directory();
     console.log('checking out archive of', argv.githash, 'into', archiveDir);
     await run('sh', ['-c', `git archive ${argv.githash} | tar -x -C ${archiveDir}`], {stdio: 'inherit'});
+
+    await run('sh', ['-c', `git archive HEAD | tar -x -C ${backupDir}`], {stdio: 'inherit'});
   }
   let srcDir = archiveDir ?? path.join(__dirname, '..');
   let distDir = path.join(__dirname, '..', 'dist', argv.output ?? 'branch-api');
@@ -53,6 +56,7 @@ async function build() {
   // Generate a package.json containing just what we need to build the website
   let pkg = {
     name: 'rsp-website',
+    packageManager: "yarn@4.2.2",
     version: '0.0.0',
     private: true,
     workspaces: [
@@ -102,6 +106,11 @@ async function build() {
 
   // Copy necessary code and configuration over
   fs.copySync(path.join(srcDir, 'packages', '@adobe', 'spectrum-css-temp'), path.join(dir, 'packages', '@adobe', 'spectrum-css-temp'));
+  try {
+    fs.copySync(path.join(srcDir, 'packages', '@adobe', 'spectrum-css-builder-temp'), path.join(dir, 'packages', '@adobe', 'spectrum-css-builder-temp'));
+  } catch (e) {
+    fs.copySync(path.join(backupDir, 'packages', '@adobe', 'spectrum-css-builder-temp'), path.join(dir, 'packages', '@adobe', 'spectrum-css-builder-temp'));
+  }
   fs.copySync(path.join(srcDir, 'postcss.config.js'), path.join(dir, 'postcss.config.js'));
   fs.copySync(path.join(srcDir, 'lib'), path.join(dir, 'lib'));
   fs.copySync(path.join(srcDir, 'CONTRIBUTING.md'), path.join(dir, 'CONTRIBUTING.md'));
