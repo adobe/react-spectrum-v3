@@ -99,6 +99,85 @@ function Example() {
 }
 ```
 
+### Custom calendars
+
+`RangeCalendar` also supports supplying your own custom calendar. By providing the `createCalendar` prop you can return an instance of a class that implements the [`Calendar` interface](https://react-spectrum.adobe.com/internationalized/date/Calendar.html#interface). This is useful in the rare case that you may need to display a calendar that follows different rules from a more common calendar (like Gregorian). An example would be a fiscal year calendar that follows a [4-5-4 format](https://nrf.com/resources/4-5-4-calendar), where month ranges don't usually start on the first of the calendar month nor end on the final day of the calendar month.
+
+The following code is an example of how you might implement your own custom calendar (though implementing a true 4-5-4 calendar would be more nuanced than this).
+
+```tsx example
+import {Calendar, CalendarDate, createCalendar} from '@internationalized/date';
+
+function Example() {
+  return <RangeCalendar createCalendar={() => new Custom454()} />
+}
+
+class Custom454 implements Calendar {
+  identifier = 'custom-454';
+  private fallbackCalendar: Calendar;
+
+  constructor() {
+    this.fallbackCalendar = createCalendar('gregory');
+  }
+
+  // vvvvvvvvv Fallback implementation for these methods vvvvvvvvv
+  fromJulianDay(jd) {
+    return this.fallbackCalendar.fromJulianDay(jd);
+  }
+  toJulianDay(date) {
+    return this.fallbackCalendar.toJulianDay(date);
+  }
+  getDaysInMonth(date) {
+    return this.fallbackCalendar.getDaysInMonth(date);
+  }
+  getMonthsInYear(date) {
+    return this.fallbackCalendar.getMonthsInYear(date);
+  }
+  getYearsInEra(date) {
+    return this.fallbackCalendar.getYearsInEra(date);
+  }
+  getEras() {
+    return this.fallbackCalendar.getEras();
+  }
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  getWeeksInMonth(date) {
+    const dateMonth = this.getCurrentMonth(date);
+    const weekPattern = this.getWeekPattern();
+    return weekPattern[dateMonth.index - 1];
+  }
+
+  getCurrentMonth(date) {
+    const weekPattern = this.getWeekPattern();
+    let pointer = new CalendarDate(date.year, 1, 1);
+
+    for (let m = 0; m < weekPattern.length; m++) {
+      const weeksInMonth = weekPattern[m];
+      const end = pointer.copy().add({weeks: weeksInMonth});
+      if (this.dateIsBefore(date, end)) {
+        const offsetMonth = m + 1; // The 454 calendar begins in Feb, so we'll offset by 1
+        return {
+          start: pointer,
+          end: end.subtract({days: 1}),
+          index: (offsetMonth % weekPattern.length) + 1, // Add 1 since months are 1-based in CalendarDate
+        };
+      }
+      pointer = pointer.add({weeks: weeksInMonth});
+    }
+
+    throw Error('Date is not in any month somehow!');
+  }
+
+  private getWeekPattern() {
+    return [4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4];
+  }
+
+  private dateIsBefore(a, b) {
+    return this.toJulianDay(a) < this.toJulianDay(b);
+  }
+}
+```
+
 ## Labeling
 
 An aria-label must be provided to the `RangeCalendar` for accessibility. If it is labeled by a separate element, an `aria-labelledby` prop must be provided using the `id` of the labeling element instead.

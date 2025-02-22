@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {CalendarDate, startOfWeek, today} from '@internationalized/date';
+import {CalendarDate, getWeeksInMonth, startOfWeek, today} from '@internationalized/date';
 import {CalendarState, RangeCalendarState} from '@react-stately/calendar';
 import {DOMAttributes} from '@react-types/shared';
 import {hookData, useVisibleRangeDescription} from './utils';
@@ -49,7 +49,9 @@ export interface CalendarGridAria {
   /** Props for the grid header element (e.g. `<thead>`). */
   headerProps: DOMAttributes,
   /** A list of week day abbreviations formatted for the current locale, typically used in column headers. */
-  weekDays: string[]
+  weekDays: string[],
+  /** The number of weeks in the month. */
+  weeksInMonth: number
 }
 
 /**
@@ -149,6 +151,7 @@ export function useCalendarGrid(props: AriaCalendarGridProps, state: CalendarSta
       return dayFormatter.format(dateDay);
     });
   }, [locale, state.timeZone, dayFormatter, firstDayOfWeek]);
+  let weeksInMonth = getWeeksInMonth(startDate, locale, firstDayOfWeek);
 
   return {
     gridProps: mergeProps(labelProps, {
@@ -165,6 +168,7 @@ export function useCalendarGrid(props: AriaCalendarGridProps, state: CalendarSta
       // The day names are already included in the label of each cell, so there's no need to announce them twice.
       'aria-hidden': true
     },
-    weekDays
+    weekDays,
+    weeksInMonth
   };
 }

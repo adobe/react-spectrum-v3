@@ -90,6 +90,11 @@ export function useVisibleRangeDescription(startDate: CalendarDate, endDate: Cal
   });
 
   return useMemo(() => {
+    const customMonthFormat = formatBasedOnCustomMonth(monthFormatter, stringFormatter, startDate, endDate, timeZone, isAria);
+    if (customMonthFormat) {
+      return customMonthFormat;
+    }
+      
     // Special case for month granularity. Format as a single month if only a
     // single month is visible, otherwise format as a range of months.
     if (isSameDay(startDate, startOfMonth(startDate))) {
@@ -135,4 +140,32 @@ function formatRange(dateFormatter: DateFormatter, stringFormatter: LocalizedStr
   }
 
   return stringFormatter.format('dateRange', {startDate: startValue, endDate: endValue});
+}
+
+// If the calendar has a getCurrentMonth function, use it to format the range.
+function formatBasedOnCustomMonth(monthFormatter: DateFormatter, stringFormatter: LocalizedStringFormatter, startDate: CalendarDate, endDate: CalendarDate, timeZone: string, isAria: boolean) {
+  const getCurrentMonth = bindGetCurrentMonthFunction(startDate) || bindGetCurrentMonthFunction(endDate);
+  if (!getCurrentMonth) {
+    return undefined;
+  }
+
+  // To get the correct year, use the end date's year. Unless the month is December, then use the start date's year.
+  // This ensures that we don't have two Decembers or Januarys 12 months apart in the "same year".
+  const getCorrectYear = (month: ReturnType<typeof getCurrentMonth>) => month.index === 12 ? month.start.year : month.end.year;
+
+  const startMonth = getCurrentMonth(startDate);
+  const endMonth = getCurrentMonth(endDate);
+  if (startMonth.index === endMonth.index) {
+    return monthFormatter.format(startDate.set({month: startMonth.index, year: getCorrectYear(endMonth)}).toDate(timeZone));
+  }
+
+  const adjustedStartDate = startMonth.start.set({month: startMonth.index, year: getCorrectYear(startMonth)}) as CalendarDate;
+  const adjustedEndDate = endMonth.end.set({month: endMonth.index, year: getCorrectYear(endMonth)}) as CalendarDate;
+  return isAria
+    ? formatRange(monthFormatter, stringFormatter, adjustedStartDate, adjustedEndDate, timeZone)
+    : monthFormatter.formatRange(adjustedStartDate.toDate(timeZone), adjustedEndDate.toDate(timeZone));
+}
+
+function bindGetCurrentMonthFunction(date: CalendarDate) {
+  return date.calendar.getCurrentMonth?.bind(date.calendar);
 }

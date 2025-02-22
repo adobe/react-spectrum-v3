@@ -30,7 +30,7 @@ export function add(date: CalendarDate | CalendarDateTime, duration: DateTimeDur
     mutableDate.calendar.balanceYearMonth(mutableDate, date);
   }
 
-  mutableDate.month += duration.months || 0;
+  addMonths(mutableDate, duration.months || 0);
 
   balanceYearMonth(mutableDate);
   constrainMonthDay(mutableDate);
@@ -84,6 +84,31 @@ function addYears(date: Mutable<AnyCalendarDate>, years: number) {
   }
 
   date.year += years;
+}
+
+function addMonths(date: Mutable<AnyCalendarDate>, months: number) {
+  if (date.calendar.getCurrentMonth) {
+    const isAdding = months > 0;
+    for (let i = 0; i < Math.abs(months); i++) {
+      // If adding, add number of days in current month
+      // If subtracting, subtract number of days in previous month (otherwise we might overshoot and skip a month)
+      let start, end;
+      const curMonth = date.calendar.getCurrentMonth(date);
+      if (isAdding) {
+        start = curMonth.start;
+        end = curMonth.end;
+      } else {
+        const prevMonth = date.calendar.getCurrentMonth(curMonth.start.subtract({days: 1})); 
+        start = prevMonth.start;
+        end = prevMonth.end;
+      }
+      const days = end.compare(start) + 1;
+      date.day += days * Math.sign(months);
+      balanceDay(date);
+    } 
+  } else {
+    date.month += months;
+  }
 }
 
 function balanceYearMonth(date: Mutable<AnyCalendarDate>) {

@@ -11,6 +11,7 @@
  */
 
 import {BuddhistCalendar, CalendarDate, CalendarDateTime, CopticCalendar, EthiopicAmeteAlemCalendar, EthiopicCalendar, HebrewCalendar, IndianCalendar, IslamicCivilCalendar, IslamicTabularCalendar, IslamicUmalquraCalendar, JapaneseCalendar, PersianCalendar, TaiwanCalendar, ZonedDateTime} from '..';
+import {Custom454Calendar} from './customCalendarImpl';
 
 describe('CalendarDate manipulation', function () {
   describe('add', function () {
@@ -305,6 +306,28 @@ describe('CalendarDate manipulation', function () {
         expect(date.add({months: 1})).toEqual(new CalendarDate(new IslamicUmalquraCalendar(), 9995, 12, 30));
       });
     });
+
+    describe('Custom calendar', function () {
+      // Use https://www5.an.adobe.com/sc15/settings/customize_calendar_preview.html?&type=1 to help verify
+      it('should use the getCurrentMonth function when adding months', function () {
+        let date = new CalendarDate(new Custom454Calendar(), 2023, 10, 1);
+        // Oct 2023 has 4 weeks in the 454 calendar; 4*7 = 28 days | 1+28 = 29
+        expect(date.add({months: 1})).toEqual(new CalendarDate(new Custom454Calendar(), 2023, 10, 29));
+      });
+
+      it('should add multiple months correctly', function () {
+        // Sep 2023 has 5 weeks in the 454 calendar and starts on Aug 27; 5*7 = 35 days
+        // Oct 2023 has 4 weeks in the 454 calendar; 4*7 = 28 days
+        // 35+28 = 63 total days to add
+        let date = new CalendarDate(new Custom454Calendar(), 2023, 8, 27);
+
+        // Aug 27 + 63 days = Oct 29
+        expect(date.add({months: 2})).toEqual(new CalendarDate(new Custom454Calendar(), 2023, 10, 29));
+
+        // Sanity check for above math
+        expect(new CalendarDate(2023, 8, 27).add({days: 63})).toEqual(new CalendarDate(2023, 10, 29));
+      });
+    });
   });
 
   describe('subtract', function () {
@@ -462,6 +485,28 @@ describe('CalendarDate manipulation', function () {
       it('should subtract years in a leap year', function () {
         let date = new CalendarDate(new HebrewCalendar(), 5782, 13, 1);
         expect(date.subtract({years: 1})).toEqual(new CalendarDate(new HebrewCalendar(), 5781, 12, 1));
+      });
+    });
+
+    describe('Custom calendar', function () {
+      // Use https://www5.an.adobe.com/sc15/settings/customize_calendar_preview.html?&type=1 to help verify
+      it('should subtract the number of days from the previous month from the provided day', function () {
+        // Sep 2023 has 5 weeks in the 454 calendar; 5*7 = 35 days | Oct 1 - 35 = Aug 27
+        let date = new CalendarDate(new Custom454Calendar(), 2023, 10, 1); // Start of Oct 2023
+        expect(date.subtract({months: 1})).toEqual(new CalendarDate(new Custom454Calendar(), 2023, 8, 27));
+      });
+
+      it('should subtract multiple months correctly', function () {
+        // Aug 2023 has 4 weeks in the 454 calendar; 4*7 = 28 days
+        // Sep 2023 has 5 weeks in the 454 calendar and starts on Aug 27; 5*7 = 35 days
+        // Oct 2023 has 4 weeks in the 454 calendar; 4*7 = 28 days
+        // 28+35+28 = 91 total days to subtract
+        let date = new CalendarDate(new Custom454Calendar(), 2023, 10, 29); // Start of Nov 2023
+        // Oct 29 - 91 days = Jul 30
+        expect(date.subtract({months: 3})).toEqual(new CalendarDate(new Custom454Calendar(), 2023, 7, 30));
+
+        // Sanity check for above math
+        expect(new CalendarDate(2023, 10, 29).subtract({days: 91})).toEqual(new CalendarDate(2023, 7, 30));
       });
     });
   });

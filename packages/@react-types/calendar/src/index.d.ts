@@ -11,7 +11,7 @@
  */
 
 import {AriaLabelingProps, DOMProps, RangeValue, StyleProps, ValidationState, ValueBase} from '@react-types/shared';
-import {CalendarDate, CalendarDateTime, ZonedDateTime} from '@internationalized/date';
+import type {CalendarDate, CalendarDateTime, createCalendar, ZonedDateTime} from '@internationalized/date';
 import {ReactNode} from 'react';
 
 export type DateValue = CalendarDate | CalendarDateTime | ZonedDateTime;
@@ -90,7 +90,14 @@ export interface SpectrumCalendarProps<T extends DateValue> extends AriaCalendar
    * The number of months to display at once. Up to 3 months are supported.
    * @default 1
    */
-  visibleMonths?: number
+  visibleMonths?: number,
+
+  /**
+   * A function to create a new [Calendar](https://react-spectrum.adobe.com/internationalized/date/Calendar.html)
+   * object for a given calendar identifier. If not provided, the {@link createCalendar} function
+   * from `@internationalized/date` will be used.
+   */
+  createCalendar?: typeof createCalendar
 }
 
 export interface SpectrumRangeCalendarProps<T extends DateValue> extends AriaRangeCalendarProps<T>, StyleProps {
@@ -98,5 +105,12 @@ export interface SpectrumRangeCalendarProps<T extends DateValue> extends AriaRan
    * The number of months to display at once. Up to 3 months are supported.
    * @default 1
    */
-  visibleMonths?: number
+  visibleMonths?: number,
+
+  /**
+   * A function to create a new [Calendar](https://react-spectrum.adobe.com/internationalized/date/Calendar.html)
+   * object for a given calendar identifier. If not provided, the {@link createCalendar} function
+   * from `@internationalized/date` will be used.
+   */
+  createCalendar?: typeof createCalendar
 }

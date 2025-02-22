@@ -9,12 +9,12 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
 import {action} from '@storybook/addon-actions';
 import {ActionButton} from '@react-spectrum/button';
 import {Calendar} from '../';
 import {CalendarDate, CalendarDateTime, getLocalTimeZone, parseZonedDateTime, today, ZonedDateTime} from '@internationalized/date';
 import {ComponentMeta, ComponentStoryObj} from '@storybook/react';
+import {Custom454Calendar} from '@internationalized/date/tests/customCalendarImpl';
 import {DateValue} from '@react-types/calendar';
 import {Flex} from '@react-spectrum/layout';
 import {Item, Picker, Section} from '@react-spectrum/picker';
@@ -167,6 +167,12 @@ export const FocusedValue: CalendarStory = {
   name: 'focusedValue'
 };
 
+export const Custom454Example : CalendarStory = {
+  ...Default,
+  name: 'Custom calendar',
+  render: (args) => <CustomCalendar {...args} />
+};
+
 // https://github.com/unicode-org/cldr/blob/22af90ae3bb04263f651323ce3d9a71747a75ffb/common/supplemental/supplementalData.xml#L4649-L4664
 const preferences = [
   {locale: '', label: 'Default', ordering: 'gregory'},
@@ -273,11 +279,18 @@ function CalendarWithZonedTime(props) {
 }
 
 function ControlledFocus(props) {
-  let [focusedDate, setFocusedDate] = useState(new CalendarDate(2019, 6, 5));
+  const defaultFocusedDate = props.focusedValue ?? new CalendarDate(2019, 6, 5);
+  let [focusedDate, setFocusedDate] = useState(defaultFocusedDate);
   return (
     <Flex direction="column" alignItems="start" gap="size-200">
-      <ActionButton onPress={() => setFocusedDate(new CalendarDate(2019, 6, 5))}>Reset focused date</ActionButton>
+      <ActionButton onPress={() => setFocusedDate(defaultFocusedDate)}>Reset focused date</ActionButton>
       <Calendar {...props} focusedValue={focusedDate} onFocusChange={setFocusedDate} />
     </Flex>
+  );
+}
+
+function CustomCalendar(props) { 
+  return (
+    <ControlledFocus {...props} createCalendar={() => new Custom454Calendar()} focusedValue={new CalendarDate(2023, 2, 5)} />
   );
 }

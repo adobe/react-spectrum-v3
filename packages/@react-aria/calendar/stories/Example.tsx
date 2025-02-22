@@ -11,7 +11,7 @@
  */
 import {Button} from '@react-spectrum/button';
 import {CalendarState, RangeCalendarState, useCalendarState} from '@react-stately/calendar';
-import {createCalendar, DateDuration, getWeeksInMonth, startOfWeek} from '@internationalized/date';
+import {createCalendar, DateDuration, startOfWeek} from '@internationalized/date';
 import React, {ReactElement, useMemo, useRef} from 'react';
 import {useCalendar, useCalendarCell, useCalendarGrid} from '../src';
 import {useDateFormatter, useLocale} from '@react-aria/i18n';
@@ -22,9 +22,9 @@ export function Example(props) {
   const {visibleDuration} = props;
 
   let state = useCalendarState({
+    createCalendar,
     ...props,
-    locale,
-    createCalendar
+    locale
   });
 
   let {calendarProps, prevButtonProps, nextButtonProps} = useCalendar(props, state);
@@ -61,12 +61,12 @@ export function Example(props) {
 
 function CalendarGrid({state, visibleDuration, offset = {}}: {state: CalendarState | RangeCalendarState, visibleDuration: DateDuration, offset?: DateDuration}) {
   let {locale} = useLocale();
-  let {gridProps} = useCalendarGrid({}, state);
+  let {gridProps, weeksInMonth} = useCalendarGrid({}, state);
 
   let weeks = visibleDuration.weeks ?? 1;
   let startDate = state.visibleRange.start.add(offset);
   if (visibleDuration.months) {
-    weeks = getWeeksInMonth(state.visibleRange.start, locale);
+    weeks = weeksInMonth;
     startDate = startOfWeek(startDate, locale);
   }
   return (<div {...gridProps}>
@@ -103,9 +103,9 @@ export function ExampleCustomFirstDay(props) {
   const {firstDayOfWeek} = props;
 
   let state = useCalendarState({
+    createCalendar,
     ...props,
-    locale,
-    createCalendar
+    locale
   });
 
   let {calendarProps, prevButtonProps, nextButtonProps} = useCalendar(props, state);
@@ -127,10 +127,8 @@ export function ExampleCustomFirstDay(props) {
 }
 
 function ExampleFirstDayCalendarGrid({state, firstDayOfWeek}: {state: CalendarState | RangeCalendarState, firstDayOfWeek?: 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat'}) {
-  let {locale} = useLocale();
-  let {gridProps} = useCalendarGrid({firstDayOfWeek}, state);
+  let {gridProps, weeksInMonth} = useCalendarGrid({firstDayOfWeek}, state);
   let startDate = state.visibleRange.start;
-  let weeksInMonth = getWeeksInMonth(startDate, locale, firstDayOfWeek);
   return (
     <div {...gridProps}>
       {[...new Array(weeksInMonth).keys()].map(weekIndex => (

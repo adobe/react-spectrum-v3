@@ -80,7 +80,7 @@ export function CalendarBase<T extends CalendarState | RangeCalendarState>(props
           // so we don't need to repeat that here for screen reader users.
           aria-hidden
           className={classNames(styles, 'spectrum-Calendar-title')}>
-          {monthDateFormatter.format(d.toDate(state.timeZone))}
+          {getCurrentMonthName(d, state.timeZone, monthDateFormatter)}
         </h2>
         {i === visibleMonths - 1 &&
           <ActionButton
@@ -149,4 +149,17 @@ export function CalendarBase<T extends CalendarState | RangeCalendarState>(props
       }
     </div>
   );
+}
+
+function getCurrentMonthName(date: CalendarState['focusedDate'], timezone: string, monthDateFormatter: ReturnType<typeof useDateFormatter>): string {
+  if (date.calendar.getCurrentMonth) {
+    const monthRange = date.calendar.getCurrentMonth(date);
+    // The monthRange's index indicates which month we are in in the current year, since the start of 
+    // the month range may not be in the same month (e.g. fiscal calendar).
+    // To get the correct year, use the end date's year. Unless the month is December, then use the start date's year.
+    // This ensures that we don't have two December 2025s or January 2026s 12 months apart.
+    const month = date.set({month: monthRange.index, year: monthRange.index === 12 ? monthRange.start.year : monthRange.end.year});
+    return monthDateFormatter.format(month.toDate(timezone));
+  }
+  return monthDateFormatter.format(date.toDate(timezone));
 }

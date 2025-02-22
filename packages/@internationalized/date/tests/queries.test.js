@@ -64,6 +64,22 @@ describe('queries', function () {
       expect(isSameDay(gregorian, persian)).toBe(true);
       expect(isSameDay(persian, gregorian)).toBe(true);
     });
+
+    it("uses a calendar's isSamePeriod method if present", function () {
+      const a = new Proxy(new CalendarDate(2023, 2, 27), {
+        get(target, prop) {
+          if (prop === 'calendar') {
+            return {
+              ...target.calendar,
+              isSamePeriod: () => true
+            };
+          }
+          return target[prop];
+        }
+      });
+      const b = new CalendarDate(2001, 2, 4);
+      expect(isSameDay(a, b)).toBe(true);
+    });
   });
 
   describe('isSameMonth', function () {
@@ -89,6 +105,22 @@ describe('queries', function () {
       expect(isSameMonth(new CalendarDate(new JapaneseCalendar(), 'showa', 64, 1, 3), new CalendarDate(new JapaneseCalendar(), 'heisei', 1, 1, 10))).toBe(true);
       expect(isSameMonth(new CalendarDate(new JapaneseCalendar(), 'showa', 64, 1, 3), new CalendarDate(1989, 1, 10))).toBe(true);
     });
+
+    it("uses a calendar's isSamePeriod method if present", function () {
+      const a = new Proxy(new CalendarDate(2023, 2, 27), {
+        get(target, prop) {
+          if (prop === 'calendar') {
+            return {
+              ...target.calendar,
+              isSamePeriod: () => true
+            };
+          }
+          return target[prop];
+        }
+      });
+      const b = new CalendarDate(2001, 2, 4);
+      expect(isSameMonth(a, b)).toBe(true);
+    });
   });
 
   describe('isSameYear', function () {
@@ -113,6 +145,22 @@ describe('queries', function () {
     it('works with months that span different eras', function () {
       expect(isSameYear(new CalendarDate(new JapaneseCalendar(), 'showa', 64, 1, 3), new CalendarDate(new JapaneseCalendar(), 'heisei', 1, 1, 10))).toBe(true);
       expect(isSameYear(new CalendarDate(new JapaneseCalendar(), 'showa', 64, 1, 3), new CalendarDate(1989, 1, 10))).toBe(true);
+    });
+
+    it("uses a calendar's isSamePeriod method if present", function () {
+      const a = new Proxy(new CalendarDate(2023, 2, 27), {
+        get(target, prop) {
+          if (prop === 'calendar') {
+            return {
+              ...target.calendar,
+              isSamePeriod: () => true
+            };
+          }
+          return target[prop];
+        }
+      });
+      const b = new CalendarDate(2001, 2, 4);
+      expect(isSameYear(a, b)).toBe(true);
     });
   });
 
@@ -182,6 +230,23 @@ describe('queries', function () {
     it('works with zoned date times', function () {
       expect(startOfMonth(new ZonedDateTime(2021, 11, 10, 'America/Los_Angeles', -28800000, 1, 0, 0))).toEqual(new ZonedDateTime(2021, 11, 1, 'America/Los_Angeles', -25200000, 1, 0, 0));
     });
+
+    it("uses the date calendar's getCurrentMonth method if present", function () {
+      const date = new Proxy(new CalendarDate(2023, 2, 27), {
+        get(target, prop) {
+          if (prop === 'calendar') {
+            return {
+              ...target.calendar,
+              getCurrentMonth: () => ({
+                start: new CalendarDate(2023, 2, 26)
+              })
+            };
+          }
+          return target[prop];
+        }
+      });
+      expect(startOfMonth(date)).toEqual(new CalendarDate(2023, 2, 26));
+    });
   });
 
   describe('endOfMonth', function () {
@@ -197,6 +262,24 @@ describe('queries', function () {
 
     it('works with zoned date times', function () {
       expect(endOfMonth(new ZonedDateTime(2021, 11, 5, 'America/Los_Angeles', -25200000, 1, 0, 0))).toEqual(new ZonedDateTime(2021, 11, 30, 'America/Los_Angeles', -28800000, 1, 0, 0));
+    });
+
+
+    it("uses the date calendar's getCurrentMonth method if present", function () {
+      const date = new Proxy(new CalendarDate(2023, 2, 27), {
+        get(target, prop) {
+          if (prop === 'calendar') {
+            return {
+              ...target.calendar,
+              getCurrentMonth: () => ({
+                end: new CalendarDate(2023, 4, 1)
+              })
+            };
+          }
+          return target[prop];
+        }
+      });
+      expect(endOfMonth(date)).toEqual(new CalendarDate(2023, 4, 1));
     });
   });
 
@@ -268,6 +351,7 @@ describe('queries', function () {
       expect(startOfWeek(new CalendarDate(2021, 8, 4), 'en-US', 'mon')).toEqual(new CalendarDate(2021, 8, 2));
       expect(startOfWeek(new CalendarDate(2021, 8, 4), 'en-US', 'tue')).toEqual(new CalendarDate(2021, 8, 3));
       expect(startOfWeek(new CalendarDate(2021, 8, 4), 'fr-FR', 'sun')).toEqual(new CalendarDate(2021, 8, 1));
+      expect(startOfWeek(new CalendarDate(2021, 8, 4), 'en-US', 'thu')).toEqual(new CalendarDate(2021, 7, 29));
     });
   });
 
@@ -305,6 +389,21 @@ describe('queries', function () {
       expect(getWeeksInMonth(new CalendarDate(2021, 8, 4), 'en-US', 'mon')).toBe(6);
       expect(getWeeksInMonth(new CalendarDate(2021, 10, 4), 'en-US', 'sun')).toBe(6);
       expect(getWeeksInMonth(new CalendarDate(2021, 10, 4), 'en-US', 'mon')).toBe(5);
+    });
+
+    it("should use the date calendar's getWeeksInMonth method if present", function () {
+      const date = new Proxy(new CalendarDate(2023, 2, 4), {
+        get(target, prop) {
+          if (prop === 'calendar') {
+            return {
+              ...target.calendar,
+              getWeeksInMonth: () => 5
+            };
+          }
+          return target[prop];
+        }
+      });
+      expect(getWeeksInMonth(date, 'en-US')).toBe(5);
     });
   });
 

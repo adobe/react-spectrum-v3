@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {CalendarDate} from './CalendarDate';
+import {CalendarDate, CalendarDateTime, ZonedDateTime} from './CalendarDate';
 
 /** An interface that is compatible with any object with date fields. */
 export interface AnyCalendarDate {
@@ -33,6 +33,7 @@ export interface AnyTime {
 
 /** An interface that is compatible with any object with both date and time fields. */
 export interface AnyDateTime extends AnyCalendarDate, AnyTime {}
+type DateValue = CalendarDate | CalendarDateTime | ZonedDateTime
 
 /**
  * The Calendar interface represents a calendar system, including information
@@ -69,6 +70,22 @@ export interface Calendar {
    * eras may begin in the middle of a month.
    */
   getMinimumDayInMonth?(date: AnyCalendarDate): number,
+  /**
+   * Returns the number of weeks in the given date's month.
+   */
+  getWeeksInMonth?(date: AnyCalendarDate): number,
+  /**
+   * Returns the start and end dates of the month for which the given date is in, as
+   * well as the 1-based index of the month of the year (e.g. Jan = 1, Feb = 2, etc.). 
+   */
+  // In some calendars such as a fiscal calendar, months may
+  // not align with the standard calendar months. In this case, this method should be
+  // implemented to return the start and end of the month that the given date falls in.
+  getCurrentMonth?(date: AnyCalendarDate): {start: DateValue, end: DateValue, index: number},
+  /**
+   * Returns whether the first and second dates both occur within the same period of time.
+   */
+  isSamePeriod?(a: AnyCalendarDate, b: AnyCalendarDate, period: 'day' | 'week' | 'month' | 'year'): boolean,
 
   /** @private */
   balanceDate?(date: AnyCalendarDate): void,

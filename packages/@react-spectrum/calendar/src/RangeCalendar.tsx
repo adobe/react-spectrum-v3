@@ -31,10 +31,10 @@ export const RangeCalendar = React.forwardRef(function RangeCalendar<T extends D
   let visibleDuration = useMemo(() => ({months: visibleMonths}), [visibleMonths]);
   let {locale} = useLocale();
   let state = useRangeCalendarState({
+    createCalendar,
     ...props,
     locale,
-    visibleDuration,
-    createCalendar
+    visibleDuration
   });
 
   let domRef = useRef(null);
