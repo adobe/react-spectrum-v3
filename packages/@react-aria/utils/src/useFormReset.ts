@@ -20,8 +20,8 @@ export function useFormReset<T>(
   onReset: (value: T) => void
 ) {
   let resetValue = useRef(initialValue);
-  let handleReset = useEffectEvent(() => {
-    if (onReset) {
+  let handleReset = useEffectEvent((e: Event) => {
+    if (onReset && !e.defaultPrevented) {
       onReset(resetValue.current);
     }
   });
