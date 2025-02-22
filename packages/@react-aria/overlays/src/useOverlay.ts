@@ -11,6 +11,7 @@
  */
 
 import {DOMAttributes, RefObject} from '@react-types/shared';
+import {getEventTarget} from '@react-aria/utils';
 import {isElementInChildOfActiveScope} from '@react-aria/focus';
 import {useEffect} from 'react';
 import {useFocusWithin, useInteractOutside} from '@react-aria/interactions';
@@ -91,7 +92,7 @@ export function useOverlay(props: AriaOverlayProps, ref: RefObject<Element | nul
   };
 
   let onInteractOutsideStart = (e: PointerEvent) => {
-    if (!shouldCloseOnInteractOutside || shouldCloseOnInteractOutside(e.target as Element)) {
+    if (!shouldCloseOnInteractOutside || shouldCloseOnInteractOutside(getEventTarget(e))) {
       if (visibleOverlays[visibleOverlays.length - 1] === ref) {
         e.stopPropagation();
         e.preventDefault();
@@ -100,7 +101,7 @@ export function useOverlay(props: AriaOverlayProps, ref: RefObject<Element | nul
   };
 
   let onInteractOutside = (e: PointerEvent) => {
-    if (!shouldCloseOnInteractOutside || shouldCloseOnInteractOutside(e.target as Element)) {
+    if (!shouldCloseOnInteractOutside || shouldCloseOnInteractOutside(getEventTarget(e))) {
       if (visibleOverlays[visibleOverlays.length - 1] === ref) {
         e.stopPropagation();
         e.preventDefault();

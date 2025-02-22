@@ -6408,6 +6408,7 @@ __metadata:
     "@react-aria/ssr": "npm:^3.9.7"
     "@react-aria/utils": "npm:^3.27.0"
     "@react-aria/visually-hidden": "npm:^3.8.19"
+    "@react-stately/flags": "npm:^3.0.5"
     "@react-stately/overlays": "npm:^3.6.13"
     "@react-types/button": "npm:^3.10.2"
     "@react-types/overlays": "npm:^3.8.12"

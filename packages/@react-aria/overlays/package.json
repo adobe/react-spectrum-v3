@@ -28,6 +28,7 @@
     "@react-aria/ssr": "^3.9.7",
     "@react-aria/utils": "^3.27.0",
     "@react-aria/visually-hidden": "^3.8.19",
+    "@react-stately/flags": "^3.0.5",
     "@react-stately/overlays": "^3.6.13",
     "@react-types/button": "^3.10.2",
     "@react-types/overlays": "^3.8.12",
