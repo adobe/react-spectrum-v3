@@ -32,7 +32,13 @@ export interface AriaAutocompleteProps extends AutocompleteProps {
    * An optional filter function used to determine if a option should be included in the autocomplete list.
    * Include this if the items you are providing to your wrapped collection aren't filtered by default.
    */
-  filter?: (textValue: string, inputValue: string) => boolean
+  filter?: (textValue: string, inputValue: string) => boolean,
+
+  /**
+   * Whether to focus the first item in the collection after a search is performed.
+   * @default true
+   */
+  shouldFocusOnSearch?: boolean
 }
 
 export interface AriaAutocompleteOptions extends Omit<AriaAutocompleteProps, 'children'> {
@@ -63,7 +69,8 @@ export function useAutocomplete(props: AriaAutocompleteOptions, state: Autocompl
   let {
     inputRef,
     collectionRef,
-    filter
+    filter,
+    shouldFocusOnSearch = true
   } = props;
 
   let collectionId = useId();
@@ -160,7 +167,7 @@ export function useAutocomplete(props: AriaAutocompleteOptions, state: Autocompl
   let onChange = (value: string) => {
     // Tell wrapped collection to focus the first element in the list when typing forward and to clear focused key when deleting text
     // for screen reader announcements
-    if (state.inputValue !== value && state.inputValue.length <= value.length) {
+    if (state.inputValue !== value && state.inputValue.length <= value.length && shouldFocusOnSearch) {
       focusFirstItem();
     } else {
       // Fully clear focused key when backspacing since the list may change and thus we'd want to start fresh again

@@ -39,7 +39,7 @@ export const UNSTABLE_InternalAutocompleteContext = createContext<InternalAutoco
 export function Autocomplete(props: AutocompleteProps) {
   let ctx = useSlottedContext(AutocompleteContext, props.slot);
   props = mergeProps(ctx, props);
-  let {filter} = props;
+  let {filter, shouldFocusOnSearch} = props;
   let state = useAutocompleteState(props);
   let inputRef = useRef<HTMLInputElement | null>(null);
   let collectionRef = useRef<HTMLElement>(null);
@@ -51,6 +51,7 @@ export function Autocomplete(props: AutocompleteProps) {
   } = useAutocomplete({
     ...removeDataAttributes(props),
     filter,
+    shouldFocusOnSearch,
     inputRef,
     collectionRef
   }, state);
