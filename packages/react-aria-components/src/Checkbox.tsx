@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import {AriaCheckboxGroupProps, AriaCheckboxProps, HoverEvents, mergeProps, useCheckbox, useCheckboxGroup, useCheckboxGroupItem, useFocusRing, useHover, VisuallyHidden} from 'react-aria';
+import {AriaCheckboxGroupProps, AriaCheckboxProps, HoverEvents, mergeProps, useCheckbox, useCheckboxGroup, useCheckboxGroupItem, useFocusable, useFocusRing, useHover, VisuallyHidden} from 'react-aria';
 import {CheckboxContext} from './RSPContexts';
 import {CheckboxGroupState, useCheckboxGroupState, useToggleState} from 'react-stately';
 import {ContextValue, Provider, RACValidation, removeDataAttributes, RenderProps, SlotProps, useContextProps, useRenderProps, useSlot, useSlottedContext} from './utils';
@@ -228,13 +228,14 @@ export const Checkbox = /*#__PURE__*/ (forwardRef as forwardRefType)(function Ch
       isRequired: props.isRequired || false
     }
   });
+  let {focusableProps} = useFocusable(props, ref);
 
   let DOMProps = filterDOMProps(props);
   delete DOMProps.id;
 
   return (
     <label
-      {...mergeProps(DOMProps, labelProps, hoverProps, renderProps)}
+      {...mergeProps(DOMProps, labelProps, hoverProps, focusableProps, renderProps)}
       ref={ref}
       slot={props.slot || undefined}
       data-selected={isSelected || undefined}
