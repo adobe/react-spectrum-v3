@@ -41,7 +41,7 @@ export function useFocusRing(props: AriaFocusRingProps = {}): FocusRingAria {
     within
   } = props;
   let state = useRef({
-    isFocused: false,
+    isFocused: autoFocus || false,
     isFocusVisible: autoFocus || isFocusVisible()
   });
   let [isFocused, setFocused] = useState(false);
