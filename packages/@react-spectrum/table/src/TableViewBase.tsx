@@ -226,6 +226,7 @@ function TableViewBase<T extends object>(props: TableBaseProps<T>, ref: DOMRef<H
       selectionManager: state.selectionManager
     });
     droppableCollection = dragAndDropHooks.useDroppableCollection!({
+      id: props.id,
       keyboardDelegate: new ListKeyboardDelegate({
         collection: state.collection,
         disabledKeys: state.selectionManager.disabledKeys,

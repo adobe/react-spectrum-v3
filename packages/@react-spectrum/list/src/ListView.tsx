@@ -167,6 +167,7 @@ export const ListView = React.forwardRef(function ListView<T extends object>(pro
       selectionManager
     });
     droppableCollection = dragAndDropHooks.useDroppableCollection!({
+      id: props.id,
       keyboardDelegate: new ListKeyboardDelegate({
         collection,
         disabledKeys: dragState?.draggingKeys.size ? undefined : selectionManager.disabledKeys,

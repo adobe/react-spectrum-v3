@@ -365,7 +365,6 @@ interface TableInnerProps {
   collection: ITableCollection<Node<object>>
 }
 
-
 function TableInner({props, forwardedRef: ref, selectionState, collection}: TableInnerProps) {
   let tableContainerContext = useContext(ResizableTableContainerContext);
   ref = useObjectRef(useMemo(() => mergeRefs(ref, tableContainerContext?.tableRef), [ref, tableContainerContext?.tableRef]));
@@ -433,6 +432,7 @@ function TableInner({props, forwardedRef: ref, selectionState, collection}: Tabl
     });
     let dropTargetDelegate = dragAndDropHooks.dropTargetDelegate || ctxDropTargetDelegate || new dragAndDropHooks.ListDropTargetDelegate(collection.rows, ref);
     droppableCollection = dragAndDropHooks.useDroppableCollection!({
+      id: props.id,
       keyboardDelegate,
       dropTargetDelegate
     }, dropState, ref);

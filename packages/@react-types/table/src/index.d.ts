@@ -25,7 +25,7 @@ export type ColumnDynamicSize = `${number}fr`; // match regex: /^(\d+)(?=fr$)/
 /** All possible sizes a column can be assigned. */
 export type ColumnSize = ColumnStaticSize | ColumnDynamicSize;
 
-export interface TableProps<T> extends MultipleSelection, Sortable {
+export interface TableProps<T> extends DOMProps, MultipleSelection, Sortable {
   /** The elements that make up the table. Includes the TableHeader, TableBody, Columns, and Rows. */
   children: [ReactElement<TableHeaderProps<T>>, ReactElement<TableBodyProps<T>>],
   /** A list of row keys to disable. */
@@ -35,7 +35,7 @@ export interface TableProps<T> extends MultipleSelection, Sortable {
 /**
  * @deprecated - use SpectrumTableProps from '@adobe/react-spectrum' instead.
  */
-export interface SpectrumTableProps<T> extends TableProps<T>, SpectrumSelectionProps, DOMProps, AriaLabelingProps, StyleProps {
+export interface SpectrumTableProps<T> extends TableProps<T>, SpectrumSelectionProps, AriaLabelingProps, StyleProps {
   /**
    * Sets the amount of vertical padding within each cell.
    * @default 'regular'

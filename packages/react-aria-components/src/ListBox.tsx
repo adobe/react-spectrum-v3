@@ -192,6 +192,7 @@ function ListBoxInner<T extends object>({state: inputState, props, listBoxRef}: 
 
     let dropTargetDelegate = dragAndDropHooks.dropTargetDelegate || ctxDropTargetDelegate || new dragAndDropHooks.ListDropTargetDelegate(collection, listBoxRef, {orientation, layout, direction});
     droppableCollection = dragAndDropHooks.useDroppableCollection!({
+      id: props.id,
       keyboardDelegate,
       dropTargetDelegate
     }, dropState, listBoxRef);

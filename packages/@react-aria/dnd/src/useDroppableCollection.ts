@@ -21,6 +21,7 @@ import {
 } from './utils';
 import {
   Collection,
+  DOMProps,
   DropEvent,
   DropOperation,
   DroppableCollectionDropEvent,
@@ -42,7 +43,7 @@ import {useAutoScroll} from './useAutoScroll';
 import {useDrop} from './useDrop';
 import {useLocale} from '@react-aria/i18n';
 
-export interface DroppableCollectionOptions extends DroppableCollectionProps {
+export interface DroppableCollectionOptions extends DOMProps, DroppableCollectionProps {
   /** A delegate object that implements behavior for keyboard focus movement. */
   keyboardDelegate: KeyboardDelegate,
   /** A delegate object that provides drop targets for pointer coordinates within the collection. */
@@ -379,15 +380,20 @@ export function useDroppableCollection(props: DroppableCollectionOptions, state:
         // first try the other positions in the current key. Otherwise (e.g. in a grid layout),
         // jump to the same drop position in the new key.
         let nextCollectionKey = horizontal && direction === 'rtl' ? localState.state.collection.getKeyBefore(target.key) : localState.state.collection.getKeyAfter(target.key);
-        if (nextKey == null || nextKey === nextCollectionKey) {
+        let isNextDisabled = nextCollectionKey && localState.state.selectionManager.isDisabled(nextCollectionKey);
+        if (nextKey == null || nextKey === nextCollectionKey || isNextDisabled) {
           let positionIndex = dropPositions.indexOf(target.dropPosition);
           let nextDropPosition = dropPositions[positionIndex + 1];
-          if (positionIndex < dropPositions.length - 1 && !(nextDropPosition === dropPositions[2] && nextKey != null)) {
+          if (positionIndex < dropPositions.length - 1 && (!(nextDropPosition === dropPositions[2] && nextKey != null) || isNextDisabled)) {
             return {
               type: 'item',
               key: target.key,
               dropPosition: nextDropPosition
             };
+          }
+
+          if (isNextDisabled) {
+            nextKey = nextCollectionKey;
           }
 
           // If the last drop position was 'after', then 'before' on the next key is equivalent.
@@ -433,15 +439,20 @@ export function useDroppableCollection(props: DroppableCollectionOptions, state:
         // first try the other positions in the current key. Otherwise (e.g. in a grid layout),
         // jump to the same drop position in the new key.
         let prevCollectionKey = horizontal && direction === 'rtl' ? localState.state.collection.getKeyAfter(target.key) : localState.state.collection.getKeyBefore(target.key);
-        if (nextKey == null || nextKey === prevCollectionKey) {
+        let isPrevDisabled = prevCollectionKey && localState.state.selectionManager.isDisabled(prevCollectionKey);
+        if (nextKey == null || nextKey === prevCollectionKey || isPrevDisabled) {
           let positionIndex = dropPositions.indexOf(target.dropPosition);
           let nextDropPosition = dropPositions[positionIndex - 1];
-          if (positionIndex > 0 && nextDropPosition !== dropPositions[2]) {
+          if (positionIndex > 0 && (nextDropPosition !== dropPositions[2] || isPrevDisabled)) {
             return {
               type: 'item',
               key: target.key,
               dropPosition: nextDropPosition
             };
+          }
+
+          if (isPrevDisabled) {
+            nextKey = prevCollectionKey;
           }
 
           // If the last drop position was 'before', then 'after' on the previous key is equivalent.
@@ -745,7 +756,7 @@ export function useDroppableCollection(props: DroppableCollectionOptions, state:
     });
   }, [localState, ref, onDrop, direction]);
 
-  let id = useId();
+  let id = useId(props.id);
   droppableCollectionMap.set(state, {id, ref});
   return {
     collectionProps: mergeProps(dropProps, {

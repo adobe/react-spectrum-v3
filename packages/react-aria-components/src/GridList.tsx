@@ -182,6 +182,7 @@ function GridListInner<T extends object>({props, collection, gridListRef: ref}: 
     });
     let dropTargetDelegate = dragAndDropHooks.dropTargetDelegate || ctxDropTargetDelegate || new dragAndDropHooks.ListDropTargetDelegate(collection, ref, {layout, direction});
     droppableCollection = dragAndDropHooks.useDroppableCollection!({
+      id: props.id,
       keyboardDelegate,
       dropTargetDelegate
     }, dropState, ref);
