@@ -10,30 +10,60 @@
  * governing permissions and limitations under the License.
  */
 
-import {MutableRefObject, useMemo, useRef} from 'react';
+import {MutableRefObject, useCallback, useMemo, useRef} from 'react';
 
 /**
  * Offers an object ref for a given callback ref or an object ref. Especially
  * helfpul when passing forwarded refs (created using `React.forwardRef`) to
  * React Aria hooks.
  *
- * @param forwardedRef The original ref intended to be used.
+ * @param ref The original ref intended to be used.
  * @returns An object ref that updates the given ref.
- * @see https://reactjs.org/docs/forwarding-refs.html
+ * @see https://react.dev/reference/react/forwardRef
  */
-export function useObjectRef<T>(forwardedRef?: ((instance: T | null) => void) | MutableRefObject<T | null> | null): MutableRefObject<T | null> {
+export function useObjectRef<T>(ref?: ((instance: T | null) => (() => void) | void) | MutableRefObject<T | null> | null): MutableRefObject<T | null> {
   const objRef: MutableRefObject<T | null> = useRef<T>(null);
-  return useMemo(() => ({
-    get current() {
-      return objRef.current;
-    },
-    set current(value) {
-      objRef.current = value;
-      if (typeof forwardedRef === 'function') {
-        forwardedRef(value);
-      } else if (forwardedRef) {
-        forwardedRef.current = value;
+  const cleanupRef: MutableRefObject<(() => void) | void> = useRef(undefined);
+
+  const refEffect = useCallback(
+    (instance: T | null) => {
+      if (typeof ref === 'function') {
+        const refCallback = ref;
+        const refCleanup = refCallback(instance);
+        return () => {
+          if (typeof refCleanup === 'function') {
+            refCleanup();
+          } else {
+            refCallback(null);
+          }
+        };
+      } else if (ref) {
+        ref.current = instance;
+        return () => {
+          ref.current = null;
+        };
       }
-    }
-  }), [forwardedRef]);
+    },
+    [ref]
+  );
+
+  return useMemo(
+    () => ({
+      get current() {
+        return objRef.current;
+      },
+      set current(value) {
+        objRef.current = value;
+        if (cleanupRef.current) {
+          cleanupRef.current();
+          cleanupRef.current = undefined;
+        }
+
+        if (value != null) {
+          cleanupRef.current = refEffect(value);
+        }
+      }
+    }),
+    [refEffect]
+  );
 }

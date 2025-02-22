@@ -10,23 +10,43 @@
  * governing permissions and limitations under the License.
  */
 
-import {ForwardedRef, MutableRefObject} from 'react';
+import {MutableRefObject, Ref} from 'react';
 
 /**
  * Merges multiple refs into one. Works with either callback or object refs.
  */
-export function mergeRefs<T>(...refs: Array<ForwardedRef<T> | MutableRefObject<T> | null | undefined>): ForwardedRef<T> {
+export function mergeRefs<T>(...refs: Array<Ref<T> | MutableRefObject<T> | null | undefined>): Ref<T> {
   if (refs.length === 1 && refs[0]) {
     return refs[0];
   }
 
   return (value: T | null) => {
-    for (let ref of refs) {
-      if (typeof ref === 'function') {
-        ref(value);
-      } else if (ref != null) {
-        ref.current = value;
-      }
+    let hasCleanup = false;
+
+    const cleanups = refs.map(ref => {
+      const cleanup = setRef(ref, value);
+      hasCleanup ||= typeof cleanup == 'function';
+      return cleanup;
+    });
+
+    if (hasCleanup) {
+      return () => {
+        cleanups.forEach((cleanup, i) => {
+          if (typeof cleanup === 'function') {
+            cleanup();
+          } else {
+            setRef(refs[i], null);
+          }
+        });
+      };
     }
   };
+}
+
+function setRef<T>(ref: Ref<T> | MutableRefObject<T> | null | undefined, value: T) {
+  if (typeof ref === 'function') {
+    return ref(value);
+  } else if (ref != null) {
+    ref.current = value;
+  }
 }

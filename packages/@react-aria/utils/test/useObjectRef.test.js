@@ -146,4 +146,38 @@ describe('useObjectRef', () => {
       expect(screen.getAllByPlaceholderText(/foo/i)).toHaveLength(2);
     });
   });
+
+  it('calls cleanup function on unmount', () => {
+    const cleanUp = jest.fn();
+    const setup = jest.fn();
+    const nullHandler = jest.fn();
+
+    function ref(_ref) {
+      if (_ref) {
+        setup();
+      } else {
+        nullHandler();
+      }
+      return cleanUp;
+    }
+
+    const TextField = React.forwardRef((props, forwardedRef) => {
+      const ref = useObjectRef(forwardedRef);
+      return <input {...props} ref={ref} />;
+    });
+
+    const {unmount} = render(<TextField ref={ref} />);
+
+    expect(setup).toHaveBeenCalledTimes(1);
+    expect(cleanUp).toHaveBeenCalledTimes(0);
+    expect(nullHandler).toHaveBeenCalledTimes(0);
+
+    unmount();
+
+    expect(setup).toHaveBeenCalledTimes(1);
+    // Now cleanup has been called
+    expect(cleanUp).toHaveBeenCalledTimes(1);
+    // Ref callback never called with null when cleanup is returned
+    expect(nullHandler).toHaveBeenCalledTimes(0);
+  });
 });
